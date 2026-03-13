@@ -268,6 +268,31 @@ export default function RegisterForm() {
       </Field>
  
 
+      {/* ── Terms Checkbox ── */}
+      <div className="mb-4 flex items-start gap-2.5">
+        <input
+          type="checkbox"
+          id="terms"
+          checked={agree}
+          onChange={(e) => setAgree(e.target.checked)}
+          className="mt-0.5 cursor-pointer"
+          style={{ accentColor: '#2a5ce8' }}
+        />
+        <label
+          htmlFor="terms"
+          style={{ fontSize: 13, color: '#6b7d96', cursor: 'pointer', lineHeight: 1.5 }}
+        >
+          I agree to the{' '}
+          <Link href="/terms" style={{ color: '#3b6fe0', textDecoration: 'none' }}>
+            Terms of Service
+          </Link>{' '}
+          and{' '}
+          <Link href="/privacy" style={{ color: '#3b6fe0', textDecoration: 'none' }}>
+            Privacy Policy
+          </Link>
+        </label>
+      </div>
+
       {/* ── Error ── */}
       {error && (
         <div
