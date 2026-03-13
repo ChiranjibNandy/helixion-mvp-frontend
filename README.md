@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Helixion — Next.js 14 (JSX) Login Page
 
-## Getting Started
+Pixel-perfect replica of the Helixion sign-in page built with **Next.js 14 App Router**, fully in **JSX** with proper component architecture.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🗂 Project Structure
+
+```
+helixion/
+├── app/
+│   ├── layout.jsx                     # Root layout + font import
+│   └── page.jsx                       # Home page — composes Left + Right panels
+│
+├── components/
+│   ├── ui/
+│   │   └── Icons.jsx                  # All SVG icon components
+│   │
+│   ├── auth/
+│   │   ├── RoleSelector.jsx           # 3-button role picker
+│   │   ├── RoleChip.jsx               # Active role badge chip
+│   │   ├── LoginForm.jsx              # Email/password form + submit
+│   │   └── TrustBadges.jsx            # SOC2 / TLS / Uptime row
+│   │
+│   └── layout/
+│       ├── LeftPanel.jsx              # Branding, stats, headline
+│       └── RightPanel.jsx            # Assembles entire right form
+│
+├── styles/
+│   └── globals.css                    # Tailwind + custom CSS
+│
+├── jsconfig.json                      # Path alias: @/ → root
+├── next.config.js
+├── tailwind.config.js
+├── postcss.config.js
+└── package.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Quick Start
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev
+# → http://localhost:3000
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ✅ Features Implemented
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Feature | Status |
+|---------|--------|
+| Bricolage Grotesque font — exact match | ✅ |
+| Split layout — 44% left / 56% right | ✅ |
+| Dot-grid texture + radial glow orbs | ✅ |
+| "One platform. Three workspaces." headline | ✅ |
+| Stats — 2.4M+ / 98% / 500+ | ✅ |
+| 3-role selector with active blue highlight | ✅ |
+| Dynamic role chip (e.g. "Reporting Manager / HoD") | ✅ |
+| Work Email field with icon | ✅ |
+| Password field with icon | ✅ |
+| Custom-styled checkbox | ✅ |
+| Forgot password link | ✅ |
+| Blue gradient "Sign In as [Role]" CTA | ✅ |
+| Loading spinner on submit | ✅ |
+| OR divider + Corporate ID SSO button | ✅ |
+| SOC 2 · 256-bit TLS · 99.9% Uptime badges | ✅ |
+| Button label updates per selected role | ✅ |
+| Fully responsive (left panel hides on mobile) | ✅ |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🛠 Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| | |
+|--|--|
+| Framework | Next.js 14 (App Router) |
+| Language | JavaScript JSX |
+| Styling | Tailwind CSS + custom CSS |
+| Font | Bricolage Grotesque (Google Fonts) |
+| State | React `useState` (client components) |
