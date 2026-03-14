@@ -1,10 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import RoleSelector  from '@/components/auth/RoleSelector'
-import RoleChip      from '@/components/auth/RoleChip'
 import LoginForm     from '@/components/auth/LoginForm'
-import TrustBadges   from '@/components/auth/TrustBadges'
+
 
 // ─────────────────────────────────────────────
 //  RightPanel — login form panel
