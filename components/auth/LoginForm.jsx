@@ -1,127 +1,288 @@
-'use client'
+/**
+ * LoginForm Component
+ * 
+ * A secure, accessible login form with comprehensive validation,
+ * error handling, and security protections.
+ * 
+ * @author Helixion Team
+ * @version 2.0.0
+ */
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { IconMail, IconKey, IconArrowRight, IconBriefcase } from '@/components/ui/Icons'
+'use client';
 
- 
- 
-export default function LoginForm({ role }) {
-  const [email,    setEmail]    = useState('')
-  const [password, setPassword] = useState('')
-  const [remember, setRemember] = useState(false)
-  const [loading,  setLoading]  = useState(false)
-  const [error,    setError]    = useState('')
+import { useState, useCallback } from 'react';
+import Link from 'next/link';
+import { IconMail, IconKey, IconArrowRight, IconEye, IconEyeOff } from '@/components/ui/Icons';
+import { COLORS } from '@/lib/constants';
+import { 
+  sanitizeInput, 
+  isValidEmail, 
+  checkRateLimit, 
+  mockLogin, 
+  validateRedirect 
+} from '@/lib/security';
 
+/**
+ * Validation rules for login form
+ */
+const VALIDATION_RULES = {
+  email: {
+    required: true,
+    email: true,
+    requiredMessage: 'Email is required',
+    emailMessage: 'Please enter a valid email address',
+  },
+  password: {
+    required: true,
+    minLength: 6,
+    requiredMessage: 'Password is required',
+    minLengthMessage: 'Password must be at least 6 characters',
+  },
+};
+
+/**
+ * LoginForm Component - Main export
+ * @param {Object} props - Component props
+ * @param {string} [props.redirectPath='/dashboard'] - Path to redirect after login
+ */
+export default function LoginForm({ redirectPath = '/dashboard' }) {
+  // State management with consolidated form data
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [generalError, setGeneralError] = useState('');
+
+  /**
+   * Handle input changes with sanitization
+   * @param {string} field - Field name
+   * @param {string} value - Field value
+   */
+  const handleInputChange = useCallback((field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: sanitizeInput(value),
+    }));
+    
+    // Clear field error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+    
+    // Clear general error
+    if (generalError) {
+      setGeneralError('');
+    }
+  }, [errors, generalError]);
+
+  /**
+   * Validate form data
+   * @returns {boolean} - True if valid
+   */
+  const validateForm = useCallback(() => {
+    const newErrors = {};
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = VALIDATION_RULES.email.requiredMessage;
+    } else if (!isValidEmail(formData.email)) {
+      newErrors.email = VALIDATION_RULES.email.emailMessage;
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = VALIDATION_RULES.password.requiredMessage;
+    } else if (formData.password.length < VALIDATION_RULES.password.minLength) {
+      newErrors.password = VALIDATION_RULES.password.minLengthMessage;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [formData]);
+
+  /**
+   * Handle form submission
+   * @param {Event} e - Form event
+   */
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    
+    // Reset errors
+    setGeneralError('');
+    setErrors({});
 
-    if (!email || !password) {
-      setError('Please fill in all fields.')
-      return
+    // Validate form
+    if (!validateForm()) {
+      return;
     }
 
-    setLoading(true)
+    // Check rate limiting - 5 attempts per 5 minutes
+    const rateLimit = checkRateLimit('login', 5, 300000);
+    if (!rateLimit.allowed) {
+      setGeneralError(
+        `Too many login attempts. Please try again in ${Math.ceil(
+          (rateLimit.resetTime - Date.now()) / 1000 / 60
+        )} minutes.`
+      );
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
-      const res = await fetch('/api/auth/login', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ email, password, role }),
-      })
-      const data = await res.json()
-
-      if (!res.ok) {
-        setError(data.message || 'Login failed. Please try again.')
-        return
-      }
-
-      // Store JWT in localStorage
-      localStorage.setItem('hx_token', data.token)
-      localStorage.setItem('hx_user',  JSON.stringify(data.user))
-
-      // Redirect to dashboard (or home)
-      window.location.href = '/dashboard'
-    } catch {
-      setError('Network error. Please check your connection.')
+      // Attempt login using mock authentication
+      await mockLogin(formData.email, formData.password);
+      
+      // Validate and perform secure redirect
+      const safeRedirect = validateRedirect(redirectPath, '/dashboard');
+      window.location.href = safeRedirect;
+    } catch (error) {
+      console.error('Login error:', error);
+      setGeneralError(
+        error.message || 'Login failed. Please check your credentials and try again.'
+      );
     } finally {
-      setLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit} noValidate aria-label="Login form">
+      {/* General Error Message */}
+      {generalError && (
+        <div
+          className="rounded-lg px-3.5 py-2.5 mb-4 text-sm"
+          style={{
+            background: COLORS.background.error,
+            border: `1px solid ${COLORS.semantic.errorBorder}`,
+            color: COLORS.text.error,
+          }}
+          role="alert"
+        >
+          {generalError}
+        </div>
+      )}
 
-      {/* ── Email Field ── */}
+      {/* Email Field */}
       <div className="mb-3.5">
         <label
           className="block mb-1.5"
-          style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.1em', color: '#6b7d96' }}
+          style={{ 
+            fontSize: 10.5, 
+            fontWeight: 700, 
+            letterSpacing: '0.1em', 
+            color: COLORS.text.muted,
+            textTransform: 'uppercase',
+          }}
         >
-           EMAIL
+          Email
         </label>
         <div className="relative">
           <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
-            <IconMail size={15} color="#3a4f6a" />
+            <IconMail size={15} color={COLORS.text.placeholder} />
           </span>
           <input
             type="email"
+            id="email"
             className="hx-input w-full rounded-xl pl-10 pr-4 py-3.5 text-sm"
             placeholder="you@company.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={(e) => handleInputChange('email', e.target.value)}
             autoComplete="email"
+            aria-required="true"
+            aria-invalid={!!errors.email}
             style={{
-              background:   '#0c1828',
-              border:       '1px solid #1a2d45',
-              color:        '#c8d4e8',
-              fontFamily:   'inherit',
-              fontSize:     14,
+              background: COLORS.background.input,
+              border: `1px solid ${errors.email ? COLORS.border.error : COLORS.border.primary}`,
+              color: COLORS.text.primary,
+              fontFamily: 'inherit',
+              fontSize: 14,
+              outline: 'none',
             }}
           />
         </div>
+        {errors.email && (
+          <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}>
+            {errors.email}
+          </p>
+        )}
       </div>
 
-      {/* ── Password Field ── */}
+      {/* Password Field */}
       <div className="mb-4">
         <label
           className="block mb-1.5"
-          style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.1em', color: '#6b7d96' }}
+          style={{ 
+            fontSize: 10.5, 
+            fontWeight: 700, 
+            letterSpacing: '0.1em', 
+            color: COLORS.text.muted,
+            textTransform: 'uppercase',
+          }}
         >
-          PASSWORD
+          Password
         </label>
         <div className="relative">
           <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
-            <IconKey size={15} color="#3a4f6a" />
+            <IconKey size={15} color={COLORS.text.placeholder} />
           </span>
           <input
-            type="password"
-            className="hx-input w-full rounded-xl pl-10 pr-4 py-3.5 text-sm"
+            type={showPassword ? 'text' : 'password'}
+            id="password"
+            className="hx-input w-full rounded-xl pl-10 pr-11 py-3.5 text-sm"
             placeholder="••••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={(e) => handleInputChange('password', e.target.value)}
             autoComplete="current-password"
+            aria-required="true"
+            aria-invalid={!!errors.password}
             style={{
-              background:   '#0c1828',
-              border:       '1px solid #1a2d45',
-              color:        '#c8d4e8',
-              fontFamily:   'inherit',
-              fontSize:     14,
+              background: COLORS.background.input,
+              border: `1px solid ${errors.password ? COLORS.border.error : COLORS.border.primary}`,
+              color: COLORS.text.primary,
+              fontFamily: 'inherit',
+              fontSize: 14,
+              outline: 'none',
             }}
           />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="pw-toggle absolute right-3.5 top-1/2 -translate-y-1/2"
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              cursor: 'pointer', 
+              color: COLORS.text.placeholder, 
+              padding: 2,
+            }}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword 
+              ? <IconEyeOff size={15} color={COLORS.text.placeholder} /> 
+              : <IconEye size={15} color={COLORS.text.placeholder} />
+            }
+          </button>
         </div>
+        {errors.password && (
+          <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}>
+            {errors.password}
+          </p>
+        )}
       </div>
 
-      {/* ── Remember + Forgot ── */}
+      {/* Actions Row */}
       <div className="flex items-center justify-between mb-5">
-         
         <button
           type="button"
           className="forgot-link"
           style={{
-            background: 'none', border: 'none',
-            fontSize: 13, color: '#3b6fe0',
-            fontWeight: 600, cursor: 'pointer',
+            background: 'none', 
+            border: 'none',
+            fontSize: 13, 
+            color: COLORS.primary[500],
+            fontWeight: 600, 
+            cursor: 'pointer',
             fontFamily: 'inherit',
             transition: 'color 0.15s',
           }}
@@ -130,74 +291,66 @@ export default function LoginForm({ role }) {
         </button>
       </div>
 
-      {/* ── Error Message ── */}
-      {error && (
-        <div
-          className="rounded-lg px-3.5 py-2.5 mb-4 text-sm"
-          style={{
-            background:   'rgba(239,68,68,0.1)',
-            border:       '1px solid rgba(239,68,68,0.25)',
-            color:        '#f87171',
-          }}
-        >
-          {error}
-        </div>
-      )}
-
-      {/* ── Primary Submit Button ── */}
+      {/* Submit Button */}
       <button
         type="submit"
-        disabled={loading}
+        disabled={isLoading}
         className="submit-btn w-full flex items-center justify-center gap-2.5 rounded-xl py-3.5"
         style={{
-          background:   loading
+          background: isLoading
             ? 'rgba(42,92,232,0.55)'
-            : 'linear-gradient(135deg, #2a5ce8 0%, #1e4bd4 100%)',
-          border:       'none',
-          color:        '#fff',
-          fontSize:     14.5,
-          fontWeight:   700,
-          fontFamily:   'inherit',
-          cursor:       loading ? 'not-allowed' : 'pointer',
-          boxShadow:    loading ? 'none' : '0 4px 20px rgba(42,92,232,0.45)',
+            : COLORS.gradient.primary,
+          border: 'none',
+          color: COLORS.text.white,
+          fontSize: 14.5,
+          fontWeight: 700,
+          fontFamily: 'inherit',
+          cursor: isLoading ? 'not-allowed' : 'pointer',
+          boxShadow: isLoading ? 'none' : COLORS.shadow?.lg || '0 4px 20px rgba(42,92,232,0.45)',
           letterSpacing: '0.01em',
+          opacity: isLoading ? 0.7 : 1,
+          transition: 'opacity 0.2s ease',
         }}
       >
-        {loading ? (
+        {isLoading ? (
           <span className="hx-spinner" />
         ) : (
           <>
-          <p>Sign In</p>
-            <IconArrowRight size={15} color="#fff" />
-           
+            <span>Sign In</span>
+            <IconArrowRight size={15} color={COLORS.text.white} />
           </>
         )}
       </button>
 
-      {/* ── OR Divider ── */}
+      {/* Divider */}
       <div className="flex items-center gap-3 my-4">
         <div className="flex-1" style={{ height: 1, background: 'rgba(255,255,255,0.07)' }} />
-        <span style={{ fontSize: 11, color: '#3a4d63', fontWeight: 600, letterSpacing: '0.08em' }}>
+        <span style={{ 
+          fontSize: 11, 
+          color: COLORS.text.placeholder, 
+          fontWeight: 600, 
+          letterSpacing: '0.08em',
+        }}>
           OR
         </span>
         <div className="flex-1" style={{ height: 1, background: 'rgba(255,255,255,0.07)' }} />
       </div>
 
-      {/* ── Corporate SSO Button ── */}
-    
-
-      {/* ── Register Link ── */}
-      <p className="text-center mt-6" style={{ fontSize: 13.5, color: '#5a6d85' }}>
+      {/* Register Link */}
+      <p className="text-center mt-6" style={{ 
+        fontSize: 13.5, 
+        color: COLORS.text.tertiary,
+      }}>
         Don&apos;t have an account?{' '}
         <Link
           href="/register"
           style={{
-            color: '#3b6fe0',
+            color: COLORS.primary[500],
             fontWeight: 700,
             textDecoration: 'none',
             transition: 'color 0.15s',
           }}
-          className="register-link"
+          className="register-link hover:opacity-80 transition-opacity"
         >
           Create account →
         </Link>
@@ -205,3 +358,6 @@ export default function LoginForm({ role }) {
     </form>
   )
 }
+
+// Export validation rules for testing
+export { VALIDATION_RULES };

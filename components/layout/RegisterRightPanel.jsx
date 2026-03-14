@@ -1,5 +1,4 @@
 import RegisterForm  from '@/components/auth/RegisterForm'
-import TrustBadges   from '@/components/auth/TrustBadges'
 
 // ─────────────────────────────────────────────
 //  RegisterRightPanel — right side of register page
@@ -42,10 +41,6 @@ export default function RegisterRightPanel() {
 
         {/* ── Register Form ── */}
         <RegisterForm />
-
-        {/* ── Trust Badges ── */}
-        <TrustBadges />
-
       </div>
     </div>
   )

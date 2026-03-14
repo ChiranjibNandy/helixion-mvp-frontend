@@ -1,149 +1,280 @@
-'use client'
+/**
+ * RegisterForm Component
+ * 
+ * A secure, accessible registration form with password strength indicator,
+ * comprehensive validation, error handling, and security protections.
+ * 
+ * @author Helixion Team
+ * @version 2.0.0
+ */
 
-import { useState } from 'react'
-import Link from 'next/link'
+'use client';
+
+import { useState, useCallback } from 'react';
+import Link from 'next/link';
 import {
   IconUser,
   IconMail,
   IconKey,
   IconEye,
   IconEyeOff,
-  IconArrowRight,
-} from '@/components/ui/Icons'
+  IconArrowRight
+} from '@/components/ui/Icons';
+import { COLORS } from '@/lib/constants';
+import {
+  sanitizeInput,
+  isValidEmail,
+  isValidUsername,
+  validatePassword,
+  calculatePasswordStrength,
+  checkRateLimit,
+  mockRegister,
+  validateRedirect
+} from '@/lib/security';
 
-// ─────────────────────────────────────────────
-//  Password strength calculator
-// ─────────────────────────────────────────────
-function getStrength(pw) {
-  if (!pw) return { score: 0, label: '', color: '' }
-  let score = 0
-  if (pw.length >= 8)               score++
-  if (/[A-Z]/.test(pw))             score++
-  if (/[0-9]/.test(pw))             score++
-  if (/[^A-Za-z0-9]/.test(pw))      score++
+/**
+ * Validation rules for registration form
+ */
+const VALIDATION_RULES = {
+  username: {
+    required: true,
+    minLength: 3,
+    maxLength: 20,
+    requiredMessage: 'Username is required',
+    minLengthMessage: 'Username must be at least 3 characters',
+    maxLengthMessage: 'Username must be less than 20 characters',
+  },
+  email: {
+    required: true,
+    email: true,
+    requiredMessage: 'Email is required',
+    emailMessage: 'Please enter a valid email address',
+  },
+  password: {
+    required: true,
+    minLength: 8,
+    requiredMessage: 'Password is required',
+    minLengthMessage: 'Password must be at least 8 characters',
+  },
+  confirmPassword: {
+    required: true,
+    match: 'password',
+    requiredMessage: 'Please confirm your password',
+    matchMessage: 'Passwords do not match',
+  },
+  terms: {
+    required: true,
+    requiredMessage: 'Please accept the terms to continue',
+  },
+};
 
-  const map = [
-    { label: '',         color: 'transparent',  width: '0%'   },
-    { label: 'Weak',     color: '#ef4444',       width: '25%'  },
-    { label: 'Fair',     color: '#f59e0b',       width: '50%'  },
-    { label: 'Good',     color: '#3b82f6',       width: '75%'  },
-    { label: 'Strong',   color: '#22c55e',       width: '100%' },
-  ]
-  return map[score] ?? map[0]
-}
+/**
+ * RegisterForm Component - Main export
+ * @param {Object} props - Component props
+ * @param {string} [props.redirectPath='/'] - Path to redirect after registration
+ */
+export default function RegisterForm({ redirectPath = '/' }) {
+  // State management with consolidated form data
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    agree: false,
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [generalError, setGeneralError] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
 
-// ─────────────────────────────────────────────
-//  Field wrapper
-// ─────────────────────────────────────────────
-function Field({ label, children }) {
-  return (
-    <div className="mb-3.5">
-      <label
-        className="block mb-1.5"
-        style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.1em', color: '#6b7d96' }}
-      >
-        {label}
-      </label>
-      {children}
-    </div>
-  )
-}
+  // Calculate password strength
+  const strength = calculatePasswordStrength(formData.password);
 
-// ─────────────────────────────────────────────
-//  RegisterForm Component
-// ─────────────────────────────────────────────
-export default function RegisterForm() {
-  const [username, setUsername]   = useState('')
-  const [email,    setEmail]      = useState('')
-  const [password, setPassword]   = useState('')
-  const [confirm,  setConfirm]    = useState('')
-  const [showPw,   setShowPw]     = useState(false)
-  const [showCf,   setShowCf]     = useState(false)
-  const [agree,    setAgree]      = useState(false)
-  const [loading,  setLoading]    = useState(false)
-  const [error,    setError]      = useState('')
-  const [success,  setSuccess]    = useState(false)
+  /**
+   * Handle input changes with sanitization
+   * @param {string} field - Field name
+   * @param {string|boolean} value - Field value
+   */
+  const handleInputChange = useCallback((field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: field === 'agree' ? value : sanitizeInput(value),
+    }));
 
-  const strength = getStrength(password)
-
-  const inputStyle = {
-    background: '#0c1828',
-    border:     '1px solid #1a2d45',
-    color:      '#c8d4e8',
-    fontFamily: 'inherit',
-    fontSize:   14,
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
-
-    if (!username.trim()) { setError('Username is required.'); return }
-    if (!email.trim())    { setError('Email is required.'); return }
-    if (password.length < 8) { setError('Password must be at least 8 characters.'); return }
-    if (password !== confirm) { setError('Passwords do not match.'); return }
-    if (!agree) { setError('Please accept the terms to continue.'); return }
-
-    setLoading(true)
-    try {
-      const res = await fetch('/api/auth/register', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ username, email, password }),
-      })
-      const data = await res.json()
-
-      if (!res.ok) {
-        setError(data.message || 'Registration failed. Please try again.')
-        return
-      }
-
-      // Store JWT in localStorage
-      localStorage.setItem('hx_token', data.token)
-      localStorage.setItem('hx_user',  JSON.stringify(data.user))
-      setSuccess(true)
-    } catch {
-      setError('Network error. Please check your connection.')
-    } finally {
-      setLoading(false)
+    // Clear field error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
     }
-  }
 
-  // ── Success state ──
-  if (success) {
+    // Clear general error
+    if (generalError) {
+      setGeneralError('');
+    }
+  }, [errors, generalError]);
+
+  /**
+   * Validate form data
+   * @returns {boolean} - True if valid
+   */
+  const validateForm = useCallback(() => {
+    const newErrors = {};
+
+    // Username validation
+    if (!formData.username.trim()) {
+      newErrors.username = VALIDATION_RULES.username.requiredMessage;
+    } else if (formData.username.length < VALIDATION_RULES.username.minLength) {
+      newErrors.username = VALIDATION_RULES.username.minLengthMessage;
+    } else if (formData.username.length > VALIDATION_RULES.username.maxLength) {
+      newErrors.username = VALIDATION_RULES.username.maxLengthMessage;
+    } else if (!isValidUsername(formData.username)) {
+      newErrors.username = 'Username can only contain letters, numbers, underscores, and hyphens';
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = VALIDATION_RULES.email.requiredMessage;
+    } else if (!isValidEmail(formData.email)) {
+      newErrors.email = VALIDATION_RULES.email.emailMessage;
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = VALIDATION_RULES.password.requiredMessage;
+    } else {
+      const passwordValidation = validatePassword(formData.password, {
+        minLength: 8,
+        requireUppercase: true,
+        requireLowercase: true,
+        requireNumbers: true,
+      });
+
+      if (!passwordValidation.isValid) {
+        newErrors.password = passwordValidation.errors[0];
+      }
+    }
+
+    // Confirm password validation
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = VALIDATION_RULES.confirmPassword.requiredMessage;
+    } else if (formData.confirmPassword !== formData.password) {
+      newErrors.confirmPassword = VALIDATION_RULES.confirmPassword.matchMessage;
+    }
+
+    // Terms validation
+    if (!formData.agree) {
+      newErrors.agree = VALIDATION_RULES.terms.requiredMessage;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [formData]);
+
+  /**
+   * Handle form submission
+   * @param {Event} e - Form event
+   */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Reset errors
+    setGeneralError('');
+    setErrors({});
+
+    // Validate form
+    if (!validateForm()) {
+      return;
+    }
+
+    // Check rate limiting - 3 attempts per 10 minutes for registration
+    const rateLimit = checkRateLimit('register', 3, 600000);
+    if (!rateLimit.allowed) {
+      setGeneralError(
+        `Too many registration attempts. Please try again in ${Math.ceil(
+          (rateLimit.resetTime - Date.now()) / 1000 / 60
+        )} minutes.`
+      );
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Attempt registration using mock authentication
+      await mockRegister({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      setIsSuccess(true);
+    } catch (error) {
+      console.error('Registration error:', error);
+      setGeneralError(
+        error.message || 'Registration failed. Please try again.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Success state
+  if (isSuccess) {
     return (
-      <div className="text-center py-6 hx-fade-up">
+      <div className="text-center py-6 hx-fade-up" role="alert" aria-live="polite">
         <div
           className="mx-auto mb-5 flex items-center justify-center rounded-2xl"
           style={{
-            width: 64, height: 64,
-            background: 'rgba(34,197,94,0.12)',
-            border: '1px solid rgba(34,197,94,0.3)',
+            width: 64,
+            height: 64,
+            background: COLORS.background.success,
+            border: `1px solid ${COLORS.semantic.successBorder}`,
           }}
         >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-            stroke="#22c55e" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={COLORS.text.success}
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <h3 style={{ fontSize: 20, fontWeight: 800, color: '#e8edf5', marginBottom: 8 }}>
+        <h3 style={{
+          fontSize: 20,
+          fontWeight: 800,
+          color: COLORS.text.primary,
+          marginBottom: 8,
+        }}>
           Account created!
         </h3>
-        <p style={{ fontSize: 14, color: '#6b7d96', marginBottom: 28, lineHeight: 1.6 }}>
-          Welcome to Helixion, <strong style={{ color: '#c8d4e8' }}>{username}</strong>.
+        <p style={{
+          fontSize: 14,
+          color: COLORS.text.muted,
+          marginBottom: 28,
+          lineHeight: 1.6,
+        }}>
+          Welcome to Helixion, <strong style={{ color: COLORS.text.secondary }}>{formData.username}</strong>.
           <br />You can now sign in to your workspace.
         </p>
         <Link
-          href="/"
-          className="submit-btn inline-flex items-center justify-center gap-2.5 rounded-xl px-8 py-3.5"
+          href={validateRedirect(redirectPath, '/')}
+          className="submit-btn inline-flex items-center justify-center gap-2.5 rounded-xl px-8 py-3.5 hover:opacity-90 transition-opacity"
           style={{
-            background: 'linear-gradient(135deg, #2a5ce8 0%, #1e4bd4 100%)',
-            color: '#fff', fontSize: 14.5, fontWeight: 700,
+            background: COLORS.gradient.primary,
+            color: COLORS.text.white,
+            fontSize: 14.5,
+            fontWeight: 700,
             textDecoration: 'none',
-            boxShadow: '0 4px 20px rgba(42,92,232,0.45)',
+            boxShadow: COLORS.shadow?.lg || '0 4px 20px rgba(42,92,232,0.45)',
           }}
         >
-          <IconArrowRight size={15} color="#fff" />
+          <IconArrowRight size={15} color={COLORS.text.white} />
           Go to Sign In
         </Link>
       </div>
@@ -151,198 +282,381 @@ export default function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit} noValidate aria-label="Registration form">
+      {/* General Error Message */}
+      {generalError && (
+        <div
+          className="rounded-lg px-3.5 py-2.5 mb-4 text-sm"
+          style={{
+            background: COLORS.background.error,
+            border: `1px solid ${COLORS.semantic.errorBorder}`,
+            color: COLORS.text.error,
+          }}
+          role="alert"
+        >
+          {generalError}
+        </div>
+      )}
 
-      {/* ── Username ── */}
-      <Field label="USERNAME">
+      {/* Username Field */}
+      <div className="mb-3.5">
+        <label
+          htmlFor="username"
+          className="block mb-1.5"
+          style={{
+            fontSize: 10.5,
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            color: COLORS.text.muted,
+            textTransform: 'uppercase',
+          }}
+        >
+          Username
+        </label>
         <div className="relative">
           <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
-            <IconUser size={15} color="#3a4f6a" />
+            <IconUser size={15} color={COLORS.text.placeholder} />
           </span>
           <input
             type="text"
+            id="username"
+            name="username"
             className="hx-input w-full rounded-xl pl-10 pr-4 py-3.5"
             placeholder="johndoe"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={formData.username}
+            onChange={(e) => handleInputChange('username', e.target.value)}
             autoComplete="username"
-            style={inputStyle}
+            aria-required="true"
+            aria-invalid={!!errors.username}
+            style={{
+              background: COLORS.background.input,
+              border: `1px solid ${errors.username ? COLORS.border.error : COLORS.border.primary}`,
+              color: COLORS.text.primary,
+              fontFamily: 'inherit',
+              fontSize: 14,
+              outline: 'none',
+            }}
           />
         </div>
-      </Field>
+        {errors.username && (
+          <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}>
+            {errors.username}
+          </p>
+        )}
+      </div>
 
-      {/* ── Email ── */}
-      <Field label="WORK EMAIL">
+      {/* Email Field */}
+      <div className="mb-3.5">
+        <label
+          htmlFor="email"
+          className="block mb-1.5"
+          style={{
+            fontSize: 10.5,
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            color: COLORS.text.muted,
+            textTransform: 'uppercase',
+          }}
+        >
+          Work Email
+        </label>
         <div className="relative">
           <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
-            <IconMail size={15} color="#3a4f6a" />
+            <IconMail size={15} color={COLORS.text.placeholder} />
           </span>
           <input
             type="email"
+            id="email"
+            name="email"
             className="hx-input w-full rounded-xl pl-10 pr-4 py-3.5"
             placeholder="you@company.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={(e) => handleInputChange('email', e.target.value)}
             autoComplete="email"
-            style={inputStyle}
+            aria-required="true"
+            aria-invalid={!!errors.email}
+            style={{
+              background: COLORS.background.input,
+              border: `1px solid ${errors.email ? COLORS.border.error : COLORS.border.primary}`,
+              color: COLORS.text.primary,
+              fontFamily: 'inherit',
+              fontSize: 14,
+              outline: 'none',
+            }}
           />
         </div>
-      </Field>
+        {errors.email && (
+          <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}>
+            {errors.email}
+          </p>
+        )}
+      </div>
 
-      {/* ── Password ── */}
-      <Field label="PASSWORD">
+      {/* Password Field */}
+      <div className="mb-3.5">
+        <label
+          htmlFor="password"
+          className="block mb-1.5"
+          style={{
+            fontSize: 10.5,
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            color: COLORS.text.muted,
+            textTransform: 'uppercase',
+          }}
+        >
+          Password
+        </label>
         <div className="relative">
           <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
-            <IconKey size={15} color="#3a4f6a" />
+            <IconKey size={15} color={COLORS.text.placeholder} />
           </span>
           <input
-            type={showPw ? 'text' : 'password'}
+            type={showPassword ? 'text' : 'password'}
+            id="password"
+            name="password"
             className="hx-input w-full rounded-xl pl-10 pr-11 py-3.5"
             placeholder="Min. 8 characters"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={(e) => handleInputChange('password', e.target.value)}
             autoComplete="new-password"
-            style={inputStyle}
-          />
-          <button
-            type="button"
-            onClick={() => setShowPw((v) => !v)}
-            className="pw-toggle absolute right-3.5 top-1/2 -translate-y-1/2"
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#3a4f6a', padding: 2 }}
-          >
-            {showPw ? <IconEyeOff size={15} color="#3a4f6a" /> : <IconEye size={15} color="#3a4f6a" />}
-          </button>
-        </div>
-
-        {/* Strength bar */}
-        {password && (
-          <div className="mt-2">
-            <div
-              className="rounded-full mb-1"
-              style={{ height: 3, background: '#0e1e32', overflow: 'hidden' }}
-            >
-              <div
-                className="strength-bar"
-                style={{ width: strength.width, background: strength.color, height: '100%' }}
-              />
-            </div>
-            <span style={{ fontSize: 11, color: strength.color, fontWeight: 600 }}>
-              {strength.label}
-            </span>
-          </div>
-        )}
-      </Field>
-
-      {/* ── Confirm Password ── */}
-      <Field label="CONFIRM PASSWORD">
-        <div className="relative">
-          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
-            <IconKey size={15} color="#3a4f6a" />
-          </span>
-          <input
-            type={showCf ? 'text' : 'password'}
-            className="hx-input w-full rounded-xl pl-10 pr-11 py-3.5"
-            placeholder="Repeat your password"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            autoComplete="new-password"
+            aria-required="true"
+            aria-invalid={!!errors.password}
             style={{
-              ...inputStyle,
-              borderColor: confirm && confirm !== password ? 'rgba(239,68,68,0.5)' : '#1a2d45',
+              background: COLORS.background.input,
+              border: `1px solid ${errors.password ? COLORS.border.error : COLORS.border.primary}`,
+              color: COLORS.text.primary,
+              fontFamily: 'inherit',
+              fontSize: 14,
+              outline: 'none',
             }}
           />
           <button
             type="button"
-            onClick={() => setShowCf((v) => !v)}
+            onClick={() => setShowPassword(!showPassword)}
             className="pw-toggle absolute right-3.5 top-1/2 -translate-y-1/2"
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#3a4f6a', padding: 2 }}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: COLORS.text.placeholder,
+              padding: 2,
+            }}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
           >
-            {showCf ? <IconEyeOff size={15} color="#3a4f6a" /> : <IconEye size={15} color="#3a4f6a" />}
+            {showPassword
+              ? <IconEyeOff size={15} color={COLORS.text.placeholder} />
+              : <IconEye size={15} color={COLORS.text.placeholder} />
+            }
           </button>
         </div>
-        {confirm && confirm !== password && (
-          <p style={{ fontSize: 11.5, color: '#f87171', marginTop: 5, fontWeight: 500 }}>
+
+        {/* Password Strength Indicator */}
+        {formData.password && (
+          <div className="mt-2">
+            <div
+              className="rounded-full mb-1"
+              style={{
+                height: 3,
+                background: COLORS.background.tertiary,
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                className="strength-bar"
+                style={{
+                  width: strength.width,
+                  background: strength.color,
+                  height: '100%',
+                  transition: 'width 0.3s ease, background-color 0.3s ease',
+                }}
+              />
+            </div>
+            <span style={{
+              fontSize: 11,
+              color: strength.color,
+              fontWeight: 600,
+            }}>
+              {strength.label}
+            </span>
+          </div>
+        )}
+        {errors.password && (
+          <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}>
+            {errors.password}
+          </p>
+        )}
+      </div>
+
+      {/* Confirm Password Field */}
+      <div className="mb-3.5">
+        <label
+          htmlFor="confirmPassword"
+          className="block mb-1.5"
+          style={{
+            fontSize: 10.5,
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            color: COLORS.text.muted,
+            textTransform: 'uppercase',
+          }}
+        >
+          Confirm Password
+        </label>
+        <div className="relative">
+          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
+            <IconKey size={15} color={COLORS.text.placeholder} />
+          </span>
+          <input
+            type={showConfirmPassword ? 'text' : 'password'}
+            id="confirmPassword"
+            name="confirmPassword"
+            className="hx-input w-full rounded-xl pl-10 pr-11 py-3.5"
+            placeholder="Repeat your password"
+            value={formData.confirmPassword}
+            onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+            autoComplete="new-password"
+            aria-required="true"
+            aria-invalid={!!errors.confirmPassword}
+            style={{
+              background: COLORS.background.input,
+              border: `1px solid ${errors.confirmPassword || (formData.confirmPassword && formData.confirmPassword !== formData.password)
+                ? COLORS.border.error
+                : COLORS.border.primary}`,
+              color: COLORS.text.primary,
+              fontFamily: 'inherit',
+              fontSize: 14,
+              outline: 'none',
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="pw-toggle absolute right-3.5 top-1/2 -translate-y-1/2"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: COLORS.text.placeholder,
+              padding: 2,
+            }}
+            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+          >
+            {showConfirmPassword
+              ? <IconEyeOff size={15} color={COLORS.text.placeholder} />
+              : <IconEye size={15} color={COLORS.text.placeholder} />
+            }
+          </button>
+        </div>
+        {formData.confirmPassword && formData.confirmPassword !== formData.password && (
+          <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}>
             Passwords do not match
           </p>
         )}
-      </Field>
- 
+        {errors.confirmPassword && (
+          <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}>
+            {errors.confirmPassword}
+          </p>
+        )}
+      </div>
 
-      {/* ── Terms Checkbox ── */}
+      {/* Terms Checkbox */}
       <div className="mb-4 flex items-start gap-2.5">
         <input
           type="checkbox"
           id="terms"
-          checked={agree}
-          onChange={(e) => setAgree(e.target.checked)}
+          name="terms"
+          checked={formData.agree}
+          onChange={(e) => handleInputChange('agree', e.target.checked)}
           className="mt-0.5 cursor-pointer"
-          style={{ accentColor: '#2a5ce8' }}
+          style={{ accentColor: COLORS.primary[600] }}
+          aria-required="true"
+          aria-invalid={!!errors.agree}
         />
         <label
           htmlFor="terms"
-          style={{ fontSize: 13, color: '#6b7d96', cursor: 'pointer', lineHeight: 1.5 }}
+          className="cursor-pointer"
+          style={{
+            fontSize: 13,
+            color: COLORS.text.muted,
+            lineHeight: 1.5,
+          }}
         >
           I agree to the{' '}
-          <Link href="/terms" style={{ color: '#3b6fe0', textDecoration: 'none' }}>
+          <Link
+            href="/terms"
+            style={{
+              color: COLORS.primary[500],
+              textDecoration: 'none',
+            }}
+            className="hover:opacity-80 transition-opacity"
+          >
             Terms of Service
           </Link>{' '}
           and{' '}
-          <Link href="/privacy" style={{ color: '#3b6fe0', textDecoration: 'none' }}>
+          <Link
+            href="/privacy"
+            style={{
+              color: COLORS.primary[500],
+              textDecoration: 'none',
+            }}
+            className="hover:opacity-80 transition-opacity"
+          >
             Privacy Policy
           </Link>
         </label>
       </div>
-
-      {/* ── Error ── */}
-      {error && (
-        <div
-          className="rounded-lg px-3.5 py-2.5 mb-4 text-sm"
-          style={{
-            background: 'rgba(239,68,68,0.1)',
-            border:     '1px solid rgba(239,68,68,0.25)',
-            color:      '#f87171',
-          }}
-        >
-          {error}
-        </div>
+      {errors.agree && (
+        <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: -8, marginBottom: 12 }}>
+          {errors.agree}
+        </p>
       )}
 
-      {/* ── Submit ── */}
+      {/* Submit Button */}
       <button
         type="submit"
-        disabled={loading}
+        disabled={isLoading}
         className="submit-btn w-full flex items-center justify-center gap-2.5 rounded-xl py-3.5"
         style={{
-          background:    loading
+          background: isLoading
             ? 'rgba(42,92,232,0.55)'
-            : 'linear-gradient(135deg, #2a5ce8 0%, #1e4bd4 100%)',
-          border:        'none',
-          color:         '#fff',
-          fontSize:      14.5,
-          fontWeight:    700,
-          fontFamily:    'inherit',
-          cursor:        loading ? 'not-allowed' : 'pointer',
-          boxShadow:     loading ? 'none' : '0 4px 20px rgba(42,92,232,0.45)',
+            : COLORS.gradient.primary,
+          border: 'none',
+          color: COLORS.text.white,
+          fontSize: 14.5,
+          fontWeight: 700,
+          fontFamily: 'inherit',
+          cursor: isLoading ? 'not-allowed' : 'pointer',
+          boxShadow: isLoading ? 'none' : COLORS.shadow?.lg || '0 4px 20px rgba(42,92,232,0.45)',
           letterSpacing: '0.01em',
+          opacity: isLoading ? 0.7 : 1,
+          transition: 'opacity 0.2s ease',
         }}
       >
-        {loading ? (
+        {isLoading ? (
           <span className="hx-spinner" />
         ) : (
           <>
-            <IconArrowRight size={15} color="#fff" />
+            <IconArrowRight size={15} color={COLORS.text.white} />
             <span>Create Account</span>
           </>
         )}
       </button>
 
-      {/* ── Sign In Link ── */}
-      <p className="text-center mt-5" style={{ fontSize: 13.5, color: '#5a6d85' }}>
+      {/* Sign In Link */}
+      <p className="text-center mt-5" style={{
+        fontSize: 13.5,
+        color: COLORS.text.tertiary,
+      }}>
         Already have an account?{' '}
         <Link
           href="/"
-          style={{ color: '#3b6fe0', fontWeight: 700, textDecoration: 'none' }}
-          className="register-link"
+          style={{
+            color: COLORS.primary[500],
+            fontWeight: 700,
+            textDecoration: 'none',
+          }}
+          className="register-link hover:opacity-80 transition-opacity"
         >
           Sign in →
         </Link>
@@ -350,3 +664,6 @@ export default function RegisterForm() {
     </form>
   )
 }
+
+// Export validation rules for testing
+export { VALIDATION_RULES };
