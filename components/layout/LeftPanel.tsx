@@ -109,6 +109,7 @@ export default function LeftPanel() {
             lineHeight:    1.1,
             letterSpacing: '-1.5px',
             marginBottom:  16,
+            color:         '#e8edf5',
           }}
         >
           {t('headline1')}
