@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
+<<<<<<< HEAD
     "target": "ES2017",
+=======
+    "baseUrl": ".",
+    "target": "es5",
+>>>>>>> 63bdc05 (feat: Add user registration and login forms with internationalization support.)
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,

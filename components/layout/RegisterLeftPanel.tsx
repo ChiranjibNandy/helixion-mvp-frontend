@@ -1,20 +1,20 @@
 import React from 'react';
 import { IconCheckCircle } from '@/components/ui/Icons';
+import { useTranslations } from 'next-intl';
+
 
 // ─────────────────────────────────────────────
 //  Feature bullets shown on register left panel
 // ─────────────────────────────────────────────
-const FEATURES: string[] = [
-  'Role-based dashboard tailored to your job',
-  'Real-time training analytics & reports',
-  'Enterprise SSO & team management',
-  'SOC 2 compliant — your data stays safe',
-]
-
-// ─────────────────────────────────────────────
-//  RegisterLeftPanel
-// ─────────────────────────────────────────────
 export default function RegisterLeftPanel() {
+  const t = useTranslations('registerLeftPanel');
+  const FEATURES: string[] = [
+    t('feature1'),
+    t('feature2'),
+    t('feature3'),
+    t('feature4'),
+  ]
+
   return (
     <div
       className="hx-left-panel dot-grid flex flex-col relative overflow-hidden"
@@ -75,8 +75,9 @@ export default function RegisterLeftPanel() {
           style={{ width: 28, height: 2, background: 'linear-gradient(90deg, transparent, #3b6fe0)' }}
         />
         <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: '#6b7d96' }}>
-          JOIN HELIXION · GET STARTED FREE
+          {t('tagline')}
         </span>
+
         <span style={{ fontSize: 11, color: '#f59e0b' }}>★</span>
       </div>
 
@@ -91,15 +92,15 @@ export default function RegisterLeftPanel() {
             marginBottom:  16,
           }}
         >
-          Your workspace,
+          {t('headline1')}
           <br />
-          <span style={{ color: '#3b6fe0' }}>ready</span>
-          <span style={{ color: '#e8edf5' }}> in seconds.</span>
+          <span style={{ color: '#3b6fe0' }}>{t('headline2')}</span>
+          <span style={{ color: '#e8edf5' }}>{t('headline3')}</span>
         </h1>
         <p style={{ fontSize: 14.5, lineHeight: 1.65, color: '#7a8faa', maxWidth: 360, fontWeight: 400 }}>
-          Sign up once and get immediate access to the
-          dashboard built for your role — no setup required.
+          {t('subCopy')}
         </p>
+
       </div>
 
       {/* ── Divider ── */}
@@ -139,8 +140,9 @@ export default function RegisterLeftPanel() {
       >
         <IconCheckCircle size={13} color="#3b82f6" />
         <span style={{ fontSize: 12.5, fontStyle: 'italic', color: '#3b82f6', fontWeight: 500 }}>
-          Best practice for enterprise multi-role SaaS platforms
+          {t('bestPractice')}
         </span>
+
       </div>
     </div>
   )

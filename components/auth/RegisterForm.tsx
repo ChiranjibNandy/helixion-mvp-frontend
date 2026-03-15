@@ -22,6 +22,8 @@ import {
   PasswordStrengthInfo,
 } from '@/lib/security';
 import { COLORS } from '@/lib/constants';
+import { useTranslations } from 'next-intl';
+
 
 
 export interface RegisterFormProps {
@@ -93,7 +95,9 @@ const VALIDATION_RULES = {
  * RegisterForm Component - Main export
  */
 export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) {
+  const t = useTranslations('auth');
   // State management with consolidated form data
+
   const [formData, setFormData] = useState<FormData>({
     username: '',
     email: '',
@@ -269,18 +273,20 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
           color: COLORS.text.primary,
           marginBottom: 8,
         }}>
-          Account created!
+          {t('accountCreated')}
         </h3>
+
         <p style={{
           fontSize: 14,
           color: COLORS.text.muted,
           marginBottom: 28,
           lineHeight: 1.6,
         }}>
-          Welcome to Helixion,{' '}
+          {t('welcomeMessage')}{' '}
           <strong style={{ color: COLORS.text.secondary }}>{formData.username}</strong>.
           <br />You can now sign in to your workspace.
         </p>
+
         <Link
           href={validateRedirect(redirectPath, '/')}
           className="submit-btn inline-flex items-center justify-center gap-2.5 rounded-xl px-8 py-3.5 hover:opacity-90 transition-opacity"
@@ -294,8 +300,9 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
           }}
         >
           <IconArrowRight size={15} color={COLORS.text.white} />
-          Go to Sign In
+          {t('goToSignIn')}
         </Link>
+
       </div>
     );
   }
@@ -334,8 +341,9 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
             textTransform: 'uppercase',
           }}
         >
-          Username
+          {t('usernameLabel')}
         </label>
+
         <div className="relative">
           <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
             <IconUser size={15} color={COLORS.text.placeholder} />
@@ -345,8 +353,9 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
             id="register-username"
             name="username"
             className="hx-input w-full rounded-xl pl-10 pr-4 py-3.5"
-            placeholder="johndoe"
+            placeholder={t('usernamePlaceholder')}
             value={formData.username}
+
             onChange={(e) => handleInputChange('username', e.target.value)}
             autoComplete="username"
             aria-required="true"
@@ -386,8 +395,9 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
             textTransform: 'uppercase',
           }}
         >
-          Work Email
+          {t('workEmailLabel')}
         </label>
+
         <div className="relative">
           <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
             <IconMail size={15} color={COLORS.text.placeholder} />
@@ -397,8 +407,9 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
             id="register-email"
             name="email"
             className="hx-input w-full rounded-xl pl-10 pr-4 py-3.5"
-            placeholder="you@company.com"
+            placeholder={t('emailPlaceholder')}
             value={formData.email}
+
             onChange={(e) => handleInputChange('email', e.target.value)}
             autoComplete="email"
             aria-required="true"
@@ -438,8 +449,9 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
             textTransform: 'uppercase',
           }}
         >
-          Password
+          {t('passwordLabel')}
         </label>
+
         <div className="relative">
           <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
             <IconKey size={15} color={COLORS.text.placeholder} />
@@ -449,8 +461,9 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
             id="register-password"
             name="password"
             className="hx-input w-full rounded-xl pl-10 pr-11 py-3.5"
-            placeholder="Min. 8 characters"
+            placeholder={t('passwordMinLength')}
             value={formData.password}
+
             onChange={(e) => handleInputChange('password', e.target.value)}
             autoComplete="new-password"
             aria-required="true"
@@ -543,8 +556,9 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
             textTransform: 'uppercase',
           }}
         >
-          Confirm Password
+          {t('confirmPasswordLabel')}
         </label>
+
         <div className="relative">
           <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
             <IconKey size={15} color={COLORS.text.placeholder} />
@@ -554,8 +568,9 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
             id="register-confirm-password"
             name="confirmPassword"
             className="hx-input w-full rounded-xl pl-10 pr-11 py-3.5"
-            placeholder="Repeat your password"
+            placeholder={t('confirmPasswordPlaceholder')}
             value={formData.confirmPassword}
+
             onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
             autoComplete="new-password"
             aria-required="true"
@@ -609,8 +624,9 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
             role="alert"
             style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}
           >
-            {errors.confirmPassword || 'Passwords do not match'}
+            {errors.confirmPassword || t('passwordMismatch')}
           </p>
+
         )}
       </div>
 
@@ -691,9 +707,10 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
         ) : (
           <>
             <IconArrowRight size={15} color={COLORS.text.white} />
-            <span>Create Account</span>
+            <span>{t('createAccountBtn')}</span>
           </>
         )}
+
       </button>
 
       {/* Sign In Link */}
@@ -701,7 +718,8 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
         fontSize: 13.5,
         color: COLORS.text.tertiary,
       }}>
-        Already have an account?{' '}
+        {t('alreadyHaveAccount')}{' '}
+
         <Link
           href="/"
           style={{
@@ -711,8 +729,9 @@ export default function RegisterForm({ redirectPath = '/' }: RegisterFormProps) 
           }}
           className="register-link hover:opacity-80 transition-opacity"
         >
-          Sign in →
+          {t('signInLink')}
         </Link>
+
       </p>
     </form>
   );

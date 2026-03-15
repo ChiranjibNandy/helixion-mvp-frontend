@@ -1,11 +1,17 @@
 import React from 'react'
 import RegisterForm from '@/components/auth/RegisterForm'
+import { useTranslations } from 'next-intl'
+import LanguageSwitcher from '../ui/LanguageSwitcher'
+
+
 
 // ─────────────────────────────────────────────
 //  RegisterRightPanel — right side of register page
 // ─────────────────────────────────────────────
 export default function RegisterRightPanel() {
+  const t = useTranslations('headings')
   return (
+
     <div
       className="flex-1 flex items-center justify-center"
       style={{
@@ -22,21 +28,23 @@ export default function RegisterRightPanel() {
 
         {/* ── Header ── */}
         <div className="mb-7">
-
-          {/* Step pill */}
-          
+          <div className="mb-6">
+            <LanguageSwitcher />
+          </div>
 
           <h2
             style={{
               fontSize:      28,
+
               fontWeight:    800,
               color:         '#e8edf5',
               letterSpacing: '-0.8px',
               marginBottom:  6,
             }}
           >
-            Create your account
+            {t('createYourAccount')}
           </h2>
+
           
         </div>
 

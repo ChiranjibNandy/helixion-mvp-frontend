@@ -1,5 +1,7 @@
 import React from 'react';
 import { IconCheckCircle } from '@/components/ui/Icons';
+import { useTranslations } from 'next-intl';
+
 
 // ─────────────────────────────────────────────
 //  Stats data
@@ -21,9 +23,17 @@ const STATS: Stat[] = [
 //  LeftPanel Component
 // ─────────────────────────────────────────────
 export default function LeftPanel() {
+  const t = useTranslations('leftPanel');
+  const STATS: Stat[] = [
+    { value: '2.4', suffix: 'M+', label: t('statLearners'),    color: '#3b6fe0' },
+    { value: '98',  suffix: '%',  label: t('statCompletion'),    color: '#3b82f6' },
+    { value: '500', suffix: '+',  label: t('statClients'), color: '#60a5fa' },
+  ]
+
   return (
     <div
       className="hx-left-panel dot-grid flex flex-col relative overflow-hidden"
+
       style={{
         flex:       '0 0 44%',
         maxWidth:   '44%',
@@ -81,8 +91,9 @@ export default function LeftPanel() {
           }}
         />
         <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', color: '#6b7d96' }}>
-          OPTION B · ROLE SELECTOR
+          {t('tagline')}
         </span>
+
         <span style={{ fontSize: 11, color: '#f59e0b' }}>★</span>
         <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#6b7d96' }}>
           RECOMMENDED
@@ -100,16 +111,15 @@ export default function LeftPanel() {
             marginBottom:  16,
           }}
         >
-          One platform.
+          {t('headline1')}
           <br />
-          <span style={{ color: '#3b6fe0' }}>Three</span>
-          <span style={{ color: '#e8edf5' }}> workspaces.</span>
+          <span style={{ color: '#3b6fe0' }}>{t('headline2')}</span>
+          <span style={{ color: '#e8edf5' }}>{t('headline3')}</span>
         </h1>
         <p style={{ fontSize: 14.5, lineHeight: 1.65, color: '#7a8faa', maxWidth: 360, fontWeight: 400 }}>
-          Training Admins, Corporate Employees, and Reporting
-          Managers — each with a purpose-built dashboard,
-          accessed through one unified login.
+          {t('subCopy')}
         </p>
+
       </div>
 
       {/* ── Divider ── */}
@@ -145,6 +155,7 @@ export default function LeftPanel() {
         ))}
       </div>
 
+
       {/* ── Best practice badge ── */}
       <div
         className="flex items-center gap-2 relative z-10"
@@ -152,8 +163,9 @@ export default function LeftPanel() {
       >
         <IconCheckCircle size={13} color="#3b82f6" />
         <span style={{ fontSize: 12.5, fontStyle: 'italic', color: '#3b82f6', fontWeight: 500 }}>
-          Best practice for enterprise multi-role SaaS platforms
+          {t('bestPractice')}
         </span>
+
       </div>
     </div>
   )

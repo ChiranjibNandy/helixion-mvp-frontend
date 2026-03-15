@@ -17,6 +17,8 @@ import {
   validateRedirect,
 } from "@/lib/security";
 import { COLORS } from "@/lib/constants";
+import { useTranslations } from 'next-intl';
+
 
 
 
@@ -69,7 +71,9 @@ export default function LoginForm({
   redirectPath = "/dashboard",
   onForgotPassword,
 }: LoginFormProps) {
+  const t = useTranslations('auth');
   // State management with consolidated form data
+
   const [formData, setFormData] = useState<FormData>({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -200,8 +204,9 @@ export default function LoginForm({
             textTransform: "uppercase",
           }}
         >
-          Email
+          {t('emailLabel')}
         </label>
+
         <div className="relative">
           <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
             <IconMail size={15} color={COLORS.text.placeholder} />
@@ -211,8 +216,9 @@ export default function LoginForm({
             id="login-email"
             name="email"
             className="hx-input w-full rounded-xl pl-10 pr-4 py-3.5 text-sm"
-            placeholder="you@company.com"
+            placeholder={t('emailPlaceholder')}
             value={formData.email}
+
             onChange={(e) => handleInputChange("email", e.target.value)}
             autoComplete="email"
             aria-required="true"
@@ -252,8 +258,9 @@ export default function LoginForm({
             textTransform: "uppercase",
           }}
         >
-          Password
+          {t('passwordLabel')}
         </label>
+
         <div className="relative">
           <span className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10">
             <IconKey size={15} color={COLORS.text.placeholder} />
@@ -263,8 +270,9 @@ export default function LoginForm({
             id="login-password"
             name="password"
             className="hx-input w-full rounded-xl pl-10 pr-11 py-3.5 text-sm"
-            placeholder="••••••••••"
+            placeholder={t('passwordPlaceholder')}
             value={formData.password}
+
             onChange={(e) => handleInputChange("password", e.target.value)}
             autoComplete="current-password"
             aria-required="true"
@@ -329,8 +337,9 @@ export default function LoginForm({
             transition: "color 0.15s",
           }}
         >
-          Forgot password?
+          {t('forgotPassword')}
         </button>
+
       </div>
 
       {/* Submit Button */}
@@ -360,10 +369,11 @@ export default function LoginForm({
           <span className="hx-spinner" />
         ) : (
           <>
-            <span>Sign In</span>
+            <span>{t('signIn')}</span>
             <IconArrowRight size={15} color={COLORS.text.white} />
           </>
         )}
+
       </button>
 
       {/* Divider */}
@@ -380,8 +390,9 @@ export default function LoginForm({
             letterSpacing: "0.08em",
           }}
         >
-          OR
+          {t('orDivider')}
         </span>
+
         <div
           className="flex-1"
           style={{ height: 1, background: "rgba(255,255,255,0.07)" }}
@@ -396,7 +407,8 @@ export default function LoginForm({
           color: COLORS.text.tertiary,
         }}
       >
-        Don&apos;t have an account?{" "}
+        {t('noAccount')}{" "}
+
         <Link
           href="/register"
           style={{
@@ -407,8 +419,9 @@ export default function LoginForm({
           }}
           className="register-link hover:opacity-80 transition-opacity"
         >
-          Create account →
+          {t('createAccount')}
         </Link>
+
       </p>
     </form>
   );

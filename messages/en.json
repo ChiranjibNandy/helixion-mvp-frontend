@@ -1,0 +1,57 @@
+{
+  "auth": {
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign In",
+    "orDivider": "OR",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create account →",
+    "usernameLabel": "Username",
+    "workEmailLabel": "Work Email",
+    "confirmPasswordLabel": "Confirm Password",
+    "passwordMismatch": "Passwords do not match",
+    "createAccountBtn": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "signInLink": "Sign in →",
+    "accountCreated": "Account created!",
+    "welcomeMessage": "Welcome to Helixion,",
+    "goToSignIn": "Go to Sign In",
+    "weakPassword": "Weak",
+    "fairPassword": "Fair",
+    "goodPassword": "Good",
+    "strongPassword": "Strong",
+    "passwordPlaceholder": "••••••••••",
+    "confirmPasswordPlaceholder": "Repeat your password",
+    "usernamePlaceholder": "johndoe",
+    "emailPlaceholder": "you@company.com",
+    "passwordMinLength": "Min. 8 characters"
+  },
+  "leftPanel": {
+    "tagline": "OPTION B · ROLE SELECTOR",
+    "headline1": "One platform.",
+    "headline2": "Three",
+    "headline3": " workspaces.",
+    "subCopy": "Training Admins, Corporate Employees, and Reporting Managers — each with a purpose-built dashboard, accessed through one unified login.",
+    "statLearners": "Active learners",
+    "statCompletion": "Completion rate",
+    "statClients": "Enterprise clients",
+    "bestPractice": "Best practice for enterprise multi-role SaaS platforms"
+  },
+  "registerLeftPanel": {
+    "tagline": "JOIN HELIXION · GET STARTED FREE",
+    "headline1": "Your workspace,",
+    "headline2": "ready",
+    "headline3": " in seconds.",
+    "subCopy": "Sign up once and get immediate access to the dashboard built for your role — no setup required.",
+    "feature1": "Role-based dashboard tailored to your job",
+    "feature2": "Real-time training analytics & reports",
+    "feature3": "Enterprise SSO & team management",
+    "feature4": "SOC 2 compliant — your data stays safe",
+    "bestPractice": "Best practice for enterprise multi-role SaaS platforms"
+  },
+  "headings": {
+    "signIn": "Sign In",
+    "createYourAccount": "Create your account"
+  }
+}

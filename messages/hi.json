@@ -1,0 +1,57 @@
+{
+  "auth": {
+    "emailLabel": "ईमेल",
+    "passwordLabel": "पासवर्ड",
+    "forgotPassword": "पासवर्ड भूल गए?",
+    "signIn": "साइन इन करें",
+    "orDivider": "या",
+    "noAccount": "क्या आपका अकाउंट नहीं है?",
+    "createAccount": "अकाउंट बनाएं →",
+    "usernameLabel": "यूज़रनेम",
+    "workEmailLabel": "कार्य ईमेल",
+    "confirmPasswordLabel": "पासवर्ड की पुष्टि करें",
+    "passwordMismatch": "पासवर्ड मेल नहीं खाते",
+    "createAccountBtn": "अकाउंट बनाएं",
+    "alreadyHaveAccount": "क्या आपके पास पहले से अकाउंट है?",
+    "signInLink": "साइन इन करें →",
+    "accountCreated": "अकाउंट बन गया!",
+    "welcomeMessage": "Helixion में आपका स्वागत है,",
+    "goToSignIn": "साइन इन पर जाएं",
+    "weakPassword": "कमजोर",
+    "fairPassword": "ठीक",
+    "goodPassword": "अच्छा",
+    "strongPassword": "मजबूत",
+    "passwordPlaceholder": "••••••••••",
+    "confirmPasswordPlaceholder": "अपना पासवर्ड दोहराएं",
+    "usernamePlaceholder": "johndoe",
+    "emailPlaceholder": "you@company.com",
+    "passwordMinLength": "कम से कम 8 अक्षर"
+  },
+  "leftPanel": {
+    "tagline": "विकल्प बी · भूमिका चयनकर्ता",
+    "headline1": "एक प्लेटफॉर्म।",
+    "headline2": "तीन",
+    "headline3": " वर्कस्पेस।",
+    "subCopy": "ट्रेनिंग एडमिन, कॉर्पोरेट कर्मचारी और रिपोर्टिंग मैनेजर — प्रत्येक के लिए एक विशेष डैशबोर्ड, एक एकीकृत लॉगिन के माध्यम से सुलभ।",
+    "statLearners": "सक्रिय शिक्षार्थी",
+    "statCompletion": "पूर्णता दर",
+    "statClients": "एंटरप्राइज क्लाइंट",
+    "bestPractice": "एंटरप्राइज मल्टी-रोल SaaS प्लेटफॉर्म के लिए सर्वोत्तम अभ्यास"
+  },
+  "registerLeftPanel": {
+    "tagline": "HELIXION से जुड़ें · मुफ्त में शुरू करें",
+    "headline1": "आपका वर्कस्पेस,",
+    "headline2": "तैयार",
+    "headline3": " कुछ ही सेकंड में।",
+    "subCopy": "एक बार साइन अप करें और अपनी भूमिका के लिए बनाए गए डैशबोर्ड तक तुरंत पहुंच प्राप्त करें — किसी सेटअप की आवश्यकता नहीं है।",
+    "feature1": "आपकी नौकरी के अनुरूप भूमिका-आधारित डैशबोर्ड",
+    "feature2": "रीयल-टाइम ट्रेनिंग एनालिटिक्स और रिपोर्ट",
+    "feature3": "एंटरप्राइज SSO और टीम प्रबंधन",
+    "feature4": "SOC 2 अनुपालन — आपका डेटा सुरक्षित रहता है",
+    "bestPractice": "एंटरप्राइज मल्टी-रोल SaaS प्लेटफॉर्म के लिए सर्वोत्तम अभ्यास"
+  },
+  "headings": {
+    "signIn": "साइन इन करें",
+    "createYourAccount": "अपना अकाउंट बनाएं"
+  }
+}
