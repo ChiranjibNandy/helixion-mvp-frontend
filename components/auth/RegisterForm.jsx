@@ -1,13 +1,3 @@
-/**
- * RegisterForm Component
- * 
- * A secure, accessible registration form with password strength indicator,
- * comprehensive validation, error handling, and security protections.
- * 
- * @author Helixion Team
- * @version 2.0.0
- */
-
 'use client';
 
 import { useState, useCallback } from 'react';
@@ -29,8 +19,19 @@ import {
   calculatePasswordStrength,
   checkRateLimit,
   mockRegister,
-  validateRedirect
+  validateRedirect,
 } from '@/lib/security';
+
+// ============================================
+// LOGGER UTILITY (suppressed in production)
+// ============================================
+const logger = {
+  error: (...args) => {
+    if (process.env.NODE_ENV !== 'production') {
+      console.error(...args);
+    }
+  },
+};
 
 /**
  * Validation rules for registration form
@@ -89,7 +90,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
   const [generalError, setGeneralError] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // Calculate password strength
+  // Calculate password strength reactively
   const strength = calculatePasswordStrength(formData.password);
 
   /**
@@ -115,8 +116,8 @@ export default function RegisterForm({ redirectPath = '/' }) {
   }, [errors, generalError]);
 
   /**
-   * Validate form data
-   * @returns {boolean} - True if valid
+   * Validate all form fields
+   * @returns {boolean} - True if all fields are valid
    */
   const validateForm = useCallback(() => {
     const newErrors = {};
@@ -187,7 +188,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
       return;
     }
 
-    // Check rate limiting - 3 attempts per 10 minutes for registration
+    // Check rate limiting — 3 attempts per 10 minutes for registration
     const rateLimit = checkRateLimit('register', 3, 600000);
     if (!rateLimit.allowed) {
       setGeneralError(
@@ -210,7 +211,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
 
       setIsSuccess(true);
     } catch (error) {
-      console.error('Registration error:', error);
+      logger.error('Registration error:', error);
       setGeneralError(
         error.message || 'Registration failed. Please try again.'
       );
@@ -219,7 +220,9 @@ export default function RegisterForm({ redirectPath = '/' }) {
     }
   };
 
-  // Success state
+  // ============================================
+  // SUCCESS STATE
+  // ============================================
   if (isSuccess) {
     return (
       <div className="text-center py-6 hx-fade-up" role="alert" aria-live="polite">
@@ -241,6 +244,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
             strokeWidth="2.2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            aria-hidden="true"
           >
             <polyline points="20 6 9 17 4 12" />
           </svg>
@@ -259,7 +263,8 @@ export default function RegisterForm({ redirectPath = '/' }) {
           marginBottom: 28,
           lineHeight: 1.6,
         }}>
-          Welcome to Helixion, <strong style={{ color: COLORS.text.secondary }}>{formData.username}</strong>.
+          Welcome to Helixion,{' '}
+          <strong style={{ color: COLORS.text.secondary }}>{formData.username}</strong>.
           <br />You can now sign in to your workspace.
         </p>
         <Link
@@ -278,9 +283,12 @@ export default function RegisterForm({ redirectPath = '/' }) {
           Go to Sign In
         </Link>
       </div>
-    )
+    );
   }
 
+  // ============================================
+  // FORM STATE
+  // ============================================
   return (
     <form onSubmit={handleSubmit} noValidate aria-label="Registration form">
       {/* General Error Message */}
@@ -293,6 +301,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
             color: COLORS.text.error,
           }}
           role="alert"
+          aria-live="assertive"
         >
           {generalError}
         </div>
@@ -301,7 +310,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
       {/* Username Field */}
       <div className="mb-3.5">
         <label
-          htmlFor="username"
+          htmlFor="register-username"
           className="block mb-1.5"
           style={{
             fontSize: 10.5,
@@ -319,7 +328,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
           </span>
           <input
             type="text"
-            id="username"
+            id="register-username"
             name="username"
             className="hx-input w-full rounded-xl pl-10 pr-4 py-3.5"
             placeholder="johndoe"
@@ -328,6 +337,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
             autoComplete="username"
             aria-required="true"
             aria-invalid={!!errors.username}
+            aria-describedby={errors.username ? 'register-username-error' : undefined}
             style={{
               background: COLORS.background.input,
               border: `1px solid ${errors.username ? COLORS.border.error : COLORS.border.primary}`,
@@ -339,7 +349,11 @@ export default function RegisterForm({ redirectPath = '/' }) {
           />
         </div>
         {errors.username && (
-          <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}>
+          <p
+            id="register-username-error"
+            role="alert"
+            style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}
+          >
             {errors.username}
           </p>
         )}
@@ -348,7 +362,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
       {/* Email Field */}
       <div className="mb-3.5">
         <label
-          htmlFor="email"
+          htmlFor="register-email"
           className="block mb-1.5"
           style={{
             fontSize: 10.5,
@@ -366,7 +380,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
           </span>
           <input
             type="email"
-            id="email"
+            id="register-email"
             name="email"
             className="hx-input w-full rounded-xl pl-10 pr-4 py-3.5"
             placeholder="you@company.com"
@@ -375,6 +389,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
             autoComplete="email"
             aria-required="true"
             aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? 'register-email-error' : undefined}
             style={{
               background: COLORS.background.input,
               border: `1px solid ${errors.email ? COLORS.border.error : COLORS.border.primary}`,
@@ -386,7 +401,11 @@ export default function RegisterForm({ redirectPath = '/' }) {
           />
         </div>
         {errors.email && (
-          <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}>
+          <p
+            id="register-email-error"
+            role="alert"
+            style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}
+          >
             {errors.email}
           </p>
         )}
@@ -395,7 +414,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
       {/* Password Field */}
       <div className="mb-3.5">
         <label
-          htmlFor="password"
+          htmlFor="register-password"
           className="block mb-1.5"
           style={{
             fontSize: 10.5,
@@ -413,7 +432,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
           </span>
           <input
             type={showPassword ? 'text' : 'password'}
-            id="password"
+            id="register-password"
             name="password"
             className="hx-input w-full rounded-xl pl-10 pr-11 py-3.5"
             placeholder="Min. 8 characters"
@@ -422,6 +441,10 @@ export default function RegisterForm({ redirectPath = '/' }) {
             autoComplete="new-password"
             aria-required="true"
             aria-invalid={!!errors.password}
+            aria-describedby={[
+              errors.password ? 'register-password-error' : '',
+              'register-password-strength',
+            ].filter(Boolean).join(' ') || undefined}
             style={{
               background: COLORS.background.input,
               border: `1px solid ${errors.password ? COLORS.border.error : COLORS.border.primary}`,
@@ -453,7 +476,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
 
         {/* Password Strength Indicator */}
         {formData.password && (
-          <div className="mt-2">
+          <div className="mt-2" id="register-password-strength" aria-live="polite">
             <div
               className="rounded-full mb-1"
               style={{
@@ -481,8 +504,13 @@ export default function RegisterForm({ redirectPath = '/' }) {
             </span>
           </div>
         )}
+
         {errors.password && (
-          <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}>
+          <p
+            id="register-password-error"
+            role="alert"
+            style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}
+          >
             {errors.password}
           </p>
         )}
@@ -491,7 +519,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
       {/* Confirm Password Field */}
       <div className="mb-3.5">
         <label
-          htmlFor="confirmPassword"
+          htmlFor="register-confirm-password"
           className="block mb-1.5"
           style={{
             fontSize: 10.5,
@@ -509,7 +537,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
           </span>
           <input
             type={showConfirmPassword ? 'text' : 'password'}
-            id="confirmPassword"
+            id="register-confirm-password"
             name="confirmPassword"
             className="hx-input w-full rounded-xl pl-10 pr-11 py-3.5"
             placeholder="Repeat your password"
@@ -517,12 +545,23 @@ export default function RegisterForm({ redirectPath = '/' }) {
             onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
             autoComplete="new-password"
             aria-required="true"
-            aria-invalid={!!errors.confirmPassword}
+            aria-invalid={
+              !!errors.confirmPassword ||
+              !!(formData.confirmPassword && formData.confirmPassword !== formData.password)
+            }
+            aria-describedby={
+              errors.confirmPassword || (formData.confirmPassword && formData.confirmPassword !== formData.password)
+                ? 'register-confirm-password-error'
+                : undefined
+            }
             style={{
               background: COLORS.background.input,
-              border: `1px solid ${errors.confirmPassword || (formData.confirmPassword && formData.confirmPassword !== formData.password)
-                ? COLORS.border.error
-                : COLORS.border.primary}`,
+              border: `1px solid ${
+                errors.confirmPassword ||
+                (formData.confirmPassword && formData.confirmPassword !== formData.password)
+                  ? COLORS.border.error
+                  : COLORS.border.primary
+              }`,
               color: COLORS.text.primary,
               fontFamily: 'inherit',
               fontSize: 14,
@@ -548,14 +587,15 @@ export default function RegisterForm({ redirectPath = '/' }) {
             }
           </button>
         </div>
-        {formData.confirmPassword && formData.confirmPassword !== formData.password && (
-          <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}>
-            Passwords do not match
-          </p>
-        )}
-        {errors.confirmPassword && (
-          <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}>
-            {errors.confirmPassword}
+
+        {/* FIX: Single error message — inline mismatch OR submit-time error, not both */}
+        {(errors.confirmPassword || (formData.confirmPassword && formData.confirmPassword !== formData.password)) && (
+          <p
+            id="register-confirm-password-error"
+            role="alert"
+            style={{ fontSize: 12, color: COLORS.text.error, marginTop: 4 }}
+          >
+            {errors.confirmPassword || 'Passwords do not match'}
           </p>
         )}
       </div>
@@ -564,7 +604,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
       <div className="mb-4 flex items-start gap-2.5">
         <input
           type="checkbox"
-          id="terms"
+          id="register-terms"
           name="terms"
           checked={formData.agree}
           onChange={(e) => handleInputChange('agree', e.target.checked)}
@@ -572,9 +612,10 @@ export default function RegisterForm({ redirectPath = '/' }) {
           style={{ accentColor: COLORS.primary[600] }}
           aria-required="true"
           aria-invalid={!!errors.agree}
+          aria-describedby={errors.agree ? 'register-terms-error' : undefined}
         />
         <label
-          htmlFor="terms"
+          htmlFor="register-terms"
           className="cursor-pointer"
           style={{
             fontSize: 13,
@@ -585,10 +626,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
           I agree to the{' '}
           <Link
             href="/terms"
-            style={{
-              color: COLORS.primary[500],
-              textDecoration: 'none',
-            }}
+            style={{ color: COLORS.primary[500], textDecoration: 'none' }}
             className="hover:opacity-80 transition-opacity"
           >
             Terms of Service
@@ -596,10 +634,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
           and{' '}
           <Link
             href="/privacy"
-            style={{
-              color: COLORS.primary[500],
-              textDecoration: 'none',
-            }}
+            style={{ color: COLORS.primary[500], textDecoration: 'none' }}
             className="hover:opacity-80 transition-opacity"
           >
             Privacy Policy
@@ -607,7 +642,11 @@ export default function RegisterForm({ redirectPath = '/' }) {
         </label>
       </div>
       {errors.agree && (
-        <p style={{ fontSize: 12, color: COLORS.text.error, marginTop: -8, marginBottom: 12 }}>
+        <p
+          id="register-terms-error"
+          role="alert"
+          style={{ fontSize: 12, color: COLORS.text.error, marginTop: -8, marginBottom: 12 }}
+        >
           {errors.agree}
         </p>
       )}
@@ -662,7 +701,7 @@ export default function RegisterForm({ redirectPath = '/' }) {
         </Link>
       </p>
     </form>
-  )
+  );
 }
 
 // Export validation rules for testing
