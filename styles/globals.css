@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Font ── */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap');
+
+/* ── Base Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #__next {
+  height: 100%;
+  background: #060d1a;
+  color: #e8edf5;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Custom Checkbox ── */
+.hx-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid #2a3f5f;
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+  margin-top: 1px;
+}
+.hx-checkbox:checked {
+  background: #3b6fe0;
+  border-color: #3b6fe0;
+}
+.hx-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: 2px solid white;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+.hx-checkbox:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,111,224,0.25);
+}
+
+/* ── Input Focus ── */
+.hx-input {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.hx-input:focus {
+  outline: none;
+  border-color: rgba(59,111,224,0.55) !important;
+  box-shadow: 0 0 0 3px rgba(59,111,224,0.1);
+}
+.hx-input::placeholder {
+  color: #2e4060;
+}
+
+/* ── Role Button States ── */
+.role-btn {
+  transition: all 0.18s ease;
+}
+.role-btn:not(.role-active):hover {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(59,111,224,0.3) !important;
+}
+
+/* ── Submit Button ── */
+.submit-btn {
+  transition: all 0.2s ease;
+}
+.submit-btn:not(:disabled):hover {
+  filter: brightness(1.08);
+  box-shadow: 0 6px 28px rgba(42,92,232,0.55) !important;
+  transform: translateY(-1px);
+}
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+/* ── Corporate SSO Button ── */
+.corp-btn {
+  transition: all 0.18s ease;
+}
+.corp-btn:hover {
+  background: rgba(59,111,224,0.07) !important;
+  border-color: rgba(59,111,224,0.3) !important;
+  color: #c8d4e8 !important;
+}
+
+/* ── Forgot link ── */
+.forgot-link:hover {
+  color: #6494f0;
+}
+
+/* ── Register link ── */
+.register-link:hover {
+  color: #6494f0 !important;
+}
+
+/* ── Password strength bar ── */
+.strength-bar {
+  height: 3px;
+  border-radius: 10px;
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+/* ── Show/hide password toggle ── */
+.pw-toggle {
+  transition: color 0.15s;
+}
+.pw-toggle:hover {
+  color: #c8d4e8 !important;
+}
+
+/* ── Dot grid background ── */
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ── Spinner ── */
+@keyframes hx-spin {
+  to { transform: rotate(360deg); }
+}
+.hx-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: hx-spin 0.65s linear infinite;
+  display: inline-block;
+}
+
+/* ── Fade Up ── */
+@keyframes hx-fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hx-fade-up {
+  animation: hx-fade-up 0.45s ease both;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hx-left-panel {
+    display: none;
+  }
+}
