@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body style={{ margin: 0, padding: 0 }}>{children}</body>
+      <body className="m-0 p-0 bg-bgMain font-sans">{children}</body>
     </html>
   );
 }
