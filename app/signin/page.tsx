@@ -70,7 +70,7 @@ function RightPanel() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Errors>({});
-  const [formError, setFormError] = useState(''); // 🔥 important
+  const [formError, setFormError] = useState(''); 
   const [loading, setLoading] = useState(false);
 
   const validate = (): boolean => {
@@ -101,12 +101,12 @@ function RightPanel() {
 
       const res = await loginUser({ email, password });
 
-      if (res.success) {
+      if (res?.success) {
         router.push('/dashboard');
       }
     } catch (err: any) {
       const parsed = parseApiError(err);
-      setFormError(parsed.message); // 🔥 show properly
+      setFormError(parsed.message || 'Something went wrong'); 
     } finally {
       setLoading(false);
     }
@@ -116,7 +116,7 @@ function RightPanel() {
     <div>
       <h2 className="text-3xl font-bold text-white mb-8">Sign In</h2>
 
-      {/* 🔥 FORM ERROR */}
+      {/*FORM ERROR */}
       {formError && (
         <div className="text-red-500 text-sm mb-4">
           {formError}
