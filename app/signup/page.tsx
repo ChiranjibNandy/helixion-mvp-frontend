@@ -4,7 +4,7 @@ import { CheckCircle2, KeyRound, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import styles from "./Signup.module.css";
 import AuthButton from "../../components/AuthButton";
 import AuthLayout from "../../components/AuthLayout";
 import InputField from "../../components/InputField";
@@ -47,7 +47,6 @@ function LeftPanel() {
       <ul className="flex flex-col gap-4">
         {features.map((f) => (
           <li key={f} className="flex items-start gap-3">
-            {/* ✅ ONLY CHANGE HERE */}
             <span className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 icon-bg">
               <CheckCircle2 size={13} className="text-primary" />
             </span>
