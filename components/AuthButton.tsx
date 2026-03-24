@@ -2,19 +2,7 @@
 
 import React from 'react';
 
-interface AuthButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  type?: 'button' | 'submit';
-  loading?: boolean;
-}
-
-export default function AuthButton({
-  children,
-  onClick,
-  type = 'submit',
-  loading = false,
-}: AuthButtonProps) {
+export default function AuthButton({ children, onClick, type = 'submit', loading = false }: any) {
   return (
     <button
       type={type}
@@ -27,11 +15,9 @@ export default function AuthButton({
         active:scale-[0.99]
         disabled:opacity-60 disabled:cursor-not-allowed
         flex items-center justify-center gap-2
+        bg-gradient-to-br from-primaryDark to-primary
+        shadow-glow
       "
-      style={{
-        background: 'linear-gradient(135deg, #3b5bdb 0%, #4f7cff 100%)',
-        boxShadow: '0 4px 20px rgba(59,91,219,0.35)',
-      }}
     >
       {loading ? (
         <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
