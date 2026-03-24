@@ -47,7 +47,7 @@ function LeftPanel() {
       <ul className="flex flex-col gap-4">
         {features.map((f) => (
           <li key={f} className="flex items-start gap-3">
-            <span className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 icon-bg">
+            <span className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${styles.iconBg}`}>
               <CheckCircle2 size={13} className="text-primary" />
             </span>
             <span className="text-sm text-textSecondary">{f}</span>
