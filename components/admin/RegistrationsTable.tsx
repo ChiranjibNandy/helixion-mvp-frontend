@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SkeletonTable } from "./SkeletonTable";
 import { EmptyState } from "./EmptyState";
-import { UserRow } from "./UserRow";
+import { UserRow } from "./UserRow/UserRow";
 import { ApproveModal } from "./ApproveModal";
 import styles from "./RegistrationsTable.module.css";
 
@@ -43,7 +43,7 @@ export function RegistrationsTable() {
     onMutate: async ({ userId }: { userId: string; role: Role; note?: string }) => {
       await queryClient.cancelQueries({ queryKey: ["registrations"] });
 
-      const previousData = queryClient.getQueryData(["registrations", page, debouncedSearch]);
+      const previousData = queryClient.getQueryData<PaginatedResponse>(["registrations", page, debouncedSearch]);
 
       queryClient.setQueryData(
         ["registrations", page, debouncedSearch],
