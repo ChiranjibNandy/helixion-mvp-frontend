@@ -19,7 +19,7 @@ export function RegistrationsTable() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [approveModalUser, setApproveModalUser] = useState<User | null>(null);
-  const limit = 5;
+  const limit = 10;
 
   const queryClient = useQueryClient();
 
