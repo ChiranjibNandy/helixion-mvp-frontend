@@ -41,7 +41,7 @@ export function RegistrationsTable() {
 
   return (
     <div className={styles.container}>
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      {/* Header  */}
       <div className={styles.header}>
         <div className={styles.titleSection}>
           <h2 className={styles.title}>Pending registrations</h2>
@@ -54,7 +54,7 @@ export function RegistrationsTable() {
         </Button>
       </div>
 
-      {/* ── Search ─────────────────────────────────────────────────────────── */}
+      {/* Search */}
       <div className={styles.searchSection}>
         <Input
           type="search"
@@ -66,7 +66,7 @@ export function RegistrationsTable() {
         />
       </div>
 
-      {/* ── Content ────────────────────────────────────────────────────────── */}
+      {/* Content */}
       {isLoading ? (
         <RegistrationsTableSkeleton />
       ) : error ? (
@@ -109,7 +109,7 @@ export function RegistrationsTable() {
             </table>
           </div>
 
-          {/* ── Footer ───────────────────────────────────────────────────── */}
+          {/* Footer  */}
           <div className={styles.footer}>
             <p className={styles.footerText} aria-live="polite">
               Showing {startIndex}–{endIndex} of {data.total} users

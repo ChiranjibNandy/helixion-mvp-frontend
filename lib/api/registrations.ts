@@ -2,15 +2,7 @@ import type { BackendUser, BackendPaginatedResponse } from "@/lib/api/types";
 import type { PaginatedResponse, ApproveUserPayload, User } from "@/types/registration";
 import API from "@/lib/api";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Mapping layer — only place in the codebase that knows about BackendUser.
-//
-// CONTRACT:
-//   BackendUser.username       → User.name
-//   BackendUser.approval_status → User.status
-//
-// If the backend changes a field name, this is the ONLY file to update.
-// ─────────────────────────────────────────────────────────────────────────────
+
 function mapBackendUser(u: BackendUser): User {
   return {
     id: u.id,
@@ -72,8 +64,6 @@ export async function approveUser(
   userId: string,
   payload: ApproveUserPayload
 ): Promise<void> {
-  // UI domain names (role, note) are translated to backend names here.
-  // Components never need to know the backend field names.
   await API.patch(`/admin/users/${userId}`, {
     approval_status: "approved",
     role: payload.role,

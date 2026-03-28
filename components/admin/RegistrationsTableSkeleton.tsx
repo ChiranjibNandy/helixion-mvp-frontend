@@ -1,16 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-/**
- * Loading skeleton that mirrors the visual structure of RegistrationsTable rows.
- *
- * WHY renamed from SkeletonTable:
- *   "SkeletonTable" is generic — there are many tables in the app. This name
- *   makes the intent and usage site unambiguous at a glance.
- *
- * WHY 5 rows:
- *   Matches the default page limit (10 condensed to 5 visual rows) to avoid
- *   a jarring layout shift when real data loads.
- */
 export function RegistrationsTableSkeleton() {
   return (
     <div className="space-y-4" aria-label="Loading registrations..." aria-busy="true">

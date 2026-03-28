@@ -5,26 +5,12 @@ import { getRegistrations, approveUser } from "@/lib/api/registrations";
 import { useDebounce } from "@/hooks/useDebounce";
 import { REGISTRATIONS_PAGE_LIMIT } from "@/config/pagination";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Query key factory
-//
-// Centralises all cache keys for this feature so mismatches are impossible.
-// Always use these keys — never construct ["registrations", ...] manually.
-//
-// Consumed by: useQuery, cancelQueries, getQueryData, setQueryData,
-//              invalidateQueries, removeQueries.
-// ─────────────────────────────────────────────────────────────────────────────
 export const registrationKeys = {
   all: ["registrations"] as const,
   list: (page: number, search: string) =>
     ["registrations", "list", page, search] as const,
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────────────────────────────────────────
-
-/** Variables passed to the approve mutation. Extracted for reuse in generics. */
 interface ApproveMutationVariables {
   userId: string;
   role: Role;
@@ -33,7 +19,6 @@ interface ApproveMutationVariables {
 
 interface OptimisticContext {
   previousData: PaginatedResponse | undefined;
-  /** The exact query key snapshotted at mutation-trigger time. */
   snapshotKey: readonly ["registrations", "list", number, string];
 }
 
@@ -78,11 +63,7 @@ export function useRegistrations(): UseRegistrationsReturn {
     queryKey: registrationKeys.list(page, debouncedSearch),
     queryFn: () =>
       getRegistrations(page, REGISTRATIONS_PAGE_LIMIT, debouncedSearch || undefined),
-    // staleTime: data is considered fresh for 30s.
-    // Without this, every window focus triggers a background refetch — noisy
-    // for an admin list that doesn't change by the second.
     staleTime: 30_000,
-    // Do not retry on 4xx — those are contract errors, not transient failures.
     retry: (failureCount, err) => {
       const status = (err as { response?: { status?: number } }).response?.status;
       if (status !== undefined && status >= 400 && status < 500) return false;
@@ -93,19 +74,8 @@ export function useRegistrations(): UseRegistrationsReturn {
   const approveMutation = useMutation<void, Error, ApproveMutationVariables, OptimisticContext>({
     mutationFn: ({ userId, role, note }) => approveUser(userId, { role, note }),
 
-    // ── Optimistic update ───────────────────────────────────────────────────
-    // CRITICAL: We snapshot `queryKey` here, inside onMutate, so that the
-    // exact same key is used for getQueryData, setQueryData, AND the rollback
-    // in onError. This prevents the stale-closure bug where page/debouncedSearch
-    // change between firing the mutation and running onError.
-    //
-    // Previously: page and debouncedSearch were read from closure in onError —
-    // if the user navigated to page 2 before the error resolved, the rollback
-    // would write to the wrong cache slot (page 2 key instead of page 1 key).
     onMutate: async ({ userId }) => {
       await queryClient.cancelQueries({ queryKey: registrationKeys.all });
-
-      // Snapshot the key at mutation time — NOT in onError (which runs later).
       const snapshotKey = registrationKeys.list(page, debouncedSearch);
       const previousData = queryClient.getQueryData<PaginatedResponse>(snapshotKey);
 
@@ -150,14 +120,10 @@ export function useRegistrations(): UseRegistrationsReturn {
       setApproveModalUser(null);
       approveMutation.mutate({ userId, role, note });
     },
-    // approveMutation is intentionally in deps: its reference is stable in TQ v5
-    // but including it makes the dep array honest and survives linter exhaustive-deps.
     [approveModalUser, approveMutation]
   );
 
-  // Deny is stubbed — DO NOT wire to API until DELETE /admin/users/:id is confirmed.
   const handleDeny = useCallback((_userId: string) => {
-    // TODO: wire to denyUser() when backend endpoint is available
     if (process.env.NODE_ENV !== "production") {
       console.warn("[useRegistrations] handleDeny called but not yet implemented.");
     }
@@ -173,20 +139,15 @@ export function useRegistrations(): UseRegistrationsReturn {
 
   const handleToggleSelectAll = useCallback(() => {
     if (!data?.users?.length) return;
-    // Capture current ids to avoid stale closure — do not read data.users inside setter
     const allIds = data.users.map((u) => u.id);
     setSelectedUsers((prev) =>
       prev.size === allIds.length ? new Set() : new Set(allIds)
     );
   }, [data?.users]);
-  // ↑ dep is data?.users (the array reference), not selectedUsers.size.
-  //   Depending on selectedUsers.size meant the callback re-created on every
-  //   checkbox click — defeating the purpose of useCallback entirely.
 
   return {
     data,
     isLoading,
-    // TanStack Query v5 already types error as Error | null. No cast needed.
     error,
     page,
     search,
