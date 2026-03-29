@@ -17,8 +17,8 @@ export function PendingPanel({ users = [], isLoading }: PendingPanelProps) {
         <h3 className="text-sm font-medium text-textPrimary tracking-tight">
           Pending registrations
         </h3>
-        <Link 
-          href="/admin/users" 
+        <Link
+          href="/admin/registrations/pending"
           className="text-xs text-accentBlue hover:text-blue-400 font-medium transition-colors"
         >
           View all &rarr;

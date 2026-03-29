@@ -3,11 +3,13 @@ import type { Role, UserStatus } from "@/types/registration";
 
 export interface BackendUser {
   id: string;
-  username: string;
+  username?: string;
   email: string;
   createdAt: string;
-  approval_status: UserStatus;
+  approval_status?: UserStatus;
   role?: Role;
+  /** Some APIs send `name` instead of `username`. */
+  name?: string;
 }
 
 

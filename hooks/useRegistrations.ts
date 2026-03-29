@@ -4,6 +4,8 @@ import type { User, Role, PaginatedResponse, UserStatus } from "@/types/registra
 import { getRegistrations, approveUser } from "@/lib/api/registrations";
 import { useDebounce } from "@/hooks/useDebounce";
 import { REGISTRATIONS_PAGE_LIMIT } from "@/config/pagination";
+import { dashboardKeys } from "@/hooks/useDashboardStats";
+import { recentActivityKeys } from "@/hooks/useRecentActivity";
 
 export const registrationKeys = {
   all: ["registrations"] as const,
@@ -115,6 +117,8 @@ export function useRegistrations(initialStatus: UserStatus | "all" = "all"): Use
     // Invalidate after every settle (success or error) to reconcile with server.
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: registrationKeys.all });
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.stats });
+      queryClient.invalidateQueries({ queryKey: recentActivityKeys.list });
     },
   });
 

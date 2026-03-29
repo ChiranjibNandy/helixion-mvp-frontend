@@ -51,3 +51,19 @@ export function formatRegistrationDate(isoString: string): string {
     year: "numeric",
   });
 }
+
+/** Short relative label for activity feeds (English, client-only). */
+export function formatRelativeTime(isoString: string): string {
+  const date = new Date(isoString);
+  if (isNaN(date.getTime())) return "Unknown time";
+  const diffMs = Date.now() - date.getTime();
+  if (diffMs < 0) return "Just now";
+  const mins = Math.floor(diffMs / 60_000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins} min ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} hr${hrs === 1 ? "" : "s"} ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days} day${days === 1 ? "" : "s"} ago`;
+  return formatRegistrationDate(isoString);
+}

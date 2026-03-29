@@ -15,9 +15,11 @@ import { REGISTRATIONS_PAGE_LIMIT } from "@/config/pagination";
 import { cn } from "@/lib/utils";
 import type { UserStatus } from "@/types/registration";
 
-// We'll generate tabs inside the component since counts are dynamic
+interface RegistrationsTableProps {
+  initialStatus?: UserStatus | "all";
+}
 
-export function RegistrationsTable() {
+export function RegistrationsTable({ initialStatus = "all" }: RegistrationsTableProps) {
   const {
     data,
     isLoading,
@@ -36,7 +38,7 @@ export function RegistrationsTable() {
     handleDeny,
     handleToggleSelect,
     handleToggleSelectAll,
-  } = useRegistrations();
+  } = useRegistrations(initialStatus);
 
   const { data: stats } = useDashboardStats();
 

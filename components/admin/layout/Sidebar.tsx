@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useDashboardStats } from "@/hooks/useDashboardStats";
 
 interface NavItem {
   label: string;
@@ -25,7 +26,7 @@ const NAV_DATA: NavSection[] = [
   {
     title: "Users",
     items: [
-      { label: "Pending registrations", href: "/admin/registrations/pending", badge: 7 },
+      { label: "Pending registrations", href: "/admin/registrations/pending" },
       { label: "All users", href: "/admin/users" },
       { label: "Roles & permissions", href: "/admin/roles" },
       { label: "Bulk import", href: "/admin/users/import" },
@@ -50,6 +51,7 @@ const NAV_DATA: NavSection[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { data: stats, isLoading: statsLoading } = useDashboardStats();
 
   // Highlight exact match for /admin, else match prefix for sub-routes
   const isActive = (href: string) => {
@@ -99,11 +101,15 @@ export function Sidebar() {
                         {item.label}
                       </span>
                       
-                      {item.badge !== undefined && (
+                      {item.href === "/admin/registrations/pending" ? (
+                        <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-statusPendingBg text-statusPending text-[10px] font-bold">
+                          {statsLoading ? "…" : stats?.pendingApproval ?? 0}
+                        </span>
+                      ) : item.badge !== undefined ? (
                         <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-statusPendingBg text-statusPending text-[10px] font-bold">
                           {item.badge}
                         </span>
-                      )}
+                      ) : null}
                     </Link>
                   </li>
                 );

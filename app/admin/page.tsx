@@ -7,10 +7,28 @@ import { PlaceholderCard } from "@/components/admin/dashboard/PlaceholderCard";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 
 export default function DashboardPage() {
-  const { data: stats, isLoading } = useDashboardStats();
+  const { data: stats, isLoading, isError, error, refetch } = useDashboardStats();
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto w-full flex flex-col gap-6">
+      {isError && (
+        <div
+          className="rounded-lg border border-statusInactive/40 bg-statusInactive/10 px-4 py-3 text-sm text-textSecondary flex flex-wrap items-center justify-between gap-3"
+          role="alert"
+        >
+          <span>
+            Dashboard data could not be loaded
+            {error instanceof Error ? `: ${error.message}` : "."}
+          </span>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            className="text-accentBlue font-medium hover:underline"
+          >
+            Retry
+          </button>
+        </div>
+      )}
       {/* ── Top Stats Row ────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatsCard

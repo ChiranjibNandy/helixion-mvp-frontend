@@ -4,17 +4,58 @@ import API from "@/lib/api";
 
 
 function mapBackendUser(u: BackendUser): User {
+  const displayName = u.username?.trim() || u.name?.trim() || u.email || "Unknown";
   return {
     id: u.id,
-    name: u.username,
+    name: displayName,
     email: u.email,
     createdAt: u.createdAt,
-    status: u.approval_status,
+    status: u.approval_status ?? "pending",
     role: u.role,
   };
 }
 
-interface GetRegistrationsOptions {
+function coerceNumber(value: unknown, fallback: number): number {
+  if (typeof value === "number" && !Number.isNaN(value)) return value;
+  if (typeof value === "string") {
+    const n = Number(value);
+    if (!Number.isNaN(n)) return n;
+  }
+  return fallback;
+}
+
+/** Normalize common API shapes so the UI renders even if the contract drifts slightly. */
+function normalizePaginatedBody(raw: unknown): {
+  rows: BackendUser[];
+  total: number;
+  page: number;
+  limit: number;
+} {
+  if (raw === null || typeof raw !== "object") {
+    throw new Error(`[getRegistrations] Expected JSON object, received: ${typeof raw}`);
+  }
+
+  const o = raw as Record<string, unknown>;
+  const meta =
+    o.meta && typeof o.meta === "object" ? (o.meta as Record<string, unknown>) : undefined;
+
+  let rows: unknown[] = [];
+  if (Array.isArray(o.data)) rows = o.data;
+  else if (Array.isArray(o.users)) rows = o.users;
+
+  const total = coerceNumber(o.total ?? meta?.total, rows.length);
+  const page = coerceNumber(o.page ?? meta?.page, 1);
+  const limit = coerceNumber(o.limit ?? meta?.limit, 10);
+
+  return {
+    rows: rows as BackendUser[],
+    total,
+    page,
+    limit,
+  };
+}
+
+export interface GetRegistrationsOptions {
   page?: number;
   limit?: number;
   search?: string;
@@ -38,37 +79,19 @@ export async function getRegistrations({
   if (status && status !== "all") params.status = status;
   if (role) params.role = role;
 
-  const response = await API.get<BackendPaginatedResponse>(
-    "/admin/registrations",
+  const response = await API.get<BackendPaginatedResponse | Record<string, unknown>>(
+    "admin/registrations",
     { params }
   );
 
-  const raw = response.data;
-
-  // Runtime shape guard. If the API diverges from the contract we get a
-  // descriptive error in the console/Sentry — not a silent empty list.
-  if (!Array.isArray(raw?.data)) {
-    throw new Error(
-      `[getRegistrations] Expected response.data.data to be an array, received: ${typeof raw?.data}`
-    );
-  }
-
-  // Guard missing pagination metadata — avoids NaN in Math.ceil() call sites.
-  if (
-    typeof raw.total !== "number" ||
-    typeof raw.page !== "number" ||
-    typeof raw.limit !== "number"
-  ) {
-    throw new Error(
-      `[getRegistrations] Missing pagination metadata in response: ${JSON.stringify({ total: raw.total, page: raw.page, limit: raw.limit })}`
-    );
-  }
+  const { rows, total, page: resPage, limit: resLimit } =
+    normalizePaginatedBody(response.data);
 
   return {
-    users: raw.data.map(mapBackendUser),
-    total: raw.total,
-    page: raw.page,
-    limit: raw.limit,
+    users: rows.map(mapBackendUser),
+    total,
+    page: resPage,
+    limit: resLimit,
   };
 }
 
@@ -76,7 +99,7 @@ export async function approveUser(
   userId: string,
   payload: ApproveUserPayload
 ): Promise<void> {
-  await API.patch(`/admin/users/${userId}`, {
+  await API.patch(`admin/users/${userId}`, {
     approval_status: "approved",
     role: payload.role,
     description: payload.note,
