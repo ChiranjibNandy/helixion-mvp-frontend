@@ -29,6 +29,7 @@ export function RegistrationsTable({ initialStatus = "all" }: RegistrationsTable
     status,
     selectedUsers,
     approveModalUser,
+    isPendingApproval,
     setPage,
     setSearch,
     setStatus,
@@ -186,6 +187,7 @@ export function RegistrationsTable({ initialStatus = "all" }: RegistrationsTable
         open={!!approveModalUser}
         onClose={handleCloseApproveModal}
         onConfirm={handleConfirmApproval}
+        isSubmitting={isPendingApproval}
       />
     </div>
   );

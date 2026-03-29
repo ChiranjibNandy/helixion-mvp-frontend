@@ -95,6 +95,10 @@ export async function getRegistrations({
   };
 }
 
+/**
+ * PATCH `${NEXT_PUBLIC_API_URL}/admin/users/:id` → e.g. `PATCH /api/admin/users/:id`
+ * when the axios base URL ends with `/api`.
+ */
 export async function approveUser(
   userId: string,
   payload: ApproveUserPayload

@@ -3,10 +3,18 @@ import {
   getRegistrations,
   type GetRegistrationsOptions,
 } from "@/lib/api/registrations";
-import type { PaginatedResponse } from "@/types/registration";
+import type { PaginatedResponse, User } from "@/types/registration";
 
 export const dashboardKeys = {
   stats: ["dashboard", "stats"] as const,
+};
+
+/** Shape stored under `dashboardKeys.stats` — used for optimistic approve updates. */
+export type DashboardStatsData = {
+  totalUsers: number;
+  pendingApproval: number;
+  deactivated: number;
+  pendingList: User[];
 };
 
 async function safeRegistrations(
@@ -22,7 +30,7 @@ async function safeRegistrations(
 }
 
 export function useDashboardStats() {
-  return useQuery({
+  return useQuery<DashboardStatsData>({
     queryKey: dashboardKeys.stats,
     queryFn: async () => {
       // In a real production app, this would ideally be a dedicated /admin/stats endpoint.

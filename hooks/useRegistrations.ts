@@ -4,7 +4,7 @@ import type { User, Role, PaginatedResponse, UserStatus } from "@/types/registra
 import { getRegistrations, approveUser } from "@/lib/api/registrations";
 import { useDebounce } from "@/hooks/useDebounce";
 import { REGISTRATIONS_PAGE_LIMIT } from "@/config/pagination";
-import { dashboardKeys } from "@/hooks/useDashboardStats";
+import { dashboardKeys, type DashboardStatsData } from "@/hooks/useDashboardStats";
 import { recentActivityKeys } from "@/hooks/useRecentActivity";
 
 export const registrationKeys = {
@@ -22,6 +22,7 @@ interface ApproveMutationVariables {
 interface OptimisticContext {
   previousData: PaginatedResponse | undefined;
   snapshotKey: readonly ["registrations", "list", number, string, string];
+  previousDashboard: DashboardStatsData | undefined;
 }
 
 export interface UseRegistrationsReturn {
@@ -92,25 +93,40 @@ export function useRegistrations(initialStatus: UserStatus | "all" = "all"): Use
 
     onMutate: async ({ userId }) => {
       await queryClient.cancelQueries({ queryKey: registrationKeys.all });
+      await queryClient.cancelQueries({ queryKey: dashboardKeys.stats });
       const snapshotKey = registrationKeys.list(page, debouncedSearch, status);
       const previousData = queryClient.getQueryData<PaginatedResponse>(snapshotKey);
+      const previousDashboard = queryClient.getQueryData<DashboardStatsData>(
+        dashboardKeys.stats
+      );
 
       queryClient.setQueryData<PaginatedResponse>(snapshotKey, (old) => {
         if (!old) return old;
         return {
           ...old,
           users: old.users.filter((u) => u.id !== userId),
-          total: old.total - 1,
+          total: Math.max(0, old.total - 1),
         };
       });
 
-      return { previousData, snapshotKey };
+      queryClient.setQueryData<DashboardStatsData>(dashboardKeys.stats, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          pendingApproval: Math.max(0, old.pendingApproval - 1),
+          pendingList: old.pendingList.filter((u) => u.id !== userId),
+        };
+      });
+
+      return { previousData, snapshotKey, previousDashboard };
     },
 
-    // Roll back using the snapshotted key — never the current closure values.
     onError: (_err, _vars, context) => {
       if (context?.previousData !== undefined) {
         queryClient.setQueryData(context.snapshotKey, context.previousData);
+      }
+      if (context?.previousDashboard !== undefined) {
+        queryClient.setQueryData(dashboardKeys.stats, context.previousDashboard);
       }
     },
 
@@ -133,10 +149,15 @@ export function useRegistrations(initialStatus: UserStatus | "all" = "all"): Use
   const handleConfirmApproval = useCallback(
     (role: Role, note?: string) => {
       if (!approveModalUser) return;
-      // Capture id before clearing modal — avoids reading stale state in mutate.
       const userId = approveModalUser.id;
-      setApproveModalUser(null);
-      approveMutation.mutate({ userId, role, note });
+      approveMutation.mutate(
+        { userId, role, note },
+        {
+          onSuccess: () => {
+            setApproveModalUser(null);
+          },
+        }
+      );
     },
     [approveModalUser, approveMutation]
   );

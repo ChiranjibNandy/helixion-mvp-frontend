@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { User, Role } from "@/types/registration";
+import { useState, useEffect } from "react";
+import type { User, Role } from "@/types/registration";
 import { ROLE_OPTIONS } from "@/config/roles";
 import { getInitials, getAvatarColor, formatRegistrationDate } from "@/utils/userUtils";
 import {
@@ -13,112 +13,141 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { RoleCard } from "./RoleCard";
-import styles from "./ApproveModal.module.css";
+import { cn } from "@/lib/utils";
 
 interface ApproveModalProps {
   user: User | null;
   open: boolean;
   onClose: () => void;
   onConfirm: (role: Role, note?: string) => void;
+  /** True while PATCH /api/admin/users/:id is in flight (after optimistic list update). */
+  isSubmitting?: boolean;
 }
 
-export function ApproveModal({ user, open, onClose, onConfirm }: ApproveModalProps) {
-  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+export function ApproveModal({
+  user,
+  open,
+  onClose,
+  onConfirm,
+  isSubmitting = false,
+}: ApproveModalProps) {
+  const [selectedRole, setSelectedRole] = useState<Role | "">("");
   const [note, setNote] = useState("");
 
+  useEffect(() => {
+    if (user) {
+      setSelectedRole("");
+      setNote("");
+    }
+  }, [user?.id]);
+
   const handleConfirm = () => {
-    if (!selectedRole) return;
-    onConfirm(selectedRole, note || undefined);
-    setSelectedRole(null);
-    setNote("");
+    if (!selectedRole || isSubmitting) return;
+    onConfirm(selectedRole, note.trim() || undefined);
   };
 
   const handleClose = () => {
-    setSelectedRole(null);
+    if (isSubmitting) return;
+    setSelectedRole("");
     setNote("");
     onClose();
   };
 
   if (!user) return null;
+
   const initials = getInitials(user.name);
   const avatarColor = getAvatarColor(user.name);
   const registeredDate = formatRegistrationDate(user.createdAt);
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Approve registration</DialogTitle>
+    <Dialog open={open} onOpenChange={(next) => !next && handleClose()}>
+      <DialogContent className="max-w-lg border-0 bg-bgCard p-0 text-textPrimary shadow-xl ring-1 ring-borderDark">
+        <DialogHeader className="border-b border-borderDark px-6 py-4">
+          <DialogTitle className="text-lg font-semibold text-textPrimary">
+            Approve & assign role
+          </DialogTitle>
+          <p className="text-sm font-normal text-textMuted mt-1">
+            Choose a role and confirm. This updates the user via PATCH{" "}
+            <code className="text-xs text-textSecondary">/api/admin/users/:id</code>.
+          </p>
         </DialogHeader>
 
-        <div className="px-6 py-4 space-y-6">
-          {/* User summary card */}
-          <div className="flex items-center gap-3 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+        <div className="px-6 py-4 space-y-5">
+          <div className="flex items-center gap-3 p-4 rounded-lg bg-bgMain/80 border border-borderDark">
             <div
-              className={styles.avatar}
+              className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold text-white flex-shrink-0"
               style={{ background: avatarColor }}
-              aria-hidden="true"
+              aria-hidden
             >
               {initials}
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="font-semibold text-gray-900 dark:text-white truncate">
-                {user.name}
-              </h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
-                {user.email}
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                Registered {registeredDate}
-              </p>
+              <h4 className="font-semibold text-textPrimary truncate">{user.name}</h4>
+              <p className="text-sm text-textMuted truncate">{user.email}</p>
+              <p className="text-xs text-textMuted mt-1">Registered {registeredDate}</p>
             </div>
           </div>
 
-          {/* Role selector — driven by config, not hardcoded */}
           <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-white mb-3">
-              Select role
+            <label
+              htmlFor="approve-role"
+              className="block text-sm font-medium text-textSecondary mb-2"
+            >
+              Role
             </label>
-            <div className="grid grid-cols-2 gap-3">
-              {ROLE_OPTIONS.map((option) => (
-                <RoleCard
-                  key={option.role}
-                  role={option.role}
-                  title={option.label}
-                  description={option.description}
-                  selected={selectedRole === option.role}
-                  onSelect={() => setSelectedRole(option.role)}
-                />
+            <select
+              id="approve-role"
+              value={selectedRole}
+              onChange={(e) =>
+                setSelectedRole((e.target.value || "") as Role | "")
+              }
+              disabled={isSubmitting}
+              className={cn(
+                "flex h-10 w-full rounded-md border border-borderDark bg-inputBg px-3 py-2 text-sm text-textPrimary",
+                "focus:outline-none focus:ring-2 focus:ring-accentBlue/40 focus:border-accentBlue",
+                "disabled:cursor-not-allowed disabled:opacity-50",
+                "[&>option]:bg-bgCard [&>option]:text-textPrimary"
+              )}
+            >
+              <option value="">Select a role…</option>
+              {ROLE_OPTIONS.map((opt) => (
+                <option key={opt.role} value={opt.role}>
+                  {opt.label} — {opt.description}
+                </option>
               ))}
-            </div>
+            </select>
           </div>
 
-          {/* Optional approval note */}
           <div>
             <label
               htmlFor="approval-note"
-              className="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+              className="block text-sm font-medium text-textSecondary mb-2"
             >
-              Note{" "}
-              <span className="font-normal text-gray-500">(optional)</span>
+              Note <span className="font-normal text-textMuted">(optional)</span>
             </label>
             <Textarea
               id="approval-note"
-              placeholder="Add a note for the user or internal record..."
+              placeholder="Internal note or message for the record…"
               value={note}
               onChange={(e) => setNote(e.target.value)}
               rows={3}
+              disabled={isSubmitting}
+              className="border-borderDark bg-inputBg text-textPrimary placeholder:text-textMuted focus:ring-accentBlue/40 focus:border-accentBlue"
             />
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+        <DialogFooter className="border-t border-borderDark px-6 py-4 bg-bgMain/30">
+          <Button type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button onClick={handleConfirm} disabled={!selectedRole}>
-            Confirm approval
+          <Button
+            type="button"
+            onClick={handleConfirm}
+            disabled={!selectedRole || isSubmitting}
+            aria-busy={isSubmitting}
+          >
+            {isSubmitting ? "Saving…" : "Confirm approval"}
           </Button>
         </DialogFooter>
       </DialogContent>
