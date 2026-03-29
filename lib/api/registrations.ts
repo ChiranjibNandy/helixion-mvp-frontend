@@ -1,5 +1,5 @@
 import type { BackendUser, BackendPaginatedResponse } from "@/lib/api/types";
-import type { PaginatedResponse, ApproveUserPayload, User } from "@/types/registration";
+import type { PaginatedResponse, ApproveUserPayload, User, UserStatus, Role } from "@/types/registration";
 import API from "@/lib/api";
 
 
@@ -14,17 +14,29 @@ function mapBackendUser(u: BackendUser): User {
   };
 }
 
-export async function getRegistrations(
-  page: number,
-  limit: number,
-  search?: string
-): Promise<PaginatedResponse> {
+interface GetRegistrationsOptions {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: UserStatus | "all";
+  role?: Role;
+}
+
+export async function getRegistrations({
+  page = 1,
+  limit = 10,
+  search,
+  status,
+  role,
+}: GetRegistrationsOptions): Promise<PaginatedResponse> {
   const params: Record<string, string> = {
     page: page.toString(),
     limit: limit.toString(),
   };
 
   if (search) params.search = search;
+  if (status && status !== "all") params.status = status;
+  if (role) params.role = role;
 
   const response = await API.get<BackendPaginatedResponse>(
     "/admin/registrations",

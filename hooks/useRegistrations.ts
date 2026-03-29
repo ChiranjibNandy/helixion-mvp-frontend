@@ -1,14 +1,14 @@
 import { useCallback, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { User, Role, PaginatedResponse } from "@/types/registration";
+import type { User, Role, PaginatedResponse, UserStatus } from "@/types/registration";
 import { getRegistrations, approveUser } from "@/lib/api/registrations";
 import { useDebounce } from "@/hooks/useDebounce";
 import { REGISTRATIONS_PAGE_LIMIT } from "@/config/pagination";
 
 export const registrationKeys = {
   all: ["registrations"] as const,
-  list: (page: number, search: string) =>
-    ["registrations", "list", page, search] as const,
+  list: (page: number, search: string, status?: string) =>
+    ["registrations", "list", page, search, status || "all"] as const,
 };
 
 interface ApproveMutationVariables {
@@ -19,7 +19,7 @@ interface ApproveMutationVariables {
 
 interface OptimisticContext {
   previousData: PaginatedResponse | undefined;
-  snapshotKey: readonly ["registrations", "list", number, string];
+  snapshotKey: readonly ["registrations", "list", number, string, string];
 }
 
 export interface UseRegistrationsReturn {
@@ -28,11 +28,13 @@ export interface UseRegistrationsReturn {
   error: Error | null;
   page: number;
   search: string;
+  status: UserStatus | "all";
   selectedUsers: Set<string>;
   approveModalUser: User | null;
   isPendingApproval: boolean;
   setPage: (page: number) => void;
   setSearch: (search: string) => void;
+  setStatus: (status: UserStatus | "all") => void;
   handleApprove: (user: User) => void;
   handleConfirmApproval: (role: Role, note?: string) => void;
   handleCloseApproveModal: () => void;
@@ -41,9 +43,10 @@ export interface UseRegistrationsReturn {
   handleToggleSelectAll: () => void;
 }
 
-export function useRegistrations(): UseRegistrationsReturn {
+export function useRegistrations(initialStatus: UserStatus | "all" = "all"): UseRegistrationsReturn {
   const [page, setPageState] = useState(1);
   const [search, setSearchState] = useState("");
+  const [status, setStatusState] = useState<UserStatus | "all">(initialStatus);
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [approveModalUser, setApproveModalUser] = useState<User | null>(null);
 
@@ -55,14 +58,25 @@ export function useRegistrations(): UseRegistrationsReturn {
     setPageState(1); // always reset to page 1 on new search
   }, []);
 
+  const setStatus = useCallback((value: UserStatus | "all") => {
+    setStatusState(value);
+    setPageState(1); // always reset to page 1 on filter change
+    setSelectedUsers(new Set()); // clear selections when swapping lists
+  }, []);
+
   const setPage = useCallback((value: number) => {
     setPageState(value);
   }, []);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: registrationKeys.list(page, debouncedSearch),
+    queryKey: registrationKeys.list(page, debouncedSearch, status),
     queryFn: () =>
-      getRegistrations(page, REGISTRATIONS_PAGE_LIMIT, debouncedSearch || undefined),
+      getRegistrations({ 
+        page, 
+        limit: REGISTRATIONS_PAGE_LIMIT, 
+        search: debouncedSearch || undefined,
+        status: status === "all" ? undefined : status
+      }),
     staleTime: 30_000,
     retry: (failureCount, err) => {
       const status = (err as { response?: { status?: number } }).response?.status;
@@ -76,7 +90,7 @@ export function useRegistrations(): UseRegistrationsReturn {
 
     onMutate: async ({ userId }) => {
       await queryClient.cancelQueries({ queryKey: registrationKeys.all });
-      const snapshotKey = registrationKeys.list(page, debouncedSearch);
+      const snapshotKey = registrationKeys.list(page, debouncedSearch, status);
       const previousData = queryClient.getQueryData<PaginatedResponse>(snapshotKey);
 
       queryClient.setQueryData<PaginatedResponse>(snapshotKey, (old) => {
@@ -151,11 +165,13 @@ export function useRegistrations(): UseRegistrationsReturn {
     error,
     page,
     search,
+    status,
     selectedUsers,
     approveModalUser,
     isPendingApproval: approveMutation.isPending,
     setPage,
     setSearch,
+    setStatus,
     handleApprove,
     handleConfirmApproval,
     handleCloseApproveModal,

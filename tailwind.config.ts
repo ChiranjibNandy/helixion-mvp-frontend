@@ -20,20 +20,32 @@ const config: Config = {
           700: '#2f4cc4',
         },
 
-        // Background system
-        bgMain: '#080c18',
-        bgCard: '#0a0f1e',
+        // Background system (Deep Navy/Slate from design)
+        bgMain: '#0b1120',
+        bgCard: '#131b2f',
+        bgSidebar: '#0b1120',
         inputBg: '#111827',
+        bgHover: '#1c263b',
 
-        //  Borders & UI
-        borderDark: '#1f2937',
+        // Borders & UI
+        borderDark: '#1e293b',
+        borderLight: '#334155',
 
-        //  Text system
-        textMuted: '#9ca3af',
-        textSecondary: '#d1d5db',
+        // Text system
+        textMuted: '#94a3b8',
+        textSecondary: '#cbd5e1',
+        textPrimary: '#f8fafc',
 
-        //  Accent
-        accentYellow: '#facc15',
+        // Accent & Status colors from screenshots
+        accentBlue: '#3b82f6',     // Primary blue for selections
+        accentYellow: '#facc15',   // Yellow for stars and UI accents
+        statusPending: '#eab308',  // Yellow for pending
+        statusPendingBg: 'rgba(234, 179, 8, 0.1)',
+        statusActive: '#22c55e',   // Green for active
+        statusActiveBg: 'rgba(34, 197, 94, 0.1)',
+        statusInactive: '#ef4444', // Red for inactive
+        statusInactiveBg: 'rgba(239, 68, 68, 0.1)',
+        roleManager: '#a855f7',    // Purple for Manager
       },
 
       fontFamily: {
