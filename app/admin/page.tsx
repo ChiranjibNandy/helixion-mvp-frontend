@@ -87,15 +87,11 @@ export default function DashboardPage() {
           value={isLoading ? 0 : (stats?.deactivated ?? 0)}
           subtitle={<span className="text-textMuted font-normal text-sm">All time</span>}
         />
-        {/* Placeholder to match the grid if we wanted 4 columns, but the screenshot has 3 with a gap mostly? 
-            Wait, Screenshot 1 has 4 columns for stats, the rightmost is blank/empty space.
-            Using grid-cols-4 and leaving the last column empty perfectly replicates the width. */}
         <div className="hidden xl:block" />
       </div>
 
       {/* ── Main Panels ──────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 h-[400px]">
-        {/* Pass live users array to PendingPanel */}
         <PendingPanel 
           users={stats?.pendingList ?? []} 
           isLoading={isLoading}
