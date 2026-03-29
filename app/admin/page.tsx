@@ -23,10 +23,12 @@ export default function DashboardPage() {
   }, []);
 
   const handleDeny = useCallback((userId: string) => {
+    // TODO: Implement registration denial logic
     if (process.env.NODE_ENV !== "production") {
       console.warn("[Dashboard] handleDeny called but not yet implemented.");
     }
   }, []);
+
 
   const handleConfirmApproval = useCallback(async (role: Role, note?: string) => {
     if (!approveModalUser) return;

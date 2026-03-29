@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { useRecentActivity } from "@/hooks/useRecentActivity";
 import type { UserStatus } from "@/types/registration";
 import { formatRelativeTime } from "@/utils/userUtils";
@@ -46,15 +45,15 @@ export function ActivityTimeline() {
         ) : (
           users.map((user) => {
             const type = statusToType(user.status);
+            const statusColor = 
+              type === "success" ? "bg-statusActive" : 
+              type === "danger" ? "bg-statusInactive" : 
+              "bg-textMuted";
+
             return (
               <div key={user.id} className="flex gap-3">
                 <div
-                  className={cn(
-                    "mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0 shadow-sm relative z-10",
-                    type === "success" && "bg-statusActive",
-                    type === "danger" && "bg-statusInactive",
-                    type === "neutral" && "bg-textMuted"
-                  )}
+                  className={`mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0 shadow-sm relative z-10 ${statusColor}`}
                 />
                 <div className="flex flex-col min-w-0">
                   <span className="text-sm text-textPrimary tracking-tight leading-snug">
@@ -72,3 +71,4 @@ export function ActivityTimeline() {
     </div>
   );
 }
+
