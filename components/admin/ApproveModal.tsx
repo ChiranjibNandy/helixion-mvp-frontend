@@ -67,8 +67,7 @@ export function ApproveModal({
             Approve & assign role
           </DialogTitle>
           <p className="text-sm font-normal text-textMuted mt-1">
-            Choose a role and confirm. This updates the user via PATCH{" "}
-            <code className="text-xs text-textSecondary">/api/admin/users/:id</code>.
+            Choose a role and confirm to approve this user.
           </p>
         </DialogHeader>
 

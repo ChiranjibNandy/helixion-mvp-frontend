@@ -1,13 +1,54 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { StatsCard } from "@/components/admin/dashboard/StatsCard";
 import { PendingPanel } from "@/components/admin/dashboard/PendingPanel";
 import { ActivityTimeline } from "@/components/admin/dashboard/ActivityTimeline";
 import { PlaceholderCard } from "@/components/admin/dashboard/PlaceholderCard";
+import { ApproveModal } from "@/components/admin/ApproveModal";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
+import { approveUser } from "@/lib/api/registrations";
+import { useQueryClient } from "@tanstack/react-query";
+import { dashboardKeys } from "@/hooks/useDashboardStats";
+import type { User, Role } from "@/types/registration";
 
 export default function DashboardPage() {
   const { data: stats, isLoading, isError, error, refetch } = useDashboardStats();
+  const queryClient = useQueryClient();
+  const [approveModalUser, setApproveModalUser] = useState<User | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleApprove = useCallback((user: User) => {
+    setApproveModalUser(user);
+  }, []);
+
+  const handleDeny = useCallback((userId: string) => {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("[Dashboard] handleDeny called but not yet implemented.");
+    }
+  }, []);
+
+  const handleConfirmApproval = useCallback(async (role: Role, note?: string) => {
+    if (!approveModalUser) return;
+    
+    try {
+      setIsSubmitting(true);
+      await approveUser(approveModalUser.id, { role, note });
+      
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.stats });
+      setApproveModalUser(null);
+    } catch (error) {
+      console.error("Failed to approve user:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [approveModalUser, queryClient]);
+
+  const handleCloseApproveModal = useCallback(() => {
+    if (!isSubmitting) {
+      setApproveModalUser(null);
+    }
+  }, [isSubmitting]);
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto w-full flex flex-col gap-6">
@@ -55,7 +96,12 @@ export default function DashboardPage() {
       {/* ── Main Panels ──────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 h-[400px]">
         {/* Pass live users array to PendingPanel */}
-        <PendingPanel users={stats?.pendingList ?? []} isLoading={isLoading} />
+        <PendingPanel 
+          users={stats?.pendingList ?? []} 
+          isLoading={isLoading}
+          onApprove={handleApprove}
+          onDeny={handleDeny}
+        />
         <ActivityTimeline />
       </div>
 
@@ -65,6 +111,14 @@ export default function DashboardPage() {
         <PlaceholderCard title="Integrations" />
         <PlaceholderCard title="Platform settings" />
       </div>
+
+      <ApproveModal
+        user={approveModalUser}
+        open={!!approveModalUser}
+        onClose={handleCloseApproveModal}
+        onConfirm={handleConfirmApproval}
+        isSubmitting={isSubmitting}
+      />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import AuthLayout from '../../components/AuthLayout';
 import InputField from '../../components/InputField';
 import { loginUser } from '@/utils/authService';
 import { parseApiError } from '@/utils/parseError';
+import { getRoleFromToken } from '@/utils/jwtUtils';
 
 const stats = [
   { value: '2.4M', accent: '+', label: 'Active learners' },
@@ -101,8 +102,14 @@ function RightPanel() {
 
       const res = await loginUser({ email, password });
 
-      if (res?.success) {
-        router.push('/dashboard');
+      if (res?.success && res?.accessToken) {
+        const userRole = getRoleFromToken(res.accessToken);
+        
+        if (userRole === 'admin') {
+          router.push('/admin');
+        } else {
+          router.push('/dashboard');
+        }
       }
     } catch (err: any) {
       const parsed = parseApiError(err);

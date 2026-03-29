@@ -8,9 +8,11 @@ import { formatRegistrationDate } from "@/utils/userUtils";
 interface PendingPanelProps {
   users?: User[];
   isLoading?: boolean;
+  onApprove?: (user: User) => void;
+  onDeny?: (userId: string) => void;
 }
 
-export function PendingPanel({ users = [], isLoading }: PendingPanelProps) {
+export function PendingPanel({ users = [], isLoading, onApprove, onDeny }: PendingPanelProps) {
   return (
     <div className="bg-bgCard border border-borderDark rounded-xl p-6 flex flex-col h-full">
       <div className="flex items-center justify-between mb-6">
@@ -55,10 +57,20 @@ export function PendingPanel({ users = [], isLoading }: PendingPanelProps) {
             </div>
 
             <div className="flex items-center gap-2">
-              <Button variant="outline-success" size="sm" className="h-7 px-2.5 text-xs font-medium tracking-tight">
+              <Button 
+                variant="outline-success" 
+                size="sm" 
+                className="h-7 px-2.5 text-xs font-medium tracking-tight"
+                onClick={() => onApprove?.(user)}
+              >
                 Approve
               </Button>
-              <Button variant="outline-danger" size="sm" className="h-7 px-2.5 text-xs font-medium tracking-tight">
+              <Button 
+                variant="outline-danger" 
+                size="sm" 
+                className="h-7 px-2.5 text-xs font-medium tracking-tight"
+                onClick={() => onDeny?.(user.id)}
+              >
                 Deny
               </Button>
             </div>
