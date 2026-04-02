@@ -102,7 +102,7 @@ function RightPanel() {
       const res = await loginUser({ email, password });
 
       if (res?.success) {
-        router.push('/dashboard');
+        router.push('admin/dashboard');
       }
     } catch (err: any) {
       const parsed = parseApiError(err);

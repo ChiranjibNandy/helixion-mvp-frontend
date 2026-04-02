@@ -8,31 +8,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Primary brand colors (existing + structured)
         primary: '#4f7cff',
         primaryDark: '#3b5bdb',
         primaryDarker: '#2f4cc4',
 
-        // (optional compatibility with your blue scale)
         blue: {
           500: '#4f7cff',
           600: '#3b5bdb',
           700: '#2f4cc4',
         },
 
-        // Background system
         bgMain: '#080c18',
         bgCard: '#0a0f1e',
         inputBg: '#111827',
 
-        //  Borders & UI
         borderDark: '#1f2937',
 
-        //  Text system
         textMuted: '#9ca3af',
         textSecondary: '#d1d5db',
 
-        //  Accent
         accentYellow: '#facc15',
       },
 
