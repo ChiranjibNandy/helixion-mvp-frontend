@@ -1,9 +1,7 @@
 'use client';
 
 import { LayoutDashboard, BarChart3, Users, Shield, FileText, Settings, Zap, Bell } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import { SidebarProps } from '@/types/admin';
-import { COLOR_CLASSES } from '@/constants/admin';
 
 interface NavItemData {
   icon: React.ReactNode;
@@ -25,14 +23,14 @@ function NavItem({ item }: NavItemProps) {
   
   return (
     <div className={`flex items-center justify-between px-4 py-2.5 rounded-lg cursor-pointer transition-colors ${
-      isActive ? 'bg-[#1e293b] text-white' : `${COLOR_CLASSES.TEXT_MUTED} hover:bg-[#1e293b]/50 hover:text-white`
+      isActive ? 'bg-[#1e293b] text-white' : 'text-[#9ca3af] hover:bg-[#1e293b]/50 hover:text-white'
     }`}>
       <div className="flex items-center gap-3">
         <div className="w-5 h-5">{icon}</div>
         <span className="text-sm font-medium">{label}</span>
       </div>
       {badge && (
-        <span className={`${COLOR_CLASSES.PRIMARY} text-white text-xs px-2 py-0.5 rounded-full font-medium`}>
+        <span className="bg-primary text-white text-xs px-2 py-0.5 rounded-full font-medium">
           {badge}
         </span>
       )}
@@ -44,8 +42,6 @@ function NavItem({ item }: NavItemProps) {
  * Main sidebar navigation component
  */
 export default function Sidebar({ pendingCount, totalUsers }: SidebarProps) {
-  const pathname = usePathname();
-
   const navigationItems: Array<{
     title: string;
     items: NavItemData[];
@@ -85,10 +81,10 @@ export default function Sidebar({ pendingCount, totalUsers }: SidebarProps) {
   ];
 
   return (
-    <div className={`w-64 ${COLOR_CLASSES.BG_DARK} border-r ${COLOR_CLASSES.BORDER} h-screen flex flex-col`}>
-      <div className={`p-6 border-b ${COLOR_CLASSES.BORDER}`}>
+    <div className="w-64 bg-[#0a0f1e] border-r border-[#1a2235] h-screen flex flex-col">
+      <div className="p-6 border-b border-[#1a2235]">
         <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 ${COLOR_CLASSES.PRIMARY} rounded-lg flex items-center justify-center`}>
+          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-lg">He</span>
           </div>
           <span className="text-white font-semibold text-lg">Helixion</span>
@@ -98,7 +94,7 @@ export default function Sidebar({ pendingCount, totalUsers }: SidebarProps) {
       <div className="flex-1 px-3 py-6">
         {navigationItems.map((section) => (
           <div key={section.title} className="mb-6">
-            <div className={`${COLOR_CLASSES.TEXT_MUTED} text-xs font-semibold uppercase tracking-wider px-4 mb-3`}>
+            <div className="text-[#6b7280] text-xs font-semibold uppercase tracking-wider px-4 mb-3">
               {section.title}
             </div>
             <div className="space-y-1">
@@ -113,14 +109,14 @@ export default function Sidebar({ pendingCount, totalUsers }: SidebarProps) {
         ))}
       </div>
 
-      <div className={`p-4 border-t ${COLOR_CLASSES.BORDER}`}>
+      <div className="p-4 border-t border-[#1a2235]">
         <div className="flex items-center gap-3">
-          <div className={`w-9 h-9 ${COLOR_CLASSES.PRIMARY} rounded-full flex items-center justify-center`}>
+          <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center">
             <span className="text-white text-sm font-semibold">AD</span>
           </div>
           <div className="flex-1">
             <div className="text-white text-sm font-medium">Admin</div>
-            <div className={`${COLOR_CLASSES.TEXT_MUTED} text-xs`}>View profile</div>
+            <div className="text-[#6b7280] text-xs">View profile</div>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { RecentActivityProps } from '@/types/admin';
-import { COLOR_CLASSES, ACTIVITY_DOT_COLORS, UI_MESSAGES } from '@/constants/admin';
+import { ACTIVITY_DOT_COLORS, UI_MESSAGES } from '@/constants/admin';
 import ActivityItem from '../ui/ActivityItem';
 
 /**
@@ -9,7 +9,7 @@ import ActivityItem from '../ui/ActivityItem';
  */
 export default function RecentActivity({ activities }: RecentActivityProps) {
   return (
-    <div className={`${COLOR_CLASSES.BG_CARD} rounded-lg border ${COLOR_CLASSES.BORDER} p-6`}>
+    <div className="bg-[#0f1629] rounded-lg border border-[#1a2235] p-6">
       <h2 className="text-white text-base font-semibold mb-4">Recent activity</h2>
       {activities.length > 0 ? (
         <div className="space-y-0">
@@ -23,7 +23,7 @@ export default function RecentActivity({ activities }: RecentActivityProps) {
           ))}
         </div>
       ) : (
-        <div className={`${COLOR_CLASSES.TEXT_MUTED} text-sm text-center py-8`}>
+        <div className="text-[#6b7280] text-sm text-center py-8">
           {UI_MESSAGES.NO_RECENT_ACTIVITY}
         </div>
       )}

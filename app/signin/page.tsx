@@ -102,7 +102,12 @@ function RightPanel() {
       const res = await loginUser({ email, password });
 
       if (res?.success) {
-        router.push('admin/dashboard');
+        // Only route to admin dashboard if user is admin
+        if (res.data?.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else {
+          router.push('/dashboard');
+        }
       }
     } catch (err: any) {
       const parsed = parseApiError(err);

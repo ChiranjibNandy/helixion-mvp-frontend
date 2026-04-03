@@ -2,7 +2,7 @@
 
 import { ArrowRight } from 'lucide-react';
 import { PendingRegistrationsProps } from '@/types/admin';
-import { COLOR_CLASSES, UI_MESSAGES, ICON_EMOJIS, ICON_BACKGROUNDS } from '@/constants/admin';
+import { ICON_EMOJIS, ICON_BACKGROUNDS } from '@/constants/admin';
 import RegistrationRow from '../ui/RegistrationRow';
 
 /**
@@ -10,10 +10,10 @@ import RegistrationRow from '../ui/RegistrationRow';
  */
 export default function PendingRegistrations({ registrations }: PendingRegistrationsProps) {
   return (
-    <div className={`${COLOR_CLASSES.BG_CARD} rounded-lg border ${COLOR_CLASSES.BORDER}`}>
-      <div className={`flex items-center justify-between p-6 border-b ${COLOR_CLASSES.BORDER}`}>
+    <div className="bg-[#0f1629] rounded-lg border border-[#1a2235]">
+      <div className="flex items-center justify-between p-6 border-b border-[#1a2235]">
         <h2 className="text-white text-base font-semibold">Pending registrations</h2>
-        <button className={`flex items-center gap-2 ${COLOR_CLASSES.PRIMARY} text-sm font-medium hover:text-primaryDark transition-colors`}>
+        <button className="flex items-center gap-2 text-primary text-sm font-medium hover:text-primaryDark transition-colors">
           See all
           <ArrowRight size={16} />
         </button>
