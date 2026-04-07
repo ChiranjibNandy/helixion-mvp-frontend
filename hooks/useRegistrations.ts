@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import { FormattedRegistration } from '@/types/admin';
 import { transformRegistrationData, isValidApiResponse } from '@/utils/adminHelpers';
-import { API_ENDPOINTS, COLOR_CLASSES } from '@/constants/admin';
+import { API_ENDPOINTS } from '@/constants/admin';
+import { getToken } from '@/utils/token';
+import { FORM_ERRORS, AUTH_ERRORS, NETWORK_ERRORS } from '@/constants/errors';
 
 interface UseRegistrationsReturn {
   registrations: FormattedRegistration[];
@@ -13,6 +15,7 @@ interface UseRegistrationsReturn {
 
 /**
  * Custom hook for fetching and managing registration data
+ * Implements proper error handling with user-friendly messages
  */
 export const useRegistrations = (): UseRegistrationsReturn => {
   const [registrations, setRegistrations] = useState<FormattedRegistration[]>([]);
@@ -22,11 +25,20 @@ export const useRegistrations = (): UseRegistrationsReturn => {
   useEffect(() => {
     const fetchRegistrations = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-        const token = localStorage.getItem('accessToken');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+        if (!apiUrl) {
+          setError(NETWORK_ERRORS.SERVER_ERROR);
+          setLoading(false);
+          return;
+        }
+
+        const token = getToken();
 
         if (!token) {
-          throw new Error('Authentication token not found');
+          setError(AUTH_ERRORS.TOKEN_MISSING);
+          setLoading(false);
+          return;
         }
 
         const response = await fetch(`${apiUrl}${API_ENDPOINTS.REGISTRATIONS}`, {
@@ -37,20 +49,30 @@ export const useRegistrations = (): UseRegistrationsReturn => {
         });
 
         if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
+          if (response.status === 401) {
+            setError(AUTH_ERRORS.SESSION_EXPIRED);
+          } else if (response.status >= 500) {
+            setError(NETWORK_ERRORS.SERVER_ERROR);
+          } else {
+            setError(FORM_ERRORS.DATA_LOAD_FAILED);
+          }
+          setLoading(false);
+          return;
         }
 
         const result = await response.json();
 
-        if (!isValidApiResponse(result) || !result.success) {
-          throw new Error(result.message || 'Failed to fetch registrations');
+        if (!isValidApiResponse<unknown[]>(result) || !result.success) {
+          setError(FORM_ERRORS.DATA_LOAD_FAILED);
+          setLoading(false);
+          return;
         }
 
-        const formattedData = transformRegistrationData(result.data as unknown[]);
+        const formattedData = transformRegistrationData(result.data);
         setRegistrations(formattedData);
-      } catch (err) {
-        console.error('Failed to fetch registrations:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error occurred');
+        setError(null);
+      } catch {
+        setError(NETWORK_ERRORS.CONNECTION_FAILED);
       } finally {
         setLoading(false);
       }

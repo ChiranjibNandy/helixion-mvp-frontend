@@ -1,24 +1,24 @@
 import axios from 'axios';
+import { getToken } from '@/utils/token';
 
 const API = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true, // future cookies support
+  withCredentials: true,
 });
 
-// Request interceptor (token attach)
+// Request interceptor - attach auth token
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
+  const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
-// Response interceptor (error handling)
+// Response interceptor - handle common errors
 API.interceptors.response.use(
-  (res) => res,
+  (response) => response,
   (error) => {
-    console.error('API Error:', error.response?.data || error.message);
     return Promise.reject(error);
   }
 );

@@ -2,7 +2,6 @@
 
 import { KeyRound, Mail } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import AuthButton from '../../components/AuthButton';
@@ -10,42 +9,40 @@ import AuthLayout from '../../components/AuthLayout';
 import InputField from '../../components/InputField';
 import { loginUser } from '@/utils/authService';
 import { parseApiError } from '@/utils/parseError';
-
-const stats = [
-  { value: '2.4M', accent: '+', label: 'Active learners' },
-  { value: '98', accent: '%', label: 'Completion rate' },
-  { value: '500', accent: '+', label: 'Enterprise clients' },
-];
+import { SIGNIN_CONTENT } from '@/constants/content';
+import { ROUTES, USER_ROLES } from '@/constants/navigation';
+import { useForm } from '@/hooks/useForm';
+import { validateLoginForm } from '@/utils/validators';
 
 function LeftPanel() {
+  const { STATS, LEFT_PANEL } = SIGNIN_CONTENT;
+
   return (
     <div className="flex flex-col gap-7">
       <div className="flex items-center gap-2">
         <div className="h-px w-6 bg-primaryDark" />
         <div className="text-xs tracking-widest font-medium text-textMuted flex items-center gap-1">
-          <span>OPTION B · ROLE SELECTOR</span>
-          <span className="text-accentYellow">★</span>
-          <span>RECOMMENDED</span>
+          <span>{LEFT_PANEL.TAG}</span>
+          <span className="text-accentYellow">{LEFT_PANEL.TAG_BADGE}</span>
         </div>
       </div>
 
       <div>
         <h1 className="text-5xl font-extrabold leading-tight text-white">
-          One platform. <br />
-          <span className="text-primary">Three</span>{' '}
-          <span className="text-white">workspaces.</span>
+          {LEFT_PANEL.HEADLINE.PART1} <br />
+          <span className="text-primary">{LEFT_PANEL.HEADLINE.HIGHLIGHT}</span>{' '}
+          <span className="text-white">{LEFT_PANEL.HEADLINE.PART2}</span>
         </h1>
       </div>
 
       <p className="text-sm leading-relaxed text-textMuted">
-        Training Admins, Corporate Employees, and Reporting Managers — each with a purpose-built
-        dashboard, accessed through one unified login.
+        {LEFT_PANEL.DESCRIPTION}
       </p>
 
       <div className="h-px w-full bg-borderDark" />
 
       <div className="grid grid-cols-3 gap-4">
-        {stats.map((s) => (
+        {STATS.map((s) => (
           <div key={s.label} className="flex flex-col gap-1">
             <span className="text-3xl font-extrabold text-white leading-none">
               {s.value}
@@ -59,67 +56,46 @@ function LeftPanel() {
   );
 }
 
-interface Errors {
-  email?: string;
-  password?: string;
-}
-
 function RightPanel() {
   const router = useRouter();
+  const { FORM } = SIGNIN_CONTENT;
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<Errors>({});
-  const [formError, setFormError] = useState(''); 
-  const [loading, setLoading] = useState(false);
+  const {
+    values,
+    errors,
+    formError,
+    loading,
+    handleChange,
+    handleSubmit,
+    setFormError,
+  } = useForm({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validate: validateLoginForm,
+    onSubmit: async (formValues) => {
+      try {
+        const res = await loginUser(formValues);
 
-  const validate = (): boolean => {
-    const e: Errors = {};
-
-    if (!email.trim()) {
-      e.email = 'Email is required.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      e.email = 'Enter a valid email address.';
-    }
-
-    if (!password) {
-      e.password = 'Password is required.';
-    }
-
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError(''); // reset
-
-    if (!validate()) return;
-
-    try {
-      setLoading(true);
-
-      const res = await loginUser({ email, password });
-
-      if (res?.success) {
-        // Only route to admin dashboard if user is admin
-        if (res.data?.role === 'admin') {
-          router.push('/admin/dashboard');
-        } else {
-          router.push('/dashboard');
+        if (res?.success) {
+          // Only route to admin dashboard if user is admin
+          if (res.data?.role === USER_ROLES.ADMIN) {
+            router.push(ROUTES.ADMIN_DASHBOARD);
+          } else {
+            router.push(ROUTES.DASHBOARD);
+          }
         }
+      } catch (err: unknown) {
+        const parsed = parseApiError(err);
+        setFormError(parsed.message);
       }
-    } catch (err: any) {
-      const parsed = parseApiError(err);
-      setFormError(parsed.message || 'Something went wrong'); 
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+  });
 
   return (
     <div>
-      <h2 className="text-3xl font-bold text-white mb-8">Sign In</h2>
+      <h2 className="text-3xl font-bold text-white mb-8">{FORM.TITLE}</h2>
 
       {/*FORM ERROR */}
       {formError && (
@@ -131,24 +107,24 @@ function RightPanel() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
 
         <InputField
-          label="Email"
+          label={FORM.EMAIL_LABEL}
           icon={<Mail size={16} />}
-          placeholder="you@company.com"
+          placeholder={FORM.EMAIL_PLACEHOLDER}
           type="email"
-          value={email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+          value={values.email}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('email')(e.target.value)}
           error={errors.email}
           autoComplete="email"
         />
 
         <div className="flex flex-col gap-1">
           <InputField
-            label="Password"
+            label={FORM.PASSWORD_LABEL}
             icon={<KeyRound size={16} />}
-            placeholder="••••••••"
+            placeholder={FORM.PASSWORD_PLACEHOLDER}
             showToggle
-            value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+            value={values.password}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('password')(e.target.value)}
             error={errors.password}
             autoComplete="current-password"
           />
@@ -158,25 +134,25 @@ function RightPanel() {
               href="#"
               className="text-xs font-medium hover:underline mt-1 text-primary"
             >
-              Forgot password?
+              {FORM.FORGOT_PASSWORD}
             </Link>
           </div>
         </div>
 
         <AuthButton type="submit" loading={loading}>
-          Sign In →
+          {FORM.SUBMIT_BUTTON}
         </AuthButton>
 
         <div className="flex items-center gap-3">
           <div className="flex-1 h-px bg-borderDark" />
-          <span className="text-xs tracking-widest text-gray-600">OR</span>
+          <span className="text-xs tracking-widest text-gray-600">{FORM.OR_DIVIDER}</span>
           <div className="flex-1 h-px bg-borderDark" />
         </div>
 
         <p className="text-center text-sm text-textMuted">
-          Don&apos;t have an account?{' '}
-          <Link href="/signup" className="font-semibold hover:underline text-primary">
-            Create account →
+          {FORM.NO_ACCOUNT}{' '}
+          <Link href={ROUTES.SIGNUP} className="font-semibold hover:underline text-primary">
+            {FORM.CREATE_ACCOUNT}
           </Link>
         </p>
       </form>

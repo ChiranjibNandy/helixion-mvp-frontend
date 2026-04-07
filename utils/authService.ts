@@ -1,17 +1,49 @@
 import { loginAPI, registerAPI } from '@/lib/auth';
 import { setToken } from '@/utils/token';
+import { LoginCredentials, RegisterCredentials, AuthResponse } from '@/types/auth';
+import { AxiosResponse } from 'axios';
 
-export const loginUser = async (data: any) => {
-  const res = await loginAPI(data);
+interface ApiAuthResponse {
+  success: boolean;
+  message?: string;
+  accessToken?: string;
+  data?: {
+    id: string;
+    username: string;
+    email: string;
+    role: 'admin' | 'user';
+  };
+}
 
-  if (res.data.success) {
+/**
+ * Authenticate user with credentials
+ * Stores token on successful login
+ */
+export const loginUser = async (data: LoginCredentials): Promise<AuthResponse> => {
+  const res: AxiosResponse<ApiAuthResponse> = await loginAPI(data);
+
+  if (res.data.success && res.data.accessToken) {
     setToken(res.data.accessToken);
   }
 
-  return res.data;
+  return {
+    success: res.data.success,
+    message: res.data.message,
+    accessToken: res.data.accessToken,
+    data: res.data.data,
+  };
 };
 
-export const registerUser = async (data: any) => {
-  const res = await registerAPI(data);
-  return res.data;
+/**
+ * Register new user account
+ */
+export const registerUser = async (data: RegisterCredentials): Promise<AuthResponse> => {
+  const res: AxiosResponse<ApiAuthResponse> = await registerAPI(data);
+
+  return {
+    success: res.data.success,
+    message: res.data.message,
+    accessToken: res.data.accessToken,
+    data: res.data.data,
+  };
 };

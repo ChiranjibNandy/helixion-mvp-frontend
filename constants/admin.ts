@@ -4,26 +4,29 @@ export const API_ENDPOINTS = {
   REGISTRATIONS: '/admin/registrations',
 } as const;
 
+// Activity dot colors using semantic Tailwind classes
 export const ACTIVITY_DOT_COLORS = {
-  success: 'bg-[#16a34a]',
-  error: 'bg-[#dc2626]',
-  warning: 'bg-[#f59e0b]',
+  success: 'bg-accentGreen',
+  error: 'bg-accentRed',
+  warning: 'bg-accentOrange',
   info: 'bg-primary',
 } as const;
 
+// Semantic color classes - all using Tailwind theme tokens
 export const COLOR_CLASSES = {
-  TEXT_MUTED: 'text-[#6b7280]',
-  TEXT_SECONDARY: 'text-[#d1d5db]',
+  TEXT_MUTED: 'text-textSidebarMuted',
+  TEXT_SECONDARY: 'text-textSecondary',
   TEXT_BLUE: 'text-blue-400',
-  TEXT_WARNING: 'text-[#f59e0b]',
+  TEXT_WARNING: 'text-accentOrange',
   BG_MAIN: 'bg-bgMain',
-  BG_CARD: 'bg-[#0f1629]',
-  BG_DARK: 'bg-[#0a0f1e]',
-  BORDER: 'border-[#1a2235]',
+  BG_CARD: 'bg-bgStatCard',
+  BG_DARK: 'bg-bgSidebar',
+  BORDER: 'border-borderCard',
   PRIMARY: 'primary',
 } as const;
 
 export const UI_MESSAGES = {
+  LOADING: 'Loading...',
   LOADING_REGISTRATIONS: 'Loading registrations...',
   NO_RECENT_ACTIVITY: 'No recent activity',
   DATA_UNAVAILABLE: 'Data unavailable',
@@ -32,8 +35,13 @@ export const UI_MESSAGES = {
   COMING_SOON: 'Coming soon',
 } as const;
 
-export const ICON_EMOJIS = ['👤', '👨', '👩', '🧑'] as const;
-export const ICON_BACKGROUNDS = ['bg-[#1e3a8a]', 'bg-[#166534]', 'bg-[#7c2d12]', 'bg-[#713f12]'] as const;
+// Avatar background colors using semantic Tailwind classes
+export const AVATAR_BACKGROUNDS = [
+  'bg-avatarBlue',
+  'bg-avatarGreen',
+  'bg-avatarOrange',
+  'bg-avatarYellow',
+] as const;
 
 export const DATE_FORMATS = {
   TODAY: 'Today',

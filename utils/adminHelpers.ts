@@ -1,5 +1,23 @@
-import { DATE_FORMATS } from '@/constants/admin';
+import { DATE_FORMATS, AVATAR_BACKGROUNDS } from '@/constants/admin';
 import { UserRegistration, FormattedRegistration } from '@/types/admin';
+
+/**
+ * Type guard to check if an item is a valid UserRegistration
+ */
+function isUserRegistration(item: unknown): item is UserRegistration {
+  if (typeof item !== 'object' || item === null) {
+    return false;
+  }
+
+  const reg = item as Record<string, unknown>;
+
+  return (
+    typeof reg.id === 'string' &&
+    typeof reg.username === 'string' &&
+    typeof reg.email === 'string' &&
+    typeof reg.createdAt === 'string'
+  );
+}
 
 /**
  * Formats date string to human readable format
@@ -19,31 +37,26 @@ export const formatDate = (dateString: string): string => {
 
 /**
  * Transforms API registration data to UI format
+ * Uses type guards for safe data validation
  */
 export const transformRegistrationData = (
   registrations: unknown[]
 ): FormattedRegistration[] => {
-  return registrations.map((item) => {
-    const registration = item as UserRegistration;
-    return {
+  return registrations
+    .filter(isUserRegistration)
+    .map((registration) => ({
       id: registration.id,
       name: registration.username,
       email: registration.email,
       date: formatDate(registration.createdAt),
-    };
-  });
+    }));
 };
 
 /**
- * Generates icon and background for registration rows
+ * Gets avatar background class based on index
  */
-export const getRegistrationIcon = (index: number) => {
-  const { ICON_EMOJIS, ICON_BACKGROUNDS } = require('@/constants/admin');
-  
-  return {
-    icon: ICON_EMOJIS[index % ICON_EMOJIS.length],
-    iconBg: ICON_BACKGROUNDS[index % ICON_BACKGROUNDS.length],
-  };
+export const getAvatarBackground = (index: number): string => {
+  return AVATAR_BACKGROUNDS[index % AVATAR_BACKGROUNDS.length];
 };
 
 /**

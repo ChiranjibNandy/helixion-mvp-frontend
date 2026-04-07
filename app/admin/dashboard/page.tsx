@@ -7,6 +7,7 @@ import StatCard from '@/components/dashboard/ui/StatCard';
 import PendingRegistrations from '@/components/dashboard/features/PendingRegistrations';
 import RecentActivity from '@/components/dashboard/features/RecentActivity';
 import { COLOR_CLASSES, UI_MESSAGES } from '@/constants/admin';
+import { ADMIN_CONTENT } from '@/constants/content';
 import { Activity } from '@/types/admin';
 
 /**
@@ -14,20 +15,9 @@ import { Activity } from '@/types/admin';
  */
 export default function AdminDashboard() {
   const { registrations, loading, error } = useRegistrations();
-  
+
   const recentActivities: Activity[] = [];
-  
-  // Handle error state
-  if (error) {
-    return (
-      <div className={`flex h-screen ${COLOR_CLASSES.BG_MAIN}`}>
-        <Sidebar pendingCount={0} totalUsers={0} />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-red-500">Error: {error}</div>
-        </div>
-      </div>
-    );
-  }
+  const { STATS } = ADMIN_CONTENT.DASHBOARD;
 
   return (
     <div className={`flex h-screen ${COLOR_CLASSES.BG_MAIN}`}>
@@ -38,27 +28,27 @@ export default function AdminDashboard() {
           <div className="p-8">
             {/* Stats Section */}
             <div className="grid grid-cols-4 gap-6 mb-8">
-              <StatCard 
-                title="Total users" 
-                value="-" 
+              <StatCard
+                title={STATS.TOTAL_USERS}
+                value="-"
                 subtitle={UI_MESSAGES.DATA_UNAVAILABLE}
                 subtitleColor={COLOR_CLASSES.TEXT_MUTED}
               />
-              <StatCard 
-                title="Pending approval" 
-                value={registrations.length} 
+              <StatCard
+                title={STATS.PENDING_APPROVAL}
+                value={registrations.length}
                 subtitle={UI_MESSAGES.NEEDS_ACTION}
                 subtitleColor={COLOR_CLASSES.TEXT_WARNING}
               />
-              <StatCard 
-                title="Active today" 
-                value="-" 
+              <StatCard
+                title={STATS.ACTIVE_TODAY}
+                value="-"
                 subtitle={UI_MESSAGES.DATA_UNAVAILABLE}
                 subtitleColor={COLOR_CLASSES.TEXT_MUTED}
               />
-              <StatCard 
-                title="Deactivated" 
-                value="-" 
+              <StatCard
+                title={STATS.DEACTIVATED}
+                value="-"
                 subtitle={UI_MESSAGES.ALL_TIME}
                 subtitleColor={COLOR_CLASSES.TEXT_MUTED}
               />
@@ -70,6 +60,18 @@ export default function AdminDashboard() {
                 {loading ? (
                   <div className={`${COLOR_CLASSES.BG_CARD} rounded-lg border ${COLOR_CLASSES.BORDER} p-6 flex items-center justify-center h-[400px]`}>
                     <div className={COLOR_CLASSES.TEXT_MUTED}>{UI_MESSAGES.LOADING_REGISTRATIONS}</div>
+                  </div>
+                ) : error ? (
+                  <div className={`${COLOR_CLASSES.BG_CARD} rounded-lg border ${COLOR_CLASSES.BORDER} p-6 flex items-center justify-center h-[400px]`}>
+                    <div className="text-center">
+                      <p className="text-textSidebarMuted mb-2">{error}</p>
+                      <button
+                        onClick={() => window.location.reload()}
+                        className="text-primary hover:text-primaryDark text-sm font-medium"
+                      >
+                        Try again
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <PendingRegistrations registrations={registrations} />
