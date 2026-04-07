@@ -9,7 +9,7 @@ export const SIGNIN_CONTENT = {
   ] as const,
   LEFT_PANEL: {
     TAG: 'OPTION B · ROLE SELECTOR',
-    TAG_BADGE: '★ RECOMMENDED',
+    TAG_BADGE: 'RECOMMENDED',
     HEADLINE: {
       PART1: 'One platform.',
       HIGHLIGHT: 'Three',

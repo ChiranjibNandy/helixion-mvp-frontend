@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle2, KeyRound, Mail, User } from 'lucide-react';
+import { CheckCircle2, KeyRound, Mail, User, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AuthButton from '../../components/AuthButton';
@@ -22,7 +22,7 @@ function LeftPanel() {
         <div className="h-px w-6 bg-primaryDark" />
         <div className="text-xs tracking-widest font-medium text-textMuted flex items-center gap-1">
           <span>{LEFT_PANEL.TAG}</span>
-          <span className="text-accentYellow">★</span>
+          <Star size={12} className="text-accentYellow fill-accentYellow" />
         </div>
       </div>
 

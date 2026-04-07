@@ -1,6 +1,6 @@
 'use client';
 
-import { KeyRound, Mail } from 'lucide-react';
+import { KeyRound, Mail, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -23,6 +23,7 @@ function LeftPanel() {
         <div className="h-px w-6 bg-primaryDark" />
         <div className="text-xs tracking-widest font-medium text-textMuted flex items-center gap-1">
           <span>{LEFT_PANEL.TAG}</span>
+          <Star size={12} className="text-accentYellow fill-accentYellow" />
           <span className="text-accentYellow">{LEFT_PANEL.TAG_BADGE}</span>
         </div>
       </div>
