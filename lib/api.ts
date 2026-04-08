@@ -40,19 +40,3 @@ export function createApiClient(accessToken?: string) {
   return client;
 }
 
-export function getAccessTokenFromCookieHeader(cookieHeader?: string) {
-  if (!cookieHeader) {
-    return undefined;
-  }
-
-  const cookies = cookieHeader.split(";");
-  const accessTokenCookie = cookies.find((cookie) =>
-    cookie.trim().startsWith("accessToken=")
-  );
-
-  if (!accessTokenCookie) {
-    return undefined;
-  }
-
-  return decodeURIComponent(accessTokenCookie.split("=")[1] ?? "");
-}

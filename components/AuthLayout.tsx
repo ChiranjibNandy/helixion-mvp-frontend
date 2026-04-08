@@ -1,5 +1,3 @@
-
-
 import { CheckCircle2 } from "lucide-react";
 import React from "react";
 import styles from "./AuthLayout.module.css";
