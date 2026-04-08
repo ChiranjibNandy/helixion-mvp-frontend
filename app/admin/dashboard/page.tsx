@@ -14,7 +14,7 @@ import { Activity } from '@/types/admin';
  * Main admin dashboard page with production-level architecture
  */
 export default function AdminDashboard() {
-  const { registrations, loading, error } = useRegistrations();
+  const { registrations, loading, error, retry } = useRegistrations();
 
   const recentActivities: Activity[] = [];
   const { STATS } = ADMIN_CONTENT.DASHBOARD;
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
                     <div className="text-center">
                       <p className="text-textSidebarMuted mb-2">{error}</p>
                       <button
-                        onClick={() => window.location.reload()}
+                        onClick={retry}
                         className="text-primary hover:text-primaryDark text-sm font-medium"
                       >
                         Try again

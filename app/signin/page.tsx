@@ -29,10 +29,8 @@ function LeftPanel() {
       </div>
 
       <div>
-        <h1 className="text-5xl font-extrabold leading-tight text-white">
-          {LEFT_PANEL.HEADLINE.PART1} <br />
-          <span className="text-primary">{LEFT_PANEL.HEADLINE.HIGHLIGHT}</span>{' '}
-          <span className="text-white">{LEFT_PANEL.HEADLINE.PART2}</span>
+        <h1 className="text-5xl font-extrabold leading-tight text-white whitespace-pre-line">
+          {LEFT_PANEL.HEADLINE}
         </h1>
       </div>
 

@@ -45,6 +45,7 @@ export const ERROR_MESSAGE_MAP: Record<string, string> = {
   '502': NETWORK_ERRORS.SERVER_ERROR,
   '503': NETWORK_ERRORS.SERVER_ERROR,
   '504': NETWORK_ERRORS.SERVER_ERROR,
+  'Password must contain at least one letter, one number, and one special character': 'Password must contain at least one letter, one number, and one special character.',
 } as const;
 
 // Get user-friendly error message

@@ -10,11 +10,7 @@ export const SIGNIN_CONTENT = {
   LEFT_PANEL: {
     TAG: 'OPTION B · ROLE SELECTOR',
     TAG_BADGE: 'RECOMMENDED',
-    HEADLINE: {
-      PART1: 'One platform.',
-      HIGHLIGHT: 'Three',
-      PART2: 'workspaces.',
-    },
+    HEADLINE: 'One platform.\nThree workspaces.',
     DESCRIPTION:
       'Training Admins, Corporate Employees, and Reporting Managers — each with a purpose-built dashboard, accessed through one unified login.',
   },
@@ -42,11 +38,7 @@ export const SIGNUP_CONTENT = {
   ] as const,
   LEFT_PANEL: {
     TAG: 'JOIN HELIXION · GET STARTED FREE',
-    HEADLINE: {
-      PART1: 'Your workspace,',
-      HIGHLIGHT: 'ready',
-      PART2: 'in seconds.',
-    },
+    HEADLINE: 'Your workspace, ready in seconds.',
     DESCRIPTION:
       'Sign up once and get immediate access to the dashboard built for your role — no setup required.',
   },

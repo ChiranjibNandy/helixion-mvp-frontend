@@ -11,6 +11,7 @@ interface UseRegistrationsReturn {
   registrations: FormattedRegistration[];
   loading: boolean;
   error: string | null;
+  retry: () => void;
 }
 
 /**
@@ -21,6 +22,7 @@ export const useRegistrations = (): UseRegistrationsReturn => {
   const [registrations, setRegistrations] = useState<FormattedRegistration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const fetchRegistrations = async () => {
@@ -79,7 +81,11 @@ export const useRegistrations = (): UseRegistrationsReturn => {
     };
 
     fetchRegistrations();
-  }, []);
+  }, [retryCount]);
 
-  return { registrations, loading, error };
+  const retry = () => {
+    setRetryCount((prev) => prev + 1);
+  };
+
+  return { registrations, loading, error, retry };
 };
