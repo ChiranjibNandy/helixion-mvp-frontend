@@ -3,7 +3,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import { PendingRegistrationsProps } from "@/types/admin";
-import { AVATAR_BACKGROUNDS } from "@/constants/admin";
 import { ADMIN_CONTENT } from "@/constants/content";
 import { UserRole } from "@/constants/roles";
 import RegistrationRow from "../ui/RegistrationRow";
@@ -20,6 +19,7 @@ interface SelectedUser {
 // Pending registrations table section with approve/deny actions
 export default function PendingRegistrations({
   registrations: initialRegistrations,
+  onRegistrationChange,
 }: PendingRegistrationsProps) {
   const { SECTIONS } = ADMIN_CONTENT.DASHBOARD;
 
@@ -38,7 +38,9 @@ export default function PendingRegistrations({
   // Remove a registration from the list (optimistic update)
   const removeRegistration = useCallback((userId: string) => {
     setRegistrations((prev) => prev.filter((reg) => reg.id !== userId));
-  }, []);
+    // Notify parent to refresh stats
+    onRegistrationChange?.();
+  }, [onRegistrationChange]);
 
   // Handle opening the approval modal for a specific user
   const handleApproveClick = useCallback(

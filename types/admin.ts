@@ -75,4 +75,5 @@ export interface RecentActivityProps {
 
 export interface PendingRegistrationsProps {
   registrations: FormattedRegistration[];
+  onRegistrationChange?: () => void;
 }
