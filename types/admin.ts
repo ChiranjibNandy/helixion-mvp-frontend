@@ -65,8 +65,8 @@ export interface RegistrationRowProps {
   name: string;
   email: string;
   date: string;
-  icon: React.ReactNode;
-  iconBg: string;
+  icon?: React.ReactNode;
+  iconBg?: string;
 }
 
 export interface RecentActivityProps {
