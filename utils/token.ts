@@ -8,6 +8,16 @@ export function getAccessToken() {
 
   return token;
 }
+
+/**
+ * ✅ Remove access token (logout)
+ */
+export function removeAccessToken() {
+  const cookieStore = cookies();
+
+  cookieStore.delete("accessToken");
+}
+
 /**
  * Decode JWT payload WITHOUT verifying signature
  * (Backend already verified the token)

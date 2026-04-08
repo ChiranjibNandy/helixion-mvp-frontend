@@ -1,8 +1,11 @@
 "use client";
 
-import React from 'react';
+import { AuthButtonProps } from '@/types/auth';
 
-export default function AuthButton({ children, onClick, type = 'submit', loading = false }: any) {
+/**
+ * Authentication button with loading state support
+ */
+export default function AuthButton({ children, onClick, type = 'submit', loading = false }: AuthButtonProps) {
   return (
     <button
       type={type}
