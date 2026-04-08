@@ -8,32 +8,51 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Primary brand colors (existing + structured)
         primary: '#4f7cff',
         primaryDark: '#3b5bdb',
         primaryDarker: '#2f4cc4',
 
-        // (optional compatibility with your blue scale)
         blue: {
           500: '#4f7cff',
           600: '#3b5bdb',
           700: '#2f4cc4',
         },
 
-        // Background system
+        // Semantic background colors
         bgMain: '#080c18',
         bgCard: '#0a0f1e',
+        bgSidebar: '#0a0f1e',
+        bgStatCard: '#0f1629',
+        bgNavActive: '#1e293b',
+        bgButton: '#1e293b',
+        bgButtonHover: '#334155',
         inputBg: '#111827',
 
-        //  Borders & UI
+        // Semantic border colors
         borderDark: '#1f2937',
+        borderSidebar: '#1a2235',
+        borderCard: '#1a2235',
+        borderNav: '#1a2235',
 
-        //  Text system
+        // Semantic text colors
         textMuted: '#9ca3af',
         textSecondary: '#d1d5db',
+        textSidebar: '#9ca3af',
+        textSidebarMuted: '#6b7280',
 
-        //  Accent
+        // Action colors
         accentYellow: '#facc15',
+        accentGreen: '#16a34a',
+        accentGreenHover: '#15803d',
+        accentRed: '#dc2626',
+        accentRedHover: '#b91c1c',
+        accentOrange: '#f59e0b',
+
+        // Avatar background colors
+        avatarBlue: '#1e3a8a',
+        avatarGreen: '#166534',
+        avatarOrange: '#7c2d12',
+        avatarYellow: '#713f12',
       },
 
       fontFamily: {

@@ -2,7 +2,11 @@
 
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
+import { InputFieldProps } from '@/types/auth';
 
+/**
+ * Reusable input field with icon and optional password toggle
+ */
 export default function InputField({
   label,
   icon,
@@ -13,7 +17,7 @@ export default function InputField({
   showToggle = false,
   error,
   autoComplete,
-}: any) {
+}: InputFieldProps) {
   const [visible, setVisible] = useState(false);
   const inputType = showToggle ? (visible ? 'text' : 'password') : type;
 
@@ -36,7 +40,7 @@ export default function InputField({
             w-full rounded-lg text-sm pl-10 py-3
             ${showToggle ? 'pr-10' : 'pr-4'}
             outline-none transition-all duration-200
-            placeholder-[#4b5563] text-white
+            placeholder-gray-600 text-white
             focus:ring-2 focus:ring-blue-500
             bg-inputBg border
             ${error ? 'border-red-500/60 ring-2 ring-red-500/60' : 'border-borderDark'}
