@@ -1,17 +1,11 @@
-import { loginAPI, registerAPI } from '@/lib/auth';
-import { setToken } from '@/utils/token';
+import { createApiClient } from "@/lib/api";
 
 export const loginUser = async (data: any) => {
-  const res = await loginAPI(data);
-
-  if (res.data.success) {
-    setToken(res.data.accessToken);
-  }
-
-  return res.data;
+  const api = createApiClient();
+  return (await api.post("/auth/login", data)).data;
 };
 
 export const registerUser = async (data: any) => {
-  const res = await registerAPI(data);
-  return res.data;
+  const api = createApiClient();
+  return (await api.post("/auth/register", data)).data;
 };

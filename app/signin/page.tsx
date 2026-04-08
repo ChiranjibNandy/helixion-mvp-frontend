@@ -2,7 +2,6 @@
 
 import { KeyRound, Mail } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import AuthButton from '../../components/AuthButton';
@@ -10,6 +9,7 @@ import AuthLayout from '../../components/AuthLayout';
 import InputField from '../../components/InputField';
 import { loginUser } from '@/utils/authService';
 import { parseApiError } from '@/utils/parseError';
+import { useState } from 'react';
 
 const stats = [
   { value: '2.4M', accent: '+', label: 'Active learners' },

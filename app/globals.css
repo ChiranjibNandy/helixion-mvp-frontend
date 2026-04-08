@@ -6,9 +6,32 @@
   box-sizing: border-box;
 }
 
+@layer base {
+  :root {
+    /* Map your existing colors to CSS variables shadcn expects */
+    --background: 222 47% 6%;        /* #080c18 */
+    --foreground: 213 20% 82%;       /* #d1d5db */
+
+    --card: 222 47% 8%;              /* #0a0f1e */
+    --card-foreground: 213 20% 82%;
+
+    --muted: 217 33% 17%;            /* #1f2937 */
+    --muted-foreground: 218 11% 65%; /* #9ca3af */
+
+    --border: 217 33% 17%;           /* #1f2937 */
+
+    --primary: 224 100% 65%;         /* #4f7cff */
+    --primary-foreground: 222 47% 6%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --radius: 0.5rem;
+  }
+}
+
 html, body {
   height: 100%;
-  background-color: #080c18;
 }
 
 input:-webkit-autofill,

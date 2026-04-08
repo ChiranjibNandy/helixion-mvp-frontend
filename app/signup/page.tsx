@@ -4,7 +4,7 @@ import { CheckCircle2, KeyRound, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import styles from "./Signup.module.css";
+import styles from "../../components/Signup.module.css";
 import AuthButton from "../../components/AuthButton";
 import AuthLayout from "../../components/AuthLayout";
 import InputField from "../../components/InputField";
