@@ -1,65 +1,40 @@
 'use client';
 
-import { ChevronDown } from 'lucide-react';
+import { useMemo } from 'react';
 import { RoleDropdownProps } from '@/types/user.types';
 import { ASSIGNABLE_ROLES, getRoleLabel, UserRole } from '@/constants/roles';
+import Select from '@/components/ui/Select';
 
-// Reusable dropdown component for role selection
+/**
+ * RoleDropdown - A specialized select component for user role selection
+ * Enhances the base Select component with domain-specific role data.
+ */
 export default function RoleDropdown({
   value,
   onChange,
   disabled = false,
   className = '',
 }: RoleDropdownProps) {
+  // Memoize options to avoid mapping on every render
+  const roleOptions = useMemo(() => 
+    ASSIGNABLE_ROLES.map((role) => ({
+      value: role,
+      label: getRoleLabel(role),
+    })), 
+  []);
+
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedRole = event.target.value as UserRole;
-    onChange(selectedRole);
+    onChange(event.target.value as UserRole);
   };
 
   return (
-    <div className={`relative ${className}`}>
-      <select
-        value={value}
-        onChange={handleChange}
-        disabled={disabled}
-        className={`
-          w-full
-          appearance-none
-          bg-bgStatCard
-          border
-          border-borderCard
-          rounded-lg
-          px-4
-          py-3
-          pr-10
-          text-white
-          text-sm
-          focus:outline-none
-          focus:border-primary
-          focus:ring-1
-          focus:ring-primary
-          transition-colors
-          disabled:opacity-50
-          disabled:cursor-not-allowed
-        `}
-        aria-label="Select role"
-      >
-        {ASSIGNABLE_ROLES.map((role) => (
-          <option 
-            key={role} 
-            value={role}
-            className="bg-bgStatCard text-white"
-          >
-            {getRoleLabel(role)}
-          </option>
-        ))}
-      </select>
-      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-        <ChevronDown 
-          size={16} 
-          className={`text-textSidebarMuted ${disabled ? 'opacity-50' : ''}`} 
-        />
-      </div>
-    </div>
+    <Select
+      value={value}
+      onChange={handleChange}
+      disabled={disabled}
+      options={roleOptions}
+      className={className}
+      aria-label="Select role"
+    />
   );
 }

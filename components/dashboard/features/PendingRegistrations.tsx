@@ -8,6 +8,8 @@ import { UserRole } from "@/constants/roles";
 import RegistrationRow from "../ui/RegistrationRow";
 import ApproveUserModal from "@/components/modals/ApproveUserModal";
 import { RegistrationAvatar } from "@/components/ui/Avatar";
+import { UI_ANIMATION_DELAYS } from "@/constants/ui";
+
 
 // User selection state for the approval modal
 interface SelectedUser {
@@ -58,8 +60,10 @@ export default function PendingRegistrations({
   // Handle closing the modal
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
-    setTimeout(() => setSelectedUser(null), 200);
+    // Delay clearing the state to allow modal transition to complete
+    setTimeout(() => setSelectedUser(null), UI_ANIMATION_DELAYS.MODAL_STATE_RESET);
   }, []);
+
 
  
   const handleApprove = useCallback(
@@ -67,9 +71,8 @@ export default function PendingRegistrations({
       // Optimistically remove user from pending list immediately
       removeRegistration(userId);
 
-      console.log(`User ${userId} approved with role: ${role}`);
-
       // Return resolved promise as required by ApproveUserModalProps
+
       return Promise.resolve();
     },
     [removeRegistration],
@@ -79,11 +82,8 @@ export default function PendingRegistrations({
   const handleDenyClick = useCallback(
     (registration: (typeof registrations)[0]) => {
       removeRegistration(registration.id);
-
-      console.log(
-        `User ${registration.id} denied and removed from pending list`,
-      );
     },
+
     [removeRegistration],
   );
 

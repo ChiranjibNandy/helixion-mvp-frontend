@@ -10,12 +10,10 @@ import ModalHeader from "@/components/ui/ModalHeader";
 import ModalFooter from "@/components/ui/ModalFooter";
 import UserInfoCard from "@/components/ui/UserInfoCard";
 import SuccessState from "@/components/ui/SuccessState";
+import { MODAL_CONTENT } from "@/constants/admin";
+import { UI_DISPLAY_DURATIONS } from "@/constants/ui";
 
-// Constants for modal configuration
-const MODAL_TITLE = "Approve User";
 const MODAL_TITLE_ID = "approve-user-title";
-const SUCCESS_MESSAGE = "User Approved!";
-const SUCCESS_DISPLAY_DURATION = 1500;
 
 export default function ApproveUserModal({
   isOpen,
@@ -27,6 +25,8 @@ export default function ApproveUserModal({
     DEFAULT_APPROVAL_ROLE,
   );
   const [showSuccess, setShowSuccess] = useState(false);
+  
+  const { APPROVE_USER } = MODAL_CONTENT;
 
   // Handle modal close with cleanup
   const handleClose = useCallback(() => {
@@ -48,14 +48,14 @@ export default function ApproveUserModal({
 
       setTimeout(() => {
         handleClose();
-      }, SUCCESS_DISPLAY_DURATION);
+      }, UI_DISPLAY_DURATIONS.SUCCESS_STATE);
     },
     [onApprove, handleClose],
   );
 
   // Handle error callback
   const handleError = useCallback((userId: string, errorMessage: string) => {
-    console.error(`Failed to approve user ${userId}:`, errorMessage);
+    // Error is handled by the hook's error state, but could be logged to a service here
   }, []);
 
   const { approve, loading, error, clearError } = useApproveUser(
@@ -93,7 +93,7 @@ export default function ApproveUserModal({
       ariaLabelledBy={MODAL_TITLE_ID}
     >
       <ModalHeader
-        title={MODAL_TITLE}
+        title={APPROVE_USER.TITLE}
         titleId={MODAL_TITLE_ID}
         onClose={handleClose}
         disabled={loading}
@@ -103,9 +103,9 @@ export default function ApproveUserModal({
         <UserInfoCard name={user.name} email={user.email} />
 
         {showSuccess ? (
-          <SuccessState message={SUCCESS_MESSAGE} />
+          <SuccessState message={APPROVE_USER.SUCCESS_MESSAGE} />
         ) : (
-          <>
+          <div className="space-y-6">
             <div className="space-y-3">
               <label
                 htmlFor="role-select"
@@ -119,7 +119,7 @@ export default function ApproveUserModal({
                 disabled={loading}
               />
               <p className="text-textSidebarMuted text-xs">
-                Select the appropriate role for this user.
+                {APPROVE_USER.SUBTITLE}
               </p>
             </div>
 
@@ -131,19 +131,19 @@ export default function ApproveUserModal({
 
             <ModalFooter
               secondaryAction={{
-                label: "Cancel",
+                label: APPROVE_USER.CANCEL_LABEL,
                 onClick: handleClose,
                 disabled: loading,
               }}
               primaryAction={{
-                label: "Confirm & Approve",
-                loadingLabel: "Approving...",
+                label: APPROVE_USER.CONFIRM_LABEL,
+                loadingLabel: APPROVE_USER.LOADING_LABEL,
                 onClick: handleApprove,
                 disabled: loading,
                 loading,
               }}
             />
-          </>
+          </div>
         )}
       </div>
     </Modal>
