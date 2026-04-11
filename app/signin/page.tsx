@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import AuthButton from '../../components/AuthButton';
 import AuthLayout from '../../components/AuthLayout';
 import InputField from '../../components/InputField';
-import { loginUser } from '@/utils/authService';
+import { loginAPI } from '@/utils/authService';
 import { parseApiError } from '@/utils/parseError';
 import { SIGNIN_CONTENT } from '@/constants/content';
 import { ROUTES, USER_ROLES } from '@/constants/navigation';
@@ -75,15 +75,12 @@ function RightPanel() {
     validate: validateLoginForm,
     onSubmit: async (formValues) => {
       try {
-        const res = await loginUser(formValues);
+        const res = await loginAPI(formValues);
 
-        if (res?.success) {
-          // Only route to admin dashboard if user is admin
-          if (res.data?.role === USER_ROLES.ADMIN) {
-            router.push(ROUTES.ADMIN_DASHBOARD);
-          } else {
-            router.push(ROUTES.DASHBOARD);
-          }
+        if (res.data.success) {
+
+          router.push(ROUTES.DASHBOARD);
+
         }
       } catch (err: unknown) {
         const parsed = parseApiError(err);

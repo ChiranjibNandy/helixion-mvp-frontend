@@ -1,7 +1,8 @@
 import type { Enrollment } from '@/types';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { StatusBadge } from '@/components/ui/StatusBadge';
-import { Card, CardContent } from '../ui/Card';
+import { Card, CardContent } from '../ui/card';
+
 
 interface EnrollmentCardProps {
   enrollment: Enrollment;

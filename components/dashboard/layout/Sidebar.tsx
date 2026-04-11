@@ -1,7 +1,7 @@
 'use client';
 
 import { SidebarProps } from '@/types/admin';
-import { getNavigationConfig, ROUTES } from '@/constants/navigation';
+import { getNavigationConfig } from '@/constants/navigation';
 import { BRAND, ADMIN_CONTENT } from '@/constants/content';
 
 interface NavItemProps {

@@ -1,8 +1,8 @@
 "use client"
 import type { Programme } from '@/types';
 import { MapPin } from 'lucide-react';
-import { Card, CardContent } from '../ui/Card';
-import { Button } from '../ui/Button';
+import { Button } from '../ui/button';
+import { Card, CardContent } from '../ui/card';
 
 interface ProgrammeCardProps {
   programme: Programme;

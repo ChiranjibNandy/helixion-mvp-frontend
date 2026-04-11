@@ -1,7 +1,7 @@
 import type { Enrollment } from '@/types';
 import { EnrollmentCard } from './EnrollmentCard';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { Card, CardContent } from '../ui/Card';
+import { Card, CardContent } from '../ui/card';
 
 interface MyEnrollmentsProps {
   enrollments: Enrollment[];

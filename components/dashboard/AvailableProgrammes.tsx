@@ -2,7 +2,7 @@
 import type { Programme } from '@/types';
 import { ProgrammeCard } from './ProgrammeCard';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { Card, CardContent } from '../ui/Card';
+import { Card, CardContent } from '../ui/card';
 
 
 interface AvailableProgrammesProps {

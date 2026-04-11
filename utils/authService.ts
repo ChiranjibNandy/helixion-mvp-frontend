@@ -1,12 +1,28 @@
+import { api } from "@/lib/api";
+import { LoginCredentials, RegisterCredentials } from "@/types/auth";
 
-import { createApiClient } from "@/lib/api";
+import { AxiosResponse } from 'axios';
 
-export const loginUser = async (data: any) => {
-  const api = createApiClient();
-  return (await api.post("/auth/login", data)).data;
+interface AuthApiResponse {
+  success: boolean;
+  message?: string;
+  accessToken?: string;
+  data?: {
+    id: string;
+    username: string;
+    email: string;
+    role: 'admin' | 'user';
+  };
+}
+
+export const loginAPI = (data: LoginCredentials): Promise<AxiosResponse<AuthApiResponse>> => {
+  return api.post("/auth/login", data);
 };
 
-export const registerUser = async (data: any) => {
-  const api = createApiClient();
-  return (await api.post("/auth/register", data)).data;
-}
+export const registerAPI = (data: RegisterCredentials): Promise<AxiosResponse<AuthApiResponse>> => {
+  return api.post("/auth/register", data);
+};
+
+
+
+

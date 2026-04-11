@@ -1,19 +1,23 @@
-import { MyEnrollments } from './MyEnrollments';
-import { AvailableProgrammes } from './AvailableProgrammes';
-import { fetchEmployeeDashboardData } from '@/utils/employeeService';
-import { AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription } from '../ui/Alert';
+"use client";
 
-async function EmployeeDashboardView({ accessToken }: { accessToken?: string }) {
-  try {
-    const { enrollments, availablePrograms } = await fetchEmployeeDashboardData(accessToken);
-    return (
-      <>
-        <MyEnrollments enrollments={enrollments} />
-        <AvailableProgrammes programmes={availablePrograms} />
-      </>
-    );
-  } catch {
+import { useEffect, useState } from "react";
+import { MyEnrollments } from "./MyEnrollments";
+import { AvailableProgrammes } from "./AvailableProgrammes";
+import { fetchEmployeeDashboardData } from "@/utils/employeeService";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "../ui/Alert";
+
+function EmployeeDashboardView() {
+  const [data, setData] = useState<any>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    fetchEmployeeDashboardData()
+      .then(setData)
+      .catch(() => setError(true));
+  }, []);
+
+  if (error) {
     return (
       <Alert variant="destructive">
         <AlertCircle className="size-4" />
@@ -23,19 +27,29 @@ async function EmployeeDashboardView({ accessToken }: { accessToken?: string }) 
       </Alert>
     );
   }
+
+  if (!data) {
+    return <p className="text-xs text-muted-foreground">Loading...</p>;
+  }
+
+  return (
+    <>
+      <MyEnrollments enrollments={data.enrollments} />
+      <AvailableProgrammes programmes={data.availablePrograms} />
+    </>
+  );
 }
 
 interface RoleDashboardViewProps {
   role: string;
-  accessToken?: string;
 }
 
-export function RoleDashboardView({ role, accessToken }: RoleDashboardViewProps) {
+export function RoleDashboardView({ role }: RoleDashboardViewProps) {
   switch (role) {
-    case 'manager':
-    case 'admin':
-    case 'employee':
+    case "manager":
+    case "employee":
+      return <EmployeeDashboardView />;
     default:
-      return <EmployeeDashboardView accessToken={accessToken} />;
+      return null;
   }
 }

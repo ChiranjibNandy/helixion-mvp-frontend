@@ -1,9 +1,9 @@
-import { createApiClient } from "@/lib/api";
+import { api } from "@/lib/api";
 
-export const fetchEmployeeDashboardData = async (accessToken?: string) => {
+
+export const fetchEmployeeDashboardData = async () => {
   try {
-    const client = createApiClient(accessToken);
-    const response = await client.get("/employee/dashboard");
+    const response = await api.get("/employee/dashboard");
     return response.data.data;
   } catch (error) {
     console.log(error)

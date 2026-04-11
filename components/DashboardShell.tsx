@@ -1,9 +1,9 @@
 'use client'
 import { useState } from 'react';
 import type { User } from '@/types';
-import { Sidebar } from './sidebar/Sidebar';
-import { NAV_SECTIONS } from '@/utils/mock';
 import { DashboardHeader } from './dashboard/DashboardHeader';
+import { Sidebar } from './global/sidebar/Sidebar';
+import { EMP_NAV_SECTIONS } from './global/Contant';
 
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -29,7 +29,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
       {/* Sidebar */}
       <Sidebar
         user={user}
-        navSections={NAV_SECTIONS}
+        navSections={EMP_NAV_SECTIONS}
         activeKey={activeKey}
         onNavChange={setActiveKey}
         onSignOut={handleSignOut}

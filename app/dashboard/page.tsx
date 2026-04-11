@@ -8,5 +8,5 @@ export default async function DashboardPage() {
 
   const { role } = decodeJwtPayload(token);
 
-  return <RoleDashboardView role={role} accessToken={token} />;
+  return <RoleDashboardView role={role}  />;
 }
