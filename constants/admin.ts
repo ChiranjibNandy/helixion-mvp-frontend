@@ -48,3 +48,14 @@ export const DATE_FORMATS = {
   YESTERDAY: 'Yesterday',
   DAYS_AGO: (days: number) => `${days} days ago`,
 } as const;
+
+export const MODAL_CONTENT = {
+  APPROVE_USER: {
+    TITLE: 'Approve User',
+    SUCCESS_MESSAGE: 'User Approved!',
+    CONFIRM_LABEL: 'Confirm & Approve',
+    CANCEL_LABEL: 'Cancel',
+    SUBTITLE: 'Select the appropriate role for this user.',
+    LOADING_LABEL: 'Approving...',
+  },
+} as const;

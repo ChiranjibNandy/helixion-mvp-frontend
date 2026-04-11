@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback } from 'react';
 import { useRegistrations } from '@/hooks/useRegistrations';
 import Sidebar from '@/components/dashboard/layout/Sidebar';
 import DashboardHeader from '@/components/dashboard/layout/DashboardHeader';
@@ -18,6 +19,12 @@ export default function AdminDashboard() {
 
   const recentActivities: Activity[] = [];
   const { STATS } = ADMIN_CONTENT.DASHBOARD;
+
+  // Handle registration changes (approve/deny) to refresh stats
+  const handleRegistrationChange = useCallback(() => {
+    // Refresh registrations data to update stats and sidebar
+    retry();
+  }, [retry]);
 
   return (
     <div className={`flex h-screen ${COLOR_CLASSES.BG_MAIN}`}>
@@ -38,7 +45,7 @@ export default function AdminDashboard() {
                 title={STATS.PENDING_APPROVAL}
                 value={registrations.length}
                 subtitle={UI_MESSAGES.NEEDS_ACTION}
-                subtitleColor={COLOR_CLASSES.TEXT_WARNING}
+                subtitleColor={COLOR_CLASSES.TEXT_MUTED}
               />
               <StatCard
                 title={STATS.ACTIVE_TODAY}
@@ -74,7 +81,10 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ) : (
-                  <PendingRegistrations registrations={registrations} />
+                  <PendingRegistrations 
+                    registrations={registrations} 
+                    onRegistrationChange={handleRegistrationChange}
+                  />
                 )}
               </div>
               <div>

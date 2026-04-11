@@ -65,8 +65,8 @@ export interface RegistrationRowProps {
   name: string;
   email: string;
   date: string;
-  icon: React.ReactNode;
-  iconBg: string;
+  icon?: React.ReactNode;
+  iconBg?: string;
 }
 
 export interface RecentActivityProps {
@@ -75,4 +75,5 @@ export interface RecentActivityProps {
 
 export interface PendingRegistrationsProps {
   registrations: FormattedRegistration[];
+  onRegistrationChange?: () => void;
 }
