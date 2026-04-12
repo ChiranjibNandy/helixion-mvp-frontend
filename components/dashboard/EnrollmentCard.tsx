@@ -1,7 +1,8 @@
 import type { Enrollment } from '@/types';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { StatusBadge } from '@/components/ui/StatusBadge';
 import { Card, CardContent } from '../ui/card';
+import { Progress } from '../ui/progress';
+import Badge from '../ui/badge';
+
 
 
 interface EnrollmentCardProps {
@@ -19,9 +20,15 @@ export function EnrollmentCard({ enrollment }: EnrollmentCardProps) {
         </div>
         <div className="w-24 shrink-0">
           {/* sample progress */}
-          <ProgressBar value={20} showLabel />
+          <Progress value={20} />
         </div>
-        <StatusBadge status={enrollment.status} />
+        <Badge status={enrollment.status}>
+          {enrollment.status === "pending"
+            ? "Not started"
+            : enrollment.status === "active"
+              ? "In progress"
+              : "Completed"}
+        </Badge>
       </CardContent>
     </Card>
   );

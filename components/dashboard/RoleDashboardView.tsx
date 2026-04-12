@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { MyEnrollments } from "./MyEnrollments";
 import { AvailableProgrammes } from "./AvailableProgrammes";
 import { fetchEmployeeDashboardData } from "@/utils/employeeService";
-import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription } from "../ui/Alert";
+import { AppAlert } from "../ui/alert";
+
 
 function EmployeeDashboardView() {
   const [data, setData] = useState<any>(null);
@@ -19,12 +19,11 @@ function EmployeeDashboardView() {
 
   if (error) {
     return (
-      <Alert variant="destructive">
-        <AlertCircle className="size-4" />
-        <AlertDescription>
-          Unable to load your dashboard. Please try refreshing the page.
-        </AlertDescription>
-      </Alert>
+      <AppAlert
+        variant="destructive"
+        title="Error"
+        description="Unable to load your dashboard. Please try refreshing the page."
+      />
     );
   }
 

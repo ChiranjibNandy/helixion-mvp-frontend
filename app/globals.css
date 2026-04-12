@@ -143,8 +143,3 @@ input:-webkit-autofill:focus {
   -webkit-text-fill-color: white !important;
   caret-color: white;
 }
-
-/* Custom utility */
-.icon-bg {
-  background-color: rgba(59, 91, 219, 0.18);
-}

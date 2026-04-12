@@ -1,8 +1,8 @@
-import { Avatar } from '../../ui/Avatar';
-import { SidebarFooterProps, SidebarMenuProps, SidebarNavItemProps, SidebarProfileProps, SidebarProps } from './Props';
-import { ROLE_LABEL } from '../Contant';
+import { SidebarFooterProps, SidebarMenuProps, SidebarNavItemProps, SidebarProfileProps, SidebarProps } from '../../props/sidebar';
+import { ROLE_LABEL } from '../../constants/employee';
 import Link from 'next/link';
-import { Icon } from 'lucide-react';
+import { AppAvatar } from './avatar';
+
 
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -27,7 +27,11 @@ function SidebarLogo() {
 function SidebarProfile({ user }: SidebarProfileProps) {
   return (
     <div className="px-3.5 py-3 border-b border-white/[0.06]">
-      <Avatar initials={user.name.split('')[0]} size="md" className="mb-2" />
+      <AppAvatar
+        initials={user.name.slice(0, 2)}
+        size="md"
+        className="mb-2"
+      />
       <p className="text-[12px] font-semibold text-slate-200 leading-tight">
         {user.name}
       </p>
@@ -47,22 +51,20 @@ function SidebarNavItem({ item, isActive, onClick }: SidebarNavItemProps) {
   const baseClass = `
     flex items-center gap-2 px-2 py-1.5 rounded-md text-[11px]
     cursor-pointer transition-colors duration-150 mb-0.5 select-none
-    ${
-      isActive
-        ? "bg-blue-900/30 text-blue-300"
-        : "text-white/35 hover:text-white/60 hover:bg-white/5"
+    ${ isActive
+      ? "bg-blue-900/30 text-blue-300"
+      : "text-white/35 hover:text-white/60 hover:bg-white/5"
     }
   `;
 
-  const Icon = item.icon; 
+  const Icon = item.icon;
 
   const inner = (
     <>
       {Icon && (
         <Icon
-          className={`w-3.5 h-3.5 flex-shrink-0 ${
-            isActive ? "text-blue-400" : "text-current"
-          }`}
+          className={`w-3.5 h-3.5 flex-shrink-0 ${ isActive ? "text-blue-400" : "text-current"
+            }`}
         />
       )}
 

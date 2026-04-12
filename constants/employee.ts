@@ -1,5 +1,5 @@
 import { NavItem, User } from "@/types";
-import { EmpNavSection } from "./Type";
+import { EmpNavSection } from "../types/employee";
 import { Award, BookOpen, Search, UserCircle } from "lucide-react";
 
 // role value correspond display in UI

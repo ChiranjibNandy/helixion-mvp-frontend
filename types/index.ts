@@ -15,7 +15,7 @@ export interface Enrollment {
   _id: string;
   userId: string;
   programId: string;
-  status: string;
+  status: "pending" | "active" | "completed";
   enrolledAt: Date;
   programDetails: Programme;
 }

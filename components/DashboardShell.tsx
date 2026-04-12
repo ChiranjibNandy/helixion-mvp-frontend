@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import type { User } from '@/types';
 import { DashboardHeader } from './dashboard/DashboardHeader';
-import { Sidebar } from './global/sidebar/Sidebar';
-import { EMP_NAV_SECTIONS } from './global/Contant';
+import { Sidebar } from './ui/Sidebar';
+import { EMP_NAV_SECTIONS } from '../constants/employee';
 
 
 // ─── Types ────────────────────────────────────────────────────────────────────

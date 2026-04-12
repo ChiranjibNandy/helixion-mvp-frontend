@@ -1,28 +1,97 @@
-// ─── Types ────────────────────────────────────────────────────────────────────
-interface AvatarProps {
+"use client";
+
+import * as React from "react";
+import { Avatar as AvatarPrimitive } from "radix-ui";
+
+import { cn } from "@/lib/utils";
+
+// ─── Shadcn Base Components ───────────────────────────
+function Avatar({
+  className,
+  size = "default",
+  ...props
+}: React.ComponentProps<typeof AvatarPrimitive.Root> & {
+  size?: "default" | "sm" | "lg";
+}) {
+  return (
+    <AvatarPrimitive.Root
+      data-slot="avatar"
+      data-size={size}
+      className={cn(
+        "group/avatar relative flex size-8 shrink-0 rounded-full select-none after:absolute after:inset-0 after:rounded-full after:border after:border-border after:mix-blend-darken data-[size=lg]:size-10 data-[size=sm]:size-6 dark:after:mix-blend-lighten",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function AvatarImage({
+  className,
+  ...props
+}: React.ComponentProps<typeof AvatarPrimitive.Image>) {
+  return (
+    <AvatarPrimitive.Image
+      data-slot="avatar-image"
+      className={cn(
+        "aspect-square size-full rounded-full object-cover",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function AvatarFallback({
+  className,
+  ...props
+}: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+  return (
+    <AvatarPrimitive.Fallback
+      data-slot="avatar-fallback"
+      className={cn(
+        "flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground group-data-[size=sm]/avatar:text-xs",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+// ─── Your Custom Wrapper (Reusable) ───────────────────
+interface AppAvatarProps {
   initials: string;
-  size?: 'sm' | 'md' | 'lg';
+  src?: string;
+  size?: "sm" | "md" | "lg";
   className?: string;
 }
 
-const SIZE_MAP = {
-  sm: 'w-6 h-6 text-[9px]',
-  md: 'w-7 h-7 text-[10px]',
-  lg: 'w-9 h-9 text-xs',
-};
+function AppAvatar({
+  initials,
+  src,
+  size = "md",
+  className = "",
+}: AppAvatarProps) {
+  const sizeValue =
+    size === "sm" ? "sm" : size === "lg" ? "lg" : "default";
 
-// ─── Component ────────────────────────────────────────────────────────────────
-export function Avatar({ initials, size = 'md', className = '' }: AvatarProps) {
   return (
-    <div
-      className={`
-        rounded-full bg-blue-950/70 text-blue-300 font-medium
-        flex items-center justify-center flex-shrink-0
-        ring-1 ring-blue-500/20
-        ${SIZE_MAP[size]} ${className}
-      `}
-    >
-      {initials}
-    </div>
+    <Avatar size={sizeValue} className={cn(className)}>
+      {src && <AvatarImage src={src} alt={initials} />}
+
+      <AvatarFallback
+        className="
+          bg-blue-950/70 text-blue-300 font-medium
+          ring-1 ring-blue-500/20
+        "
+      >
+        {initials}
+      </AvatarFallback>
+    </Avatar>
   );
 }
+
+// ─── Export ───────────────────────────────────────────
+export {
+  AppAvatar,         
+};

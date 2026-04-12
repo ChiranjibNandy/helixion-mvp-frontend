@@ -8,15 +8,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // ── Your existing colors ──────────────────────────
+        // ───────── Your Design System ─────────
         primary: "#4f7cff",
         primaryDark: "#3b5bdb",
         primaryDarker: "#2f4cc4",
+
         blue: {
           500: "#4f7cff",
           600: "#3b5bdb",
           700: "#2f4cc4",
         },
+
         bgMain: "#080c18",
         bgCard: "#0a0f1e",
         bgSidebar: "#0a0f1e",
@@ -46,13 +48,7 @@ const config: Config = {
         accentRedHover: "#b91c1c",
         accentOrange: "#f59e0b",
 
-        // Avatar
-        avatarBlue: "#1e3a8a",
-        avatarGreen: "#166534",
-        avatarOrange: "#7c2d12",
-        avatarYellow: "#713f12",
-
-        // ── ✅ shadcn/ui mappings (FIXED POSITION) ─────────
+        // ───────── ShadCN Mapping (DO NOT TOUCH MUCH) ─────────
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
 
