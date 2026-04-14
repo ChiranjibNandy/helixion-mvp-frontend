@@ -3,15 +3,15 @@
 import { CheckCircle2, KeyRound, Mail, User, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import AuthButton from '../../components/AuthButton';
 import AuthLayout from '../../components/AuthLayout';
-import InputField from '../../components/InputField';
-import { registerUser } from '@/utils/authService';
 import { parseApiError } from '@/utils/parseError';
 import { SIGNUP_CONTENT } from '@/constants/content';
 import { ROUTES } from '@/constants/navigation';
 import { useForm } from '@/hooks/useForm';
 import { validateRegisterForm } from '@/utils/validators';
+import { registerAPI } from '@/utils/authService';
+import { Button } from '@/components/ui/button';
+import InputField from '@/components/ui/input';
 
 function LeftPanel() {
   const { FEATURES, LEFT_PANEL } = SIGNUP_CONTENT;
@@ -74,14 +74,14 @@ function RightPanel() {
     validate: validateRegisterForm,
     onSubmit: async (formValues) => {
       try {
-        const res = await registerUser({
+        const res = await registerAPI({
           username: formValues.username,
           email: formValues.email,
           password: formValues.password,
           confirmPassword: formValues.confirmPassword,
         });
 
-        if (res.success) {
+        if (res.data.success) {
           router.push(ROUTES.SIGNIN);
         }
       } catch (err: unknown) {
@@ -162,9 +162,17 @@ function RightPanel() {
           autoComplete="new-password"
         />
 
-        <AuthButton type="submit" loading={loading}>
-          {FORM.SUBMIT_BUTTON}
-        </AuthButton>
+       <Button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-gradient-to-br from-primaryDark to-primary text-white shadow-glow p-6"
+        >
+          {loading ? (
+            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : (
+            FORM.SUBMIT_BUTTON
+          )}
+        </Button>
 
         <p className="text-center text-sm text-textMuted">
           {FORM.HAS_ACCOUNT}{" "}

@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { FormattedRegistration } from '@/types/admin';
 import { transformRegistrationData, isValidApiResponse } from '@/utils/adminHelpers';
 import { API_ENDPOINTS } from '@/constants/admin';
-import { getToken } from '@/utils/token';
 import { FORM_ERRORS, AUTH_ERRORS, NETWORK_ERRORS } from '@/constants/errors';
+import { getAccessToken } from '@/utils/token';
 
 interface UseRegistrationsReturn {
   registrations: FormattedRegistration[];
@@ -35,7 +35,7 @@ export const useRegistrations = (): UseRegistrationsReturn => {
           return;
         }
 
-        const token = getToken();
+        const token = getAccessToken();
 
         if (!token) {
           setError(AUTH_ERRORS.TOKEN_MISSING);

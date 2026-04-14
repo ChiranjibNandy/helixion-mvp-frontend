@@ -1,9 +1,9 @@
-import { loginAPI, registerAPI } from '@/lib/auth';
-import { setToken } from '@/utils/token';
-import { LoginCredentials, RegisterCredentials, AuthResponse } from '@/types/auth';
+import { api } from "@/lib/api";
+import { LoginCredentials, RegisterCredentials } from "@/types/auth";
+
 import { AxiosResponse } from 'axios';
 
-interface ApiAuthResponse {
+interface AuthApiResponse {
   success: boolean;
   message?: string;
   accessToken?: string;
@@ -15,35 +15,14 @@ interface ApiAuthResponse {
   };
 }
 
-/**
- * Authenticate user with credentials
- * Stores token on successful login
- */
-export const loginUser = async (data: LoginCredentials): Promise<AuthResponse> => {
-  const res: AxiosResponse<ApiAuthResponse> = await loginAPI(data);
-
-  if (res.data.success && res.data.accessToken) {
-    setToken(res.data.accessToken);
-  }
-
-  return {
-    success: res.data.success,
-    message: res.data.message,
-    accessToken: res.data.accessToken,
-    data: res.data.data,
-  };
+export const loginAPI = (data: LoginCredentials): Promise<AxiosResponse<AuthApiResponse>> => {
+  return api.post("/auth/login", data);
 };
 
-/**
- * Register new user account
- */
-export const registerUser = async (data: RegisterCredentials): Promise<AuthResponse> => {
-  const res: AxiosResponse<ApiAuthResponse> = await registerAPI(data);
-
-  return {
-    success: res.data.success,
-    message: res.data.message,
-    accessToken: res.data.accessToken,
-    data: res.data.data,
-  };
+export const registerAPI = (data: RegisterCredentials): Promise<AxiosResponse<AuthApiResponse>> => {
+  return api.post("/auth/register", data);
 };
+
+
+
+

@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, AuthState } from '@/types/auth';
-import { getToken, removeToken } from '@/utils/token';
 import { ROUTES } from '@/constants/navigation';
 import { USER_ROLES } from '@/constants/navigation';
+import { getAccessToken, removeAccessToken } from '@/utils/token';
 
 interface UseAuthReturn extends AuthState {
   checkAuth: () => Promise<boolean>;
@@ -26,7 +26,7 @@ export function useAuth(requireAdmin: boolean = false): UseAuthReturn {
 
   const checkAuth = useCallback(async (): Promise<boolean> => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
 
       if (!token) {
         setState({ user: null, isAuthenticated: false, isLoading: false });
@@ -37,14 +37,14 @@ export function useAuth(requireAdmin: boolean = false): UseAuthReturn {
       const payload = decodeToken(token);
       
       if (!payload) {
-        removeToken();
+        removeAccessToken();
         setState({ user: null, isAuthenticated: false, isLoading: false });
         return false;
       }
 
       // Check token expiration
       if (payload.exp && payload.exp * 1000 < Date.now()) {
-        removeToken();
+        removeAccessToken();
         setState({ user: null, isAuthenticated: false, isLoading: false });
         return false;
       }
@@ -65,14 +65,14 @@ export function useAuth(requireAdmin: boolean = false): UseAuthReturn {
       setState({ user, isAuthenticated: true, isLoading: false });
       return true;
     } catch {
-      removeToken();
+      removeAccessToken();
       setState({ user: null, isAuthenticated: false, isLoading: false });
       return false;
     }
   }, [requireAdmin]);
 
   const logout = useCallback(() => {
-    removeToken();
+    removeAccessToken();
     setState({ user: null, isAuthenticated: false, isLoading: false });
     router.push(ROUTES.SIGNIN);
   }, [router]);

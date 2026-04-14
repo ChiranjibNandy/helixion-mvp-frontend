@@ -1,0 +1,24 @@
+{
+   "programme": {
+      "available": "Available Programmes",
+      "empty": "No programmes available right now.",
+      "enrol": "Enrol"
+   },
+   "enrollment": {
+      "title": "My Enrollments",
+      "empty": "No enrollments yet.",
+      "status": {
+         "pending": "Not started",
+         "active": "In progress",
+         "completed": "Completed"
+      }
+   },
+   "dashboard": {
+    "welcome": "Welcome Back, {name}",
+    "errorTitle": "Error",
+    "errorDescription": "Unable to load your dashboard. Please try refreshing the page."
+  },
+   "common": {
+    "loading": "Loading..."
+  }
+}

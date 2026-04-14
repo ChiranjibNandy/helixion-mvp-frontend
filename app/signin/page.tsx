@@ -3,16 +3,15 @@
 import { KeyRound, Mail, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-
-import AuthButton from '../../components/AuthButton';
 import AuthLayout from '../../components/AuthLayout';
-import InputField from '../../components/InputField';
-import { loginUser } from '@/utils/authService';
+import { loginAPI } from '@/utils/authService';
 import { parseApiError } from '@/utils/parseError';
 import { SIGNIN_CONTENT } from '@/constants/content';
-import { ROUTES, USER_ROLES } from '@/constants/navigation';
+import { ROUTES } from '@/constants/navigation';
 import { useForm } from '@/hooks/useForm';
 import { validateLoginForm } from '@/utils/validators';
+import { Button } from '@/components/ui/button';
+import InputField from '@/components/ui/input';
 
 function LeftPanel() {
   const { STATS, LEFT_PANEL } = SIGNIN_CONTENT;
@@ -75,15 +74,12 @@ function RightPanel() {
     validate: validateLoginForm,
     onSubmit: async (formValues) => {
       try {
-        const res = await loginUser(formValues);
+        const res = await loginAPI(formValues);
 
-        if (res?.success) {
-          // Only route to admin dashboard if user is admin
-          if (res.data?.role === USER_ROLES.ADMIN) {
-            router.push(ROUTES.ADMIN_DASHBOARD);
-          } else {
-            router.push(ROUTES.DASHBOARD);
-          }
+        if (res.data.success) {
+
+          router.push(ROUTES.DASHBOARD);
+
         }
       } catch (err: unknown) {
         const parsed = parseApiError(err);
@@ -138,9 +134,17 @@ function RightPanel() {
           </div>
         </div>
 
-        <AuthButton type="submit" loading={loading}>
-          {FORM.SUBMIT_BUTTON}
-        </AuthButton>
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-gradient-to-br from-primaryDark to-primary text-white shadow-glow p-6"
+        >
+          {loading ? (
+            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : (
+            FORM.SUBMIT_BUTTON
+          )}
+        </Button>
 
         <div className="flex items-center gap-3">
           <div className="flex-1 h-px bg-borderDark" />
