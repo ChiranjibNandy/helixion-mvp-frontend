@@ -2,6 +2,7 @@ import type { Enrollment } from '@/types';
 import { EnrollmentCard } from './EnrollmentCard';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Card, CardContent } from '../ui/card';
+import { t } from '@/lib/i18n'; 
 
 interface MyEnrollmentsProps {
   enrollments: Enrollment[];
@@ -10,11 +11,14 @@ interface MyEnrollmentsProps {
 export function MyEnrollments({ enrollments }: MyEnrollmentsProps) {
   return (
     <section className="mb-5">
-      <SectionHeading title="My Enrollments" />
+      <SectionHeading title={t('enrollment.title')} />
+
       {enrollments.length === 0 ? (
         <Card>
           <CardContent className="py-6 text-center">
-            <p className="text-xs text-muted-foreground">No enrollments yet.</p>
+            <p className="text-xs text-muted-foreground">
+              {t('enrollment.empty')}
+            </p>
           </CardContent>
         </Card>
       ) : (

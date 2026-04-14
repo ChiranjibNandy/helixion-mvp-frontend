@@ -3,7 +3,7 @@
 import { useRegistrations } from '@/hooks/useRegistrations';
 import Sidebar from '@/components/dashboard/layout/Sidebar';
 import DashboardHeader from '@/components/dashboard/layout/DashboardHeader';
-import StatCard from '@/components/dashboard/ui/StatCard';
+import StatCard from '@/components/ui/StatCard';
 import PendingRegistrations from '@/components/dashboard/features/PendingRegistrations';
 import RecentActivity from '@/components/dashboard/features/RecentActivity';
 import { COLOR_CLASSES, UI_MESSAGES } from '@/constants/admin';

@@ -5,7 +5,7 @@ import { MyEnrollments } from "./MyEnrollments";
 import { AvailableProgrammes } from "./AvailableProgrammes";
 import { fetchEmployeeDashboardData } from "@/utils/employeeService";
 import { AppAlert } from "../ui/alert";
-
+import { t } from "@/lib/i18n";
 
 function EmployeeDashboardView() {
   const [data, setData] = useState<any>(null);
@@ -21,14 +21,18 @@ function EmployeeDashboardView() {
     return (
       <AppAlert
         variant="destructive"
-        title="Error"
-        description="Unable to load your dashboard. Please try refreshing the page."
+        title={t('dashboard.errorTitle')}
+        description={t('dashboard.errorDescription')}
       />
     );
   }
 
   if (!data) {
-    return <p className="text-xs text-muted-foreground">Loading...</p>;
+    return (
+      <p className="text-xs text-muted-foreground">
+        {t('common.loading')}
+      </p>
+    );
   }
 
   return (
