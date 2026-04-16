@@ -17,13 +17,17 @@ function LeftPanel() {
 
   return (
     <div className="flex flex-col gap-7">
-      <div className="flex items-center gap-2">
+       {/* 
+       TAG: 'JOIN HELIXON · GET STARTED FREE', 
+       */}
+       
+      {/* <div className="flex items-center gap-2">
         <div className="h-px w-6 bg-primaryDark" />
         <div className="text-xs tracking-widest font-medium text-textMuted flex items-center gap-1">
           <span>{LEFT_PANEL.TAG}</span>
           <Star size={12} className="text-accentYellow fill-accentYellow" />
         </div>
-      </div>
+      </div> */}
 
       <div>
         <h1 className="text-5xl font-extrabold leading-tight text-white">

@@ -35,7 +35,6 @@ export const SIGNUP_CONTENT = {
     'SOC 2 compliant — your data stays safe',
   ] as const,
   LEFT_PANEL: {
-    TAG: 'JOIN HELIXON · GET STARTED FREE',
     HEADLINE: 'Your workspace, ready in seconds.',
       
   },
