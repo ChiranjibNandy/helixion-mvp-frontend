@@ -19,14 +19,18 @@ function LeftPanel() {
 
   return (
     <div className="flex flex-col gap-7">
-      <div className="flex items-center gap-2">
+      {/*  
+      OPTION B · ROLE SELECTOR RECOMMENDED  
+      */}
+
+      {/* <div className="flex items-center gap-2">
         <div className="h-px w-6 bg-primaryDark" />
         <div className="text-xs tracking-widest font-medium text-textMuted flex items-center gap-1">
-          <span>{LEFT_PANEL.TAG}</span>
+          <span></span>
           <Star size={12} className="text-accentYellow fill-accentYellow" />
-          <span className="text-accentYellow">{LEFT_PANEL.TAG_BADGE}</span>
+          <span className="text-accentYellow"></span>
         </div>
-      </div>
+      </div> */}
 
       <div>
         <h1 className="text-5xl font-extrabold leading-tight text-white whitespace-pre-line">
@@ -95,7 +99,7 @@ function RightPanel() {
       }
     } catch (err: any) {
       if (typeof err === "object") {
-        setErrors(err); // ✅ field errors
+        setErrors(err); 
       } else {
         const parsed = parseApiError(err);
         setFormError(parsed.message);

@@ -33,7 +33,7 @@ function SidebarLogo() {
         Hx
       </div>
       <span className="text-[13px] font-semibold text-slate-200 tracking-tight">
-        Helixion
+        Helixon
       </span>
     </div>
   );

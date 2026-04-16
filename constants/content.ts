@@ -8,8 +8,6 @@ export const SIGNIN_CONTENT = {
     { value: '500', accent: '+', label: 'Enterprise clients' },
   ] as const,
   LEFT_PANEL: {
-    TAG: 'OPTION B · ROLE SELECTOR',
-    TAG_BADGE: 'RECOMMENDED',
     HEADLINE: 'One platform.\nThree workspaces.',
     DESCRIPTION:
       'Training Admins, Corporate Employees, and Reporting Managers — each with a purpose-built dashboard, accessed through one unified login.',
@@ -37,7 +35,7 @@ export const SIGNUP_CONTENT = {
     'SOC 2 compliant — your data stays safe',
   ] as const,
   LEFT_PANEL: {
-    TAG: 'JOIN HELIXION · GET STARTED FREE',
+    TAG: 'JOIN HELIXON · GET STARTED FREE',
     HEADLINE: 'Your workspace, ready in seconds.',
     DESCRIPTION:
       'Sign up once and get immediate access to the dashboard built for your role — no setup required.',
@@ -60,11 +58,10 @@ export const SIGNUP_CONTENT = {
 
 // Brand content
 export const BRAND = {
-  NAME: 'Helixion',
+  NAME: 'Helixon',
   LOGO_TEXT: 'He',
   LOGO_SHORT: 'Hx',
   TAGLINE: 'Enterprise Multi-Role Platform',
-  FOOTER_BADGE: 'Best practice for enterprise multi-role SaaS platforms',
 } as const;
 
 // Admin dashboard content
