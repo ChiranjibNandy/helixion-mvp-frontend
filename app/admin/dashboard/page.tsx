@@ -1,14 +1,12 @@
 'use client';
 
 import { useRegistrations } from '@/hooks/useRegistrations';
-import Sidebar from '@/components/dashboard/layout/Sidebar';
-import DashboardHeader from '@/components/dashboard/layout/DashboardHeader';
-import StatCard from '@/components/ui/StatCard';
-import PendingRegistrations from '@/components/dashboard/features/PendingRegistrations';
-import RecentActivity from '@/components/dashboard/features/RecentActivity';
+import StatCard from '@/components/ui/status-card';
+import PendingRegistrations from '@/components/dashboard/PendingRegistrations';
 import { COLOR_CLASSES, UI_MESSAGES } from '@/constants/admin';
 import { ADMIN_CONTENT } from '@/constants/content';
 import { Activity } from '@/types/admin';
+import RecentActivity from '@/components/dashboard/RecentActivity';
 
 /**
  * Main admin dashboard page with production-level architecture
@@ -21,9 +19,7 @@ export default function AdminDashboard() {
 
   return (
     <div className={`flex h-screen ${COLOR_CLASSES.BG_MAIN}`}>
-      <Sidebar pendingCount={registrations.length} totalUsers={registrations.length} />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <DashboardHeader />
         <div className="flex-1 overflow-y-auto">
           <div className="p-8">
             {/* Stats Section */}

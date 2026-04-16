@@ -3,7 +3,7 @@
 import { RecentActivityProps } from '@/types/admin';
 import { ACTIVITY_DOT_COLORS, UI_MESSAGES } from '@/constants/admin';
 import { ADMIN_CONTENT } from '@/constants/content';
-import ActivityItem from '../../ui/ActivityItem';
+import ActivityItem from '../ui/activity-item';
 
 /**
  * Recent activity timeline section

@@ -1,8 +1,8 @@
 import type { Enrollment } from '@/types';
-import { Card, CardContent } from '../ui/card';
 import { Progress } from '../ui/progress';
 import Badge from '../ui/badge';
 import { t } from '@/lib/i18n';
+import { Card, CardContent } from '../ui/card';
 
 interface EnrollmentCardProps {
   enrollment: Enrollment;

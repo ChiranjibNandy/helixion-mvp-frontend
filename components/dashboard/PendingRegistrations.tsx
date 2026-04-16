@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { PendingRegistrationsProps } from '@/types/admin';
 import { AVATAR_BACKGROUNDS } from '@/constants/admin';
 import { ADMIN_CONTENT } from '@/constants/content';
-import RegistrationRow from '../../ui/RegistrationRow';
+import RegistrationRow from '../ui/registration-row';
 
 
 function getInitials(name: string): string {

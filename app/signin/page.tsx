@@ -7,11 +7,13 @@ import AuthLayout from '../../components/AuthLayout';
 import { loginAPI } from '@/utils/authService';
 import { parseApiError } from '@/utils/parseError';
 import { SIGNIN_CONTENT } from '@/constants/content';
-import { ROUTES } from '@/constants/navigation';
+import { ROUTES, USER_ROLES } from '@/constants/navigation';
 import { useForm } from '@/hooks/useForm';
 import { validateLoginForm } from '@/utils/validators';
-import { Button } from '@/components/ui/button';
 import InputField from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { decodeJwtPayload, getAccessToken } from '@/utils/token';
+
 
 function LeftPanel() {
   const { STATS, LEFT_PANEL } = SIGNIN_CONTENT;
@@ -77,9 +79,21 @@ function RightPanel() {
         const res = await loginAPI(formValues);
 
         if (res.data.success) {
+          const token = await getAccessToken();
 
-          router.push(ROUTES.DASHBOARD);
+          if (!token) {
+            setFormError("Authentication failed");
+            return;
+          }
 
+          const payload = await decodeJwtPayload(token);
+          const role = payload.role;
+
+          if (role === USER_ROLES.ADMIN) {
+            router.push(ROUTES.ADMIN_DASHBOARD);
+          } else {
+            router.push(ROUTES.DASHBOARD);
+          }
         }
       } catch (err: unknown) {
         const parsed = parseApiError(err);
