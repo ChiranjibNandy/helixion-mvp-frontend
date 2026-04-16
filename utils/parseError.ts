@@ -54,7 +54,7 @@ export function parseApiError(error: unknown): ParsedError {
 
   // Handle standard Error objects
   if (error instanceof Error) {
-    return { message: getErrorMessage(error) };
+    return { message: getErrorMessage(error.message) };
   }
 
   // Fallback for unknown error types

@@ -37,8 +37,7 @@ export const SIGNUP_CONTENT = {
   LEFT_PANEL: {
     TAG: 'JOIN HELIXON · GET STARTED FREE',
     HEADLINE: 'Your workspace, ready in seconds.',
-    DESCRIPTION:
-      'Sign up once and get immediate access to the dashboard built for your role — no setup required.',
+      
   },
   FORM: {
     TITLE: 'Create your account',

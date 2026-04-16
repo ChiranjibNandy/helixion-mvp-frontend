@@ -71,6 +71,7 @@ function RightPanel() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [allowSave, setAllowSave] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,6 +82,7 @@ function RightPanel() {
       const res = await loginAPI(form);
 
       if (res.data.success) {
+        setAllowSave(true)
         const token = await getAccessToken();
 
         if (!token) {
@@ -98,12 +100,16 @@ function RightPanel() {
         }
       }
     } catch (err: any) {
-      if (typeof err === "object") {
-        setErrors(err); 
-      } else {
-        const parsed = parseApiError(err);
-        setFormError(parsed.message);
+      if (
+        err &&
+        typeof err === "object" &&
+        !err.response 
+      ) {
+        setErrors(err);
+        return;
       }
+      const parsed = parseApiError(err);
+      setFormError(parsed.message);
     } finally {
       setLoading(false);
     }
@@ -129,7 +135,8 @@ function RightPanel() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5"  autoComplete={allowSave ? "on" : "off"} noValidate>
+
 
         <InputField
           label={FORM.EMAIL_LABEL}
@@ -139,7 +146,7 @@ function RightPanel() {
           value={form.email}
           onChange={(e) => handleChange("email", e.target.value)}
           error={errors.email}
-          autoComplete="email"
+          autoComplete="username"
         />
 
         <div className="flex flex-col gap-1">
@@ -154,14 +161,16 @@ function RightPanel() {
             autoComplete="current-password"
           />
 
-          <div className="flex justify-start">
+          {/* forgot password */}
+
+          {/* <div className="flex justify-start">
             <Link
               href="#"
               className="text-xs font-medium hover:underline mt-1 text-primary"
             >
               {FORM.FORGOT_PASSWORD}
             </Link>
-          </div>
+          </div> */}
         </div>
 
         <Button

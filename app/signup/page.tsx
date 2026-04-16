@@ -10,6 +10,7 @@ import { registerAPI } from '@/utils/authService';
 import { Button } from '@/components/ui/button';
 import InputField from '@/components/ui/input';
 import { useState } from 'react';
+import { parseApiError } from '@/utils/parseError';
 
 function LeftPanel() {
   const { FEATURES, LEFT_PANEL } = SIGNUP_CONTENT;
@@ -30,9 +31,11 @@ function LeftPanel() {
         </h1>
       </div>
 
-      <p className="text-sm leading-relaxed text-textMuted">
+      {/* Sign up once and get immediate access to the dashboard built for your role — no setup required. */}
+
+      {/* <p className="text-sm leading-relaxed text-textMuted">
         {LEFT_PANEL.DESCRIPTION}
-      </p>
+      </p> */}
 
       <div className="h-px w-full bg-borderDark" />
 
@@ -85,11 +88,16 @@ function RightPanel() {
         router.push(ROUTES.SIGNIN);
       }
     } catch (err: any) {
-      if (typeof err === 'object') {
+      if (
+        err &&
+        typeof err === "object" &&
+        !err.response
+      ) {
         setErrors(err);
-      } else {
-        setFormError('Something went wrong');
+        return;
       }
+      const parsed = parseApiError(err);
+      setFormError(parsed.message);
     } finally {
       setLoading(false);
     }
@@ -105,7 +113,7 @@ function RightPanel() {
         <div className="text-red-500 text-sm mb-4">{formError}</div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5"  autoComplete="off">
         <InputField
           label={FORM.USERNAME_LABEL}
           icon={<User size={16} />}
@@ -113,6 +121,7 @@ function RightPanel() {
           value={form.username}
           onChange={(e) => handleChange('username', e.target.value)}
           error={errors.username}
+          autoComplete="username"
         />
 
         <InputField
@@ -123,6 +132,7 @@ function RightPanel() {
           value={form.email}
           onChange={(e) => handleChange('email', e.target.value)}
           error={errors.email}
+          autoComplete="email"
         />
         <InputField
           label={FORM.PASSWORD_LABEL}
@@ -132,6 +142,7 @@ function RightPanel() {
           value={form.password}
           onChange={(e) => handleChange('password', e.target.value)}
           error={errors.password}
+          autoComplete="new-password"
         />
 
         <InputField
@@ -142,6 +153,7 @@ function RightPanel() {
           value={form.confirmPassword}
           onChange={(e) => handleChange('confirmPassword', e.target.value)}
           error={errors.confirmPassword}
+          autoComplete="new-password"
         />
 
         <Button

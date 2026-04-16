@@ -82,7 +82,7 @@ export default function InputField({
         <Input
           type={inputType}
           className={cn(
-            "py-3 text-sm",
+            "py-5 text-sm",
             icon ? "pl-10" : "pl-3",
             showToggle ? "pr-10" : "pr-3",
             error &&
