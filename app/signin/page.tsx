@@ -8,11 +8,10 @@ import { loginAPI } from '@/utils/authService';
 import { parseApiError } from '@/utils/parseError';
 import { SIGNIN_CONTENT } from '@/constants/content';
 import { ROUTES, USER_ROLES } from '@/constants/navigation';
-import { useForm } from '@/hooks/useForm';
-import { validateLoginForm } from '@/utils/validators';
 import InputField from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { decodeJwtPayload, getAccessToken } from '@/utils/token';
+import { useState } from 'react';
 
 
 function LeftPanel() {
@@ -60,47 +59,60 @@ function RightPanel() {
   const router = useRouter();
   const { FORM } = SIGNIN_CONTENT;
 
-  const {
-    values,
-    errors,
-    formError,
-    loading,
-    handleChange,
-    handleSubmit,
-    setFormError,
-  } = useForm({
-    initialValues: {
-      email: '',
-      password: '',
-    },
-    validate: validateLoginForm,
-    onSubmit: async (formValues) => {
-      try {
-        const res = await loginAPI(formValues);
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
 
-        if (res.data.success) {
-          const token = await getAccessToken();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-          if (!token) {
-            setFormError("Authentication failed");
-            return;
-          }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError("");
+    setLoading(true);
 
-          const payload = await decodeJwtPayload(token);
-          const role = payload.role;
+    try {
+      const res = await loginAPI(form);
 
-          if (role === USER_ROLES.ADMIN) {
-            router.push(ROUTES.ADMIN_DASHBOARD);
-          } else {
-            router.push(ROUTES.DASHBOARD);
-          }
+      if (res.data.success) {
+        const token = await getAccessToken();
+
+        if (!token) {
+          setFormError("Authentication failed");
+          return;
         }
-      } catch (err: unknown) {
+
+        const payload = await decodeJwtPayload(token);
+        const role = payload.role;
+
+        if (role === USER_ROLES.ADMIN) {
+          router.push(ROUTES.ADMIN_DASHBOARD);
+        } else {
+          router.push(ROUTES.DASHBOARD);
+        }
+      }
+    } catch (err: any) {
+      if (typeof err === "object") {
+        setErrors(err); // ✅ field errors
+      } else {
         const parsed = parseApiError(err);
         setFormError(parsed.message);
       }
-    },
-  });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  };
 
   return (
     <div>
@@ -120,8 +132,8 @@ function RightPanel() {
           icon={<Mail size={16} />}
           placeholder={FORM.EMAIL_PLACEHOLDER}
           type="email"
-          value={values.email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('email')(e.target.value)}
+          value={form.email}
+          onChange={(e) => handleChange("email", e.target.value)}
           error={errors.email}
           autoComplete="email"
         />
@@ -132,8 +144,8 @@ function RightPanel() {
             icon={<KeyRound size={16} />}
             placeholder={FORM.PASSWORD_PLACEHOLDER}
             showToggle
-            value={values.password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('password')(e.target.value)}
+            value={form.password}
+            onChange={(e) => handleChange("password", e.target.value)}
             error={errors.password}
             autoComplete="current-password"
           />

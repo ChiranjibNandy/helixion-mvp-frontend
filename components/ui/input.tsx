@@ -86,7 +86,7 @@ export default function InputField({
             icon ? "pl-10" : "pl-3",
             showToggle ? "pr-10" : "pr-3",
             error &&
-              "border-destructive focus-visible:ring-destructive",
+            "border-destructive focus-visible:ring-destructive",
             className
           )}
           {...props}
@@ -107,7 +107,7 @@ export default function InputField({
 
       {/* Error */}
       {error && (
-        <p className="text-xs text-destructive mt-0.5">
+        <p className="text-xs text-red-500 mt-1">
           {error}
         </p>
       )}
