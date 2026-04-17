@@ -3,13 +3,13 @@ import { DashboardShell } from '@/components/DashboardShell';
 import type { User } from '@/types';
 import { decodeJwtPayload, getAccessToken } from '@/utils/token';
 import { redirect } from 'next/navigation';
-import { EMP_NAV_SECTIONS } from '@/constants/employee';
+import { ADMIN_NAV_SECTION } from '@/constants/admin';
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-export default async function DashboardLayout({ children }: DashboardLayoutProps) {
+export default async function AdminLayout({ children }: DashboardLayoutProps) {
   const token = await getAccessToken();
   if (!token) redirect('/signin');
 
@@ -24,10 +24,10 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
   };
 
   return (
-   <DashboardShell
+    <DashboardShell
       user={user}
-      navSections={EMP_NAV_SECTIONS}
-      defaultActiveKey="enrollments"
+      navSections={ADMIN_NAV_SECTION}
+      defaultActiveKey="dashboard"
     >
       {children}
     </DashboardShell>

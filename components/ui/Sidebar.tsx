@@ -1,11 +1,31 @@
 import { SidebarFooterProps, SidebarMenuProps, SidebarNavItemProps, SidebarProfileProps, SidebarProps } from '../../props/sidebar';
 import { ROLE_LABEL } from '../../constants/employee';
 import Link from 'next/link';
+import { Award, BarChart3, Bell, BookOpen, FileText, LayoutDashboard, Search, Settings, Shield, UserCircle, Users, Zap } from 'lucide-react';
+import { NavItem } from '@/types';
 import { AppAvatar } from './avatar';
 
 
+//  ICON MAP (IMPORTANT)
+const ICON_MAP: Record<string, any> = {
+  'book-open': BookOpen,
+  search: Search,
+  award: Award,
+  'user-circle': UserCircle,
+  'layout-dashboard': LayoutDashboard,
+  'bar-chart': BarChart3,
+  users: Users,
+  shield: Shield,
+  file: FileText,
+  settings: Settings,
+  zap: Zap,
+  bell: Bell,
+};
 
-// ─── Component ────────────────────────────────────────────────────────────────
+
+
+
+// ─── Logo seen in above of sidebar component ────────────────────────────────────────────────────────────────
 function SidebarLogo() {
   return (
     <div className="flex items-center gap-2 px-3.5 py-3.5 border-b border-white/[0.06]">
@@ -13,22 +33,22 @@ function SidebarLogo() {
         Hx
       </div>
       <span className="text-[13px] font-semibold text-slate-200 tracking-tight">
-        Helixion
+        Helixon
       </span>
     </div>
   );
 }
 
 
-// ─── Role Label Map ───────────────────────────────────────────────────────────
 
 
-// ─── Component ────────────────────────────────────────────────────────────────
+
+// ─── Profile of use with name location and role ────────────────────────────────────────────────────────────────
 function SidebarProfile({ user }: SidebarProfileProps) {
   return (
     <div className="px-3.5 py-3 border-b border-white/[0.06]">
       <AppAvatar
-        initials={user.name.slice(0, 2)}
+        initials={user.name.slice(0,1)}
         size="md"
         className="mb-2"
       />
@@ -47,24 +67,27 @@ function SidebarProfile({ user }: SidebarProfileProps) {
 
 
 // ─── Component ────────────────────────────────────────────────────────────────
-function SidebarNavItem({ item, isActive, onClick }: SidebarNavItemProps) {
+function SidebarNavItem({ item, isActive, onClick }: any) {
   const baseClass = `
     flex items-center gap-2 px-2 py-1.5 rounded-md text-[11px]
     cursor-pointer transition-colors duration-150 mb-0.5 select-none
-    ${ isActive
-      ? "bg-blue-900/30 text-blue-300"
-      : "text-white/35 hover:text-white/60 hover:bg-white/5"
+    ${
+      isActive
+        ? "bg-blue-900/30 text-blue-300"
+        : "text-white/35 hover:text-white/60 hover:bg-white/5"
     }
   `;
 
-  const Icon = item.icon;
+  // ✅ Convert string → component
+  const Icon = item.icon ? ICON_MAP[item.icon] : null;
 
   const inner = (
     <>
       {Icon && (
         <Icon
-          className={`w-3.5 h-3.5 flex-shrink-0 ${ isActive ? "text-blue-400" : "text-current"
-            }`}
+          className={`w-3.5 h-3.5 flex-shrink-0 ${
+            isActive ? "text-blue-400" : "text-current"
+          }`}
         />
       )}
 
@@ -102,7 +125,7 @@ function SidebarMenu({ sections, activeKey, onNavChange }: SidebarMenuProps) {
           <p className="text-[9px] font-semibold tracking-widest uppercase text-white/25 px-1 mb-1.5">
             {section.category}
           </p>
-          {section.items.map((item) => (
+          {section.items.map((item:NavItem) => (
             <SidebarNavItem
               key={item.key}
               item={item}

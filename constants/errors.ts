@@ -22,7 +22,7 @@ export const VALIDATION_ERRORS = {
   PASSWORD_TOO_SHORT: 'Password must be at least 8 characters.',
   PASSWORDS_MISMATCH: 'Passwords do not match.',
   USERNAME_REQUIRED: 'Username is required.',
-  FIELD_REQUIRED: (field: string) => `${field} is required.`,
+  FIELD_REQUIRED: (field: string) => `${ field } is required.`,
 } as const;
 
 export const FORM_ERRORS = {
@@ -51,23 +51,22 @@ export const ERROR_MESSAGE_MAP: Record<string, string> = {
 // Get user-friendly error message
 export function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
-    const mappedMessage = ERROR_MESSAGE_MAP[error.message];
+    const normalized = error.message.trim(); // ✅ normalize
+
+    const mappedMessage = ERROR_MESSAGE_MAP[normalized];
     if (mappedMessage) return mappedMessage;
-    
-    // Check for HTTP status codes in message
-    for (const code of ['500', '502', '503', '504']) {
-      if (error.message.includes(code)) {
-        return NETWORK_ERRORS.SERVER_ERROR;
-      }
-    }
-    
-    return NETWORK_ERRORS.UNKNOWN_ERROR;
+
+    return normalized; // 🔥 fallback to original backend message
   }
-  
+
   if (typeof error === 'string') {
-    const mappedMessage = ERROR_MESSAGE_MAP[error];
-    return mappedMessage || NETWORK_ERRORS.UNKNOWN_ERROR;
+    const normalized = error.trim(); // ✅ normalize
+
+    const mappedMessage = ERROR_MESSAGE_MAP[normalized];
+    if (mappedMessage) return mappedMessage;
+
+    return normalized; // 🔥 fallback to original backend message
   }
-  
+
   return NETWORK_ERRORS.UNKNOWN_ERROR;
 }

@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 const geist = Inter({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
-  title: 'Helixion — Enterprise Multi-Role Platform',
-  description: 'Sign in or create your Helixion workspace.',
+  title: 'Helixon — Enterprise Multi-Role Platform',
+  description: 'Sign in or create your Helixon workspace.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -4,27 +4,30 @@ import { CheckCircle2, KeyRound, Mail, User, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AuthLayout from '../../components/AuthLayout';
-import { parseApiError } from '@/utils/parseError';
 import { SIGNUP_CONTENT } from '@/constants/content';
 import { ROUTES } from '@/constants/navigation';
-import { useForm } from '@/hooks/useForm';
-import { validateRegisterForm } from '@/utils/validators';
 import { registerAPI } from '@/utils/authService';
 import { Button } from '@/components/ui/button';
 import InputField from '@/components/ui/input';
+import { useState } from 'react';
+import { parseApiError } from '@/utils/parseError';
 
 function LeftPanel() {
   const { FEATURES, LEFT_PANEL } = SIGNUP_CONTENT;
 
   return (
     <div className="flex flex-col gap-7">
-      <div className="flex items-center gap-2">
+       {/* 
+       TAG: 'JOIN HELIXON · GET STARTED FREE', 
+       */}
+       
+      {/* <div className="flex items-center gap-2">
         <div className="h-px w-6 bg-primaryDark" />
         <div className="text-xs tracking-widest font-medium text-textMuted flex items-center gap-1">
           <span>{LEFT_PANEL.TAG}</span>
           <Star size={12} className="text-accentYellow fill-accentYellow" />
         </div>
-      </div>
+      </div> */}
 
       <div>
         <h1 className="text-5xl font-extrabold leading-tight text-white">
@@ -32,9 +35,11 @@ function LeftPanel() {
         </h1>
       </div>
 
-      <p className="text-sm leading-relaxed text-textMuted">
+      {/* Sign up once and get immediate access to the dashboard built for your role — no setup required. */}
+
+      {/* <p className="text-sm leading-relaxed text-textMuted">
         {LEFT_PANEL.DESCRIPTION}
-      </p>
+      </p> */}
 
       <div className="h-px w-full bg-borderDark" />
 
@@ -56,49 +61,51 @@ function RightPanel() {
   const router = useRouter();
   const { FORM } = SIGNUP_CONTENT;
 
-  const {
-    values,
-    errors,
-    formError,
-    loading,
-    handleChange,
-    handleSubmit,
-    setFormError,
-  } = useForm({
-    initialValues: {
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    },
-    validate: validateRegisterForm,
-    onSubmit: async (formValues) => {
-      try {
-        const res = await registerAPI({
-          username: formValues.username,
-          email: formValues.email,
-          password: formValues.password,
-          confirmPassword: formValues.confirmPassword,
-        });
-
-        if (res.data.success) {
-          router.push(ROUTES.SIGNIN);
-        }
-      } catch (err: unknown) {
-        const parsed = parseApiError(err);
-
-        if (parsed.fieldErrors) {
-          // Field errors are handled by the form hook
-          Object.entries(parsed.fieldErrors).forEach(([field, message]) => {
-            if (field === 'confirmPassword' || field === 'confirm') {
-              // Map confirm field errors
-            }
-          });
-        }
-        setFormError(parsed.message);
-      }
-    },
+  const [form, setForm] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
+
+  const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError('');
+    setLoading(true);
+    try {
+      const res = await registerAPI(form);
+
+      if (res.data.success) {
+        router.push(ROUTES.SIGNIN);
+      }
+    } catch (err: any) {
+      if (
+        err &&
+        typeof err === "object" &&
+        !err.response
+      ) {
+        setErrors(err);
+        return;
+      }
+      const parsed = parseApiError(err);
+      setFormError(parsed.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -110,15 +117,13 @@ function RightPanel() {
         <div className="text-red-500 text-sm mb-4">{formError}</div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5"  autoComplete="off">
         <InputField
           label={FORM.USERNAME_LABEL}
           icon={<User size={16} />}
           placeholder={FORM.USERNAME_PLACEHOLDER}
-          value={values.username}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleChange('username')(e.target.value)
-          }
+          value={form.username}
+          onChange={(e) => handleChange('username', e.target.value)}
           error={errors.username}
           autoComplete="username"
         />
@@ -128,23 +133,18 @@ function RightPanel() {
           icon={<Mail size={16} />}
           placeholder={FORM.EMAIL_PLACEHOLDER}
           type="email"
-          value={values.email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleChange('email')(e.target.value)
-          }
+          value={form.email}
+          onChange={(e) => handleChange('email', e.target.value)}
           error={errors.email}
           autoComplete="email"
         />
-
         <InputField
           label={FORM.PASSWORD_LABEL}
           icon={<KeyRound size={16} />}
           placeholder={FORM.PASSWORD_PLACEHOLDER}
           showToggle
-          value={values.password}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleChange('password')(e.target.value)
-          }
+          value={form.password}
+          onChange={(e) => handleChange('password', e.target.value)}
           error={errors.password}
           autoComplete="new-password"
         />
@@ -154,15 +154,13 @@ function RightPanel() {
           icon={<KeyRound size={16} />}
           placeholder={FORM.CONFIRM_PASSWORD_PLACEHOLDER}
           showToggle
-          value={values.confirmPassword}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleChange('confirmPassword')(e.target.value)
-          }
-          error={errors.confirm}
+          value={form.confirmPassword}
+          onChange={(e) => handleChange('confirmPassword', e.target.value)}
+          error={errors.confirmPassword}
           autoComplete="new-password"
         />
 
-       <Button
+        <Button
           type="submit"
           disabled={loading}
           className="w-full bg-gradient-to-br from-primaryDark to-primary text-white shadow-glow p-6"
@@ -175,7 +173,7 @@ function RightPanel() {
         </Button>
 
         <p className="text-center text-sm text-textMuted">
-          {FORM.HAS_ACCOUNT}{" "}
+          {FORM.HAS_ACCOUNT}{' '}
           <Link
             href={ROUTES.SIGNIN}
             className="font-semibold hover:underline text-primary"
@@ -187,6 +185,8 @@ function RightPanel() {
     </div>
   );
 }
+
+
 
 export default function SignUpPage() {
   return <AuthLayout leftPanel={<LeftPanel />} rightPanel={<RightPanel />} />;

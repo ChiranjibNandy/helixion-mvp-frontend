@@ -14,7 +14,7 @@ type AuthLayoutProps = {
  * Authentication layout with left/right panel structure
  */
 export default function AuthLayout({ leftPanel, rightPanel }: AuthLayoutProps) {
-  const { LOGO_SHORT, NAME, FOOTER_BADGE } = BRAND;
+  const { LOGO_SHORT, NAME } = BRAND;
 
   return (
     <div className="min-h-screen flex font-sans">
@@ -22,7 +22,7 @@ export default function AuthLayout({ leftPanel, rightPanel }: AuthLayoutProps) {
       {/* LEFT PANEL */}
       <div className="hidden lg:flex lg:w-2/5 flex-col relative overflow-hidden bg-bgCard">
         <div
-          className={`absolute inset-0 pointer-events-none ${styles.authGlow}`}
+          className={`absolute inset-0 pointer-events-none ${ styles.authGlow }`}
         />
 
         {/* LOGO */}
@@ -43,12 +43,17 @@ export default function AuthLayout({ leftPanel, rightPanel }: AuthLayoutProps) {
         </div>
 
         {/* FOOTER */}
-        <div className="relative z-10 px-10 pb-8 flex items-center gap-2">
+
+        {/* 
+        best practice for enterprise multirole saas platform  */
+        }
+
+        {/* <div className="relative z-10 px-10 pb-8 flex items-center gap-2">
           <CheckCircle2 size={15} className="text-primary" />
           <span className="text-xs text-primary">
-            {FOOTER_BADGE}
+  
           </span>
-        </div>
+        </div> */}
       </div>
 
       {/* RIGHT PANEL */}

@@ -7,25 +7,30 @@ import AuthLayout from '../../components/AuthLayout';
 import { loginAPI } from '@/utils/authService';
 import { parseApiError } from '@/utils/parseError';
 import { SIGNIN_CONTENT } from '@/constants/content';
-import { ROUTES } from '@/constants/navigation';
-import { useForm } from '@/hooks/useForm';
-import { validateLoginForm } from '@/utils/validators';
-import { Button } from '@/components/ui/button';
+import { ROUTES, USER_ROLES } from '@/constants/navigation';
 import InputField from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { decodeJwtPayload, getAccessToken } from '@/utils/token';
+import { useState } from 'react';
+
 
 function LeftPanel() {
   const { STATS, LEFT_PANEL } = SIGNIN_CONTENT;
 
   return (
     <div className="flex flex-col gap-7">
-      <div className="flex items-center gap-2">
+      {/*  
+      OPTION B · ROLE SELECTOR RECOMMENDED  
+      */}
+
+      {/* <div className="flex items-center gap-2">
         <div className="h-px w-6 bg-primaryDark" />
         <div className="text-xs tracking-widest font-medium text-textMuted flex items-center gap-1">
-          <span>{LEFT_PANEL.TAG}</span>
+          <span></span>
           <Star size={12} className="text-accentYellow fill-accentYellow" />
-          <span className="text-accentYellow">{LEFT_PANEL.TAG_BADGE}</span>
+          <span className="text-accentYellow"></span>
         </div>
-      </div>
+      </div> */}
 
       <div>
         <h1 className="text-5xl font-extrabold leading-tight text-white whitespace-pre-line">
@@ -58,35 +63,66 @@ function RightPanel() {
   const router = useRouter();
   const { FORM } = SIGNIN_CONTENT;
 
-  const {
-    values,
-    errors,
-    formError,
-    loading,
-    handleChange,
-    handleSubmit,
-    setFormError,
-  } = useForm({
-    initialValues: {
-      email: '',
-      password: '',
-    },
-    validate: validateLoginForm,
-    onSubmit: async (formValues) => {
-      try {
-        const res = await loginAPI(formValues);
-
-        if (res.data.success) {
-
-          router.push(ROUTES.DASHBOARD);
-
-        }
-      } catch (err: unknown) {
-        const parsed = parseApiError(err);
-        setFormError(parsed.message);
-      }
-    },
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
   });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [allowSave, setAllowSave] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError("");
+    setLoading(true);
+
+    try {
+      const res = await loginAPI(form);
+
+      if (res.data.success) {
+        setAllowSave(true)
+        const token = await getAccessToken();
+
+        if (!token) {
+          setFormError("Authentication failed");
+          return;
+        }
+
+        const payload = await decodeJwtPayload(token);
+        const role = payload.role;
+
+        if (role === USER_ROLES.ADMIN) {
+          router.push(ROUTES.ADMIN_DASHBOARD);
+        } else {
+          router.push(ROUTES.DASHBOARD);
+        }
+      }
+    } catch (err: any) {
+      if (
+        err &&
+        typeof err === "object" &&
+        !err.response 
+      ) {
+        setErrors(err);
+        return;
+      }
+      const parsed = parseApiError(err);
+      setFormError(parsed.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  };
 
   return (
     <div>
@@ -99,17 +135,18 @@ function RightPanel() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5"  autoComplete={allowSave ? "on" : "off"} noValidate>
+
 
         <InputField
           label={FORM.EMAIL_LABEL}
           icon={<Mail size={16} />}
           placeholder={FORM.EMAIL_PLACEHOLDER}
           type="email"
-          value={values.email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('email')(e.target.value)}
+          value={form.email}
+          onChange={(e) => handleChange("email", e.target.value)}
           error={errors.email}
-          autoComplete="email"
+          autoComplete="username"
         />
 
         <div className="flex flex-col gap-1">
@@ -118,20 +155,22 @@ function RightPanel() {
             icon={<KeyRound size={16} />}
             placeholder={FORM.PASSWORD_PLACEHOLDER}
             showToggle
-            value={values.password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('password')(e.target.value)}
+            value={form.password}
+            onChange={(e) => handleChange("password", e.target.value)}
             error={errors.password}
             autoComplete="current-password"
           />
 
-          <div className="flex justify-start">
+          {/* forgot password */}
+
+          {/* <div className="flex justify-start">
             <Link
               href="#"
               className="text-xs font-medium hover:underline mt-1 text-primary"
             >
               {FORM.FORGOT_PASSWORD}
             </Link>
-          </div>
+          </div> */}
         </div>
 
         <Button

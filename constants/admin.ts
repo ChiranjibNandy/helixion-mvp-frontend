@@ -1,5 +1,10 @@
 // Constants for admin dashboard
 
+import { NavSection } from "@/types/employee";
+import { NAV_LABELS, NAV_SECTIONS } from "./content";
+import { BarChart3, Bell, FileText, LayoutDashboard, Settings, Shield, Users, Zap } from "lucide-react";
+import { ROUTES } from "./navigation";
+
 export const API_ENDPOINTS = {
   REGISTRATIONS: '/admin/registrations',
 } as const;
@@ -46,5 +51,106 @@ export const AVATAR_BACKGROUNDS = [
 export const DATE_FORMATS = {
   TODAY: 'Today',
   YESTERDAY: 'Yesterday',
-  DAYS_AGO: (days: number) => `${days} days ago`,
+  DAYS_AGO: (days: number) => `${ days } days ago`,
 } as const;
+
+
+
+// constants/admin.ts
+
+export const ADMIN_NAV_SECTION: NavSection[] = [
+  {
+    category: NAV_SECTIONS.OVERVIEW,
+    items: [
+      {
+        label: NAV_LABELS.DASHBOARD,
+        key: 'dashboard',
+        href: ROUTES.ADMIN_DASHBOARD,
+        icon: 'layout-dashboard',
+      },
+      {
+        label: NAV_LABELS.ANALYTICS,
+        key: 'analytics',
+        href: ROUTES.ANALYTICS,
+        icon: 'bar-chart',
+      },
+    ],
+  },
+  {
+    category: NAV_SECTIONS.MANAGEMENT,
+    items: [
+      {
+        label: NAV_LABELS.PENDING,
+        key: 'pending',
+        href: ROUTES.PENDING,
+        icon: 'users',
+      },
+      {
+        label: NAV_LABELS.ALL_USERS,
+        key: 'users',
+        href: ROUTES.USERS,
+        icon: 'users',
+      },
+      {
+        label: NAV_LABELS.ROLES_PERMISSIONS,
+        key: 'roles',
+        href: ROUTES.ROLES,
+        icon: 'shield',
+      },
+      {
+        label: NAV_LABELS.BULK_IMPORT,
+        key: 'import',
+        href: ROUTES.IMPORT,
+        icon: 'file',
+      },
+    ],
+  },
+  {
+    category: NAV_SECTIONS.PLATFORM,
+    items: [
+      {
+        label: NAV_LABELS.PROGRAMS,
+        key: 'programs',
+        href: ROUTES.PROGRAMS,
+        icon: 'settings',
+      },
+      {
+        label: NAV_LABELS.ORGANIZATIONS,
+        key: 'organizations',
+        href: ROUTES.ORGANIZATIONS,
+        icon: 'zap',
+      },
+      {
+        label: NAV_LABELS.AUDIT_LOG,
+        key: 'audit',
+        href: ROUTES.AUDIT,
+        icon: 'bell',
+      },
+    ],
+  },
+  {
+    category: NAV_SECTIONS.GENERAL_TOOLS,
+    items: [
+      {
+        icon: "settings",
+        key: 'support',
+        label: NAV_LABELS.SUPPORT,
+        href: ROUTES.SUPPORT,
+      },
+      {
+        icon: "bell",
+        key: 'integrations',
+        label: NAV_LABELS.INTEGRATIONS,
+        href: ROUTES.INTEGRATIONS,
+      },
+      {
+        icon: "bell",
+        key: 'notifications',
+        label: NAV_LABELS.NOTIFICATIONS,
+        href: ROUTES.NOTIFICATIONS,
+      },
+    ],
+  },
+];
+
+

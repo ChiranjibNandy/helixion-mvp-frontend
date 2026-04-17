@@ -1,6 +1,6 @@
 import type { Programme } from '@/types';
 import { ProgrammeCard } from './ProgrammeCard';
-import { SectionHeading } from '@/components/ui/SectionHeading';
+import { SectionHeading } from '@/components/ui/section-heading';
 import { Card, CardContent } from '../ui/card';
 import { t } from '@/lib/i18n';
 

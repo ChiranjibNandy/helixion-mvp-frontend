@@ -1,6 +1,7 @@
+"use server"
 import { cookies } from "next/headers";
 
-export function getAccessToken() {
+export async function getAccessToken() {
   const cookieStore = cookies();
 
   const token =
@@ -12,7 +13,7 @@ export function getAccessToken() {
 /**
  * ✅ Remove access token (logout)
  */
-export function removeAccessToken() {
+export async function removeAccessToken() {
   const cookieStore = cookies();
 
   cookieStore.delete("accessToken");
@@ -22,9 +23,9 @@ export function removeAccessToken() {
  * Decode JWT payload WITHOUT verifying signature
  * (Backend already verified the token)
  */
-export function decodeJwtPayload(
+export async function decodeJwtPayload(
   token: string
-): Record<string, string> {
+) {
   try {
     const base64Url = token.split(".")[1];
 
