@@ -1,3 +1,4 @@
+import { API } from "@/constants/api";
 import { api } from "@/lib/api";
 
 export const getUsersAPI = async (params: {
@@ -5,7 +6,7 @@ export const getUsersAPI = async (params: {
   limit: number;
   search?: string;
 }) => {
-  return await api.get("/admin/users", {
+  return await api.get(API.ADMIN.USERS, {
     params,
   });
 };

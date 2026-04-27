@@ -1,3 +1,4 @@
+import { API } from "@/constants/api";
 import { api } from "@/lib/api";
 import { RegisterCredentials } from "@/types/auth";
 import { forgotPasswordSchema, resetPasswordSchema, signinSchema, signupSchema } from "@/validations/auth";
@@ -19,7 +20,7 @@ export const loginAPI = async (data: { email: string; password: string }) => {
     throw fieldErrors;
   }
 
-  return await api.post("/auth/login", data);
+  return await api.post(API.AUTH.LOGIN, data);
 };
 
 //Registration of user
@@ -38,7 +39,7 @@ export const registerAPI = async (data: RegisterCredentials) => {
     throw fieldErrors;
   }
 
-  return await api.post('/auth/register', data);
+  return await api.post(API.AUTH.REGISTER, data);
 };
 
 // ── Forgot Password ────────────────────────────────────────────────────────
@@ -54,7 +55,7 @@ export const forgotPasswordAPI = async (data: { email: string }) => {
     });
     throw fieldErrors;
   }
-  return await api.post("/auth/send-reset-link", data);
+  return await api.post(API.AUTH.SENDRESEND, data);
 };
 
 
@@ -76,7 +77,7 @@ export const resetPasswordAPI = async (data: {
     throw fieldErrors;
   }
 
-  return await api.patch("/auth/reset-password", data);
+  return await api.patch(API.AUTH.RESETPASSWORD, data);
 };
 
 
