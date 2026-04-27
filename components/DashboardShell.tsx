@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { User } from '@/types';
 import { DashboardHeader } from './dashboard/DashboardHeader';
-import { Sidebar } from './ui/sidebar';
+import { Sidebar } from './ui/Sidebar';
 
 
 interface DashboardShellProps {

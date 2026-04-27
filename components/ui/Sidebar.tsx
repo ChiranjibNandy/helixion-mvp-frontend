@@ -1,7 +1,7 @@
 import { SidebarFooterProps, SidebarMenuProps, SidebarNavItemProps, SidebarProfileProps, SidebarProps } from '../../props/sidebar';
 import { ROLE_LABEL } from '../../constants/employee';
 import Link from 'next/link';
-import { Award, BarChart3, Bell, BookOpen, FileText, LayoutDashboard, Search, Settings, Shield, UserCircle, Users, Zap } from 'lucide-react';
+import { Award, BarChart3, Bell, BookOpen, FileText, LayoutDashboard, Search, Settings, Shield, UserCircle, Users, Zap, KeyRound  } from 'lucide-react';
 import { NavItem } from '@/types';
 import { AppAvatar } from './avatar';
 
@@ -20,6 +20,7 @@ const ICON_MAP: Record<string, any> = {
   settings: Settings,
   zap: Zap,
   bell: Bell,
+  "key-round":KeyRound
 };
 
 

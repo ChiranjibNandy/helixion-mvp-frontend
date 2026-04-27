@@ -49,3 +49,33 @@ export const signinSchema = z.object({
     .trim()
     .min(1, { message: "Password is required" }),
 });
+
+// validate only the email is required and in correct format or not
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, { message: "Email is required" })
+    .email({ message: "Invalid email format" }),
+});
+
+//validate UserId password
+export const resetPasswordSchema = z.object({
+  userId: z.string(),
+  newPassword: z
+    .string()
+    .trim()
+    .min(8, { message: "password has min 8 length" })
+    .regex(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      { message: "Password must contain at least one letter, one number, and one special character" }
+    ),
+
+  confirmPassword: z
+    .string()
+    .trim()
+    .min(1, { message: "password is required" }),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "password is not match",
+  path: ["confirmPassword"],
+});

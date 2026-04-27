@@ -103,6 +103,12 @@ export const ADMIN_NAV_SECTION: NavSection[] = [
         href: ROUTES.IMPORT,
         icon: 'file',
       },
+      {
+        label: NAV_LABELS.RESET_PASSWORD,
+        key: 'reset-password',
+        href: ROUTES.RESETPASSWORD,
+        icon: 'key-round',
+      },
     ],
   },
   {

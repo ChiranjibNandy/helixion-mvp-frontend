@@ -4,6 +4,7 @@ import type { User } from '@/types';
 import { decodeJwtPayload, getAccessToken } from '@/utils/token';
 import { redirect } from 'next/navigation';
 import { ADMIN_NAV_SECTION } from '@/constants/admin';
+import { ROUTES } from '@/constants/navigation';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -11,7 +12,7 @@ interface DashboardLayoutProps {
 
 export default async function AdminLayout({ children }: DashboardLayoutProps) {
   const token = await getAccessToken();
-  if (!token) redirect('/signin');
+  if (!token) redirect(ROUTES.SIGNIN);
 
   const payload = await decodeJwtPayload(token);
 

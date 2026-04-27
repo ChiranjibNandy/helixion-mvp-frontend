@@ -103,6 +103,7 @@ export const NAV_LABELS = {
   ALL_USERS: 'All users',
   ROLES_PERMISSIONS: 'Roles & permissions',
   BULK_IMPORT: 'Bulk import',
+  RESET_PASSWORD:"Reset password",
   PROGRAMS: 'Programs',
   ORGANIZATIONS: 'Organizations',
   AUDIT_LOG: 'Audit log',
