@@ -4,11 +4,32 @@ import { useState } from 'react';
 import { Search, AlertCircle } from 'lucide-react';
 import { COLOR_CLASSES } from '@/constants/admin';
 import { useUsersSearch, UserSearchResult } from '@/hooks/useUsersSearch';
+import { t } from '@/lib/i18n';
 import { AppAlert } from '@/components/ui/Alert';
 import { Button } from '@/components/ui/Button';
 import InputField from '@/components/ui/input';
 import Badge from '@/components/ui/badge';
 import { AppAvatar } from '@/components/ui/Avatar';
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
+
+const ROLE_COLORS: Record<string, string> = {
+  employee: 'bg-[#1e3a8a]/40 ring-1 ring-[#1e3a8a]',
+  provider: 'bg-[#166534]/40 ring-1 ring-[#166534]',
+  default: 'bg-[#4c1d95]/40 ring-1 ring-[#4c1d95]'
+};
+
+const ROLE_BADGE_COLORS: Record<string, string> = {
+  employee: 'bg-blue-500/10 text-blue-400',
+  provider: 'bg-green-500/10 text-green-400',
+  default: 'bg-purple-500/10 text-purple-400'
+};
 
 export default function DeactivateUserPage() {
   const { users, loading, error, searchUsers, deactivateUser } = useUsersSearch();
@@ -53,10 +74,10 @@ export default function DeactivateUserPage() {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-xl font-semibold text-white mb-2">
-            Deactivate a user account
+            {t('admin.deactivate.title')}
           </h1>
           <p className="text-[13px] text-white/50 leading-relaxed">
-            Search for a user. Deactivated accounts lose access immediately — data and history are retained and the account can be reactivated from All users.
+            {t('admin.deactivate.description')}
           </p>
         </div>
 
@@ -72,12 +93,10 @@ export default function DeactivateUserPage() {
 
         {/* Warning Alert */}
         <div className="mb-8">
-          <div className="flex gap-3 bg-[#1e1511] border border-[#3b2313] p-4 rounded-xl items-start">
-            <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" />
-            <p className="text-sm text-white/70">
-              <span className="font-semibold text-amber-500">Immediate effect.</span> The user is signed out of all sessions and blocked from logging in the moment you confirm.
-            </p>
-          </div>
+          <AppAlert 
+            variant="warning"
+            description={<><span className="font-semibold text-amber-500">Immediate effect.</span> The user is signed out of all sessions and blocked from logging in the moment you confirm.</>}
+          />
         </div>
 
         {/* Search Bar */}
@@ -108,7 +127,7 @@ export default function DeactivateUserPage() {
           <div className="mb-10 bg-[#0f1629] border border-white/10 rounded-xl overflow-hidden">
             <div className="p-5 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <AppAvatar initials={getInitials(selectedUser.username)} size="lg" className="bg-[#1e3a8a]/40 ring-1 ring-[#1e3a8a]" />
+                <AppAvatar initials={getInitials(selectedUser.username)} size="lg" className={ROLE_COLORS[selectedUser.role || 'default'] || ROLE_COLORS.default} />
                 <div>
                   <h3 className="text-base font-medium text-white">{selectedUser.username}</h3>
                   <p className="text-sm text-white/50">{selectedUser.email}</p>
@@ -162,76 +181,78 @@ export default function DeactivateUserPage() {
           <h3 className="text-[12px] font-semibold text-white/40 uppercase tracking-wider mb-4">Search results</h3>
           
           <div className="bg-[#0f1629] border border-white/10 rounded-xl overflow-hidden">
-            <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr] gap-4 p-4 border-b border-white/5 text-[12px] font-medium text-white/40">
-              <div className="w-8"></div>
-              <div>User</div>
-              <div>Role</div>
-              <div>Status</div>
-              <div>Last active</div>
-            </div>
-
-            {loading ? (
-              <div className="p-8 text-center text-white/30 text-sm">Loading...</div>
-            ) : error ? (
-              <div className="p-8 text-center text-red-400/80 text-sm">{error}</div>
-            ) : users.length === 0 ? (
-              <div className="p-8 text-center text-white/30 text-sm">No users found.</div>
-            ) : (
-              <div className="divide-y divide-white/5">
-                {users.map((user) => (
-                  <div 
-                    key={user.id} 
-                    className={`grid grid-cols-[auto_1fr_1fr_1fr_1fr] gap-4 p-4 items-center cursor-pointer transition-colors ${selectedUser?.id === user.id ? 'bg-white/[0.03]' : 'hover:bg-white/[0.02]'}`}
-                    onClick={() => handleSelectUser(user)}
-                  >
-                    <div className="w-8 flex items-center justify-center">
-                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${selectedUser?.id === user.id ? 'border-red-500' : 'border-white/20'}`}>
-                        {selectedUser?.id === user.id && <div className="w-2 h-2 bg-red-500 rounded-full" />}
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-3">
-                      <AppAvatar initials={getInitials(user.username)} size="sm" className={
-                        user.role === 'employee' ? 'bg-[#1e3a8a]/40 ring-1 ring-[#1e3a8a]' : 
-                        user.role === 'provider' ? 'bg-[#166534]/40 ring-1 ring-[#166534]' : 
-                        'bg-[#4c1d95]/40 ring-1 ring-[#4c1d95]'
-                      } />
-                      <div>
-                        <p className="text-sm font-medium text-white/90">{user.username}</p>
-                        <p className="text-[12px] text-white/40">{user.email}</p>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium ${
-                        user.role === 'employee' ? 'bg-blue-500/10 text-blue-400' :
-                        user.role === 'provider' ? 'bg-green-500/10 text-green-400' :
-                        'bg-purple-500/10 text-purple-400'
-                      }`}>
-                        {user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'User'}
-                      </span>
-                    </div>
-                    
-                    <div>
-                      {user.status === 'active' ? (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-[11px] font-medium border border-emerald-500/20">
-                          Active
+            <Table>
+              <TableHeader>
+                <TableRow className="border-white/5 hover:bg-transparent">
+                  <TableHead className="w-12 text-[12px] font-medium text-white/40"></TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">User</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">Role</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">Status</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">Last active</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  <TableRow className="border-white/5 hover:bg-transparent">
+                    <TableCell colSpan={5} className="p-8 text-center text-white/30 text-sm">Loading...</TableCell>
+                  </TableRow>
+                ) : error ? (
+                  <TableRow className="border-white/5 hover:bg-transparent">
+                    <TableCell colSpan={5} className="p-8 text-center text-red-400/80 text-sm">{error}</TableCell>
+                  </TableRow>
+                ) : users.length === 0 ? (
+                  <TableRow className="border-white/5 hover:bg-transparent">
+                    <TableCell colSpan={5} className="p-8 text-center text-white/30 text-sm">No users found.</TableCell>
+                  </TableRow>
+                ) : (
+                  users.map((user) => (
+                    <TableRow 
+                      key={user.id} 
+                      className={`border-white/5 cursor-pointer transition-colors ${selectedUser?.id === user.id ? 'bg-white/[0.03] hover:bg-white/[0.03]' : 'hover:bg-white/[0.02]'}`}
+                      onClick={() => handleSelectUser(user)}
+                    >
+                      <TableCell className="w-12 text-center">
+                        <div className={`w-4 h-4 rounded-full border mx-auto flex items-center justify-center ${selectedUser?.id === user.id ? 'border-red-500' : 'border-white/20'}`}>
+                          {selectedUser?.id === user.id && <div className="w-2 h-2 bg-red-500 rounded-full" />}
+                        </div>
+                      </TableCell>
+                      
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <AppAvatar initials={getInitials(user.username)} size="sm" className={ROLE_COLORS[user.role || 'default'] || ROLE_COLORS.default} />
+                          <div>
+                            <p className="text-sm font-medium text-white/90">{user.username}</p>
+                            <p className="text-[12px] text-white/40">{user.email}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      
+                      <TableCell>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium ${ROLE_BADGE_COLORS[user.role || 'default'] || ROLE_BADGE_COLORS.default}`}>
+                          {user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'User'}
                         </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-red-500/10 text-red-400 text-[11px] font-medium border border-red-500/20">
-                          Deactivated
-                        </span>
-                      )}
-                    </div>
-                    
-                    <div className="text-[13px] text-white/40">
-                      {/* For demo purposes, we don't have last active in the DB, so we fake it based on some logic or just show static text */}
-                      {user.status === 'active' ? '2 hours ago' : '3 weeks ago'}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                      </TableCell>
+                      
+                      <TableCell>
+                        {user.status === 'active' ? (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-[11px] font-medium border border-emerald-500/20">
+                            Active
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-red-500/10 text-red-400 text-[11px] font-medium border border-red-500/20">
+                            Deactivated
+                          </span>
+                        )}
+                      </TableCell>
+                      
+                      <TableCell className="text-[13px] text-white/40">
+                        {user.status === 'active' ? '2 hours ago' : '3 weeks ago'}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
           </div>
         </div>
       </div>
