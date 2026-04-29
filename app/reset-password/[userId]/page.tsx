@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { t } from '@/lib/i18n';
 import { useResetPassword } from '@/hooks/useResetPassword';
 import { ROUTES } from '@/constants/navigation';
+import { getPasswordStrengthColor, getPasswordStrengthLabel, getPasswordStrengthScore } from '@/utils/passwordStrength';
 
 
 export default function ResetPasswordPage() {
@@ -45,20 +46,17 @@ export default function ResetPasswordPage() {
     }
   };
 
-  const strength = (() => {
-    const p = form.password;
-    if (!p) return 0;
-    let s = 0;
-    if (p.length >= 8) s++;
-    if (/[A-Z]/.test(p)) s++;
-    if (/[0-9]/.test(p)) s++;
-    if (/[^A-Za-z0-9]/.test(p)) s++;
-    return s;
-  })();
+  const passwordStrengthScore = getPasswordStrengthScore(
+    form.password
+  );
 
-  const strengthLabel = ['', 'Weak', 'Fair', 'Good', 'Strong'][strength];
-  const strengthColor =
-    ['', '#ef4444', '#f97316', '#eab308', '#22c55e'][strength];
+  const strengthLabel = getPasswordStrengthLabel(
+    passwordStrengthScore
+  );
+
+  const strengthColor = getPasswordStrengthColor(
+    passwordStrengthScore
+  );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-bgMain px-4">
@@ -145,7 +143,7 @@ export default function ResetPasswordPage() {
                         className="h-1 flex-1 rounded-full bg-white/10"
                         style={{
                           background:
-                            i <= strength ? strengthColor : undefined,
+                            i <= passwordStrengthScore ? strengthColor : undefined,
                         }}
                       />
                     ))}
