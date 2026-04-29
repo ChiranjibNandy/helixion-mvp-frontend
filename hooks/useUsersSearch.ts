@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { API_ENDPOINTS } from '@/constants/admin';
-import { api } from '@/lib/api';
+import { userService } from '@/services/userService';
 
 export interface UserSearchResult {
   id: string;
@@ -24,9 +23,8 @@ export function useUsersSearch() {
       setLoading(true);
       setError(null);
 
-      const response = await api.get(`${API_ENDPOINTS.USERS}?q=${encodeURIComponent(query)}&limit=10`);
+      const result = await userService.searchUsers(query);
 
-      const result = response.data;
       if (result.success && result.data) {
         setUsers(result.data);
       } else {
@@ -45,9 +43,8 @@ export function useUsersSearch() {
       setLoading(true);
       setError(null);
 
-      const response = await api.patch(API_ENDPOINTS.DEACTIVATE_USER(id));
+      const result = await userService.deactivateUser(id);
 
-      const result = response.data;
       return result.success;
     } catch (err: any) {
       setError(err.response?.data?.message || err.message || 'Unknown error');
