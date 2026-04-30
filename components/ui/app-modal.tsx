@@ -95,11 +95,10 @@ export default function AppModal({
 
         {/* ICON */}
         <div
-          className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 border ${
-            isSuccess
-              ? 'bg-green-500/10 text-green-400 border-green-500/20'
-              : 'bg-orange-500/10 text-orange-400 border-orange-500/20'
-          }`}
+          className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 border ${ isSuccess
+            ? 'bg-green-500/10 text-green-400 border-green-500/20'
+            : 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+            }`}
         >
           {isSuccess ? <CheckCircle2 size={22} /> : <AlertCircle size={22} />}
         </div>
@@ -120,7 +119,7 @@ export default function AppModal({
         {isSuccess && stats.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-6 text-sm">
             {stats.map((s, i) => (
-              <span key={i} className={`font-medium ${variantColor(s.variant)}`}>
+              <span key={i} className={`font-medium ${ variantColor(s.variant) }`}>
                 {s.label}
                 {i !== stats.length - 1 && (
                   <span className="text-white/30 mx-1">·</span>

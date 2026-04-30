@@ -6,7 +6,7 @@ import { Share2 } from "lucide-react";
 import SearchInput from "@/components/ui/search-input";
 import Pagination from "@/components/ui/pagination";
 import DataTable from "@/components/shared/data-table";
-import AppModal from "@/components/ui/app-mosal";
+import AppModal from "@/components/ui/app-modal";
 
 import { useUsers } from "@/hooks/useUser";
 import { useForgotPassword } from "@/hooks/useForgotPassword";

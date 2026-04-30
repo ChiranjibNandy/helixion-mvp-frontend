@@ -4,20 +4,25 @@ import { useState } from 'react';
 import { Mail, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import InputField from '@/components/ui/input';
-import AppModal from '@/components/ui/app-mosal';
+import AppModal from '@/components/ui/app-modal';
 import Link from 'next/link';
-
-import { useForgotPassword } from '@/hooks/useForgotPassword';
 import { t } from '@/lib/i18n';
 import { ROUTES } from '@/constants/navigation';
+import { useResetPasswordFlow } from '@/hooks/useResetPasswordFlow';
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('');
+
+  const {
+    email,
+    setEmail,
+    sendResetLink,
+    loading,
+    error
+  } = useResetPasswordFlow();
+
   const [successOpen, setSuccessOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingEmail, setPendingEmail] = useState('');
-
-  const { sendResetLink, loading, error } = useForgotPassword();
 
   // OPEN CONFIRM MODAL
   const handleSubmit = (e: React.FormEvent) => {
@@ -35,8 +40,6 @@ export default function ForgotPasswordPage() {
     if (success) {
       setConfirmOpen(false);
       setSuccessOpen(true);
-    } else {
-      setConfirmOpen(false);
     }
   };
 
@@ -124,11 +127,23 @@ export default function ForgotPasswordPage() {
         isOpen={confirmOpen}
         type="confirm"
         title={t('auth.forgotPassword.confirmTitle')}
-        description={t('auth.forgotPassword.confirmDescription', {
-          email: pendingEmail
-        })}
+        description={
+          <div>
+            <p>
+              {t('auth.forgotPassword.confirmDescription', {
+                email: pendingEmail
+              })}
+            </p>
+
+            {error && (
+              <div className="mt-3 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
+                {error}
+              </div>
+            )}
+          </div>
+        }
         confirmLabel={t("button.send")}
-        cancelLabel={t('button.cancel')}
+        cancelLabel={t("button.cancel")}
         loading={loading}
         onConfirm={handleConfirmSend}
         onCancel={() => setConfirmOpen(false)}

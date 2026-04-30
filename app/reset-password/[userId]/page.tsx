@@ -1,62 +1,42 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { KeyRound, ArrowLeft, ShieldCheck } from 'lucide-react';
 import InputField from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { t } from '@/lib/i18n';
-import { useResetPassword } from '@/hooks/useResetPassword';
 import { ROUTES } from '@/constants/navigation';
-import { getPasswordStrengthColor, getPasswordStrengthLabel, getPasswordStrengthScore } from '@/utils/passwordStrength';
-
+import {
+  getPasswordStrengthColor,
+  getPasswordStrengthLabel,
+  getPasswordStrengthScore
+} from '@/utils/passwordStrength';
+import { useResetPasswordFlow } from '@/hooks/useResetPasswordFlow';
+import { useState } from 'react';
 
 export default function ResetPasswordPage() {
   const { userId } = useParams<{ userId: string }>();
-  const router = useRouter();
-
-  const [form, setForm] = useState({
-    password: '',
-    confirmPassword: '',
-  });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [success, setSuccess] = useState(false);
 
-  const { resetPassword, loading, error } = useResetPassword();
+  const {
+    form,
+    setField,
+    submitNewPassword,
+    loading,
+    error,
+    success
+  } = useResetPasswordFlow(userId);
 
-  const handleChange = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const ok = await resetPassword({
-      userId,
-      newPassword: form.password,
-      confirmPassword: form.confirmPassword,
-    });
-
-    if (ok) {
-      setSuccess(true);
-
-      setTimeout(() => router.push(ROUTES.SIGNIN), 2000);
-    }
+    submitNewPassword();
   };
 
-  const passwordStrengthScore = getPasswordStrengthScore(
-    form.password
-  );
-
-  const strengthLabel = getPasswordStrengthLabel(
-    passwordStrengthScore
-  );
-
-  const strengthColor = getPasswordStrengthColor(
-    passwordStrengthScore
-  );
+  const passwordStrengthScore = getPasswordStrengthScore(form.password);
+  const strengthLabel = getPasswordStrengthLabel(passwordStrengthScore);
+  const strengthColor = getPasswordStrengthColor(passwordStrengthScore);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-bgMain px-4">
@@ -126,9 +106,7 @@ export default function ResetPasswordPage() {
                 type={showPassword ? 'text' : 'password'}
                 showToggle
                 value={form.password}
-                onChange={(e) =>
-                  handleChange('password', e.target.value)
-                }
+                onChange={(e) => setField('password', e.target.value)}
                 placeholder={t('auth.resetPassword.placeholderNew')}
                 onToggle={() => setShowPassword((p) => !p)}
               />
@@ -162,13 +140,12 @@ export default function ResetPasswordPage() {
                 type={showPassword ? 'text' : 'password'}
                 showToggle
                 value={form.confirmPassword}
-                onChange={(e) =>
-                  handleChange('confirmPassword', e.target.value)
-                }
+                onChange={(e) => setField('confirmPassword', e.target.value)}
                 placeholder={t('auth.resetPassword.placeholderConfirm')}
                 onToggle={() => setShowPassword((p) => !p)}
               />
 
+              {/* MISMATCH */}
               {form.confirmPassword &&
                 form.password !== form.confirmPassword && (
                   <p className="text-xs text-red-400 mt-1">
