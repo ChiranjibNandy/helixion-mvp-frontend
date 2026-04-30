@@ -20,5 +20,11 @@
   },
    "common": {
     "loading": "Loading..."
+  },
+   "admin": {
+    "deactivate": {
+      "title": "Deactivate a user account",
+      "description": "Search for a user. Deactivated accounts lose access immediately — data and history are retained and the account can be reactivated from All users."
+    }
   }
 }

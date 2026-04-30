@@ -76,8 +76,8 @@ function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
 
 type AppAlertProps = {
   title?: string;
-  description: string;
-  variant?: "default" | "destructive" | "success";
+  description: React.ReactNode;
+  variant?: "default" | "destructive" | "success" | "warning";
   className?: string;
 };
 
@@ -93,22 +93,24 @@ export function AppAlert({
       ? AlertCircle
       : variant === "success"
       ? CheckCircle2
+      : variant === "warning"
+      ? AlertCircle
       : Info;
 
   return (
     <Alert
       variant={variant === "destructive" ? "destructive" : "default"}
       className={cn(
-        variant === "success" &&
-          "border-green-500 text-green-600",
+        variant === "success" && "border-green-500 text-green-600",
+        variant === "warning" && "bg-[#1e1511] border-[#3b2313] text-amber-500",
         className
       )}
     >
-      <Icon className="size-4" />
+      <Icon className={cn("size-5 mt-0.5", variant === "warning" && "text-amber-500")} />
 
       {title && <AlertTitle>{title}</AlertTitle>}
 
-      <AlertDescription>{description}</AlertDescription>
+      <AlertDescription className={cn(variant === "warning" && "text-white/70 text-sm")}>{description}</AlertDescription>
     </Alert>
   );
 }
