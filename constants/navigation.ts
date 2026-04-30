@@ -27,7 +27,7 @@ export const ROUTES = {
   PENDING: '/pending',
   USERS: '/users',
   ROLES: '/roles',
-  IMPORT: '/import',
+  IMPORT: '/admin/dashboard/import',
   PROGRAMS: '/programs',
   ORGANIZATIONS: '/organizations',
   AUDIT: '/audit',
