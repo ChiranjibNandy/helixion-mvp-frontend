@@ -21,6 +21,7 @@ export const ROUTES = {
   SUPPORT: '/support',
   INTEGRATIONS: '/integrations',
   NOTIFICATIONS: '/notifications',
+  DEACTIVATE_USER: '/admin/dashboard/deactivate',
 } as const;
 
 // Navigation item type - using Lucide icon type

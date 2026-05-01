@@ -14,7 +14,7 @@ export function useUsers(page: number, limit: number, search: string) {
     setError(null); // reset previous error
 
     try {
-      const res = await getUsersAPI({ page, limit, search });
+      const res = await getUsersAPI({ page, limit, q:search });
 
       setData(res?.data?.data?.users || []);
       setTotalPages(res?.data?.data?.pagination?.totalPages || 1);

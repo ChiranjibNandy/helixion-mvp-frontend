@@ -7,6 +7,8 @@ import { ROUTES } from "./navigation";
 
 export const API_ENDPOINTS = {
   REGISTRATIONS: '/admin/registrations',
+  USERS: '/admin/users',
+  DEACTIVATE_USER: (id: string) => `/admin/users/${id}/deactivate`,
 } as const;
 
 // Activity dot colors using semantic Tailwind classes
@@ -108,6 +110,12 @@ export const ADMIN_NAV_SECTION: NavSection[] = [
         key: 'reset-password',
         href: ROUTES.RESETPASSWORD,
         icon: 'key-round',
+      },
+      {
+        label: NAV_LABELS.DEACTIVATE_USER,
+        key: 'deactivate',
+        href: ROUTES.DEACTIVATE_USER,
+        icon: 'user-circle',
       },
     ],
   },

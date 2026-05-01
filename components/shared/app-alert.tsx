@@ -1,11 +1,11 @@
 import { AlertCircle, CheckCircle2, Info } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { cn } from "@/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from "../ui/Alert";
 
 type AppAlertProps = {
   title?: string;
   description: string;
-  variant?: "default" | "destructive" | "success";
+  variant?: "default" | "destructive" | "success" | "warning";
   className?: string;
 };
 
