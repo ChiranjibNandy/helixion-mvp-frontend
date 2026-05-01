@@ -68,6 +68,7 @@
    "table": {
       "username": "Username",
       "email": "Email",
-      "action": "Action"
+      "action": "Action",
+      "no-data":"No matching records found."
    }
 }

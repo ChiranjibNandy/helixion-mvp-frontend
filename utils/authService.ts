@@ -55,7 +55,7 @@ export const forgotPasswordAPI = async (data: { email: string }) => {
     });
     throw fieldErrors;
   }
-  return await api.post(API.AUTH.SENDRESEND, data);
+  return await api.post(API.AUTH.SEND_PASSWORD_RESET_LINK, data);
 };
 
 
@@ -77,7 +77,7 @@ export const resetPasswordAPI = async (data: {
     throw fieldErrors;
   }
 
-  return await api.patch(API.AUTH.RESETPASSWORD, data);
+  return await api.patch(API.AUTH.RESET_PASSWORD, data);
 };
 
 

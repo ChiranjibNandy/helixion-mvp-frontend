@@ -2,8 +2,8 @@ export const API = {
    AUTH: {
       LOGIN: '/auth/login',
       REGISTER: '/auth/register',
-      SENDRESEND:'/auth/send-reset-link',
-      RESETPASSWORD:'/auth/reset-password'
+      SEND_PASSWORD_RESET_LINK:'/auth/send-reset-link',
+      RESET_PASSWORD:'/auth/reset-password'
    },
    ADMIN:{
       USERS:'/admin/users'

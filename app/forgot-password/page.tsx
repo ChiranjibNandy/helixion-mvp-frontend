@@ -9,6 +9,8 @@ import Link from 'next/link';
 import { t } from '@/lib/i18n';
 import { ROUTES } from '@/constants/navigation';
 import { useResetPasswordFlow } from '@/hooks/useResetPasswordFlow';
+import { Spinner } from '@/components/ui/spinner';
+import { AppAlert } from '@/components/shared/app-alert';
 
 export default function ForgotPasswordPage() {
 
@@ -73,9 +75,11 @@ export default function ForgotPasswordPage() {
 
         {/* ERROR */}
         {error && (
-          <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-            {error}
-          </div>
+          <AppAlert
+            variant="destructive"
+            title="Error"
+            description={error}
+          />
         )}
 
         {/* FORM */}
@@ -96,7 +100,7 @@ export default function ForgotPasswordPage() {
             className="w-full bg-gradient-to-r from-primaryDark to-primary text-white shadow-glow"
           >
             {loading ? (
-              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <Spinner size="sm" />
             ) : (
               t('auth.forgotPassword.submit')
             )}

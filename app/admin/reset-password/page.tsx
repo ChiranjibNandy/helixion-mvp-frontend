@@ -11,6 +11,9 @@ import AppModal from "@/components/ui/app-modal";
 import { useUsers } from "@/hooks/useUser";
 import { useForgotPassword } from "@/hooks/useForgotPassword";
 import { t } from "@/lib/i18n";
+import { useDebounce } from "@/hooks/useDebounce";
+import { AppAlert } from "@/components/shared/app-alert";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function UsersPage() {
   const [page, setPage] = useState(1);
@@ -22,8 +25,9 @@ export default function UsersPage() {
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const limit = 10;
+  const debouncedSearch = useDebounce(search, 500);
 
-  const { data, loading, totalPages } = useUsers(page, limit, search);
+  const { data, loading, totalPages, error } = useUsers(page, limit, debouncedSearch);
   const { sendResetLink, loading: loadingAction } = useForgotPassword();
 
   // ----------------------------
@@ -100,7 +104,15 @@ export default function UsersPage() {
 
       {/* TABLE */}
       {loading ? (
-        <p className="text-white/60">{t("common.loading")}</p>
+        <div className="flex justify-center py-10">
+          <Spinner size="lg" />
+        </div>
+      ) : error ? (
+        <AppAlert
+          variant="destructive"
+          title="Error"
+          description={error}
+        />
       ) : (
         <DataTable data={data} columns={columns} />
       )}

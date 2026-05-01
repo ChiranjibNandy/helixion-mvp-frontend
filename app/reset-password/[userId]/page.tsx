@@ -14,6 +14,8 @@ import {
 } from '@/utils/passwordStrength';
 import { useResetPasswordFlow } from '@/hooks/useResetPasswordFlow';
 import { useState } from 'react';
+import { AppAlert } from '@/components/shared/app-alert';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function ResetPasswordPage() {
   const { userId } = useParams<{ userId: string }>();
@@ -91,8 +93,12 @@ export default function ResetPasswordPage() {
 
             {/* ERROR */}
             {error && (
-              <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-                {error}
+              <div className="mb-4">
+                <AppAlert
+                  variant="destructive"
+                  title="Error"
+                  description={error}
+                />
               </div>
             )}
 
@@ -165,7 +171,7 @@ export default function ResetPasswordPage() {
                 className="w-full bg-gradient-to-r from-primaryDark to-primary text-white shadow-glow"
               >
                 {loading ? (
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                   <Spinner size="sm" />
                 ) : (
                   t('auth.resetPassword.submit')
                 )}

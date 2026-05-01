@@ -1,10 +1,9 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-
 import { cn } from "@/lib/utils"
-import { AlertCircle, CheckCircle2, Info } from "lucide-react"
 
-const alertVariants = cva(
+
+export const alertVariants = cva(
   "group/alert relative grid w-full gap-0.5 rounded-lg border px-2.5 py-2 text-left text-sm has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4",
   {
     variants: {
@@ -20,7 +19,7 @@ const alertVariants = cva(
   }
 )
 
-function Alert({
+export  function Alert({
   className,
   variant,
   ...props
@@ -35,7 +34,7 @@ function Alert({
   )
 }
 
-function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
+export  function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="alert-title"
@@ -48,7 +47,7 @@ function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function AlertDescription({
+export  function AlertDescription({
   className,
   ...props
 }: React.ComponentProps<"div">) {
@@ -64,7 +63,7 @@ function AlertDescription({
   )
 }
 
-function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
+export  function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="alert-action"
@@ -74,43 +73,6 @@ function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-type AppAlertProps = {
-  title?: string;
-  description: string;
-  variant?: "default" | "destructive" | "success";
-  className?: string;
-};
 
-export function AppAlert({
-  title,
-  description,
-  variant = "default",
-  className,
-}: AppAlertProps) {
-  // 👉 Icon based on variant
-  const Icon =
-    variant === "destructive"
-      ? AlertCircle
-      : variant === "success"
-      ? CheckCircle2
-      : Info;
-
-  return (
-    <Alert
-      variant={variant === "destructive" ? "destructive" : "default"}
-      className={cn(
-        variant === "success" &&
-          "border-green-500 text-green-600",
-        className
-      )}
-    >
-      <Icon className="size-4" />
-
-      {title && <AlertTitle>{title}</AlertTitle>}
-
-      <AlertDescription>{description}</AlertDescription>
-    </Alert>
-  );
-}
 
 
