@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Button } from './button';
 
 type ModalType = 'confirm' | 'success';
 
@@ -133,33 +134,30 @@ export default function AppModal({
         <div className="flex justify-end gap-3">
 
           {!isSuccess && (
-            <button
+            <Button
+              variant="outline"
               onClick={onCancel}
               disabled={loading}
-              className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 disabled:opacity-40"
             >
               {cancelLabel}
-            </button>
+            </Button>
           )}
 
           {isSuccess ? (
-            <button
-              onClick={onDone}
-              className="px-6 py-2 rounded-lg bg-gradient-to-r from-primaryDark to-primary text-white font-medium hover:opacity-90"
-            >
+            <Button onClick={onDone}>
               {doneLabel}
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
               onClick={onConfirm}
               disabled={loading}
-              className="px-5 py-2 rounded-lg bg-gradient-to-r from-primaryDark to-primary text-white font-medium hover:opacity-90 flex items-center gap-2 disabled:opacity-50"
+              className="flex items-center gap-2"
             >
               {loading && (
                 <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               )}
               {confirmLabel}
-            </button>
+            </Button>
           )}
         </div>
       </div>
