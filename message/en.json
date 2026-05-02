@@ -14,13 +14,63 @@
       }
    },
    "dashboard": {
-    "welcome": "Welcome Back, {name}",
-    "errorTitle": "Error",
-    "errorDescription": "Unable to load your dashboard. Please try refreshing the page."
-  },
+      "welcome": "Welcome Back, {name}",
+      "errorTitle": "Error",
+      "errorDescription": "Unable to load your dashboard. Please try refreshing the page."
+   },
    "common": {
-    "loading": "Loading..."
-  },
+      "loading": "Loading...",
+      "error": "Something went wrong. Please try again.",
+      "success": "Success"
+   },
+   "auth": {
+      "forgotPassword": {
+         "title": "Forgot password?",
+         "description": "Enter your email and we’ll send you a reset link.",
+         "confirmTitle": "Send reset link?",
+         "confirmDescription": "We will send a reset email to {email}",
+         "successTitle": "Check your inbox",
+         "successDescription": "We sent a reset link to {email}",
+         "submit": "Send Reset Link"
+      },
+      "resetPassword": {
+         "back": "Back to login",
+         "title": "Reset password",
+         "placeholderNew": "Enter new password",
+         "placeholderConfirm": "Confirm your password",
+         "submit": "Reset Password",
+         "successTitle": "Password updated!",
+         "successDescription": "Your password has been reset successfully. You can now sign in with your new password.",
+         "redirecting": "Redirecting to sign in...",
+         "errorDefault": "Something went wrong. Please try again.",
+         "passwordMismatch": "Passwords do not match",
+         "confirmDescription": "A reset link will be sent to {email}",
+         "successDescriptions": "Password reset link has been sent successfully"
+      }
+   },
+   "email": {
+      "inputLabel": "Email address",
+      "inputPlaceholder": "you@example.com"
+   },
+   "button": {
+      "cancel": "cancel",
+      "done": "Done",
+      "send": "Send"
+   },
+   "password": {
+      "description": "Choose a strong password you haven’t used before.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password"
+   },
+   "input": {
+      "searchPlaceholder": "Search users..."
+   },
+   "table": {
+      "username": "Username",
+      "email": "Email",
+      "action": "Action",
+      "no-data":"No matching records found."
+   },
    "admin": {
     "deactivate": {
       "title": "Deactivate a user account",

@@ -107,9 +107,9 @@ export const ADMIN_NAV_SECTION: NavSection[] = [
       },
       {
         label: NAV_LABELS.RESET_PASSWORD,
-        key: 'reset_password',
-        href: '#',
-        icon: 'shield',
+        key: 'reset-password',
+        href: ROUTES.RESETPASSWORD,
+        icon: 'key-round',
       },
       {
         label: NAV_LABELS.DEACTIVATE_USER,

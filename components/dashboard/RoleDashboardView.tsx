@@ -5,7 +5,7 @@ import { MyEnrollments } from "./MyEnrollments";
 import { AvailableProgrammes } from "./AvailableProgrammes";
 import { fetchEmployeeDashboardData } from "@/utils/employeeService";
 import { t } from "@/lib/i18n";
-import { AppAlert } from "../ui/alert";
+import { AppAlert } from "../shared/app-alert";
 
 function EmployeeDashboardView() {
   const [data, setData] = useState<any>(null);

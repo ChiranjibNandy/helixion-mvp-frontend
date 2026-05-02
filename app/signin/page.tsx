@@ -103,7 +103,7 @@ function RightPanel() {
       if (
         err &&
         typeof err === "object" &&
-        !err.response 
+        !err.response
       ) {
         setErrors(err);
         return;
@@ -135,7 +135,7 @@ function RightPanel() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5"  autoComplete={allowSave ? "on" : "off"} noValidate>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5" autoComplete={allowSave ? "on" : "off"} noValidate>
 
 
         <InputField
@@ -160,17 +160,14 @@ function RightPanel() {
             error={errors.password}
             autoComplete="current-password"
           />
-
-          {/* forgot password */}
-
-          {/* <div className="flex justify-start">
+          <div className="flex justify-start">
             <Link
-              href="#"
+              href="/forgot-password"
               className="text-xs font-medium hover:underline mt-1 text-primary"
             >
               {FORM.FORGOT_PASSWORD}
             </Link>
-          </div> */}
+          </div>
         </div>
 
         <Button

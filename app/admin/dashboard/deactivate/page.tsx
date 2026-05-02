@@ -5,11 +5,8 @@ import { Search, AlertCircle } from 'lucide-react';
 import { COLOR_CLASSES } from '@/constants/admin';
 import { useUsersSearch, UserSearchResult } from '@/hooks/useUsersSearch';
 import { t } from '@/lib/i18n';
-import { AppAlert } from '@/components/ui/Alert';
-import { Button } from '@/components/ui/Button';
-import InputField from '@/components/ui/input';
-import Badge from '@/components/ui/badge';
-import { AppAvatar } from '@/components/ui/Avatar';
+
+
 import {
   Table,
   TableHeader,
@@ -18,6 +15,9 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import { AppAvatar } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { AppAlert } from '@/components/shared/app-alert';
 
 const ROLE_COLORS: Record<string, string> = {
   employee: 'bg-[#1e3a8a]/40 ring-1 ring-[#1e3a8a]',
@@ -95,7 +95,7 @@ export default function DeactivateUserPage() {
         <div className="mb-8">
           <AppAlert 
             variant="warning"
-            description={<><span className="font-semibold text-amber-500">Immediate effect.</span> The user is signed out of all sessions and blocked from logging in the moment you confirm.</>}
+            description="Immediate effect. The user is signed out of all sessions and blocked from logging in the moment you confirm."
           />
         </div>
 
