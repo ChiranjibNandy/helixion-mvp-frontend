@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MyEnrollments } from "./MyEnrollments";
-import { AvailableProgrammes } from "./AvailableProgrammes";
 import { fetchEmployeeDashboardData } from "@/services/employeeService";
 import { t } from "@/lib/i18n";
 import { AppAlert } from "../shared/app-alert";
@@ -24,9 +22,19 @@ function EmployeeDashboardView() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetchEmployeeDashboardData()
-      .then(setData)
-      .catch(() => setError(true));
+    const fetchData = async () => {
+      try {
+        const dashboardData = await fetchEmployeeDashboardData();
+        setData(dashboardData);
+      } catch (err) {
+        console.error("Failed to fetch dashboard data", err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   if (error) {
@@ -49,8 +57,7 @@ function EmployeeDashboardView() {
 
   return (
     <>
-      <MyEnrollments enrollments={data.enrollments} />
-      <AvailableProgrammes programmes={data.availablePrograms} />
+
     </>
   );
 }
