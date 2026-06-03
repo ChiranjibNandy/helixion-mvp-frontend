@@ -1,5 +1,3 @@
-'use client';
-
 import {
   Table,
   TableBody,
@@ -8,26 +6,37 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { t } from "@/lib/i18n";
 
 interface Column<T> {
+  key: string;
   header: string;
-  render: (row: T, index?: number) => React.ReactNode;
+  className?: string;
+  render: (row: T, index: number) => React.ReactNode;
 }
 
-interface Props<T> {
+interface DataTableProps<T> {
   data: T[];
   columns: Column<T>[];
+  emptyMessage?: string;
 }
 
-export default function DataTable<T>({ data, columns }: Props<T>) {
+export function DataTable<T>({
+  data,
+  columns,
+  emptyMessage = "No data available",
+}: DataTableProps<T>) {
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="overflow-auto">
       <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((col, i) => (
-              <TableHead key={i}>{col.header}</TableHead>
+        <TableHeader className="bg-bgStatCard sticky top-0 z-10">
+          <TableRow className="border-none hover:bg-transparent">
+            {columns.map((column) => (
+              <TableHead
+                key={column.key}
+                className={`text-textSidebarMuted text-[10px] font-bold tracking-wider uppercase ${column.className ?? ""}`}
+              >
+                {column.header}
+              </TableHead>
             ))}
           </TableRow>
         </TableHeader>
@@ -37,16 +46,23 @@ export default function DataTable<T>({ data, columns }: Props<T>) {
             <TableRow>
               <TableCell
                 colSpan={columns.length}
-                className="text-center py-10 text-gray-400"
+                className="h-48 text-center"
               >
-                {t("table.no-data")}
+                <p className="text-textSidebarMuted text-sm">
+                  {emptyMessage}
+                </p>
               </TableCell>
             </TableRow>
           ) : (
-            data.map((row, i) => (
-              <TableRow key={i}>
-                {columns.map((col, j) => (
-                  <TableCell key={j}>{col.render(row, i)}</TableCell>
+            data.map((row, rowIndex) => (
+              <TableRow
+                key={rowIndex}
+                className="border-borderCard hover:bg-bgStatCard/60 transition-colors"
+              >
+                {columns.map((column) => (
+                  <TableCell key={column.key}>
+                    {column.render(row, rowIndex)}
+                  </TableCell>
                 ))}
               </TableRow>
             ))
