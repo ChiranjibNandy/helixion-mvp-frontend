@@ -1,5 +1,5 @@
 import { ApprovalStatusCard } from "./ApprovalStatusCard";
-import { BarChart2, Bell, BookOpen, CheckCircle, ClipboardCheck, Clock, Link, Plus, User } from "lucide-react";
+import { BarChart2, Bell, BookOpen, CheckCircle, ClipboardCheck, Clock, Plus, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { fetchEmployeeDashboardData } from "@/services/employeeService";
@@ -12,6 +12,7 @@ import { DataTable } from "@/components/shared/data-table";
 import { formatDateRange } from "@/utils/formatters";
 import { StatusBadge } from "../../shared/StatusBadge";
 import { QuickActionCard } from "../provider/QuickActionCard";
+import Link from "next/link";
 
 export default function EmployeeDashboardView({ name }: { name: string }) {
   const [data, setData] = useState<any>(null);
@@ -186,13 +187,9 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
               {/* Notification dot */}
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full" />
             </Button>
-            <Button
-              asChild
-              size="sm"
-              className="bg-blue-600 hover:bg-blue-500 text-white gap-1.5"
-            >
+            <Button asChild size="lg">
               <Link href="/employee/programs">
-                <Plus className="w-4 h-4" />
+                <Plus />
                 {t('dashboard.enroll')}
               </Link>
             </Button>
@@ -211,7 +208,7 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
           <div className="lg:col-span-2">
             <DashboardSectionCard
               title={t('table.listedTitle')}
-               subtitle={t('table.listedSubtitle')}
+              subtitle={t('table.listedSubtitle')}
               action={
                 <Button asChild variant="ghost" size="sm">
                   <Link href="/employee/programs">
