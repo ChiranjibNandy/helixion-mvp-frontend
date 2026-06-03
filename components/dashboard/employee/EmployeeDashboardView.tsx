@@ -136,7 +136,7 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
       title: t('employeeDashboard.quickActions.enroll.title'),
       description: t('employeeDashboard.quickActions.enroll.description'),
       linkText: t('employeeDashboard.quickActions.enroll.link'),
-      href: '/employee/programs',
+      href: '/programs',
       icon: <BookOpen className="w-5 h-5 text-blue-400" />,
       iconBg: 'bg-blue-500/15',
     },

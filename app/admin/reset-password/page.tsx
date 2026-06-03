@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from "react";
-import { Share2 } from "lucide-react";
-
+import { Mail } from "lucide-react";
 import SearchInput from "@/components/ui/search-input";
 import Pagination from "@/components/ui/pagination";
-import DataTable from "@/components/shared/data-table";
 import AppModal from "@/components/ui/app-modal";
 
 import { useUsers } from "@/hooks/useUser";
@@ -14,6 +12,8 @@ import { t } from "@/lib/i18n";
 import { useDebounce } from "@/hooks/useDebounce";
 import { AppAlert } from "@/components/shared/app-alert";
 import { Spinner } from "@/components/ui/spinner";
+import { DataTable } from "@/components/shared/data-table";
+import { Button } from "@/components/ui/button";
 
 export default function UsersPage() {
   const [page, setPage] = useState(1);
@@ -66,24 +66,31 @@ export default function UsersPage() {
   // ----------------------------
   const columns = [
     {
+      key: "username",
       header: t("table.username"),
       render: (row: any) => row.username,
     },
     {
+      key: "email",
       header: t("table.email"),
       render: (row: any) => row.email,
     },
     {
+      key: "action",
       header: t("table.action"),
       render: (row: any) => (
         <div className="flex items-center justify-center">
-          <button
+          <Button
+            variant="ghost"
+            size="icon-sm"
             onClick={() => openConfirmModal(row)}
-            className="p-2 rounded-md hover:bg-white/10 transition"
             title={t("auth.forgotPassword.submit")}
+            className="hover:bg-green-500/10"
           >
-            <Share2 size={18} className="text-green-500 hover:text-green-400" />
-          </button>
+
+            <Mail className="size-6 text-emerald-400" />
+
+          </Button>
         </div>
       ),
     },
