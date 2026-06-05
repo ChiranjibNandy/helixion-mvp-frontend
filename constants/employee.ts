@@ -1,7 +1,5 @@
-import {  User } from "@/types";
 import { NavSection } from "../types/employee";
 
-// role value correspond display in UI
 export const ROLE_LABEL: Record<string, string> = {
   employee: 'Employee',
   manager: 'Manager',
@@ -9,14 +7,16 @@ export const ROLE_LABEL: Record<string, string> = {
   'training-provider': 'TRAINING PROVIDER',
 };
 
-
-// ─── Employment Navigation ───────────────────────────────────────────────────────────────
-// constants/employee.ts
-
 export const EMP_NAV_SECTIONS: NavSection[] = [
   {
     category: 'Learning',
     items: [
+      {
+        label: 'Programs',
+        key: 'programs',
+        href: '/dashboard/programs',
+        icon: 'file-text',
+      },
       {
         label: 'My Enrollments',
         key: 'enrollments',

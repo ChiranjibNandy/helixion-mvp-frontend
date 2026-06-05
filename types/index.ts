@@ -8,13 +8,30 @@ export interface User {
 }
 
 // ─── Enrollment ──────────────────────────────────────────────────────────────
+export interface EnrollmentProgramSnapshot {
+  title:               string;
+  startDate?:          string;
+  endDate?:            string;
+  venue?:              string;
+  training_providerId: string;
+}
+
 export interface Enrollment {
-  _id: string;
-  userId: string;
-  programId: string;
-  status: "pending" | "active" | "completed";
-  enrolledAt: Date;
-  programDetails: Programme;
+  _id:             string;
+  userId:          string;
+  programId:       string;
+  status:          "pending" | "active" | "completed" | "cancelled";
+  stayType:        "single_occupancy" | "twin_sharing" | "non_residential";
+  feeAmount:       number;
+  currency:        string;
+  programSnapshot: EnrollmentProgramSnapshot;
+  approvalStatus:  "pending_approval" | "approved" | "rejected" | "not_required";
+  source:          "web" | "mobile" | "api" | "admin";
+  notes?:          string;
+  createdAt:       string;
+  updatedAt:       string;
+  // Legacy field — kept for backward compat with existing dashboard components
+  programDetails?: Programme;
 }
 
 // ─── Programme ───────────────────────────────────────────────────────────────
@@ -93,3 +110,25 @@ export enum PROGRAM_SAVED_STATUS {
   DRAFT = "draft",
   PUBLISHED = "published",
 }
+
+// ─── Available Program (Employee Browse View) ─────────────────────────────────
+export interface AvailableProgram {
+  _id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  venue: string;
+  city?: string;
+  singleOccupancyFee?: number;
+  twinSharingFee?: number;
+  nonResidentialFee?: number;
+  brochureUrl?: string;
+  minParticipants?: number;
+  maxParticipants?: number;
+  status: string;
+  training_providerId: string | { _id: string; username: string; description?: string };
+  providerName?: string;
+}
+
+// ─── Stay Type Key ────────────────────────────────────────────────────────────
+export type StayTypeKey = 'single_occupancy' | 'twin_sharing' | 'non_residential';

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 import { Label as LabelPrimitive } from "radix-ui"
 import { Eye, EyeOff } from "lucide-react"
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+export function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
     <input
       type={type}
