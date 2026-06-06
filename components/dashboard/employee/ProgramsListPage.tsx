@@ -8,7 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  Search, SlidersHorizontal, MapPin, Calendar,
+  Search, MapPin, Calendar,
   Download, ChevronRight, CheckCircle2,
 } from 'lucide-react';
 import { getAvailablePrograms, enrollInProgram } from '@/services/employeeService';
@@ -231,20 +231,6 @@ export function ProgramsListPage() {
               className="pl-9 w-56 bg-[#111827] border-[#1e2d40] text-white placeholder:text-white/25 text-[12px] h-9"
             />
           </div>
-          <Button
-            onClick={() => setShowFilters((v) => !v)}
-            className={`flex items-center gap-2 text-[12px] h-9 px-4 font-medium transition-colors ${
-              showFilters || hasActiveFilters
-                ? 'bg-blue-700 hover:bg-blue-800 border-blue-700 text-white'
-                : 'bg-blue-600 hover:bg-blue-700 border-blue-600 text-white'
-            }`}
-          >
-            <SlidersHorizontal className="w-3.5 h-3.5" />
-            Apply Filters
-            {hasActiveFilters && (
-              <span className="ml-1 w-1.5 h-1.5 rounded-full bg-white/80" />
-            )}
-          </Button>
         </div>
       </div>
 
