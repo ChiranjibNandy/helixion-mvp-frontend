@@ -1,19 +1,19 @@
-import { ROUTES } from "@/constants/navigation";
 import { QuickActionCard } from "./QuickActionCard";
 import { t } from "@/lib/i18n";
-import { LiveProgramsTable } from "./LiveProgramsTable";
 import { RecentActivityList } from "./RecentActivityList";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useEffect, useState } from "react";
 import { DashboardTopProgram, ProviderDashboardResponse, providerService } from "@/services/provider.service";
-import { BookOpen, FileText, Link, Plus, TrendingUp, Users } from "lucide-react";
 import { AppAlert } from "@/components/shared/app-alert";
 import { DashboardStats } from "@/components/shared/dashboard-stats";
 import { DashboardSectionCard } from "@/components/shared/dashboard-section-card";
 import { DataTable } from "@/components/shared/data-table";
-import { formatShortDate } from "@/utils/formatters";
-import { Progress } from "@/components/ui/progress";
+import { getProviderDashboardStats } from "@/constants/provider-dashboard-stats";
+import { PROVIDER_PROGRAM_COLUMNS } from "@/constants/provider-program-columns";
+import { getProviderQuickActions } from "@/constants/provider-quick-actions";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 
 export default function TrainingProviderDashboardView({ name }: { name: string }) {
   const [data, setData] = useState<ProviderDashboardResponse | null>(null);
@@ -55,83 +55,11 @@ export default function TrainingProviderDashboardView({ name }: { name: string }
   }
 
 
-  const stats = [
-    {
-      title: t("providerDashboard.stats.livePrograms"),
-      value: data.overview.livePrograms,
-      subtitle: t("providerDashboard.stats.allPublished"),
-      subtitleColor: "text-accentGreen",
-      icon: <BookOpen className="w-5 h-5 text-blue-400" />,
-      iconBg: "bg-blue-500/15",
-    },
-    {
-      title: t("providerDashboard.stats.totalEnrolled"),
-      value: data.overview.totalEnrollments,
-      subtitle: t("providerDashboard.stats.acrossPrograms", {
-        count: data.overview.livePrograms,
-      }),
-      subtitleColor: "text-textSidebarMuted",
-      icon: <Users className="w-5 h-5 text-emerald-400" />,
-      iconBg: "bg-emerald-500/15",
-    },
-    {
-      title: t("providerDashboard.stats.drafts"),
-      value: data.overview.drafts,
-      subtitle: t("providerDashboard.stats.awaitingPublish"),
-      subtitleColor: "text-accentOrange",
-      icon: <FileText className="w-5 h-5 text-amber-400" />,
-      iconBg: "bg-amber-500/15",
-    },
-    {
-      title: t("providerDashboard.stats.avgFillRate"),
-      value: `${ data.overview.averageFillRate }%`,
-      subtitle: t("providerDashboard.stats.capacityUtilized"),
-      subtitleColor: "text-accentGreen",
-      icon: <TrendingUp className="w-5 h-5 text-green-400" />,
-      iconBg: "bg-green-500/15",
-    },
-  ];
+  const stats = getProviderDashboardStats(
+    data.overview
+  );
 
-
-  const liveProgramColumns = [
-    {
-      key: "program",
-      header: "Program",
-      render: (row: DashboardTopProgram) => (
-        <span className="text-textSecondary text-sm font-normal pl-6">
-          {row.title}
-        </span>
-      ),
-    },
-    {
-      key: "date",
-      header: "Date",
-      render: (row: DashboardTopProgram) => (
-        <span className="text-textSidebarMuted text-xs">
-          {formatShortDate(row.startDate)}
-        </span>
-      ),
-    },
-    {
-      key: "enrolled",
-      header: "Enrolled",
-      render: (row: DashboardTopProgram) => (
-        <span className="text-textSecondary text-sm text-center">
-          {row.enrolledCount} / {row.maxParticipants}
-        </span>
-      ),
-    },
-    {
-      key: "fill",
-      header: "Fill",
-      render: (row: DashboardTopProgram) => (
-        <div className="flex justify-end">
-          <Progress value={row.fillRate} className="h-1.5 w-16 bg-[#1e293b]" />
-        </div>
-      ),
-    },
-  ];
-
+  const quickActions = getProviderQuickActions();
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -173,7 +101,7 @@ export default function TrainingProviderDashboardView({ name }: { name: string }
           >
             <DataTable<DashboardTopProgram>
               data={data.topPrograms}
-              columns={liveProgramColumns}
+              columns={PROVIDER_PROGRAM_COLUMNS}
               emptyMessage="No programs listed yet."
             />
           </DashboardSectionCard>
@@ -185,28 +113,9 @@ export default function TrainingProviderDashboardView({ name }: { name: string }
 
       {/* Quick Actions at the Bottom */}
       <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
-        {[
-          {
-            title: t("providerDashboard.quickActions.publishSingle.title"),
-            description: t("providerDashboard.quickActions.publishSingle.desc"),
-            linkText: t("providerDashboard.quickActions.publishSingle.link"),
-            href: ROUTES.PROVIDER.PROGRAMS.CREATE
-          },
-          {
-            title: t("providerDashboard.quickActions.batchPublish.title"),
-            description: t("providerDashboard.quickActions.batchPublish.desc"),
-            linkText: t("providerDashboard.quickActions.batchPublish.link"),
-            href: ROUTES.PROVIDER.PROGRAMS.BULK
-          },
-          {
-            title: t("providerDashboard.quickActions.exportEnrolment.title"),
-            description: t("providerDashboard.quickActions.exportEnrolment.desc"),
-            linkText: t("providerDashboard.quickActions.exportEnrolment.link"),
-            href: ROUTES.PROVIDER.PROGRAMS.EXPORT
-          }
-        ].map((action, index) => (
+        {quickActions.map((action) => (
           <QuickActionCard
-            key={index}
+            key={action.href}
             title={action.title}
             description={action.description}
             linkText={action.linkText}
