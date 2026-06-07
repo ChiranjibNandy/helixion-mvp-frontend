@@ -1,6 +1,6 @@
+import { RegistrationActions } from '@/components/admin-dashboard/registration-actions';
 import { Registration } from '@/types/auth';
 import { getInitials } from '@/utils/nameInitial';
-import { RegistrationActions } from './registration-actions';
 
 export const getRegistrationColumns = (
   refetch: () => void

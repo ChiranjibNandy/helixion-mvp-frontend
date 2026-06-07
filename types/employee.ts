@@ -1,4 +1,5 @@
 import { NavItem } from "@/types";
+import { ReactNode } from "react";
 
 /**
  * Represents a navigation section in the employee sidebar
@@ -40,4 +41,15 @@ export interface EmployeeDashboardResponse {
   success: boolean;
   message: string;
   data: EmployeeDashboardData;
+}
+
+
+
+export interface QuickAction {
+  title: string;
+  description: string;
+  linkText: string;
+  href: string;
+  icon: ReactNode;
+  iconBg: string;
 }

@@ -1,13 +1,13 @@
 'use client';
 
 import { Registration } from '@/types/auth';
+
 import { UI_MESSAGES } from '@/constants/admin';
 import { ADMIN_CONTENT } from '@/constants/content';
 import { DashboardSectionCard } from '@/components/shared/dashboard-section-card';
 import { DataTable } from '@/components/shared/data-table';
 import { AppAlert } from '@/components/shared/app-alert';
-import { getRegistrationColumns } from './registration-columns';
-
+import { getRegistrationColumns } from '@/constants/registration-columns';
 
 interface Props {
   registrations: Registration[];

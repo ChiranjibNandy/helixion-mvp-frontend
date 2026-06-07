@@ -42,8 +42,8 @@ export const ROUTES = {
     },
     ATTENDANCE: '/dashboard/update-attendance',
   },
-  EMPLOYEE:{
-
+  EMPLOYEE: {
+    PROGRAM: '/employee/programs'
   }
 } as const;
 

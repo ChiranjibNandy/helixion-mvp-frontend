@@ -1,5 +1,5 @@
 import { ApprovalStatusCard } from "./ApprovalStatusCard";
-import { BarChart2, Bell, BookOpen, CheckCircle, ClipboardCheck, Clock, Plus, User } from "lucide-react";
+import {Bell,Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { fetchEmployeeDashboardData } from "@/services/employeeService";
@@ -9,10 +9,14 @@ import { t } from "@/lib/i18n";
 import { DashboardStats } from "@/components/shared/dashboard-stats";
 import { DashboardSectionCard } from "@/components/shared/dashboard-section-card";
 import { DataTable } from "@/components/shared/data-table";
-import { formatDateRange } from "@/utils/formatters";
-import { StatusBadge } from "../../shared/StatusBadge";
 import { QuickActionCard } from "../provider/QuickActionCard";
 import Link from "next/link";
+import { ListedProgram } from "@/types/employee";
+import { EMPLOYEE_PROGRAM_COLUMNS } from "@/constants/employee-dashboard-columns";
+import { getEmployeeDashboardStats } from "@/utils/employee-dashboard";
+import { getQuickActions } from "@/constants/employee-quick-actions";
+import { ROUTES } from "@/constants/navigation";
+
 
 export default function EmployeeDashboardView({ name }: { name: string }) {
   const [data, setData] = useState<any>(null);
@@ -55,117 +59,13 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
 
   if (!data) return null;
 
-  interface ListedProgram {
-    _id: string;
-    title: string;
-    description?: string;
 
-    startDate: string;
-    endDate: string;
+  const stats = getEmployeeDashboardStats(
+    data.summary
+  );
 
-    venue: string;
 
-    status: string;
-
-  }
-
-  const stats = [
-    {
-      title: t('employeeDashboard.stats.programsCompleted'),
-      value: data.summary.programsCompleted,
-      subtitle: t('employeeDashboard.stats.completedSubtitle'),
-      subtitleColor: 'text-emerald-400',
-      icon: <CheckCircle className="w-5 h-5 text-emerald-400" />,
-      iconBg: 'bg-emerald-500/15',
-    },
-    {
-      title: t('employeeDashboard.stats.programsEnrolled'),
-      value: data.summary.programsEnrolled,
-      subtitle: t('employeeDashboard.stats.enrolledInProgress', {
-        count: Math.min(data.summary.programsEnrolled, 2),
-      }),
-      subtitleColor: 'text-textSidebarMuted',
-      icon: <BookOpen className="w-5 h-5 text-blue-400" />,
-      iconBg: 'bg-blue-500/15',
-    },
-    {
-      title: t('employeeDashboard.stats.pendingApprovals'),
-      value: data.summary.pendingApprovals,
-      subtitle: t('employeeDashboard.stats.pendingSubtitle'),
-      subtitleColor: 'text-textSidebarMuted',
-      icon: <Clock className="w-5 h-5 text-amber-400" />,
-      iconBg: 'bg-amber-500/15',
-    },
-  ];
-  const columns = [
-    {
-      key: 'title',
-      header: t('table.programTitle'),
-      render: (program: ListedProgram) => program.title,
-    },
-    {
-      key: 'dates',
-      header: t('table.dates'),
-      render: (program: ListedProgram) =>
-        formatDateRange(program.startDate, program.endDate),
-    },
-    {
-      key: 'venue',
-      header: t('table.venue'),
-      render: (program: ListedProgram) => program.venue,
-    },
-    {
-      key: 'status',
-      header: t('table.status'),
-      render: (program: ListedProgram) => (
-        <StatusBadge status={program.status} />
-      ),
-    },
-  ];
-
-  interface QuickAction {
-    title: string;
-    description: string;
-    linkText: string;
-    href: string;
-    icon: React.ReactNode;
-    iconBg: string;
-  }
-
-  const QUICK_ACTIONS: QuickAction[] = [
-    {
-      title: t('employeeDashboard.quickActions.enroll.title'),
-      description: t('employeeDashboard.quickActions.enroll.description'),
-      linkText: t('employeeDashboard.quickActions.enroll.link'),
-      href: '/programs',
-      icon: <BookOpen className="w-5 h-5 text-blue-400" />,
-      iconBg: 'bg-blue-500/15',
-    },
-    {
-      title: t('employeeDashboard.quickActions.approvals.title'),
-      description: t('employeeDashboard.quickActions.approvals.description'),
-      linkText: t('employeeDashboard.quickActions.approvals.link'),
-      href: '/employee/approvals',
-      icon: <ClipboardCheck className="w-5 h-5 text-amber-400" />,
-      iconBg: 'bg-amber-500/15',
-    },
-    {
-      title: t('employeeDashboard.quickActions.reports.title'),
-      description: t('employeeDashboard.quickActions.reports.description'),
-      linkText: t('employeeDashboard.quickActions.reports.link'),
-      href: '/employee/reports',
-      icon: <BarChart2 className="w-5 h-5 text-purple-400" />,
-      iconBg: 'bg-purple-500/15',
-    },
-    {
-      title: t('employeeDashboard.quickActions.profile.title'),
-      description: t('employeeDashboard.quickActions.profile.description'),
-      linkText: t('employeeDashboard.quickActions.profile.link'),
-      href: '/employee/profile',
-      icon: <User className="w-5 h-5 text-slate-400" />,
-      iconBg: 'bg-slate-500/15',
-    },
-  ];
+  const quickActions = getQuickActions();
 
   return (
     <>
@@ -188,7 +88,7 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full" />
             </Button>
             <Button asChild size="lg">
-              <Link href="/employee/programs">
+              <Link href={ROUTES.EMPLOYEE.PROGRAM} >
                 <Plus />
                 {t('dashboard.enroll')}
               </Link>
@@ -219,7 +119,7 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
             >
               <DataTable<ListedProgram>
                 data={data.listedPrograms}
-                columns={columns}
+                columns={EMPLOYEE_PROGRAM_COLUMNS}
                 emptyMessage={t('table.noPrograms')}
               />
             </DashboardSectionCard>
@@ -233,7 +133,7 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
 
         {/* Quick actions */}
         <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
-          {QUICK_ACTIONS.map((action) => (
+          {quickActions.map((action) => (
             <QuickActionCard
               key={action.href}
               title={action.title}
