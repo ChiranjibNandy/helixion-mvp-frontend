@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Search } from 'lucide-react';
 import { getAvailablePrograms, enrollInProgram } from '@/services/employeeService';
+import SearchInput from '@/components/ui/search-input';
 import type { AvailableProgram, StayTypeKey } from '@/types';
 import type { Filters } from '@/types/employee-programs';
 import { formatShortDate } from '@/utils/formatters';
@@ -140,16 +140,13 @@ export function ProgramsListPage() {
           <h1 className="text-[20px] font-bold text-white">{t('programme.list.title')}</h1>
           <p className="text-[12px] text-white/40 mt-0.5">{t('programme.list.description')}</p>
         </div>
-        <div className="relative flex-shrink-0 mt-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30 pointer-events-none z-10" />
-          <input
-            placeholder={t('programme.list.searchPlaceholder')}
-            value={draft.title}
-            onChange={(e) => setDraft((p) => ({ ...p, title: e.target.value }))}
-            onKeyDown={(e) => e.key === 'Enter' && handleApply()}
-            className="pl-9 w-56 h-9 rounded-lg border border-[#1e2d40] bg-[#111827] text-white placeholder:text-white/25 text-[12px] outline-none focus:border-blue-500"
-          />
-        </div>
+        <SearchInput
+          value={draft.title}
+          onChange={(v) => setDraft((p) => ({ ...p, title: v }))}
+          placeholder={t('programme.list.searchPlaceholder')}
+          onKeyDown={(e) => e.key === 'Enter' && handleApply()}
+          className="w-56 flex-shrink-0 mt-1"
+        />
       </div>
 
       <ProgramFilterBar
@@ -157,6 +154,7 @@ export function ProgramsListPage() {
         onChange={setDraft}
         onApply={handleApply}
         onClear={handleClear}
+        loading={loading}
       />
 
       {fetchError && (
