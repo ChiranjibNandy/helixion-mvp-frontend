@@ -1,5 +1,6 @@
 'use client';
 
+import { Fragment } from 'react';
 import {
   Table,
   TableBody,
@@ -8,32 +9,61 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n";
 
 interface Column<T> {
   header: string;
   render: (row: T, index?: number) => React.ReactNode;
+  headerClassName?: string;
+  className?: string;
 }
 
 interface Props<T> {
   data: T[];
   columns: Column<T>[];
+  className?: string;
+  loading?: boolean;
+  rowKey?: (row: T) => string;
+  onRowClick?: (row: T) => void;
+  rowClassName?: (row: T) => string;
+  renderExpandedRow?: (row: T) => React.ReactNode;
+  isRowExpanded?: (row: T) => boolean;
 }
 
-export default function DataTable<T>({ data, columns }: Props<T>) {
+export default function DataTable<T>({
+  data,
+  columns,
+  className,
+  loading,
+  rowKey,
+  onRowClick,
+  rowClassName,
+  renderExpandedRow,
+  isRowExpanded,
+}: Props<T>) {
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className={cn("border rounded-lg overflow-hidden", className)}>
       <Table>
         <TableHeader>
           <TableRow>
             {columns.map((col, i) => (
-              <TableHead key={i}>{col.header}</TableHead>
+              <TableHead key={i} className={col.headerClassName}>{col.header}</TableHead>
             ))}
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {data.length === 0 ? (
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="py-12">
+                <div className="flex justify-center">
+                  <Spinner />
+                </div>
+              </TableCell>
+            </TableRow>
+          ) : data.length === 0 ? (
             <TableRow>
               <TableCell
                 colSpan={columns.length}
@@ -43,13 +73,33 @@ export default function DataTable<T>({ data, columns }: Props<T>) {
               </TableCell>
             </TableRow>
           ) : (
-            data.map((row, i) => (
-              <TableRow key={i}>
-                {columns.map((col, j) => (
-                  <TableCell key={j}>{col.render(row, i)}</TableCell>
-                ))}
-              </TableRow>
-            ))
+            data.map((row, i) => {
+              const key = rowKey ? rowKey(row) : String(i);
+              const expanded = isRowExpanded ? isRowExpanded(row) : false;
+              const clickable = !!onRowClick;
+              return (
+                <Fragment key={key}>
+                  <TableRow
+                    tabIndex={clickable ? 0 : undefined}
+                    aria-expanded={clickable ? expanded : undefined}
+                    className={rowClassName ? rowClassName(row) : undefined}
+                    onClick={clickable ? () => onRowClick(row) : undefined}
+                    onKeyDown={clickable ? (e) => { if (e.key === 'Enter') onRowClick(row); } : undefined}
+                  >
+                    {columns.map((col, j) => (
+                      <TableCell key={j} className={col.className}>{col.render(row, i)}</TableCell>
+                    ))}
+                  </TableRow>
+                  {expanded && renderExpandedRow && (
+                    <TableRow>
+                      <TableCell colSpan={columns.length} className="p-0">
+                        {renderExpandedRow(row)}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </Fragment>
+              );
+            })
           )}
         </TableBody>
       </Table>

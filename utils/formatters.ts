@@ -53,3 +53,11 @@ export const shortDraftId = (id: string): string =>
  */
 export const maskPassword = (value?: string, maxLength = 12): string =>
   '•'.repeat(Math.min(value?.length || 0, maxLength));
+
+
+
+export const toDisplayDate = (iso: string): string => {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return `${d}-${m}-${y}`;
+};
