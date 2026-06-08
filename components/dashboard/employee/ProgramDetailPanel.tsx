@@ -2,20 +2,13 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, CheckCircle2 } from 'lucide-react';
 import type { AvailableProgram, StayTypeKey } from '@/types';
 import type { StayOption, DetailPanelProps } from '@/types/employee-programs';
 import { t } from '@/lib/i18n';
 import { AppAlert } from '@/components/shared/app-alert';
-
-function isSafeUrl(url: string): boolean {
-  try {
-    const { protocol } = new URL(url);
-    return protocol === 'https:' || protocol === 'http:';
-  } catch {
-    return false;
-  }
-}
+import { StayTypeSelector } from './StayTypeSelector';
+import { BrochureDownloadLink } from './BrochureDownloadLink';
 
 function buildStayOptions(program: AvailableProgram): StayOption[] {
   return ([
@@ -44,56 +37,18 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
           </div>
 
           {stayOptions.length > 0 && (
-            <div>
-              <p className="text-[10px] font-semibold tracking-widest uppercase text-white/30 mb-2">
-                {t('programme.list.detailStayTypeLabel')}
-              </p>
-              <div role="radiogroup" aria-label={t('programme.list.detailStayTypeLabel')} className="flex flex-col gap-1.5">
-                {stayOptions.map((opt) => {
-                  const active = selectedStay === opt.key;
-                  return (
-                    <div
-                      key={opt.key}
-                      role="radio"
-                      aria-checked={active}
-                      tabIndex={enrolled ? -1 : 0}
-                      className="flex items-center cursor-pointer"
-                      onClick={() => !enrolled && setSelectedStay(opt.key)}
-                      onKeyDown={(e) => {
-                        if (!enrolled && (e.key === 'Enter' || e.key === ' ')) {
-                          e.preventDefault();
-                          setSelectedStay(opt.key);
-                        }
-                      }}
-                    >
-                      <span className="w-5 flex-shrink-0 flex items-center">
-                        {active && <span className="w-2 h-2 rounded-full bg-blue-500" />}
-                      </span>
-                      <span className={`text-[13px] flex-1 ${active ? 'font-semibold text-white' : 'font-normal text-white/55'}`}>
-                        {opt.label}
-                      </span>
-                      <span className="text-[13px] text-white/50 ml-10">
-                        ₹{opt.fee.toLocaleString('en-IN')}/-
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <StayTypeSelector
+              options={stayOptions}
+              value={selectedStay}
+              disabled={enrolled}
+              onChange={setSelectedStay}
+            />
           )}
         </div>
 
         <div className="flex flex-col items-end justify-start gap-3 flex-shrink-0">
-          {program.brochureUrl && isSafeUrl(program.brochureUrl) && (
-            <a
-              href={program.brochureUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-[13px] text-white/55 hover:text-white/80 transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              {t('programme.list.downloadBrochure')}
-            </a>
+          {program.brochureUrl && (
+            <BrochureDownloadLink url={program.brochureUrl} />
           )}
 
           {enrolled ? (
