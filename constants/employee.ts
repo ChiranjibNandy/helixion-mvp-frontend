@@ -19,42 +19,43 @@ export const ROLE_LABEL: Record<string, string> = {
 
 export const EMP_NAV_SECTIONS: NavSection[] = [
   {
-    category: 'Learning',
+    category: 'Workspace',
     items: [
+      {
+        label: 'Dashboard',
+        key: 'dashboard',
+        href: '/dashboard',
+        icon: 'layout-dashboard',
+      },
+      {
+        label: 'Profile',
+        key: 'profile',
+        href: '/dashboard/profile',
+        icon: 'user',
+      },
       {
         label: 'Programs',
         key: 'programs',
         href: '/dashboard/programs',
-        icon: 'file-text',
-      },
-      {
-        label: 'My Enrollments',
-        key: 'enrollments',
-        href: '/dashboard/enrollments',
         icon: 'book-open',
       },
       {
-        label: 'Browse Programmes',
-        key: 'browse',
-        href: '/dashboard/browse',
-        icon: 'search',
+        label: 'Enrollments',
+        key: 'enrollments',
+        href: '/dashboard/enrollments',
+        icon: 'download',
       },
       {
-        label: 'Certificates',
-        key: 'certificates',
-        href: '/dashboard/certificates',
-        icon: 'award',
+        label: 'Approvals',
+        key: 'approvals',
+        href: '/dashboard/approvals',
+        icon: 'clipboard-check',
       },
-    ],
-  },
-  {
-    category: 'Account',
-    items: [
       {
-        label: 'Profile & Location',
-        key: 'profile',
-        href: '/dashboard/profile',
-        icon: 'user-circle',
+        label: 'Reports',
+        key: 'reports',
+        href: '/dashboard/reports',
+        icon: 'bar-chart-3',
       },
     ],
   },

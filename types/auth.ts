@@ -50,3 +50,10 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
 }
+
+export interface Registration {
+  id: string;
+  name: string;
+  email: string;
+  date: string;
+}

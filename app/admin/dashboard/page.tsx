@@ -1,78 +1,57 @@
 'use client';
 
 import { useRegistrations } from '@/hooks/useRegistrations';
-import StatCard from '@/components/ui/status-card';
-import PendingRegistrations from '@/components/dashboard/PendingRegistrations';
-import { COLOR_CLASSES, UI_MESSAGES } from '@/constants/admin';
 import { ADMIN_CONTENT } from '@/constants/content';
-import { Activity } from '@/types/admin';
 import RecentActivity from '@/components/dashboard/RecentActivity';
+import { DashboardStats } from '@/components/shared/dashboard-stats';
+import { PendingRegistrationsSection } from '@/components/admin-dashboard/pending-registrations-section';
 
-/**
- * Main admin dashboard page with production-level architecture
- */
+
+
 export default function AdminDashboard() {
-  const { registrations, loading, error, refetch } = useRegistrations();
+  const {
+    registrations,
+    loading,
+    error,
+    refetch,
+  } = useRegistrations();
 
-  const recentActivities: Activity[] = [];
   const { STATS } = ADMIN_CONTENT.DASHBOARD;
 
-  return (
-    <div className={`flex h-screen ${ COLOR_CLASSES.BG_MAIN }`}>
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto">
-          <div className="p-8">
-            {/* Stats Section */}
-            <div className="grid grid-cols-4 gap-6 mb-8">
-              <StatCard
-                title={STATS.TOTAL_USERS}
-                value="-"
-                subtitle={UI_MESSAGES.DATA_UNAVAILABLE}
-                subtitleColor={COLOR_CLASSES.TEXT_MUTED}
-              />
-              <StatCard
-                title={STATS.PENDING_APPROVAL}
-                value={registrations.length}
-                subtitle={UI_MESSAGES.NEEDS_ACTION}
-                subtitleColor={COLOR_CLASSES.TEXT_WARNING}
-              />
-              <StatCard
-                title={STATS.ACTIVE_TODAY}
-                value="-"
-                subtitle={UI_MESSAGES.DATA_UNAVAILABLE}
-                subtitleColor={COLOR_CLASSES.TEXT_MUTED}
-              />
-              <StatCard
-                title={STATS.DEACTIVATED}
-                value="-"
-                subtitle={UI_MESSAGES.ALL_TIME}
-                subtitleColor={COLOR_CLASSES.TEXT_MUTED}
-              />
-            </div>
+  const stats = [
+    {
+      title: STATS.TOTAL_USERS,
+      value: '-',
+    },
+    {
+      title: STATS.PENDING_APPROVAL,
+      value: registrations.length,
+    },
+    {
+      title: STATS.ACTIVE_TODAY,
+      value: '-',
+    },
+    {
+      title: STATS.DEACTIVATED,
+      value: '-',
+    },
+  ];
 
-            {/* Main Content Grid */}
-            <div className="grid grid-cols-3 gap-6">
-              <div className="col-span-2">
-                {loading ? (
-                  <div className={`${ COLOR_CLASSES.BG_CARD } rounded-lg border ${ COLOR_CLASSES.BORDER } p-6 flex items-center justify-center h-[400px]`}>
-                    <div className={COLOR_CLASSES.TEXT_MUTED}>{UI_MESSAGES.LOADING_REGISTRATIONS}</div>
-                  </div>
-                ) : error ? (
-                  <div className={`${ COLOR_CLASSES.BG_CARD } rounded-lg border ${ COLOR_CLASSES.BORDER } p-6 flex items-center justify-center h-[400px]`}>
-                    <div className="text-center">
-                      <p className="text-textSidebarMuted mb-2">{error}</p>
-                    </div>
-                  </div>
-                ) : (
-                  <PendingRegistrations registrations={registrations} refetch={refetch} />
-                )}
-              </div>
-              <div>
-                <RecentActivity activities={recentActivities} />
-              </div>
-            </div>
-          </div>
+  return (
+    <div className="flex flex-col gap-y-4">
+      <DashboardStats stats={stats} />
+
+      <div className="grid grid-cols-3 gap-6 my-4">
+        <div className="col-span-2">
+          <PendingRegistrationsSection
+            registrations={registrations}
+            loading={loading}
+            error={error}
+            refetch={refetch}
+          />
         </div>
+
+        <RecentActivity activities={[]} />
       </div>
     </div>
   );

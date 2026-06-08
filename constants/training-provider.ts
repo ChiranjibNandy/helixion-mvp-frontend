@@ -10,7 +10,7 @@ export const TRAINING_PROVIDER_NAV_SECTIONS: NavSection[] = [
       {
         label: "Dashboard",
         key: "dashboard",
-        href: ROUTES.PROVIDER.DASHBOARD,
+        href: ROUTES.DASHBOARD.ROOT,
         icon: "layout-dashboard",
       },
       {

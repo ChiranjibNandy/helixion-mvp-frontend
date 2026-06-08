@@ -10,11 +10,11 @@ import Badge from '@/components/ui/badge';
 import SearchInput from '@/components/ui/search-input';
 import AppModal from '@/components/ui/app-modal';
 import { Spinner } from '@/components/ui/spinner';
-import DataTable from '@/components/shared/data-table';
 import PaginationController from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
 import DraftActions from './DraftActions';
 import type { DraftProgram } from '@/types';
+import { DataTable } from '@/components/shared/data-table';
 
 export default function DraftProgramsList() {
   const router = useRouter();
@@ -138,6 +138,7 @@ export default function DraftProgramsList() {
             data={drafts} 
             columns={[
               {
+                key:"title",
                 header: t('draftPrograms.columnProgramTitle'),
                 render: (p: DraftProgram) => (
                   <div className="flex flex-col gap-0.5">
@@ -147,26 +148,32 @@ export default function DraftProgramsList() {
                 )
               },
               {
+                key:"startDate",
                 header: t('draftPrograms.columnStartDate'),
                 render: (p: DraftProgram) => <span className="text-sm text-white/70">{formatDate(p.startDate)}</span>
               },
               {
+                key:"endDate",
                 header: t('draftPrograms.columnEndDate'),
                 render: (p: DraftProgram) => <span className="text-sm text-white/70">{formatDate(p.endDate)}</span>
               },
               {
+                key:"venue",
                 header: t('draftPrograms.columnVenue'),
                 render: (p: DraftProgram) => <span className="text-sm text-white/70">{p.venue || '—'}</span>
               },
               {
+                key:"fee",
                 header: t('draftPrograms.columnFee'),
                 render: (p: DraftProgram) => fmtFee(p)
               },
               {
+                key:"status",
                 header: t('draftPrograms.columnStatus'),
                 render: (p: DraftProgram) => <Badge status="draft">{t('draftPrograms.statusDraft')}</Badge>
               },
               {
+                key:"action",
                 header: t('draftPrograms.columnActions'),
                 render: (p: DraftProgram) => (
                   <DraftActions

@@ -28,7 +28,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
   // Choose navigation based on user role
   const isProvider = payload.role === USER_ROLES.TRAINING_PROVIDER;
   const navSections = isProvider ? PROVIDER_NAV_SECTIONS : EMP_NAV_SECTIONS;
-  const defaultActiveKey = isProvider ? 'dashboard' : 'enrollments';
+  const defaultActiveKey =  'dashboard';
 
   return (
    <DashboardShell

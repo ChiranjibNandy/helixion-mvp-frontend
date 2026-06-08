@@ -11,19 +11,20 @@ import {
 } from "@/components/ui/table";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
-import { t } from "@/lib/i18n";
 
 interface Column<T> {
+  key: string;
   header: string;
-  render: (row: T, index?: number) => React.ReactNode;
   headerClassName?: string;
   className?: string;
+  render: (row: T, index?: number) => React.ReactNode;
 }
 
-interface Props<T> {
+interface DataTableProps<T> {
   data: T[];
   columns: Column<T>[];
   className?: string;
+  emptyMessage?: string;
   loading?: boolean;
   rowKey?: (row: T) => string;
   onRowClick?: (row: T) => void;
@@ -32,24 +33,30 @@ interface Props<T> {
   isRowExpanded?: (row: T) => boolean;
 }
 
-export default function DataTable<T>({
+export function DataTable<T>({
   data,
   columns,
   className,
+  emptyMessage = "No data available",
   loading,
   rowKey,
   onRowClick,
   rowClassName,
   renderExpandedRow,
   isRowExpanded,
-}: Props<T>) {
+}: DataTableProps<T>) {
   return (
-    <div className={cn("border rounded-lg overflow-hidden", className)}>
+    <div className={cn("overflow-auto", className)}>
       <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((col, i) => (
-              <TableHead key={i} className={col.headerClassName}>{col.header}</TableHead>
+        <TableHeader className="bg-bgStatCard sticky top-0 z-10">
+          <TableRow className="border-none hover:bg-transparent">
+            {columns.map((col) => (
+              <TableHead
+                key={col.key}
+                className={cn("text-textSidebarMuted text-[10px] font-bold tracking-wider uppercase", col.headerClassName, col.className)}
+              >
+                {col.header}
+              </TableHead>
             ))}
           </TableRow>
         </TableHeader>
@@ -65,11 +72,8 @@ export default function DataTable<T>({
             </TableRow>
           ) : data.length === 0 ? (
             <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="text-center py-10 text-gray-400"
-              >
-                {t("table.no-data")}
+              <TableCell colSpan={columns.length} className="h-48 text-center">
+                <p className="text-textSidebarMuted text-sm">{emptyMessage}</p>
               </TableCell>
             </TableRow>
           ) : (
@@ -82,12 +86,17 @@ export default function DataTable<T>({
                   <TableRow
                     tabIndex={clickable ? 0 : undefined}
                     aria-expanded={clickable ? expanded : undefined}
-                    className={rowClassName ? rowClassName(row) : undefined}
+                    className={cn(
+                      "border-borderCard hover:bg-bgStatCard/60 transition-colors",
+                      rowClassName ? rowClassName(row) : undefined
+                    )}
                     onClick={clickable ? () => onRowClick(row) : undefined}
                     onKeyDown={clickable ? (e) => { if (e.key === 'Enter') onRowClick(row); } : undefined}
                   >
-                    {columns.map((col, j) => (
-                      <TableCell key={j} className={col.className}>{col.render(row, i)}</TableCell>
+                    {columns.map((col) => (
+                      <TableCell key={col.key} className={col.className}>
+                        {col.render(row, i)}
+                      </TableCell>
                     ))}
                   </TableRow>
                   {expanded && renderExpandedRow && (
@@ -106,3 +115,5 @@ export default function DataTable<T>({
     </div>
   );
 }
+
+export default DataTable;

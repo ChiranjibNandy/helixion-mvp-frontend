@@ -8,7 +8,7 @@ import type { Filters } from '@/types/employee-programs';
 import { formatShortDate } from '@/utils/formatters';
 import { PAGE_SIZE, EMPTY_FILTERS } from '@/constants/employee';
 import { t } from '@/lib/i18n';
-import DataTable from '@/components/shared/data-table';
+import { DataTable } from '@/components/shared/data-table';
 import PaginationController from '@/components/ui/pagination';
 import { AppAlert } from '@/components/shared/app-alert';
 import { ProgramFilterBar } from './ProgramFilterBar';
