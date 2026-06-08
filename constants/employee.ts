@@ -1,16 +1,21 @@
 import { NavSection } from "../types/employee";
+import type { Filters } from '../types/employee-programs';
 
-// role value correspond display in UI
+export const PAGE_SIZE = 10;
+
+export const EMPTY_FILTERS: Filters = {
+  title: '',
+  venue: '',
+  fromDate: '',
+  toDate: '',
+};
+
 export const ROLE_LABEL: Record<string, string> = {
   employee: 'Employee',
   manager: 'Manager',
   admin: 'Administrator',
   'training-provider': 'TRAINING PROVIDER',
 };
-
-
-// ─── Employment Navigation ───────────────────────────────────────────────────────────────
-// constants/employee.ts
 
 export const EMP_NAV_SECTIONS: NavSection[] = [
   {

@@ -10,16 +10,18 @@ export const API = {
       REGISTRATIONS: '/admin/registrations',
       USERS_SEARCH: '/admin/users/search',
       BATCH_CREATE: '/admin/users/batch',
-      DEACTIVATE_USER: (id: string) => `/admin/users/${ id }/deactivate`,
+      DEACTIVATE_USER: (id: string) => `/admin/users/${id}/deactivate`,
    },
    EMPLOYEE: {
-      DASHBOARD: '/employee/dashboard'
+      DASHBOARD: '/employee/dashboard',
+      PROGRAMS:  '/employee/programs',
+      ENROLL:    (id: string) => `/employee/programs/${id}/enroll`,
    },
-   TRAININGPROVIDER:{
-      CREATEPROGRAM:'/training-provider/create/program',
-      PROGRAMS: '/training-provider/programs',
-      PARTICIPANTS: (id: string) => `/training-provider/programs/${id}/participants`,
-      ATTENDANCE: (id: string) => `/training-provider/programs/${id}/attendance`,
-      ATTENDANCE_SINGLE: (id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}`
+   TRAININGPROVIDER: {
+      CREATEPROGRAM:    '/training-provider/create/program',
+      PROGRAMS:         '/training-provider/programs',
+      PARTICIPANTS:     (id: string) => `/training-provider/programs/${id}/participants`,
+      ATTENDANCE:       (id: string) => `/training-provider/programs/${id}/attendance`,
+      ATTENDANCE_SINGLE:(id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}`
    }
 }

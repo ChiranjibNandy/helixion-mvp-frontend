@@ -1,6 +1,15 @@
 // Form validation utilities
 // Pure functions for validating form inputs
 
+export function isSafeUrl(url: string): boolean {
+  try {
+    const { protocol } = new URL(url);
+    return protocol === 'https:' || protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
 import { VALIDATION_ERRORS } from '@/constants/errors';
 import { EMAIL_REGEX, PASSWORD_RULES, USERNAME_RULES } from '@/constants/validation';
 

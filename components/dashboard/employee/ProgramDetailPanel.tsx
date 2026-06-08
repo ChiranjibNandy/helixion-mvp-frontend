@@ -1,0 +1,81 @@
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { ChevronRight, CheckCircle2 } from 'lucide-react';
+import type { AvailableProgram, StayTypeKey } from '@/types';
+import type { StayOption, DetailPanelProps } from '@/types/employee-programs';
+import { t } from '@/lib/i18n';
+import { AppAlert } from '@/components/shared/app-alert';
+import { StayTypeSelector } from './StayTypeSelector';
+import { BrochureDownloadLink } from './BrochureDownloadLink';
+
+function buildStayOptions(program: AvailableProgram): StayOption[] {
+  return ([
+    { key: 'single_occupancy' as StayTypeKey, label: t('programme.list.stayTypeSingle'),         fee: program.singleOccupancyFee },
+    { key: 'twin_sharing'     as StayTypeKey, label: t('programme.list.stayTypeTwin'),            fee: program.twinSharingFee },
+    { key: 'non_residential'  as StayTypeKey, label: t('programme.list.stayTypeNonResidential'), fee: program.nonResidentialFee },
+  ] as { key: StayTypeKey; label: string; fee: number | undefined }[])
+    .filter((o): o is StayOption => o.fee !== undefined && o.fee !== null);
+}
+
+export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, error }: DetailPanelProps) {
+  const stayOptions = buildStayOptions(program);
+  const defaultKey  = stayOptions.find((o) => o.key === 'twin_sharing')?.key ?? stayOptions[0]?.key ?? 'twin_sharing';
+  const [selectedStay, setSelectedStay] = useState<StayTypeKey>(defaultKey as StayTypeKey);
+
+  return (
+    <div className="bg-[#0d1527] px-6 py-5">
+      <div className="flex justify-between gap-12">
+
+        <div className="flex-1 space-y-4">
+          <div>
+            <p className="text-[10px] font-semibold tracking-widest uppercase text-white/30 mb-1">
+              {t('programme.list.detailVenueLabel')}
+            </p>
+            <p className="text-[13px] text-white">{program.venue}</p>
+          </div>
+
+          {stayOptions.length > 0 && (
+            <StayTypeSelector
+              options={stayOptions}
+              value={selectedStay}
+              disabled={enrolled}
+              onChange={setSelectedStay}
+            />
+          )}
+        </div>
+
+        <div className="flex flex-col items-end justify-start gap-3 flex-shrink-0">
+          {program.brochureUrl && (
+            <BrochureDownloadLink url={program.brochureUrl} />
+          )}
+
+          {enrolled ? (
+            <span className="flex items-center gap-1.5 text-[13px] text-green-400 font-medium">
+              <CheckCircle2 className="w-4 h-4" /> {t('programme.list.enrolledLabel')}
+            </span>
+          ) : (
+            <Button
+              onClick={() => onEnrol(selectedStay)}
+              disabled={enrolling}
+              className="bg-blue-600 hover:bg-blue-700 text-white text-[13px] px-5 h-9 font-medium disabled:opacity-70"
+            >
+              {enrolling ? t('programme.list.enrollingButton') : t('programme.list.enrollButton')}
+              {!enrolling && <ChevronRight className="w-4 h-4 ml-1" />}
+            </Button>
+          )}
+
+          {error && (
+            <AppAlert
+              variant="destructive"
+              description={error}
+              className="max-w-[220px] text-[11px]"
+            />
+          )}
+        </div>
+
+      </div>
+    </div>
+  );
+}

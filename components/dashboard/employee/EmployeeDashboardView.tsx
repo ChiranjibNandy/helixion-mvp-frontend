@@ -60,9 +60,7 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
   if (!data) return null;
 
 
-  const stats = getEmployeeDashboardStats(
-    data.summary
-  );
+  const stats = getEmployeeDashboardStats(data.summary ?? data);
 
 
   const quickActions = getQuickActions();

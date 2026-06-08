@@ -29,6 +29,17 @@ export const ROUTES = {
     DEACTIVATE_USER: '/admin/dashboard/deactivate',
   },
 
+  // Employee section routes
+  EMPLOYEE: {
+    DASHBOARD:   '/dashboard',
+    PROFILE:     '/dashboard/profile',
+    PROGRAMS:    '/dashboard/programs',
+    ENROLLMENTS: '/dashboard/enrollments',
+    APPROVALS:   '/dashboard/approvals',
+    EXPENSES:    '/dashboard/expenses',
+    REPORTS:     '/dashboard/reports',
+  },
+
   // Training Provider section routes
   PROVIDER: {
     DASHBOARD: '/dashboard',
