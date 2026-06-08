@@ -71,10 +71,13 @@ export function ProgramsListPage() {
   const [enrolledIds,  setEnrolledIds]  = useState<Set<string>>(new Set());
   const [enrollErrors, setEnrollErrors] = useState<Record<string, string>>({});
 
-  const seqRef = useRef(0);
+  const abortRef = useRef<AbortController | null>(null);
 
   const load = useCallback(async () => {
-    const seq = ++seqRef.current;
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setLoading(true);
     setFetchError(null);
     try {
@@ -85,23 +88,27 @@ export function ProgramsListPage() {
         venue:    applied.venue    || undefined,
         fromDate: applied.fromDate || undefined,
         toDate:   applied.toDate   || undefined,
-      });
-      if (seq !== seqRef.current) return;
+      }, controller.signal);
       setPrograms(data.programs);
       setTotal(data.total);
-    } catch {
-      if (seq !== seqRef.current) return;
+    } catch (err) {
+      if ((err as { name?: string })?.name === 'CanceledError') return;
       setFetchError(t('programme.list.fetchError'));
       setPrograms([]);
       setTotal(0);
     } finally {
-      if (seq === seqRef.current) setLoading(false);
+      if (!controller.signal.aborted) setLoading(false);
     }
   }, [page, applied]);
 
   useEffect(() => { load(); }, [load]);
 
   function handleApply() {
+    if (draft.fromDate && draft.toDate && draft.fromDate > draft.toDate) {
+      setFetchError(t('programme.list.invalidDateRange'));
+      return;
+    }
+    setFetchError(null);
     setPage(1);
     setApplied({ ...draft });
   }
@@ -122,8 +129,10 @@ export function ProgramsListPage() {
     } catch (err: unknown) {
       const raw = (err as { response?: { data?: { message?: unknown } } })?.response?.data?.message;
       const msg = Array.isArray(raw)
-        ? raw.join(', ')
-        : (typeof raw === 'string' ? raw : t('programme.list.enrollError'));
+        ? raw.map(String).filter(Boolean).join(', ') || t('programme.list.enrollError')
+        : typeof raw === 'string' && raw
+          ? raw
+          : t('programme.list.enrollError');
       setEnrollErrors((prev) => ({ ...prev, [programId]: msg }));
     } finally {
       setEnrollingId(null);

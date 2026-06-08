@@ -8,6 +8,15 @@ import type { StayOption, DetailPanelProps } from '@/types/employee-programs';
 import { t } from '@/lib/i18n';
 import { AppAlert } from '@/components/shared/app-alert';
 
+function isSafeUrl(url: string): boolean {
+  try {
+    const { protocol } = new URL(url);
+    return protocol === 'https:' || protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
 function buildStayOptions(program: AvailableProgram): StayOption[] {
   return ([
     { key: 'single_occupancy' as StayTypeKey, label: t('programme.list.stayTypeSingle'),         fee: program.singleOccupancyFee },
@@ -75,7 +84,7 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
         </div>
 
         <div className="flex flex-col items-end justify-start gap-3 flex-shrink-0">
-          {program.brochureUrl && (
+          {program.brochureUrl && isSafeUrl(program.brochureUrl) && (
             <a
               href={program.brochureUrl}
               target="_blank"

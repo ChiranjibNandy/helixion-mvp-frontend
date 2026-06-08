@@ -7,15 +7,18 @@ export const fetchEmployeeDashboardData = async () => {
   return response.data.data;
 };
 
-export const getAvailablePrograms = async (params?: {
-  page?:     number;
-  limit?:    number;
-  search?:   string;
-  venue?:    string;
-  fromDate?: string;
-  toDate?:   string;
-}): Promise<{ programs: AvailableProgram[]; total: number; page: number; totalPages: number }> => {
-  const response = await api.get(API.EMPLOYEE.PROGRAMS, { params });
+export const getAvailablePrograms = async (
+  params?: {
+    page?:     number;
+    limit?:    number;
+    search?:   string;
+    venue?:    string;
+    fromDate?: string;
+    toDate?:   string;
+  },
+  signal?: AbortSignal
+): Promise<{ programs: AvailableProgram[]; total: number; page: number; totalPages: number }> => {
+  const response = await api.get(API.EMPLOYEE.PROGRAMS, { params, signal });
   return response.data.data;
 };
 
