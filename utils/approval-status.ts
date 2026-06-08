@@ -14,7 +14,8 @@ export interface ChartSegment {
   dashOffset: number;
 }
 
-export function getApprovalTotal(stats: ApprovalStats): number {
+export function getApprovalTotal(stats?: ApprovalStats): number {
+  if (!stats) return 0;
   return (
     (stats.approved ?? 0) +
     (stats.pending ?? 0) +

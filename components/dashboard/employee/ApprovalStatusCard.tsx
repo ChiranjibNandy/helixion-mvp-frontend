@@ -10,15 +10,15 @@ import {
 import { DonutChart } from './DonutChart';
 
 interface ApprovalStatusCardProps {
-  stats: ApprovalStats;
+  stats?: ApprovalStats;
 }
 
 export function ApprovalStatusCard({
   stats,
 }: ApprovalStatusCardProps) {
-  const approved = stats.approved ?? 0;
-  const pending = stats.pending ?? 0;
-  const rejected = stats.dismissed ?? 0;
+  const approved = stats?.approved ?? 0;
+  const pending = stats?.pending ?? 0;
+  const rejected = stats?.dismissed ?? 0;
 
   const total = getApprovalTotal(stats);
 

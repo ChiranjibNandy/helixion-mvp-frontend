@@ -1,15 +1,16 @@
 import { t } from '@/lib/i18n';
 import { BookOpen, CheckCircle, Clock } from 'lucide-react';
 
-export function getEmployeeDashboardStats(summary: {
-  programsCompleted: number;
-  programsEnrolled: number;
-  pendingApprovals: number;
+export function getEmployeeDashboardStats(summary?: {
+  programsCompleted?: number;
+  programsEnrolled?: number;
+  pendingApprovals?: number;
 }) {
+  const s = summary ?? {};
   return [
     {
       title: t('employeeDashboard.stats.programsCompleted'),
-      value: summary.programsCompleted,
+      value: s.programsCompleted ?? 0,
       subtitle: t('employeeDashboard.stats.completedSubtitle'),
       subtitleColor: 'text-emerald-400',
       icon: <CheckCircle className="w-5 h-5 text-emerald-400" />,
@@ -17,11 +18,11 @@ export function getEmployeeDashboardStats(summary: {
     },
     {
       title: t('employeeDashboard.stats.programsEnrolled'),
-      value: summary.programsEnrolled,
+      value: s.programsEnrolled ?? 0,
       subtitle: t(
         'employeeDashboard.stats.enrolledInProgress',
         {
-          count: Math.min(summary.programsEnrolled, 2),
+          count: Math.min(s.programsEnrolled ?? 0, 2),
         }
       ),
       subtitleColor: 'text-textSidebarMuted',
@@ -30,7 +31,7 @@ export function getEmployeeDashboardStats(summary: {
     },
     {
       title: t('employeeDashboard.stats.pendingApprovals'),
-      value: summary.pendingApprovals,
+      value: s.pendingApprovals ?? 0,
       subtitle: t('employeeDashboard.stats.pendingSubtitle'),
       subtitleColor: 'text-textSidebarMuted',
       icon: <Clock className="w-5 h-5 text-amber-400" />,

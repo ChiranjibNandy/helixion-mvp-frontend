@@ -21,7 +21,7 @@ interface Column<T> {
 }
 
 interface DataTableProps<T> {
-  data: T[];
+  data?: T[];
   columns: Column<T>[];
   className?: string;
   emptyMessage?: string;
@@ -34,7 +34,7 @@ interface DataTableProps<T> {
 }
 
 export function DataTable<T>({
-  data,
+  data = [],
   columns,
   className,
   emptyMessage = "No data available",
