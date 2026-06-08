@@ -41,7 +41,9 @@
    "dashboard": {
       "welcome": "Welcome Back, {name}",
       "errorTitle": "Error",
-      "errorDescription": "Unable to load your dashboard. Please try refreshing the page."
+      "errorDescription": "Unable to load your dashboard. Please try refreshing the page.",
+      "employeeBreadcrump": "Workspace › Dashboard",
+      "enroll": "enroll"
    },
    "common": {
       "loading": "Loading...",
@@ -98,7 +100,15 @@
       "username": "Username",
       "email": "Email",
       "action": "Action",
-      "no-data": "No matching records found."
+      "no-data": "No matching records found.",
+      "programTitle": "Program Title",
+      "dates": "Dates",
+      "venue": "Venue",
+      "status": "Status",
+      "noPrograms": "No programs listed yet",
+      "listedTitle": "Listed Training Programs",
+      "listedSubtitle": "Upcoming programs available for enrollment",
+      "viewAll": "View all →"
    },
    "admin": {
       "deactivate": {
@@ -373,5 +383,45 @@
             "link": "Export →"
          }
       }
+   },
+   "employeeDashboard": {
+      "stats": {
+         "programsCompleted": "Programs Completed",
+         "programsEnrolled": "Programs Enrolled",
+         "pendingApprovals": "Pending Approvals",
+         "completedSubtitle": "+3 this quarter",
+         "enrolledInProgress": "{{count}} in progress",
+         "pendingSubtitle": "Awaiting manager"
+      },
+      "quickActions": {
+         "enroll": {
+            "title": "Enroll in Program",
+            "description": "Browse listed trainings",
+            "link": "Browse programs"
+         },
+         "approvals": {
+            "title": "View Approvals",
+            "description": "Track pending requests",
+            "link": "View requests"
+         },
+         "reports": {
+            "title": "View Reports",
+            "description": "Analytics & summaries",
+            "link": "Go to reports"
+         },
+         "profile": {
+            "title": "My Profile",
+            "description": "Update your details",
+            "link": "Edit profile"
+         }
+      }
+   },
+   "approvalStatus": {
+      "title": "Approval Status",
+      "subtitle": "Current request breakdown",
+      "total": "Total",
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected"
    }
 }

@@ -53,3 +53,26 @@ export const shortDraftId = (id: string): string =>
  */
 export const maskPassword = (value?: string, maxLength = 12): string =>
   '•'.repeat(Math.min(value?.length || 0, maxLength));
+
+/**
+ * Format a date string to short display format e.g. "20–25 Apr"
+ */
+export function formatDateRange(startDate: string, endDate: string): string {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const startDay = start.getDate();
+  const endDay = end.getDate();
+  const month = end.toLocaleString('en-US', { month: 'short' });
+
+  if (
+    start.getMonth() === end.getMonth() &&
+    start.getFullYear() === end.getFullYear()
+  ) {
+    return `${startDay}–${endDay} ${month}`;
+  }
+
+  const startMonth = start.toLocaleString('en-US', { month: 'short' });
+  return `${startDay} ${startMonth} – ${endDay} ${month}`;
+}
+

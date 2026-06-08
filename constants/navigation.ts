@@ -42,6 +42,9 @@ export const ROUTES = {
     },
     ATTENDANCE: '/dashboard/update-attendance',
   },
+  EMPLOYEE: {
+    PROGRAM: '/employee/programs'
+  }
 } as const;
 
 // Navigation item type - using Lucide icon type
@@ -82,7 +85,7 @@ export const ROLE_ACCESS = {
     ROUTES.ADMIN.AUDIT,
   ],
   [USER_ROLES.USER]: [ROUTES.DASHBOARD.ROOT],
-  [USER_ROLES.TRAINING_PROVIDER]: [ROUTES.PROVIDER.DASHBOARD, ROUTES.PROVIDER.PROGRAMS.BULK],
+  [USER_ROLES.TRAINING_PROVIDER]: [ROUTES.DASHBOARD.ROOT, ROUTES.PROVIDER.PROGRAMS.BULK],
 } as const;
 
 
