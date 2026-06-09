@@ -26,12 +26,14 @@ interface StepReviewProps {
 function getReviewColumns() {
   return [
     {
+      key: 'row',
       header: t('bulkImport.review.columnRow'),
       render: (_: BulkUser, idx?: number) => (
         <span className="text-xs text-textSidebarMuted">{(idx ?? 0) + 1}</span>
       ),
     },
     {
+      key: 'email',
       header: t('bulkImport.review.columnEmail'),
       render: (user: BulkUser) => (
         <span className={`text-xs ${user.status === 'Error' ? 'text-white/40 line-through' : 'text-white'}`}>
@@ -40,6 +42,7 @@ function getReviewColumns() {
       ),
     },
     {
+      key: 'role',
       header: t('bulkImport.review.columnRole'),
       render: (user: BulkUser) => (
         <span className="text-[11px] font-medium text-primary/80 bg-primary/10 px-2.5 py-1 rounded-md capitalize">
@@ -48,12 +51,14 @@ function getReviewColumns() {
       ),
     },
     {
+      key: 'action',
       header: t('bulkImport.review.columnAction'),
       render: (user: BulkUser) => (
         <span className="text-[11px] text-textSidebarMuted capitalize">{user.action}</span>
       ),
     },
     {
+      key: 'status',
       header: t('bulkImport.review.columnStatus'),
       render: (user: BulkUser) => {
         const colorMap = {
@@ -69,6 +74,7 @@ function getReviewColumns() {
       },
     },
     {
+      key: 'note',
       header: t('bulkImport.review.columnNote'),
       render: (user: BulkUser) => {
         const colorMap = {

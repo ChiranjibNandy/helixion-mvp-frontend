@@ -453,5 +453,86 @@
       "approved": "Approved",
       "pending": "Pending",
       "rejected": "Rejected"
+   },
+   "trainingEnrolment": {
+      "breadcrumb": {
+         "workspace": "Workspace",
+         "programs": "Programs",
+         "enroll": "Enroll in Program"
+      },
+      "title": "Training Program Enrolment Form",
+      "programDetails": {
+         "title": "Program Details",
+         "programTitle": "Program Title",
+         "venue": "Venue",
+         "startDate": "Start / Check-in Date",
+         "city": "City",
+         "endDate": "End / Check-out Date",
+         "stayType": "Stay Type",
+         "singleOccupancy": "Single Occupancy",
+         "twinSharing": "Twin Sharing",
+         "nonResidential": "Non-Residential",
+         "trainingProvider": "Training Provider"
+      },
+      "tourApproval": {
+         "title": "Tour Approval Form",
+         "placeOfTour": "Place of Tour",
+         "frequentFlyerNo": "Frequent Flyer No.",
+         "modeOfTravel": "Mode of Travel",
+         "tourPurpose": "Tour Purpose"
+      },
+      "bookingDetails": {
+         "title": "Booking Details",
+         "columns": {
+            "from": "From",
+            "to": "To",
+            "flightNo": "Flight No.",
+            "departureTime": "Departure Time",
+            "dateOfTravel": "Date of Travel",
+            "travelClass": "Travel Class"
+         }
+      },
+      "advancePayment": "Advance Payment Required {amount}",
+      "stepper": {
+         "programDetails": "Program Details",
+         "travelStay": "Travel & Stay",
+         "reviewSubmit": "Review & Submit"
+      },
+      "accommodationInstruction": "Please select your preferred accommodation type",
+      "confirmEnrollButton": "Confirm & Enrol in Program",
+      "enrollInstruction": "You will be enrolled in the program. Travel & Stay details can be filled in the next step.",
+      "enrolledLabel": "Enrolled in Program",
+      "agree": "Agree",
+      "disagree": "Disagree",
+      "confirmSubmission": "Confirm Submission",
+      "confirmSubmissionDesc": "Are you sure you want to submit the enrolment and tour approval form?"
+   },
+   "approvalProgress": {
+      "breadcrumb": {
+         "workspace": "Workspace",
+         "enrollments": "Enrollments",
+         "progress": "Approval Progress"
+      },
+      "title": "Enrollment Approval Progress",
+      "subtitle": "Track the status of your training program enrollment request",
+      "steps": {
+         "submitted": "Application Submitted",
+         "manager": "Approved by Reporting Manager",
+         "hrReview": "HR Review",
+         "reimbursementSubmitted": "Reimbursement Form Submitted",
+         "credited": "Reimbursement Credited to Bank Account"
+      },
+      "statusMessage": "Your application is currently under HR Review. You will be notified once it proceeds to the next stage.",
+      "enrolledPrograms": {
+         "title": "Training Programs Enrolled",
+         "columns": {
+            "no": "No.",
+            "title": "Program Title",
+            "fromDate": "From Date",
+            "toDate": "To Date",
+            "venueCity": "Venue/City",
+            "status": "Status"
+         }
+      }
    }
 }

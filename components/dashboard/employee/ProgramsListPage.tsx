@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getAvailablePrograms, enrollInProgram } from '@/services/employeeService';
+import { useRouter } from 'next/navigation';
+import { getAvailablePrograms, enrollInProgram, getEmployeeEnrollments } from '@/services/employeeService';
 import SearchInput from '@/components/ui/search-input';
 import type { AvailableProgram, StayTypeKey } from '@/types';
 import type { Filters } from '@/types/employee-programs';
@@ -26,30 +27,35 @@ function getProviderName(program: AvailableProgram): string {
 
 const COLUMNS = [
   {
+    key: 'title',
     header: t('programme.list.columnTitle'),
     headerClassName: HEADER_CLASS,
     className: 'font-semibold text-white text-[13px] max-w-[220px]',
     render: (prog: AvailableProgram) => prog.title,
   },
   {
+    key: 'fromDate',
     header: t('programme.list.columnFromDate'),
     headerClassName: HEADER_CLASS,
     className: 'text-white/60 text-[13px]',
     render: (prog: AvailableProgram) => formatShortDate(prog.startDate),
   },
   {
+    key: 'toDate',
     header: t('programme.list.columnToDate'),
     headerClassName: HEADER_CLASS,
     className: 'text-white/60 text-[13px]',
     render: (prog: AvailableProgram) => formatShortDate(prog.endDate),
   },
   {
+    key: 'venue',
     header: t('programme.list.columnVenue'),
     headerClassName: HEADER_CLASS,
     className: 'text-white/60 text-[13px]',
     render: (prog: AvailableProgram) => prog.venue,
   },
   {
+    key: 'provider',
     header: t('programme.list.columnProvider'),
     headerClassName: HEADER_CLASS,
     className: 'text-white/60 text-[13px] max-w-[180px]',
@@ -59,6 +65,7 @@ const COLUMNS = [
 
 
 export function ProgramsListPage() {
+  const router = useRouter();
   const [programs,     setPrograms]     = useState<AvailableProgram[]>([]);
   const [loading,      setLoading]      = useState(true);
   const [fetchError,   setFetchError]   = useState<string | null>(null);
@@ -103,6 +110,22 @@ export function ProgramsListPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  useEffect(() => {
+    async function fetchExisting() {
+      try {
+        const data = await getEmployeeEnrollments();
+        const ids = data.map((e: any) => {
+          const p = e.programId;
+          return typeof p === 'object' && p ? p._id : p;
+        }).filter(Boolean);
+        setEnrolledIds(new Set(ids));
+      } catch (err) {
+        console.error("Failed to load existing enrollments:", err);
+      }
+    }
+    fetchExisting();
+  }, []);
+
   function handleApply() {
     if (draft.fromDate && draft.toDate && draft.fromDate > draft.toDate) {
       setFetchError(t('programme.list.invalidDateRange'));
@@ -119,24 +142,8 @@ export function ProgramsListPage() {
     setPage(1);
   }
 
-  async function handleEnrol(programId: string, stayType: StayTypeKey) {
-    setEnrollingId(programId);
-    setEnrollErrors((prev) => { const next = { ...prev }; delete next[programId]; return next; });
-    try {
-      await enrollInProgram(programId, stayType);
-      setEnrolledIds((prev) => new Set(prev).add(programId));
-      setSelectedId(null);
-    } catch (err: unknown) {
-      const raw = (err as { response?: { data?: { message?: unknown } } })?.response?.data?.message;
-      const msg = Array.isArray(raw)
-        ? raw.map(String).filter(Boolean).join(', ') || t('programme.list.enrollError')
-        : typeof raw === 'string' && raw
-          ? raw
-          : t('programme.list.enrollError');
-      setEnrollErrors((prev) => ({ ...prev, [programId]: msg }));
-    } finally {
-      setEnrollingId(null);
-    }
+  function handleEnrol(programId: string, stayType: StayTypeKey) {
+    router.push(`/dashboard/enrollments?programId=${programId}&stayType=${stayType}`);
   }
 
   const totalPages = Math.ceil(total / PAGE_SIZE) || 1;

@@ -38,6 +38,7 @@ export const ROUTES = {
     APPROVALS:   '/dashboard/approvals',
     EXPENSES:    '/dashboard/expenses',
     REPORTS:     '/dashboard/reports',
+    PROGRAM:     '/employee/programs',
   },
 
   // Training Provider section routes
@@ -53,9 +54,6 @@ export const ROUTES = {
     },
     ATTENDANCE: '/dashboard/update-attendance',
   },
-  EMPLOYEE: {
-    PROGRAM: '/employee/programs'
-  }
 } as const;
 
 // Navigation item type - using Lucide icon type

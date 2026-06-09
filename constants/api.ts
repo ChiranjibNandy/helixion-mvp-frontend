@@ -16,6 +16,10 @@ export const API = {
       DASHBOARD: '/employee/dashboard',
       PROGRAMS:  '/employee/programs',
       ENROLL:    (id: string) => `/employee/programs/${id}/enroll`,
+      ENROLLMENTS: '/employee/enrollments',
+      ENROLLMENT_DETAILS: (id: string) => `/employee/enrollments/${id}`,
+      UPDATE_TRAVEL: (id: string) => `/employee/enrollments/${id}/travel`,
+      SUBMIT_ENROLLMENT: (id: string) => `/employee/enrollments/${id}/submit`,
    },
    TRAININGPROVIDER: {
       CREATEPROGRAM:    '/training-provider/create/program',
