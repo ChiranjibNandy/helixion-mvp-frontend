@@ -2,7 +2,8 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Check, ClipboardList, UserCheck, FileText, Banknote, Building2 } from "lucide-react";
+import { Check } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 interface Step {
     id: string;
@@ -32,13 +33,7 @@ export default function EnrollmentProgressTracker({ steps, className }: Enrollme
             <div className="relative flex items-center justify-between">
                 {/* Progress Line Wrapper spanning center-to-center of outer circles */}
                 <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 z-0">
-                    {/* Background Line */}
-                    <div className="w-full h-full bg-borderCard" />
-                    {/* Active Progress Line */}
-                    <div
-                        className="absolute left-0 top-0 h-full bg-accentGreen transition-all duration-500"
-                        style={{ width: `${progressPercent}%` }}
-                    />
+                    <Progress value={progressPercent} className="h-0.5 bg-borderCard" />
                 </div>
 
                 {/* steps */}

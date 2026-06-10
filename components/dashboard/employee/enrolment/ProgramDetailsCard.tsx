@@ -4,19 +4,12 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
 import { t } from "@/lib/i18n";
+import { formatDateHyphenated } from "@/utils/formatters";
 
 interface ProgramDetailsCardProps {
     program: any;
     showEnrolledBadge?: boolean;
 }
-
-const formatDate = (dateString?: string | Date): string => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return String(dateString);
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return `${date.getDate()}-${months[date.getMonth()]}-${date.getFullYear()}`;
-};
 
 function DetailField({ label, value }: { label: string; value: string }) {
     return (
@@ -52,24 +45,24 @@ export function ProgramDetailsCard({ program, showEnrolledBadge = false }: Progr
                 <div className="rounded-xl border border-borderCard p-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-y-5 gap-x-16">
                         <DetailField
-                            label={t("trainingEnrolment.programDetails.programTitle")}
-                            value={program.title}
+                             label={t("trainingEnrolment.programDetails.programTitle")}
+                             value={program.title}
                         />
                         <DetailField
-                            label={t("trainingEnrolment.programDetails.venue")}
-                            value={program.venue || "N/A"}
+                             label={t("trainingEnrolment.programDetails.venue")}
+                             value={program.venue || "N/A"}
                         />
                         <DetailField
-                            label={t("trainingEnrolment.programDetails.startDate")}
-                            value={formatDate(program.startDate)}
+                             label={t("trainingEnrolment.programDetails.startDate")}
+                             value={formatDateHyphenated(program.startDate)}
                         />
                         <DetailField
-                            label={t("trainingEnrolment.programDetails.city")}
-                            value={program.city || "N/A"}
+                             label={t("trainingEnrolment.programDetails.city")}
+                             value={program.city || "N/A"}
                         />
                         <DetailField
-                            label={t("trainingEnrolment.programDetails.endDate")}
-                            value={formatDate(program.endDate)}
+                             label={t("trainingEnrolment.programDetails.endDate")}
+                             value={formatDateHyphenated(program.endDate)}
                         />
                         <DetailField
                             label={t("trainingEnrolment.programDetails.trainingProvider")}

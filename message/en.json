@@ -505,7 +505,9 @@
       "agree": "Agree",
       "disagree": "Disagree",
       "confirmSubmission": "Confirm Submission",
-      "confirmSubmissionDesc": "Are you sure you want to submit the enrolment and tour approval form?"
+      "confirmSubmissionDesc": "Are you sure you want to submit the enrolment and tour approval form?",
+      "reviewEnrolmentTitle": "Review Enrolment",
+      "reviewEnrolmentDescription": "You have selected the Non-Residential stay option. No travel tour or travel bookings are required for this program."
    },
    "approvalProgress": {
       "breadcrumb": {
@@ -523,6 +525,15 @@
          "credited": "Reimbursement Credited to Bank Account"
       },
       "statusMessage": "Your application is currently under HR Review. You will be notified once it proceeds to the next stage.",
+      "statusMessages": {
+         "submitted": "Your enrollment request has been initialized. Please complete travel and stay details to submit for review.",
+         "managerReview": "Your application has been submitted and is currently awaiting approval from your Reporting Manager.",
+         "hrReview": "Your application has been approved by your manager and is currently under HR / Training Department review.",
+         "attendance": "Your attendance for the training has been recorded! You can now submit your reimbursement claim.",
+         "reimbursement": "Your reimbursement claim has been submitted and is under financial audit/review.",
+         "credited": "Congratulations! Your reimbursement has been approved and successfully credited to your bank account.",
+         "default": "Track the status of your training program enrollment request above."
+      },
       "enrolledPrograms": {
          "title": "Training Programs Enrolled",
          "columns": {

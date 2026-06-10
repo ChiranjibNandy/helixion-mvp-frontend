@@ -2,34 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import { t } from "@/lib/i18n";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import { Card } from "@/components/ui/card";
 import Badge from "@/components/ui/badge";
-import EnrollmentProgressTracker from "@/components/ui/EnrollmentProgressTracker";
-import { Info, FileText, UserCheck, ClipboardList, Banknote, Building2, ChevronRight, Loader2 } from "lucide-react";
+import { Info, ChevronRight } from "lucide-react";
 import { getEmployeeEnrollments } from "@/services/employeeService";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { formatDateHyphenated } from "@/utils/formatters";
+import DataTable from "@/components/shared/data-table";
+import { Spinner } from "@/components/ui/spinner";
+import { EnrollmentStepsTracker, ENROLLMENT_STAGE } from "./EnrollmentStepsTracker";
 
 export default function EnrollmentApprovalProgressView() {
     const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
     const [enrollments, setEnrollments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-
-    const formatDate = (dateString?: string | Date) => {
-        if (!dateString) return "";
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) return "";
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        return `${date.getDate()}-${months[date.getMonth()]}-${date.getFullYear()}`;
-    };
 
     useEffect(() => {
         const fetchEnrollments = async () => {
@@ -57,117 +44,27 @@ export default function EnrollmentApprovalProgressView() {
         return typeof p === 'object' && p ? p : (enrollment.programDetails || {});
     };
 
-    const getStepsForEnrollment = (enrollment: any) => {
-        const timeline = enrollment.timeline || [];
-        
-        const getTimelineDate = (stage: string, action?: string) => {
-            const log = timeline.find((t: any) => {
-                if (action) {
-                    return t.stage === stage && t.action === action;
-                }
-                return t.stage === stage;
-            });
-            return log ? formatDate(log.at) : undefined;
-        };
-
-        const stage = enrollment.currentStage;
-
-        // Step 1: Application Submitted
-        const step1Status: "completed" | "current" | "upcoming" = stage === "submitted" ? "current" : "completed";
-        const step1Date = getTimelineDate("submitted") || formatDate(enrollment.createdAt);
-
-        // Step 2: Approved by Reporting Manager
-        let step2Status: "completed" | "current" | "upcoming" = "upcoming";
-        if (enrollment.managerApproval?.action === "approved") {
-            step2Status = "completed";
-        } else if (stage === "manager_review") {
-            step2Status = "current";
-        }
-        const step2Date = getTimelineDate("manager_review", "approved") || 
-            (enrollment.managerApproval?.actedAt ? formatDate(enrollment.managerApproval.actedAt) : undefined);
-
-        // Step 3: HR / Training Department Review
-        let step3Status: "completed" | "current" | "upcoming" = "upcoming";
-        if (stage === "attendance" || stage === "reimbursement" || stage === "credited") {
-            step3Status = "completed";
-        } else if (stage === "training_dept_approval" || stage === "osd_review") {
-            step3Status = "current";
-        }
-        const step3Date = getTimelineDate("training_dept_approval", "approved") || getTimelineDate("osd_review", "approved");
-
-        // Step 4: Reimbursement Submitted
-        let step4Status: "completed" | "current" | "upcoming" = "upcoming";
-        if (stage === "credited") {
-            step4Status = "completed";
-        } else if (stage === "reimbursement") {
-            step4Status = "current";
-        }
-        const step4Date = getTimelineDate("reimbursement", "submitted");
-
-        // Step 5: Reimbursement Credited
-        const step5Status: "completed" | "current" | "upcoming" = stage === "credited" ? "completed" : "upcoming";
-        const step5Date = getTimelineDate("credited");
-
-        return [
-            {
-                id: "1",
-                label: t("approvalProgress.steps.submitted"),
-                date: step1Date,
-                status: step1Status,
-                icon: FileText,
-            },
-            {
-                id: "2",
-                label: t("approvalProgress.steps.manager"),
-                date: step2Date,
-                status: step2Status,
-                icon: UserCheck,
-            },
-            {
-                id: "3",
-                label: t("approvalProgress.steps.hrReview"),
-                date: step3Date,
-                status: step3Status,
-                icon: ClipboardList,
-            },
-            {
-                id: "4",
-                label: t("approvalProgress.steps.reimbursementSubmitted"),
-                date: step4Date,
-                status: step4Status,
-                icon: Banknote,
-            },
-            {
-                id: "5",
-                label: t("approvalProgress.steps.credited"),
-                date: step5Date,
-                status: step5Status,
-                icon: Building2,
-            },
-        ];
-    };
-
     const getStatusMessage = (enrollment: any) => {
         const stage = enrollment.currentStage;
-        if (stage === "submitted") {
-            return "Your enrollment request has been initialized. Please complete travel and stay details to submit for review.";
+        if (stage === ENROLLMENT_STAGE.SUBMITTED) {
+            return t("approvalProgress.statusMessages.submitted");
         }
-        if (stage === "manager_review") {
-            return "Your application has been submitted and is currently awaiting approval from your Reporting Manager.";
+        if (stage === ENROLLMENT_STAGE.MANAGER_REVIEW) {
+            return t("approvalProgress.statusMessages.managerReview");
         }
-        if (stage === "training_dept_approval" || stage === "osd_review") {
-            return "Your application has been approved by your manager and is currently under HR / Training Department review.";
+        if (stage === ENROLLMENT_STAGE.TRAINING_DEPT_APPROVAL || stage === ENROLLMENT_STAGE.OSD_REVIEW) {
+            return t("approvalProgress.statusMessages.hrReview");
         }
-        if (stage === "attendance") {
-            return "Your attendance for the training has been recorded! You can now submit your reimbursement claim.";
+        if (stage === ENROLLMENT_STAGE.ATTENDANCE) {
+            return t("approvalProgress.statusMessages.attendance");
         }
-        if (stage === "reimbursement") {
-            return "Your reimbursement claim has been submitted and is under financial audit/review.";
+        if (stage === ENROLLMENT_STAGE.REIMBURSEMENT) {
+            return t("approvalProgress.statusMessages.reimbursement");
         }
-        if (stage === "credited") {
-            return "Congratulations! Your reimbursement has been approved and successfully credited to your bank account.";
+        if (stage === ENROLLMENT_STAGE.CREDITED) {
+            return t("approvalProgress.statusMessages.credited");
         }
-        return "Track the status of your training program enrollment request above.";
+        return t("approvalProgress.statusMessages.default");
     };
 
     const getBadgeStatus = (status: string) => {
@@ -187,12 +84,69 @@ export default function EnrollmentApprovalProgressView() {
     if (loading) {
         return (
             <div className="flex h-[60vh] items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <Spinner size="lg" />
             </div>
         );
     }
 
-    const steps = selectedEnrollment ? getStepsForEnrollment(selectedEnrollment) : [];
+    const getRowClassName = (enrollment: any) => {
+        return cn(
+            "border-borderCard hover:bg-white/5 cursor-pointer transition-all",
+            selectedEnrollmentId === enrollment._id ? "bg-white/5 border-l-2 border-l-primary" : ""
+        );
+    };
+
+    const columns = [
+        {
+            key: "no",
+            header: t("approvalProgress.enrolledPrograms.columns.no"),
+            className: "text-sm text-textSidebarMuted py-4 w-16",
+            render: (_: any, index?: number) => `${(index ?? 0) + 1}.`,
+        },
+        {
+            key: "title",
+            header: t("approvalProgress.enrolledPrograms.columns.title"),
+            className: "text-sm text-white font-medium py-4 max-w-xs",
+            render: (enrollment: any) => getProgramDetails(enrollment)?.title || "Unknown",
+        },
+        {
+            key: "fromDate",
+            header: t("approvalProgress.enrolledPrograms.columns.fromDate"),
+            className: "text-sm text-textSidebarMuted py-4",
+            render: (enrollment: any) => formatDateHyphenated(getProgramDetails(enrollment)?.startDate),
+        },
+        {
+            key: "toDate",
+            header: t("approvalProgress.enrolledPrograms.columns.toDate"),
+            className: "text-sm text-textSidebarMuted py-4",
+            render: (enrollment: any) => formatDateHyphenated(getProgramDetails(enrollment)?.endDate),
+        },
+        {
+            key: "venueCity",
+            header: t("approvalProgress.enrolledPrograms.columns.venueCity"),
+            className: "text-sm text-textSidebarMuted py-4",
+            render: (enrollment: any) => {
+                const prog = getProgramDetails(enrollment);
+                return prog?.city || prog?.venue || "N/A";
+            },
+        },
+        {
+            key: "status",
+            header: t("approvalProgress.enrolledPrograms.columns.status"),
+            className: "py-4",
+            render: (enrollment: any) => (
+                <Badge status={getBadgeStatus(enrollment.status) as any} className="capitalize px-3 py-1">
+                    {getBadgeLabel(enrollment.status)}
+                </Badge>
+            ),
+        },
+        {
+            key: "chevron",
+            header: "",
+            className: "w-10 py-4",
+            render: () => <ChevronRight className="size-4 text-textSidebarMuted" />,
+        },
+    ];
 
     return (
         <div className="flex flex-col gap-8 pb-10 w-full">
@@ -232,7 +186,7 @@ export default function EnrollmentApprovalProgressView() {
                         </div>
 
                         {/* Progress Tracker */}
-                        {steps.length > 0 && <EnrollmentProgressTracker steps={steps} />}
+                        {selectedEnrollment && <EnrollmentStepsTracker enrollment={selectedEnrollment} />}
 
                         {/* Dynamic Info Message */}
                         <div className="flex items-center gap-4 p-4 rounded-xl bg-primary/10 border border-primary/20 text-white">
@@ -253,48 +207,13 @@ export default function EnrollmentApprovalProgressView() {
                                 </span>
                             </h2>
                             <div className="rounded-xl border border-borderCard overflow-hidden">
-                                <Table>
-                                    <TableHeader className="bg-white/5">
-                                        <TableRow className="border-borderCard hover:bg-transparent">
-                                            <TableHead className="text-xs text-textSidebarMuted py-4 font-medium w-16">{t("approvalProgress.enrolledPrograms.columns.no")}</TableHead>
-                                            <TableHead className="text-xs text-textSidebarMuted py-4 font-medium">{t("approvalProgress.enrolledPrograms.columns.title")}</TableHead>
-                                            <TableHead className="text-xs text-textSidebarMuted py-4 font-medium">{t("approvalProgress.enrolledPrograms.columns.fromDate")}</TableHead>
-                                            <TableHead className="text-xs text-textSidebarMuted py-4 font-medium">{t("approvalProgress.enrolledPrograms.columns.toDate")}</TableHead>
-                                            <TableHead className="text-xs text-textSidebarMuted py-4 font-medium">{t("approvalProgress.enrolledPrograms.columns.venueCity")}</TableHead>
-                                            <TableHead className="text-xs text-textSidebarMuted py-4 font-medium">{t("approvalProgress.enrolledPrograms.columns.status")}</TableHead>
-                                            <TableHead className="w-10"></TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {enrollments.map((enrollment, index) => {
-                                            const prog = getProgramDetails(enrollment);
-                                            return (
-                                                <TableRow 
-                                                    key={enrollment._id} 
-                                                    className={cn(
-                                                        "border-borderCard hover:bg-white/5 cursor-pointer transition-all",
-                                                        selectedEnrollmentId === enrollment._id ? "bg-white/5 border-l-2 border-l-primary" : ""
-                                                    )}
-                                                    onClick={() => setSelectedEnrollmentId(enrollment._id)}
-                                                >
-                                                    <TableCell className="text-sm text-textSidebarMuted py-4">{index + 1}.</TableCell>
-                                                    <TableCell className="text-sm text-white font-medium py-4 max-w-xs">{prog?.title || "Unknown"}</TableCell>
-                                                    <TableCell className="text-sm text-textSidebarMuted py-4">{formatDate(prog?.startDate)}</TableCell>
-                                                    <TableCell className="text-sm text-textSidebarMuted py-4">{formatDate(prog?.endDate)}</TableCell>
-                                                    <TableCell className="text-sm text-textSidebarMuted py-4">{prog?.city || prog?.venue || "N/A"}</TableCell>
-                                                    <TableCell className="py-4">
-                                                        <Badge status={getBadgeStatus(enrollment.status) as any} className="capitalize px-3 py-1">
-                                                            {getBadgeLabel(enrollment.status)}
-                                                        </Badge>
-                                                    </TableCell>
-                                                    <TableCell className="py-4">
-                                                        <ChevronRight className="size-4 text-textSidebarMuted" />
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        })}
-                                    </TableBody>
-                                </Table>
+                                <DataTable
+                                    columns={columns}
+                                    data={enrollments}
+                                    onRowClick={(enrollment) => setSelectedEnrollmentId(enrollment._id)}
+                                    rowClassName={getRowClassName}
+                                    className="w-full"
+                                />
                             </div>
                         </div>
                     </div>

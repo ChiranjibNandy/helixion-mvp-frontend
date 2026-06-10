@@ -22,35 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Trash2, Loader2, ArrowLeft } from "lucide-react";
 import { t } from "@/lib/i18n";
 
-interface BookingRow {
-    from: string;
-    to: string;
-    refNo: string;
-    departureTime: string;
-    travelDate: string;
-    travelClass: string;
-}
-
-interface TravelDetailsFormProps {
-    placeOfTour: string;
-    setPlaceOfTour: (val: string) => void;
-    frequentFlyerNo: string;
-    setFrequentFlyerNo: (val: string) => void;
-    modeOfTravel: string;
-    setModeOfTravel: (val: string) => void;
-    purpose: string;
-    setPurpose: (val: string) => void;
-    bookingDetails: BookingRow[];
-    addBookingRow: () => void;
-    removeBookingRow: (index: number) => void;
-    updateBookingField: (index: number, field: keyof BookingRow, value: string) => void;
-    advancePaymentRequired: number;
-    setAdvancePaymentRequired: (val: number) => void;
-    validationError: string | null;
-    submitting: boolean;
-    onBack: () => void;
-    onSubmit: () => void;
-}
+import { BookingRow, TravelDetailsFormProps } from "@/types";
 
 export function TravelDetailsForm({
     placeOfTour,

@@ -78,3 +78,11 @@ export function formatDateRange(startDate: string, endDate: string): string {
   const startMonth = start.toLocaleString('en-US', { month: 'short' });
   return `${startDay} ${startMonth} – ${endDay} ${month}`;
 }
+
+export const formatDateHyphenated = (dateString?: string | Date): string => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return String(dateString);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${date.getDate()}-${months[date.getMonth()]}-${date.getFullYear()}`;
+};
