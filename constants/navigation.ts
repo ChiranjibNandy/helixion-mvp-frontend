@@ -33,6 +33,7 @@ export const ROUTES = {
   EMPLOYEE: {
     DASHBOARD:   '/dashboard',
     PROFILE:     '/dashboard/profile',
+    PROGRAM:     '/employee/programs',
     PROGRAMS:    '/dashboard/programs',
     ENROLLMENTS: '/dashboard/enrollments',
     APPROVALS:   '/dashboard/approvals',
@@ -52,9 +53,6 @@ export const ROUTES = {
       EXPORT: '/dashboard/programs/export',
     },
     ATTENDANCE: '/dashboard/update-attendance',
-  },
-  EMPLOYEE: {
-    PROGRAM: '/employee/programs'
   }
 } as const;
 
