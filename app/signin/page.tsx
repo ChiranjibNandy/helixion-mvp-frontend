@@ -10,7 +10,6 @@ import { SIGNIN_CONTENT } from '@/constants/content';
 import { ROUTES, USER_ROLES } from '@/constants/navigation';
 import InputField from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { decodeJwtPayload, getAccessToken } from '@/utils/token';
 import { useState } from 'react';
 
 
@@ -82,16 +81,8 @@ function RightPanel() {
       const res = await loginAPI(form);
 
       if (res.data.success) {
-        setAllowSave(true)
-        const token = await getAccessToken();
-
-        if (!token) {
-          setFormError("Authentication failed");
-          return;
-        }
-
-        const payload = await decodeJwtPayload(token);
-        const role = payload.role;
+        setAllowSave(true);
+        const role = res.data.role;
 
         if (role === USER_ROLES.ADMIN) {
           router.push(ROUTES.DASHBOARD.ADMIN);
