@@ -1,9 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { User } from '@/types';
 import { DashboardHeader } from './dashboard/DashboardHeader';
 import { Sidebar } from './ui/sidebar';
+import { logoutAPI } from '@/services/authService';
+import { removeAccessToken } from '@/utils/token';
+import { ROUTES } from '@/constants/navigation';
 
 
 interface DashboardShellProps {
@@ -22,14 +26,17 @@ export function DashboardShell({
   onSignOut,
 }: DashboardShellProps) {
 
+  const router = useRouter();
   const [activeKey, setActiveKey] = useState<string>(defaultActiveKey);
 
-  function handleSignOut() {
-    if (onSignOut) {
-      onSignOut();
-    } else {
-      console.log('Sign out triggered');
+  async function handleSignOut() {
+    try {
+      await logoutAPI();
+    } catch {
+      // proceed with local cleanup even if backend call fails
     }
+    await removeAccessToken();
+    router.push(ROUTES.AUTH.SIGNIN);
   }
 
   return (

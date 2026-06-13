@@ -1,6 +1,7 @@
 export const API = {
    AUTH: {
       LOGIN: '/auth/login',
+      LOGOUT: '/auth/logout',
       REGISTER: '/auth/register',
       SEND_PASSWORD_RESET_LINK: '/auth/send-reset-link',
       RESET_PASSWORD: '/auth/reset-password'

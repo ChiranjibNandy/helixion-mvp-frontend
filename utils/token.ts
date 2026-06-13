@@ -31,8 +31,8 @@ export async function setAccessToken(token: string) {
  */
 export async function removeAccessToken() {
   const cookieStore = cookies();
-
   cookieStore.delete("accessToken");
+  cookieStore.delete("accessToken_client");
 }
 
 /**
