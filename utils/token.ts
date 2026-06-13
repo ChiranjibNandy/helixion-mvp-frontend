@@ -8,8 +8,17 @@ export async function getAccessToken() {
 
 export async function setAccessToken(token: string) {
   const cookieStore = cookies();
+  // httpOnly for server-side reading (Next.js pages)
   cookieStore.set("accessToken", token, {
     httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    maxAge: 15 * 60,
+    path: "/",
+  });
+  // non-httpOnly so client-side axios can read it for Authorization header
+  cookieStore.set("accessToken_client", token, {
+    httpOnly: false,
     secure: true,
     sameSite: "lax",
     maxAge: 15 * 60,
