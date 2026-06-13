@@ -3,11 +3,18 @@ import { cookies } from "next/headers";
 
 export async function getAccessToken() {
   const cookieStore = cookies();
+  return cookieStore.get("accessToken")?.value;
+}
 
-  const token =
-    cookieStore.get("accessToken")?.value;
-
-  return token;
+export async function setAccessToken(token: string) {
+  const cookieStore = cookies();
+  cookieStore.set("accessToken", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    maxAge: 15 * 60,
+    path: "/",
+  });
 }
 
 /**

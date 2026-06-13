@@ -8,6 +8,7 @@ import { loginAPI } from '@/services/authService';
 import { parseApiError } from '@/utils/parseError';
 import { SIGNIN_CONTENT } from '@/constants/content';
 import { ROUTES, USER_ROLES } from '@/constants/navigation';
+import { setAccessToken } from '@/utils/token';
 import InputField from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -82,7 +83,11 @@ function RightPanel() {
 
       if (res.data.success) {
         setAllowSave(true);
-        const role = res.data.role;
+        const { accessToken, role } = res.data;
+
+        if (accessToken) {
+          await setAccessToken(accessToken);
+        }
 
         if (role === USER_ROLES.ADMIN) {
           router.push(ROUTES.DASHBOARD.ADMIN);
