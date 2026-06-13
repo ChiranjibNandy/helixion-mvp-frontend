@@ -6,7 +6,7 @@ import { approveUserSchema } from "@/validations/admin";
 export const getUsersAPI = async (params: {
   page: number;
   limit: number;
-  q?: string;
+  search?: string;
 }) => {
   return await api.get(API.ADMIN.USERS, {
     params,
