@@ -8,9 +8,9 @@ import { loginAPI } from '@/services/authService';
 import { parseApiError } from '@/utils/parseError';
 import { SIGNIN_CONTENT } from '@/constants/content';
 import { ROUTES, USER_ROLES } from '@/constants/navigation';
+import { setAccessToken } from '@/utils/token';
 import InputField from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { decodeJwtPayload, getAccessToken } from '@/utils/token';
 import { useState } from 'react';
 
 
@@ -82,16 +82,12 @@ function RightPanel() {
       const res = await loginAPI(form);
 
       if (res.data.success) {
-        setAllowSave(true)
-        const token = await getAccessToken();
+        setAllowSave(true);
+        const { accessToken, role } = res.data;
 
-        if (!token) {
-          setFormError("Authentication failed");
-          return;
+        if (accessToken) {
+          await setAccessToken(accessToken);
         }
-
-        const payload = await decodeJwtPayload(token);
-        const role = payload.role;
 
         if (role === USER_ROLES.ADMIN) {
           router.push(ROUTES.DASHBOARD.ADMIN);

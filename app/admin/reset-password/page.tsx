@@ -28,7 +28,7 @@ export default function UsersPage() {
   const debouncedSearch = useDebounce(search, 500);
 
   const { data, loading, totalPages, error } = useUsers(page, limit, debouncedSearch);
-  const { sendResetLink, loading: loadingAction } = useForgotPassword();
+  const { sendResetLink, loading: loadingAction, error: resetLinkError } = useForgotPassword();
 
   // ----------------------------
   // OPEN CONFIRM MODAL
@@ -146,6 +146,7 @@ export default function UsersPage() {
         confirmLabel={t("button.send")}
         cancelLabel={t('button.cancel')}
         loading={loadingAction}
+        error={resetLinkError}
         onConfirm={handleSendResetLink}
         onCancel={closeConfirmModal}
       />

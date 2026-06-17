@@ -33,6 +33,7 @@ export const ROUTES = {
   EMPLOYEE: {
     DASHBOARD:   '/dashboard',
     PROFILE:     '/dashboard/profile',
+    PROGRAM:     '/employee/programs',
     PROGRAMS:    '/dashboard/programs',
     ENROLLMENTS: '/dashboard/enrollments',
     APPROVALS:   '/dashboard/approvals',

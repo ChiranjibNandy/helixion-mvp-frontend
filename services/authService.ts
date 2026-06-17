@@ -4,6 +4,10 @@ import { RegisterCredentials } from "@/types/auth";
 import { forgotPasswordSchema, resetPasswordSchema, signinSchema, signupSchema } from "@/validations/auth";
 
 
+export const logoutAPI = async () => {
+  return await api.post(API.AUTH.LOGOUT);
+};
+
 //login the user
 
 export const loginAPI = async (data: { email: string; password: string }) => {

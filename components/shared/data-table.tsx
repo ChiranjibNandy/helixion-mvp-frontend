@@ -13,7 +13,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
 interface Column<T> {
-  key: string;
+  key?: string;
   header: string;
   headerClassName?: string;
   className?: string;
@@ -52,7 +52,7 @@ export function DataTable<T>({
           <TableRow className="border-none hover:bg-transparent">
             {columns.map((col) => (
               <TableHead
-                key={col.key}
+                key={col.key ?? col.header}
                 className={cn("text-textSidebarMuted text-[10px] font-bold tracking-wider uppercase", col.headerClassName, col.className)}
               >
                 {col.header}
@@ -94,7 +94,7 @@ export function DataTable<T>({
                     onKeyDown={clickable ? (e) => { if (e.key === 'Enter') onRowClick(row); } : undefined}
                   >
                     {columns.map((col) => (
-                      <TableCell key={col.key} className={col.className}>
+                      <TableCell key={col.key ?? col.header} className={col.className}>
                         {col.render(row, i)}
                       </TableCell>
                     ))}
