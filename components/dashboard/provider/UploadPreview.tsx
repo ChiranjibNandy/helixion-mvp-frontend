@@ -22,6 +22,7 @@ export default function UploadPreview({
   const previewColumns =
     previewData.length > 0
       ? Object.keys(previewData[0]).map((key) => ({
+          key,
           header: key,
           render: (row: any) => <span className="text-sm">{row[key]}</span>,
         }))

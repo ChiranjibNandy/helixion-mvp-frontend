@@ -1,5 +1,5 @@
 import TrainingEnrolmentView from "@/components/dashboard/employee/TrainingEnrolmentView";
 
-export default function EnrollPage() {
+export default function EnrollmentsPage() {
   return <TrainingEnrolmentView />;
 }

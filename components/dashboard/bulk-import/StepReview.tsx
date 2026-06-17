@@ -4,6 +4,7 @@ import { Loader2 } from 'lucide-react';
 import { BulkUser } from '@/types/bulk-import';
 import DataTable from '@/components/shared/data-table';
 import { t } from '@/lib/i18n';
+import { StatusBadge } from '@/components/shared/StatusBadge';
 
 interface StepReviewProps {
   users: BulkUser[];
@@ -45,33 +46,22 @@ function getReviewColumns() {
       key: 'role',
       header: t('bulkImport.review.columnRole'),
       render: (user: BulkUser) => (
-        <span className="text-[11px] font-medium text-primary/80 bg-primary/10 px-2.5 py-1 rounded-md capitalize">
-          {user.role || 'employee'}
-        </span>
+        <StatusBadge status={user.role || 'employee'} />
       ),
     },
     {
       key: 'action',
       header: t('bulkImport.review.columnAction'),
       render: (user: BulkUser) => (
-        <span className="text-[11px] text-textSidebarMuted capitalize">{user.action}</span>
+        <StatusBadge status={user.action} />
       ),
     },
     {
       key: 'status',
       header: t('bulkImport.review.columnStatus'),
-      render: (user: BulkUser) => {
-        const colorMap = {
-          Error: 'text-accentRed bg-accentRed/10',
-          Warning: 'text-accentOrange bg-accentOrange/10',
-          Valid: 'text-[#16a34a] bg-[#16a34a]/10',
-        };
-        return (
-          <span className={`text-[11px] font-medium px-2 py-0.5 rounded ${colorMap[user.status]}`}>
-            {user.status}
-          </span>
-        );
-      },
+      render: (user: BulkUser) => (
+        <StatusBadge status={user.status} />
+      ),
     },
     {
       key: 'note',

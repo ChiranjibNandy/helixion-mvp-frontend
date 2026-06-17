@@ -17,12 +17,14 @@ interface UploadResultsProps {
 export default function UploadResults({ uploadResult, onReset }: UploadResultsProps) {
   const errorColumns = [
     {
+      key: 'row',
       header: 'Row',
       render: (err: BulkUploadError) => (
         <span className="text-sm font-medium">{err.row}</span>
       ),
     },
     {
+      key: 'issues',
       header: 'Issues',
       render: (err: BulkUploadError) => (
         <ul className="list-disc list-inside text-sm">
