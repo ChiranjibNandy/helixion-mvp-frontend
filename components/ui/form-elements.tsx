@@ -52,9 +52,14 @@ export const SelectTrigger = ({ children, className, value, isOpen, setIsOpen }:
     </div>
 );
 
-export const SelectContent = ({ children, isOpen }: any) => isOpen ? (
+export const SelectContent = ({ children, isOpen, setValue }: any) => isOpen ? (
     <div className="absolute left-0 right-0 z-50 mt-1 min-w-[8rem] overflow-hidden rounded-md border border-borderCard bg-bgStatCard text-white shadow-md animate-in fade-in-80">
-        {children}
+        {React.Children.map(children, (child) => {
+            if (React.isValidElement(child)) {
+                return React.cloneElement(child as React.ReactElement<any>, { setValue });
+            }
+            return child;
+        })}
     </div>
 ) : null;
 

@@ -19,6 +19,7 @@ import { ProgramDetailsCard } from "./enrolment/ProgramDetailsCard";
 import { StayTypeCard } from "./enrolment/StayTypeCard";
 import { TravelDetailsForm } from "./enrolment/TravelDetailsForm";
 import { ReviewEnrolmentCard } from "./enrolment/ReviewEnrolmentCard";
+import { BookingRow } from "@/types";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -37,6 +38,7 @@ const STEPPER_STEPS = [
 ] as const;
 
 const EMPTY_BOOKING_ROW = {
+    id: "",
     from: "",
     to: "",
     refNo: "",
@@ -44,19 +46,6 @@ const EMPTY_BOOKING_ROW = {
     travelDate: "",
     travelClass: "Economy",
 };
-
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
-
-interface BookingRow {
-    from: string;
-    to: string;
-    refNo: string;
-    departureTime: string;
-    travelDate: string;
-    travelClass: string;
-}
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -69,6 +58,12 @@ const formatDate = (dateString?: string | Date): string => {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     return `${date.getDate()}-${months[date.getMonth()]}-${date.getFullYear()}`;
 };
+
+const createBookingRow = (overrides: Partial<Omit<BookingRow, "id">> = {}): BookingRow => ({
+    ...EMPTY_BOOKING_ROW,
+    ...overrides,
+    id: crypto.randomUUID(),
+});
 
 
 
@@ -151,6 +146,7 @@ export default function TrainingEnrolmentView() {
                         if (ts.bookingDetails?.length) {
                             setBookingDetails(
                                 ts.bookingDetails.map((b: any) => ({
+                                    id: b.id || crypto.randomUUID(),
                                     ...b,
                                     travelDate: b.travelDate
                                         ? new Date(b.travelDate).toISOString().split("T")[0]
@@ -174,25 +170,7 @@ export default function TrainingEnrolmentView() {
                         setActiveStep(2);
                     }
                 } else {
-                    // Default round-trip booking rows for new enrollment
-                    setBookingDetails([
-                        {
-                            from: "Mumbai",
-                            to: progData.city || "Shimla",
-                            refNo: "6E246",
-                            departureTime: "12:00 PM",
-                            travelDate: "2026-06-21",
-                            travelClass: "Economy",
-                        },
-                        {
-                            from: progData.city || "Shimla",
-                            to: "Mumbai",
-                            refNo: "6E297",
-                            departureTime: "11:00 PM",
-                            travelDate: "2026-06-30",
-                            travelClass: "Economy",
-                        },
-                    ]);
+                    setBookingDetails([]);
                 }
             } catch (err) {
                 console.error("Failed to load enrollment details:", err);
@@ -284,7 +262,7 @@ export default function TrainingEnrolmentView() {
                 frequentFlyerNo,
                 modeOfTravel,
                 purpose,
-                bookingDetails,
+                bookingDetails: bookingDetails.map(({ id, ...row }) => row),
                 advancePaymentRequired,
             });
             setActiveStep(3);
@@ -313,20 +291,20 @@ export default function TrainingEnrolmentView() {
 
     /* ── Booking row helpers ── */
     const addBookingRow = () => {
-        setBookingDetails((prev) => [...prev, { ...EMPTY_BOOKING_ROW }]);
+        setBookingDetails((prev) => [...prev, createBookingRow()]);
     };
 
-    const removeBookingRow = (index: number) => {
-        setBookingDetails((prev) => prev.filter((_, i) => i !== index));
+    const removeBookingRow = (id: string) => {
+        setBookingDetails((prev) => prev.filter((row) => row.id !== id));
     };
 
     const updateBookingField = (
-        index: number,
-        field: keyof BookingRow,
+        id: string,
+        field: keyof Omit<BookingRow, "id">,
         value: string
     ) => {
         setBookingDetails((prev) =>
-            prev.map((row, i) => (i === index ? { ...row, [field]: value } : row))
+            prev.map((row) => (row.id === id ? { ...row, [field]: value } : row))
         );
     };
 
@@ -379,7 +357,7 @@ export default function TrainingEnrolmentView() {
                 <h1 className="text-white text-3xl font-bold leading-tight">
                     {t("trainingEnrolment.title")}
                 </h1>
-                <StepperHeader activeStep={activeStep} />
+                <StepperHeader activeStep={activeStep} steps={STEPPER_STEPS} />
             </div>
 
             {/* ────────────────────────────────────────────────────────── */}

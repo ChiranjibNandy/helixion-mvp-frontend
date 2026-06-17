@@ -3,15 +3,16 @@
 import React, { useState, useEffect } from "react";
 import { t } from "@/lib/i18n";
 import { Card } from "@/components/ui/card";
-import Badge from "@/components/ui/badge";
-import { Info, ChevronRight } from "lucide-react";
 import { getEmployeeEnrollments } from "@/services/employeeService";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { formatDateHyphenated } from "@/utils/formatters";
 import DataTable from "@/components/shared/data-table";
 import { Spinner } from "@/components/ui/spinner";
-import { EnrollmentStepsTracker, ENROLLMENT_STAGE } from "./EnrollmentStepsTracker";
+import { EnrollmentStepsTracker } from "./EnrollmentStepsTracker";
+import {
+    createEnrollmentColumns,
+    getProgramDetails,
+} from "./enrolment/enrollmentApproval.constants";
 
 export default function EnrollmentApprovalProgressView() {
     const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
@@ -38,48 +39,6 @@ export default function EnrollmentApprovalProgressView() {
 
     const selectedEnrollment = enrollments.find(e => e._id === selectedEnrollmentId) || enrollments[0];
 
-    const getProgramDetails = (enrollment: any) => {
-        if (!enrollment) return {};
-        const p = enrollment.programId;
-        return typeof p === 'object' && p ? p : (enrollment.programDetails || {});
-    };
-
-    const getStatusMessage = (enrollment: any) => {
-        const stage = enrollment.currentStage;
-        if (stage === ENROLLMENT_STAGE.SUBMITTED) {
-            return t("approvalProgress.statusMessages.submitted");
-        }
-        if (stage === ENROLLMENT_STAGE.MANAGER_REVIEW) {
-            return t("approvalProgress.statusMessages.managerReview");
-        }
-        if (stage === ENROLLMENT_STAGE.TRAINING_DEPT_APPROVAL || stage === ENROLLMENT_STAGE.OSD_REVIEW) {
-            return t("approvalProgress.statusMessages.hrReview");
-        }
-        if (stage === ENROLLMENT_STAGE.ATTENDANCE) {
-            return t("approvalProgress.statusMessages.attendance");
-        }
-        if (stage === ENROLLMENT_STAGE.REIMBURSEMENT) {
-            return t("approvalProgress.statusMessages.reimbursement");
-        }
-        if (stage === ENROLLMENT_STAGE.CREDITED) {
-            return t("approvalProgress.statusMessages.credited");
-        }
-        return t("approvalProgress.statusMessages.default");
-    };
-
-    const getBadgeStatus = (status: string) => {
-        if (status === "pending") return "pending";
-        if (status === "active") return "in_progress";
-        if (status === "completed") return "completed";
-        return "pending";
-    };
-
-    const getBadgeLabel = (status: string) => {
-        if (status === "pending") return "Pending";
-        if (status === "active") return "In Progress";
-        if (status === "completed") return "Completed";
-        return status;
-    };
 
     if (loading) {
         return (
@@ -96,57 +55,7 @@ export default function EnrollmentApprovalProgressView() {
         );
     };
 
-    const columns = [
-        {
-            key: "no",
-            header: t("approvalProgress.enrolledPrograms.columns.no"),
-            className: "text-sm text-textSidebarMuted py-4 w-16",
-            render: (_: any, index?: number) => `${(index ?? 0) + 1}.`,
-        },
-        {
-            key: "title",
-            header: t("approvalProgress.enrolledPrograms.columns.title"),
-            className: "text-sm text-white font-medium py-4 max-w-xs",
-            render: (enrollment: any) => getProgramDetails(enrollment)?.title || "Unknown",
-        },
-        {
-            key: "fromDate",
-            header: t("approvalProgress.enrolledPrograms.columns.fromDate"),
-            className: "text-sm text-textSidebarMuted py-4",
-            render: (enrollment: any) => formatDateHyphenated(getProgramDetails(enrollment)?.startDate),
-        },
-        {
-            key: "toDate",
-            header: t("approvalProgress.enrolledPrograms.columns.toDate"),
-            className: "text-sm text-textSidebarMuted py-4",
-            render: (enrollment: any) => formatDateHyphenated(getProgramDetails(enrollment)?.endDate),
-        },
-        {
-            key: "venueCity",
-            header: t("approvalProgress.enrolledPrograms.columns.venueCity"),
-            className: "text-sm text-textSidebarMuted py-4",
-            render: (enrollment: any) => {
-                const prog = getProgramDetails(enrollment);
-                return prog?.city || prog?.venue || "N/A";
-            },
-        },
-        {
-            key: "status",
-            header: t("approvalProgress.enrolledPrograms.columns.status"),
-            className: "py-4",
-            render: (enrollment: any) => (
-                <Badge status={getBadgeStatus(enrollment.status) as any} className="capitalize px-3 py-1">
-                    {getBadgeLabel(enrollment.status)}
-                </Badge>
-            ),
-        },
-        {
-            key: "chevron",
-            header: "",
-            className: "w-10 py-4",
-            render: () => <ChevronRight className="size-4 text-textSidebarMuted" />,
-        },
-    ];
+    const columns = createEnrollmentColumns(t);
 
     return (
         <div className="flex flex-col gap-8 pb-10 w-full">
@@ -187,16 +96,6 @@ export default function EnrollmentApprovalProgressView() {
 
                         {/* Progress Tracker */}
                         {selectedEnrollment && <EnrollmentStepsTracker enrollment={selectedEnrollment} />}
-
-                        {/* Dynamic Info Message */}
-                        <div className="flex items-center gap-4 p-4 rounded-xl bg-primary/10 border border-primary/20 text-white">
-                            <div className="bg-primary/20 p-2 rounded-full flex-shrink-0">
-                                <Info className="size-5 text-primary" />
-                            </div>
-                            <p className="text-sm">
-                                {selectedEnrollment ? getStatusMessage(selectedEnrollment) : t("approvalProgress.statusMessage")}
-                            </p>
-                        </div>
 
                         {/* Enrolled Programs Table */}
                         <div className="space-y-4">

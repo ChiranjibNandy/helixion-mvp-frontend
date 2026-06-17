@@ -46,7 +46,7 @@ export const EMP_NAV_SECTIONS: NavSection[] = [
         icon: 'download',
       },
       {
-        label: 'Approvals',
+        label: 'Program Status',
         key: 'approvals',
         href: '/dashboard/approvals',
         icon: 'clipboard-check',

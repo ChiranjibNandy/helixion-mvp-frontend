@@ -25,7 +25,7 @@ export function ProgramDetailsCard({ program, showEnrolledBadge = false }: Progr
         program.providerName ||
         (typeof program.training_providerId === "object"
             ? program.training_providerId.username
-            : "Training Provider");
+            : t("trainingEnrolment.programDetails.trainingProvider"));
 
     return (
         <Card className="bg-bgStatCard border-borderCard">

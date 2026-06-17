@@ -135,12 +135,18 @@ export type StayTypeKey = 'single_occupancy' | 'twin_sharing' | 'non_residential
 
 // ─── Travel & Stay ────────────────────────────────────────────────────────────
 export interface BookingRow {
+    id: string;
     from: string;
     to: string;
     refNo: string;
     departureTime: string;
     travelDate: string;
     travelClass: string;
+}
+
+export interface StepperStep {
+    number: number;
+    labelKey: string;
 }
 
 export interface TravelDetailsFormProps {
@@ -154,8 +160,8 @@ export interface TravelDetailsFormProps {
     setPurpose: (val: string) => void;
     bookingDetails: BookingRow[];
     addBookingRow: () => void;
-    removeBookingRow: (index: number) => void;
-    updateBookingField: (index: number, field: keyof BookingRow, value: string) => void;
+    removeBookingRow: (id: string) => void;
+    updateBookingField: (id: string, field: keyof Omit<BookingRow, "id">, value: string) => void;
     advancePaymentRequired: number;
     setAdvancePaymentRequired: (val: number) => void;
     validationError: string | null;
