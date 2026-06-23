@@ -3,6 +3,7 @@
 import { USER_ROLES } from "@/constants/navigation";
 import EmployeeDashboardView from "./employee/EmployeeDashboardView";
 import TrainingProviderDashboardView from "./provider/TrainingProviderDashboardView";
+import ManagerDashboardView from "./manager/ManagerDashboardView";
 
 
 interface RoleDashboardViewProps {
@@ -19,6 +20,10 @@ export function RoleDashboardView({ role, name }: RoleDashboardViewProps) {
     return <TrainingProviderDashboardView name={name} />;
   }
 
-  return null
+  if (role === USER_ROLES.MANAGER) {
+    return <ManagerDashboardView name={name} />;
+  }
+
+  return null;
 
 }

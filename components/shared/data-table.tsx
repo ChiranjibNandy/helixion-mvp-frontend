@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 
 interface Column<T> {
   key?: string;
-  header: string;
+  header: React.ReactNode;
   headerClassName?: string;
   className?: string;
   render: (row: T, index?: number) => React.ReactNode;

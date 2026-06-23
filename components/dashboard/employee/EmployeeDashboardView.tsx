@@ -1,5 +1,7 @@
+'use client';
+
 import { ApprovalStatusCard } from "./ApprovalStatusCard";
-import {Bell,Plus } from "lucide-react";
+import { Bell, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { fetchEmployeeDashboardData } from "@/services/employeeService";
@@ -17,10 +19,9 @@ import { getEmployeeDashboardStats } from "@/utils/employee-dashboard";
 import { getQuickActions } from "@/constants/employee-quick-actions";
 import { ROUTES } from "@/constants/navigation";
 
-
 export default function EmployeeDashboardView({ name }: { name: string }) {
   const [data, setData] = useState<any>(null);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,9 +29,9 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
       try {
         const dashboardData = await fetchEmployeeDashboardData();
         setData(dashboardData);
-      } catch (error) {
-        console.error('Failed to fetch dashboard data', error);
-        setError(true);
+      } catch (err) {
+        console.error('Failed to fetch dashboard data', err);
+        setError(err instanceof Error ? err : new Error('Failed to fetch dashboard data'));
       } finally {
         setLoading(false);
       }
@@ -44,7 +45,7 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
       <AppAlert
         variant="destructive"
         title={t('dashboard.errorTitle')}
-        description={t('dashboard.errorDescription')}
+        description={error.message}
       />
     );
   }
@@ -59,91 +60,80 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
 
   if (!data) return null;
 
-
   const stats = getEmployeeDashboardStats(data.summary ?? data);
-
-
   const quickActions = getQuickActions();
 
   return (
-    <>
-      <div className="flex flex-col gap-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-textSidebarMuted text-xs mb-0.5">
-              {t('dashboard.employeeBreadcrump')}
-            </p>
-            <h1 className="text-white text-2xl font-bold">{t('dashboard.welcome', { name })}</h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative text-textSecondary hover:text-white"
-            >
-              <Bell className="w-5 h-5" />
-              {/* Notification dot */}
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full" />
-            </Button>
-            <Button asChild size="lg">
-              <Link href={ROUTES.EMPLOYEE.PROGRAM} >
-                <Plus />
-                {t('dashboard.enroll')}
-              </Link>
-            </Button>
-          </div>
+    <div className="flex flex-col gap-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-textSidebarMuted text-xs mb-0.5">
+            {t('dashboard.employeeBreadcrump')}
+          </p>
+          <h1 className="text-white text-2xl font-bold">{t('dashboard.welcome', { name })}</h1>
         </div>
-
-        {/* Summary stat cards */}
-        <DashboardStats
-          stats={stats}
-          columns="grid-cols-1 sm:grid-cols-3"
-        />
-
-        {/* Programs table + Approval status */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Table takes 2/3 */}
-          <div className="lg:col-span-2">
-            <DashboardSectionCard
-              title={t('table.listedTitle')}
-              subtitle={t('table.listedSubtitle')}
-              action={
-                <Button asChild variant="ghost" size="sm">
-                  <Link href="/employee/programs">
-                    {t('table.viewAll')}
-                  </Link>
-                </Button>
-              }
-            >
-              <DataTable<ListedProgram>
-                data={data.listedPrograms}
-                columns={EMPLOYEE_PROGRAM_COLUMNS}
-                emptyMessage={t('table.noPrograms')}
-              />
-            </DashboardSectionCard>
-
-          </div>
-          {/* Donut takes 1/3 */}
-          <div>
-            <ApprovalStatusCard stats={data.approvalStats} />
-          </div>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Notifications"
+            className="relative text-textSecondary hover:text-white"
+          >
+            <Bell className="w-5 h-5" aria-hidden="true" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full" aria-hidden="true" />
+          </Button>
+          <Button asChild size="lg">
+            <Link href={ROUTES.EMPLOYEE.PROGRAMS}>
+              <Plus />
+              {t('dashboard.enroll')}
+            </Link>
+          </Button>
         </div>
-
-        {/* Quick actions */}
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
-          {quickActions.map((action) => (
-            <QuickActionCard
-              key={action.href}
-              title={action.title}
-              description={action.description}
-              linkText={action.linkText}
-              href={action.href}
-            />
-          ))}
-        </div>
-
-
       </div>
-    </>
+
+      <DashboardStats
+        stats={stats}
+        columns="grid-cols-1 sm:grid-cols-3"
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2">
+          <DashboardSectionCard
+            title={t('table.listedTitle')}
+            subtitle={t('table.listedSubtitle')}
+            action={
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/employee/programs">
+                  {t('table.viewAll')}
+                </Link>
+              </Button>
+            }
+          >
+            <DataTable<ListedProgram>
+              data={data.listedPrograms}
+              columns={EMPLOYEE_PROGRAM_COLUMNS}
+              emptyMessage={t('table.noPrograms')}
+            />
+          </DashboardSectionCard>
+        </div>
+        <div>
+          <ApprovalStatusCard stats={data.approvalStats} />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
+        {quickActions.map((action) => (
+          <QuickActionCard
+            key={action.title}
+            title={action.title}
+            description={action.description}
+            linkText={action.linkText}
+            href={action.href}
+            icon={action.icon}
+            iconBg={action.iconBg}
+          />
+        ))}
+      </div>
+    </div>
   );
 }

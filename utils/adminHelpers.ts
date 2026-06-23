@@ -19,14 +19,10 @@ function isUserRegistration(item: unknown): item is UserRegistration {
   );
 }
 
-/**
- * Formats date string to human readable format
- */
-export const formatDate = (dateString: string): string => {
+const formatRelativeDate = (dateString: string): string => {
   const date = new Date(dateString);
   const now = new Date();
-  const diffTime = Math.abs(now.getTime() - date.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const diffDays = Math.ceil(Math.abs(now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) return DATE_FORMATS.TODAY;
   if (diffDays === 1) return DATE_FORMATS.YESTERDAY;
@@ -48,7 +44,7 @@ export const transformRegistrationData = (
       id: registration.id,
       name: registration.username,
       email: registration.email,
-      date: formatDate(registration.createdAt),
+      date: formatRelativeDate(registration.createdAt),
     }));
 };
 

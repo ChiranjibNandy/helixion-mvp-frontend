@@ -39,7 +39,6 @@ export const ROUTES = {
     APPROVALS:   '/dashboard/approvals',
     EXPENSES:    '/dashboard/expenses',
     REPORTS:     '/dashboard/reports',
-    PROGRAM:     '/employee/programs',
   },
 
   // Training Provider section routes
@@ -78,7 +77,8 @@ export const USER_ROLES = {
   ADMIN: 'admin',
   USER: 'user',
   EMPLOYEE: 'employee',
-  TRAINING_PROVIDER: 'training-provider'
+  TRAINING_PROVIDER: 'training-provider',
+  MANAGER: 'manager',
 } as const;
 
 // Role-based route access

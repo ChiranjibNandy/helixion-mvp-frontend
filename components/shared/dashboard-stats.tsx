@@ -5,6 +5,7 @@ export interface DashboardStat {
    value: string | number;
    subtitle?: string;
    subtitleColor?: string;
+   badge?: string;
    icon?: React.ReactNode;
    iconBg?: string;
 }
@@ -19,7 +20,7 @@ export function DashboardStats({
    columns = "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
 }: DashboardStatsProps) {
    return (
-      <div className={`grid ${ columns } gap-4`}>
+      <div className={`grid ${columns} gap-4`}>
          {stats.map((stat) => (
             <MetricCard key={stat.title} {...stat} />
          ))}

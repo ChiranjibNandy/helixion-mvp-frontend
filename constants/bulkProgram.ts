@@ -1,8 +1,4 @@
-export const EXPECTED_COLUMNS = [
-  'title', 'startDate', 'endDate', 'venue', 'isResidential', 'stayType',
-  'singleOccupancyFee', 'twinSharingFee', 'nonResidentialFee',
-  'brochureUrl', 'minParticipants', 'maxParticipants', 'status',
-];
+export { PROGRAM_CSV_COLUMNS as EXPECTED_COLUMNS, SAMPLE_CSV_ROW } from './provider';
 
-export const SAMPLE_CSV_HEADER = EXPECTED_COLUMNS.join(',');
-export const SAMPLE_CSV_ROW = 'Leadership Workshop,2026-06-01,2026-06-03,Mumbai,true,single,15000,12000,8000,,10,50,draft';
+import { PROGRAM_CSV_COLUMNS } from './provider';
+export const SAMPLE_CSV_HEADER = PROGRAM_CSV_COLUMNS.join(',');
