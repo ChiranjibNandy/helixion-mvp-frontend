@@ -7,6 +7,7 @@ const statusMap = {
   enrolled: "active",
   approved: "active",
   pending: "pending",
+  "pending approval": "pending",
   open: "draft",
   rejected: "draft",
   completed: "completed",

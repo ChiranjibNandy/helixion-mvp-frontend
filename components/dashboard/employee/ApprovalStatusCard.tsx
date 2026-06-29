@@ -29,7 +29,7 @@ export function ApprovalStatusCard({
   );
 
   return (
-    <div className="bg-bgCard border border-borderCard rounded-lg p-6 flex flex-col h-full">
+    <div className="bg-bgCard border border-borderCard rounded-lg p-4 flex flex-col h-full">
       <div className="mb-4">
         <h2 className="text-white text-lg font-semibold">
           {t('approvalStatus.title')}

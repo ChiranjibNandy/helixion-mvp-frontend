@@ -4,6 +4,10 @@ const config: Config = {
   content: [
     "./app/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
+    "./constants/**/*.{ts,tsx}",
+    "./utils/**/*.{ts,tsx}",
+    "./services/**/*.{ts,tsx}",
+    "./lib/**/*.{ts,tsx}",
   ],
   theme: {
     extend: {
@@ -13,9 +17,16 @@ const config: Config = {
         primaryDark: "#3b5bdb",
         primaryDarker: "#2f4cc4",
         blue: {
+          50:  "#eff4ff",
+          100: "#dbe4ff",
+          200: "#bac8ff",
+          300: "#91a7ff",
+          400: "#748ffc",
           500: "#4f7cff",
           600: "#3b5bdb",
           700: "#2f4cc4",
+          800: "#1e3aa8",
+          900: "#122f8d",
         },
         bgMain: "#080c18",
         bgCard: "#0a0f1e",

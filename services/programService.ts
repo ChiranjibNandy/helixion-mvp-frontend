@@ -68,11 +68,6 @@ export const createProgramAPI = async (
     formData.append("brochure", payload.brochure);
   }
 
-  // DEBUG
-  formData.forEach((value, key) => {
-    console.log(key, value);
-  });
-
   const response = await api.post(
     API.TRAININGPROVIDER.CREATEPROGRAM,
     formData

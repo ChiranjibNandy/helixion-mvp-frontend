@@ -1,3 +1,5 @@
+'use client';
+
 import {
   BarChart2,
   BookOpen,
