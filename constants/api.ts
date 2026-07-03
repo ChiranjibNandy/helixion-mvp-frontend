@@ -24,6 +24,7 @@ export const API = {
    },
    MANAGER: {
       DASHBOARD: '/manager/dashboard',
+      ENROLLMENTS:"/manager/enrollments"
    },
    TRAININGPROVIDER: {
       CREATEPROGRAM:    '/training-provider/create/program',

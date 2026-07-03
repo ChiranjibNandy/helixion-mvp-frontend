@@ -1,3 +1,13 @@
+// ─── permissions ────────────────────────────────────────────────────────────────────
+export interface Permissions {
+  canEnroll: boolean,
+  canRecommend: boolean,
+  canApproveEnrollment: boolean,
+  canReviewTrainingDept: boolean,
+  canApproveTrainingDept: boolean,
+  canReviewOsd: boolean,
+  canApproveOsd: boolean
+}
 // ─── User ────────────────────────────────────────────────────────────────────
 export interface User {
   userId: string;
@@ -5,31 +15,32 @@ export interface User {
   email: string;
   location: string;
   role: string;
+  permissions:Permissions
 }
 
 // ─── Enrollment ──────────────────────────────────────────────────────────────
 export interface EnrollmentProgramSnapshot {
-  title:               string;
-  startDate?:          string;
-  endDate?:            string;
-  venue?:              string;
+  title: string;
+  startDate?: string;
+  endDate?: string;
+  venue?: string;
   training_providerId: string;
 }
 
 export interface Enrollment {
-  _id:             string;
-  userId:          string;
-  programId:       string;
-  status:          "pending" | "active" | "completed" | "cancelled";
-  stayType:        "single_occupancy" | "twin_sharing" | "non_residential";
-  feeAmount:       number;
-  currency:        string;
+  _id: string;
+  userId: string;
+  programId: string;
+  status: "pending" | "active" | "completed" | "cancelled";
+  stayType: "single_occupancy" | "twin_sharing" | "non_residential";
+  feeAmount: number;
+  currency: string;
   programSnapshot: EnrollmentProgramSnapshot;
-  approvalStatus:  "pending_approval" | "approved" | "rejected" | "not_required";
-  source:          "web" | "mobile" | "api" | "admin";
-  notes?:          string;
-  createdAt:       string;
-  updatedAt:       string;
+  approvalStatus: "pending_approval" | "approved" | "rejected" | "not_required";
+  source: "web" | "mobile" | "api" | "admin";
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
   // Legacy field — kept for backward compat with existing dashboard components
   programDetails?: Programme;
 }
@@ -40,8 +51,8 @@ export interface Programme {
   title: string;
   duration: number;
   venue: string;
-  start_date:Date,
-  end_date:Date
+  start_date: Date,
+  end_date: Date
   name: string;
   description: string;
   mode: string;
@@ -135,37 +146,37 @@ export type StayTypeKey = 'single_occupancy' | 'twin_sharing' | 'non_residential
 
 // ─── Travel & Stay ────────────────────────────────────────────────────────────
 export interface BookingRow {
-    id: string;
-    from: string;
-    to: string;
-    refNo: string;
-    departureTime: string;
-    travelDate: string;
-    travelClass: string;
+  id: string;
+  from: string;
+  to: string;
+  refNo: string;
+  departureTime: string;
+  travelDate: string;
+  travelClass: string;
 }
 
 export interface StepperStep {
-    number: number;
-    labelKey: string;
+  number: number;
+  labelKey: string;
 }
 
 export interface TravelDetailsFormProps {
-    placeOfTour: string;
-    setPlaceOfTour: (val: string) => void;
-    frequentFlyerNo: string;
-    setFrequentFlyerNo: (val: string) => void;
-    modeOfTravel: string;
-    setModeOfTravel: (val: string) => void;
-    purpose: string;
-    setPurpose: (val: string) => void;
-    bookingDetails: BookingRow[];
-    addBookingRow: () => void;
-    removeBookingRow: (id: string) => void;
-    updateBookingField: (id: string, field: keyof Omit<BookingRow, "id">, value: string) => void;
-    advancePaymentRequired: number;
-    setAdvancePaymentRequired: (val: number) => void;
-    validationError: string | null;
-    submitting: boolean;
-    onBack: () => void;
-    onSubmit: () => void;
+  placeOfTour: string;
+  setPlaceOfTour: (val: string) => void;
+  frequentFlyerNo: string;
+  setFrequentFlyerNo: (val: string) => void;
+  modeOfTravel: string;
+  setModeOfTravel: (val: string) => void;
+  purpose: string;
+  setPurpose: (val: string) => void;
+  bookingDetails: BookingRow[];
+  addBookingRow: () => void;
+  removeBookingRow: (id: string) => void;
+  updateBookingField: (id: string, field: keyof Omit<BookingRow, "id">, value: string) => void;
+  advancePaymentRequired: number;
+  setAdvancePaymentRequired: (val: number) => void;
+  validationError: string | null;
+  submitting: boolean;
+  onBack: () => void;
+  onSubmit: () => void;
 }
