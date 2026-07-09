@@ -29,7 +29,7 @@ const statusMap = {
 
 export function StatusBadge({ status }: { status: string }) {
   const norm = (status || "").toLowerCase();
-  
+
   if (norm === "error") {
     return <Badge variant="destructive" className="capitalize">{status}</Badge>;
   }

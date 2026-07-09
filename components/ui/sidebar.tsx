@@ -1,7 +1,7 @@
 import { SidebarFooterProps, SidebarMenuProps, SidebarNavItemProps, SidebarProfileProps, SidebarProps } from '../../props/sidebar';
 import { ROLE_LABEL } from '../../constants/employee';
 import Link from 'next/link';
-import { Award, BarChart3, Bell, BookOpen, ClipboardCheck, Download, FileText, LayoutDashboard, PlusCircle, Search, Settings, Shield, Upload, UploadCloud, User, UserCircle, Users, Zap, KeyRound  } from 'lucide-react';
+import { Award, BarChart3, Bell, BookOpen, ClipboardCheck, Download, FileText, LayoutDashboard, PlusCircle, Search, Settings, Shield, Upload, UploadCloud, User, UserCircle, Users, Zap, KeyRound } from 'lucide-react';
 import { NavItem } from '@/types';
 import { AppAvatar } from './avatar';
 import CountBadge from './count-badge';
@@ -58,7 +58,7 @@ function SidebarProfile({ user }: SidebarProfileProps) {
   return (
     <div className="px-3.5 py-3 border-b border-white/[0.06]">
       <AppAvatar
-        initials={user.name.slice(0,1)}
+        initials={user.name.slice(0, 1)}
         size="md"
         className="mb-2"
       />
@@ -81,10 +81,9 @@ function SidebarNavItem({ item, isActive, onClick }: any) {
   const baseClass = `
     flex items-center gap-2 px-2 py-1.5 rounded-md text-[11px]
     cursor-pointer transition-colors duration-150 mb-0.5 select-none
-    ${
-      isActive
-        ? "bg-blue-900/30 text-blue-300"
-        : "text-white/35 hover:text-white/60 hover:bg-white/5"
+    ${ isActive
+      ? "bg-blue-900/30 text-blue-300"
+      : "text-white/35 hover:text-white/60 hover:bg-white/5"
     }
   `;
 
@@ -95,9 +94,8 @@ function SidebarNavItem({ item, isActive, onClick }: any) {
     <>
       {Icon && (
         <Icon
-          className={`w-3.5 h-3.5 flex-shrink-0 ${
-            isActive ? "text-blue-400" : "text-current"
-          }`}
+          className={`w-3.5 h-3.5 flex-shrink-0 ${ isActive ? "text-blue-400" : "text-current"
+            }`}
         />
       )}
 
@@ -139,7 +137,7 @@ function SidebarMenu({ sections, activeKey, onNavChange }: SidebarMenuProps) {
           <p className="text-[9px] font-semibold tracking-widest uppercase text-white/25 px-1 mb-1.5">
             {section.category}
           </p>
-          {section.items.map((item:NavItem) => (
+          {section.items.map((item: NavItem) => (
             <SidebarNavItem
               key={item.key}
               item={item}

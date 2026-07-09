@@ -22,16 +22,31 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
     name: payload.name,
     email: payload.email,
     location: payload.location,
-    role: payload.role,
+    role: payload.orgRole,
+    permissions: payload.permissions
   };
 
   // Choose navigation based on user role
   const isProvider = payload.role === USER_ROLES.TRAINING_PROVIDER;
-  const navSections = isProvider ? PROVIDER_NAV_SECTIONS : EMP_NAV_SECTIONS;
-  const defaultActiveKey =  'dashboard';
+  const baseSections = isProvider
+    ? PROVIDER_NAV_SECTIONS
+    : EMP_NAV_SECTIONS;
+
+  // Hide Approval menu if user cannot recommend
+  const navSections = baseSections.map(section => ({
+    ...section,
+    items: section.items.filter(item => {
+      if (item.key === 'approvals') {
+        return user.permissions.canRecommend;
+      }
+      return true;
+    }),
+  }));
+
+  const defaultActiveKey = 'dashboard';
 
   return (
-   <DashboardShell
+    <DashboardShell
       user={user}
       navSections={navSections}
       defaultActiveKey={defaultActiveKey}
