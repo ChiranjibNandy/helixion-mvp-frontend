@@ -50,9 +50,9 @@ export function DataTable<T>({
       <Table>
         <TableHeader className="bg-bgStatCard sticky top-0 z-10">
           <TableRow className="border-none hover:bg-transparent">
-            {columns.map((col) => (
+            {columns.map((col, index) => (
               <TableHead
-                key={col.key ?? col.header}
+                key={col.key ?? index}
                 className={cn("text-textSidebarMuted text-[10px] font-bold tracking-wider uppercase", col.headerClassName, col.className)}
               >
                 {col.header}
@@ -93,8 +93,8 @@ export function DataTable<T>({
                     onClick={clickable ? () => onRowClick(row) : undefined}
                     onKeyDown={clickable ? (e) => { if (e.key === 'Enter') onRowClick(row); } : undefined}
                   >
-                    {columns.map((col) => (
-                      <TableCell key={col.key ?? col.header} className={col.className}>
+                    {columns.map((col, colIndex) => (
+                      <TableCell key={col.key ?? colIndex} className={col.className}>
                         {col.render(row, i)}
                       </TableCell>
                     ))}

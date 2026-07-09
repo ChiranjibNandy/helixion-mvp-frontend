@@ -19,8 +19,8 @@ const HEADER_CLASS = 'text-[10px] font-semibold tracking-widest uppercase text-w
 
 function getProviderName(program: AvailableProgram): string {
   if (program.providerName) return program.providerName;
-  if (typeof program.training_providerId === 'object' && program.training_providerId?.username) {
-    return program.training_providerId.username;
+  if (typeof program.createdBy === 'object' && program.createdBy?.name) {
+    return program.createdBy.name;
   }
   return '—';
 }

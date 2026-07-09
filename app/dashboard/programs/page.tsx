@@ -11,7 +11,7 @@ export default async function ProgramsPage() {
 
   const payload = await decodeJwtPayload(token);
 
-  if (payload.role === USER_ROLES.TRAINING_PROVIDER) {
+  if (payload.orgRole === USER_ROLES.TRAINING_PROVIDER) {
     redirect('/dashboard/programs/drafts');
   }
 

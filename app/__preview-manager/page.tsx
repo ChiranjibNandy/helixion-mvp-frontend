@@ -11,6 +11,15 @@ export default function PreviewManagerDashboardPage() {
     email: 'rahul.kapoor@example.com',
     location: 'General Accounts',
     role: 'manager',
+    permissions: {
+      canEnroll: true,
+      canRecommend: true,
+      canApproveEnrollment: true,
+      canReviewTrainingDept: false,
+      canApproveTrainingDept: false,
+      canReviewOsd: false,
+      canApproveOsd: false,
+    },
   };
 
   return (

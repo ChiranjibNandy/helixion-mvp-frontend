@@ -15,7 +15,8 @@ export interface User {
   email: string;
   location: string;
   role: string;
-  permissions:Permissions
+  permissions: Permissions;
+  hierarchyLevel?: number;
 }
 
 // ─── Enrollment ──────────────────────────────────────────────────────────────
@@ -76,7 +77,7 @@ export interface DraftProgram {
   minParticipants?: number;
   maxParticipants?: number;
   status: 'draft' | 'published';
-  training_providerId: string;
+  createdBy: string;
   batchId?: string;
   createdAt: string;
   updatedAt: string;
@@ -137,7 +138,7 @@ export interface AvailableProgram {
   minParticipants?: number;
   maxParticipants?: number;
   status: string;
-  training_providerId: string | { _id: string; username: string; description?: string };
+  createdBy: string | { _id: string; name: string; description?: string };
   providerName?: string;
 }
 

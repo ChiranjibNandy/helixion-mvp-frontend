@@ -80,6 +80,12 @@
       "error": "Something went wrong. Please try again.",
       "success": "Success"
    },
+   "notifications": {
+      "title": "Notifications",
+      "empty": "No notifications yet",
+      "fetchError": "Failed to load notifications",
+      "ariaLabel": "Notifications"
+   },
    "auth": {
       "forgotPassword": {
          "title": "Forgot password?",

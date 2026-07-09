@@ -23,11 +23,12 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
     email: payload.email,
     location: payload.location,
     role: payload.orgRole,
-    permissions: payload.permissions
+    permissions: payload.permissions,
+    hierarchyLevel: payload.hierarchyLevel,
   };
 
   // Choose navigation based on user role
-  const isProvider = payload.role === USER_ROLES.TRAINING_PROVIDER;
+  const isProvider = payload.orgRole === USER_ROLES.TRAINING_PROVIDER;
   const baseSections = isProvider
     ? PROVIDER_NAV_SECTIONS
     : EMP_NAV_SECTIONS;
