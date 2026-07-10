@@ -52,18 +52,35 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
     const step2Date = getTimelineDate(ENROLLMENT_STAGE.MANAGER_REVIEW, "approved") || 
         (enrollment.managerApproval?.actedAt ? formatDateHyphenated(enrollment.managerApproval.actedAt) : undefined);
 
-    // Step 3: HR / Training Department Review
+    const stayType = enrollment.stayType || enrollment.travelAndStay?.stayType;
+    const hasOsdReview = stayType !== "non_residential";
+
+    // Step 3: CTD Review
     let step3Status: "completed" | "current" | "upcoming" = "upcoming";
     if (
+        stage === ENROLLMENT_STAGE.OSD_REVIEW ||
         stage === ENROLLMENT_STAGE.ATTENDANCE || 
         stage === ENROLLMENT_STAGE.REIMBURSEMENT || 
         stage === ENROLLMENT_STAGE.CREDITED
     ) {
         step3Status = "completed";
-    } else if (stage === ENROLLMENT_STAGE.TRAINING_DEPT_APPROVAL || stage === ENROLLMENT_STAGE.OSD_REVIEW) {
+    } else if (stage === ENROLLMENT_STAGE.TRAINING_DEPT_APPROVAL) {
         step3Status = "current";
     }
-    const step3Date = getTimelineDate(ENROLLMENT_STAGE.TRAINING_DEPT_APPROVAL, "approved") || getTimelineDate(ENROLLMENT_STAGE.OSD_REVIEW, "approved");
+    const step3Date = getTimelineDate(ENROLLMENT_STAGE.TRAINING_DEPT_APPROVAL, "approved");
+
+    // Step 3.5: OSD Review (conditionally)
+    let stepOsdStatus: "completed" | "current" | "upcoming" = "upcoming";
+    if (
+        stage === ENROLLMENT_STAGE.ATTENDANCE || 
+        stage === ENROLLMENT_STAGE.REIMBURSEMENT || 
+        stage === ENROLLMENT_STAGE.CREDITED
+    ) {
+        stepOsdStatus = "completed";
+    } else if (stage === ENROLLMENT_STAGE.OSD_REVIEW) {
+        stepOsdStatus = "current";
+    }
+    const stepOsdDate = getTimelineDate(ENROLLMENT_STAGE.OSD_REVIEW, "approved");
 
     // Step 4: Reimbursement Submitted
     let step4Status: "completed" | "current" | "upcoming" = "upcoming";
@@ -100,6 +117,19 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
             status: step3Status,
             icon: ClipboardList,
         },
+    ];
+
+    if (hasOsdReview) {
+        steps.push({
+            id: "3-osd",
+            label: t("approvalProgress.steps.osdReview"),
+            date: stepOsdDate,
+            status: stepOsdStatus,
+            icon: UserCheck,
+        });
+    }
+
+    steps.push(
         {
             id: "4",
             label: t("approvalProgress.steps.reimbursementSubmitted"),
@@ -113,8 +143,8 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
             date: step5Date,
             status: step5Status,
             icon: Building2,
-        },
-    ];
+        }
+    );
 
     return <EnrollmentProgressTracker steps={steps} />;
 }

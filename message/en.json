@@ -520,15 +520,17 @@
       "steps": {
          "submitted": "Application Submitted",
          "manager": "Approved by Reporting Manager",
-         "hrReview": "HR Review",
+         "hrReview": "CTD Review",
+         "osdReview": "OSD Review",
          "reimbursementSubmitted": "Reimbursement Form Submitted",
          "credited": "Reimbursement Credited to Bank Account"
       },
-      "statusMessage": "Your application is currently under HR Review. You will be notified once it proceeds to the next stage.",
+      "statusMessage": "Your application is currently under CTD Review. You will be notified once it proceeds to the next stage.",
       "statusMessages": {
          "submitted": "Your enrollment request has been initialized. Please complete travel and stay details to submit for review.",
          "managerReview": "Your application has been submitted and is currently awaiting approval from your Reporting Manager.",
-         "hrReview": "Your application has been approved by your manager and is currently under HR / Training Department review.",
+         "hrReview": "Your application has been approved by your manager and is currently under CTD review.",
+         "osdReview": "Your application has been approved by CTD and is currently under OSD review.",
          "attendance": "Your attendance for the training has been recorded! You can now submit your reimbursement claim.",
          "reimbursement": "Your reimbursement claim has been submitted and is under financial audit/review.",
          "credited": "Congratulations! Your reimbursement has been approved and successfully credited to your bank account.",
