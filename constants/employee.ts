@@ -17,17 +17,17 @@ export const ROLE_LABEL: Record<string, string> = {
   'training-provider': 'TRAINING PROVIDER',
 };
 
-const SHARED_NAV_ITEMS = (approvalsLabel: string): NavSection['items'] => [
-  { label: 'Dashboard',   key: 'dashboard',   href: '/dashboard',            icon: 'layout-dashboard' },
-  { label: 'Profile',     key: 'profile',     href: '/dashboard/profile',    icon: 'user' },
-  { label: 'Programs',    key: 'programs',    href: '/dashboard/programs',   icon: 'book-open' },
+const SHARED_NAV_ITEMS = (): NavSection['items'] => [
+  { label: 'Dashboard', key: 'dashboard', href: '/dashboard', icon: 'layout-dashboard' },
+  { label: 'Profile', key: 'profile', href: '/dashboard/profile', icon: 'user' },
+  { label: 'Programs', key: 'programs', href: '/dashboard/programs', icon: 'book-open' },
   { label: 'Enrollments', key: 'enrollments', href: '/dashboard/enrollments', icon: 'download' },
-  { label: approvalsLabel, key: 'approvals',  href: '/dashboard/approvals',  icon: 'clipboard-check' },
-  { label: 'Reports',     key: 'reports',     href: '/dashboard/reports',    icon: 'bar-chart-3' },
+  { label: 'Approvals', key: 'approvals', href: '/dashboard/approvals', icon: 'clipboard-check' },
+  { label: 'Reports', key: 'reports', href: '/dashboard/reports', icon: 'bar-chart-3' },
 ];
 
-export const buildNavSections = (approvalsLabel: string): NavSection[] => [
-  { category: 'Workspace', items: SHARED_NAV_ITEMS(approvalsLabel) },
+export const buildNavSections = (): NavSection[] => [
+  { category: 'Workspace', items: SHARED_NAV_ITEMS() },
 ];
 
-export const EMP_NAV_SECTIONS = buildNavSections('Program Status');
+export const EMP_NAV_SECTIONS = buildNavSections();
