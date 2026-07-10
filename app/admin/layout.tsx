@@ -21,7 +21,8 @@ export default async function AdminLayout({ children }: DashboardLayoutProps) {
     name: payload.name,
     email: payload.email,
     location: payload.location,
-    role: payload.role,
+    role: payload.orgRole,
+    permissions: payload.permissions,
   };
 
   return (

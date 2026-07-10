@@ -27,7 +27,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
   };
 
   // Choose navigation based on user role
-  const isProvider = payload.role === USER_ROLES.TRAINING_PROVIDER;
+  const isProvider = payload.orgRole === USER_ROLES.TRAINING_PROVIDER;
   const baseSections = isProvider
     ? PROVIDER_NAV_SECTIONS
     : EMP_NAV_SECTIONS;
