@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import DataTable from "@/components/shared/data-table";
 import { EnrollmentApproval, EmployeeTrainingHistoryEntry } from "@/types/enrollment";
 import { getEmployeeTrainingHistoryAPI } from "@/services/enrollmentApprovalService";
+import { t } from "@/lib/i18n";
 
 interface Props {
     row: EnrollmentApproval;
@@ -50,6 +52,44 @@ export default function ApprovalExpandedRow({
     const venue = row.programId?.venueName || row.programId?.city || "—";
     const travelAndStay = row.travelAndStay;
 
+    const historyColumns = [
+        {
+            header: t("managerApprovals.historyColumns.program"),
+            render: (entry: EmployeeTrainingHistoryEntry) => entry.program,
+        },
+        {
+            header: t("managerApprovals.historyColumns.from"),
+            render: (entry: EmployeeTrainingHistoryEntry) => formatDashDate(entry.from),
+        },
+        {
+            header: t("managerApprovals.historyColumns.to"),
+            render: (entry: EmployeeTrainingHistoryEntry) => formatDashDate(entry.to),
+        },
+        {
+            header: t("managerApprovals.historyColumns.provider"),
+            render: (entry: EmployeeTrainingHistoryEntry) => entry.trainingInstitute || "—",
+        },
+        {
+            header: t("managerApprovals.historyColumns.venue"),
+            render: (entry: EmployeeTrainingHistoryEntry) => entry.venue || "—",
+        },
+        {
+            header: "",
+            className: "w-10",
+            render: (entry: EmployeeTrainingHistoryEntry) =>
+                entry.brochureUrl && (
+                    <a
+                        href={entry.brochureUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Download brochure"
+                    >
+                        <Download size={14} className="text-gray-400 hover:text-white" />
+                    </a>
+                ),
+        },
+    ];
+
     return (
         <div className="bg-[#151b23] p-6 space-y-6">
 
@@ -57,22 +97,22 @@ export default function ApprovalExpandedRow({
 
                 <div>
                     <h4 className="font-semibold mb-4">
-                        Employee Details
+                        {t("managerApprovals.detail.employeeDetails")}
                     </h4>
 
                     <div className="space-y-2">
                         <p>
-                            <span className="text-gray-400">Employee:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.employee")}:</span>{" "}
                             {row.employeeId?.name}
                         </p>
 
                         <p>
-                            <span className="text-gray-400">Designation:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.designation")}:</span>{" "}
                             {row.employeeId?.designation || "—"}
                         </p>
 
                         <p>
-                            <span className="text-gray-400">Department:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.department")}:</span>{" "}
                             {row.employeeId?.department || "—"}
                         </p>
                     </div>
@@ -80,32 +120,32 @@ export default function ApprovalExpandedRow({
 
                 <div>
                     <h4 className="font-semibold mb-4">
-                        Training Program Details
+                        {t("managerApprovals.detail.trainingProgramDetails")}
                     </h4>
 
                     <div className="space-y-2">
                         <p>
-                            <span className="text-gray-400">Program Title:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.programTitle")}:</span>{" "}
                             {row.programId?.title}
                         </p>
 
                         <p>
-                            <span className="text-gray-400">Start/Check-in Date:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.startDate")}:</span>{" "}
                             {formatDashDate(row.programId?.startDate)}
                         </p>
 
                         <p>
-                            <span className="text-gray-400">End/Check-out Date:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.endDate")}:</span>{" "}
                             {formatDashDate(row.programId?.endDate)}
                         </p>
 
                         <p>
-                            <span className="text-gray-400">Venue:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.venue")}:</span>{" "}
                             {venue}
                         </p>
 
                         <p>
-                            <span className="text-gray-400">Stay Type:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.stayType")}:</span>{" "}
                             {travelAndStay?.stayType || "—"}
                         </p>
 
@@ -118,7 +158,7 @@ export default function ApprovalExpandedRow({
                             >
                                 <Button variant="outline" size="sm" className="mt-1 gap-1.5">
                                     <Download size={14} />
-                                    Download Brochure
+                                    {t("managerApprovals.detail.downloadBrochure")}
                                 </Button>
                             </a>
                         )}
@@ -130,7 +170,7 @@ export default function ApprovalExpandedRow({
             {row.notes && (
                 <div>
                     <h4 className="font-semibold mb-2 text-sm">
-                        Employee Recommendation
+                        {t("managerApprovals.detail.employeeRecommendation")}
                     </h4>
                     <p className="text-sm text-gray-300 leading-relaxed">
                         {row.notes}
@@ -140,83 +180,47 @@ export default function ApprovalExpandedRow({
 
             <div>
                 <h4 className="font-semibold mb-3 text-sm">
-                    Employee Training History
+                    {t("managerApprovals.detail.employeeTrainingHistory")}
                 </h4>
 
-                {historyLoading ? (
-                    <p className="text-sm text-gray-400">Loading...</p>
-                ) : history.length === 0 ? (
-                    <p className="text-sm text-gray-400">No prior completed trainings.</p>
-                ) : (
-                    <div className="overflow-x-auto rounded-lg border border-white/10">
-                        <table className="w-full text-sm">
-                            <thead>
-                                <tr className="text-left text-gray-400 text-[10px] uppercase tracking-wider bg-white/5">
-                                    <th className="px-3 py-2 font-semibold">Program</th>
-                                    <th className="px-3 py-2 font-semibold">From</th>
-                                    <th className="px-3 py-2 font-semibold">To</th>
-                                    <th className="px-3 py-2 font-semibold">Provider</th>
-                                    <th className="px-3 py-2 font-semibold">Venue</th>
-                                    <th className="px-3 py-2 font-semibold w-10" />
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {history.map((entry) => (
-                                    <tr key={entry.enrollmentId} className="border-t border-white/5">
-                                        <td className="px-3 py-2">{entry.program}</td>
-                                        <td className="px-3 py-2">{formatDashDate(entry.from)}</td>
-                                        <td className="px-3 py-2">{formatDashDate(entry.to)}</td>
-                                        <td className="px-3 py-2">{entry.trainingInstitute || "—"}</td>
-                                        <td className="px-3 py-2">{entry.venue || "—"}</td>
-                                        <td className="px-3 py-2">
-                                            {entry.brochureUrl && (
-                                                <a
-                                                    href={entry.brochureUrl}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    aria-label="Download brochure"
-                                                >
-                                                    <Download size={14} className="text-gray-400 hover:text-white" />
-                                                </a>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                <DataTable
+                    data={history}
+                    columns={historyColumns}
+                    loading={historyLoading}
+                    rowKey={(entry: EmployeeTrainingHistoryEntry) => entry.enrollmentId}
+                    emptyMessage={t("managerApprovals.detail.noHistory")}
+                />
             </div>
 
             {travelAndStay && (
                 <div>
                     <h4 className="font-semibold mb-3 text-sm">
-                        Tour Approval Form
+                        {t("managerApprovals.detail.tourApprovalForm")}
                     </h4>
 
                     <div className="grid grid-cols-2 gap-x-10 gap-y-2 text-sm">
                         <p>
-                            <span className="text-gray-400">Place of Tour:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.placeOfTour")}:</span>{" "}
                             {travelAndStay.placeOfTour || "—"}
                         </p>
                         <p>
-                            <span className="text-gray-400">Frequent Flyer No.:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.frequentFlyerNo")}:</span>{" "}
                             {travelAndStay.frequentFlyerNo || "—"}
                         </p>
                         <p>
-                            <span className="text-gray-400">Mode of Travel:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.modeOfTravel")}:</span>{" "}
                             {travelAndStay.modeOfTravel || "—"}
                         </p>
                         <p>
-                            <span className="text-gray-400">Purpose:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.purpose")}:</span>{" "}
                             {travelAndStay.purpose || "—"}
                         </p>
                         <p>
-                            <span className="text-gray-400">Advance Payment Required:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.advancePaymentRequired")}:</span>{" "}
                             {travelAndStay.advancePaymentRequired ?? 0}
                         </p>
                         <p>
-                            <span className="text-gray-400">Status:</span>{" "}
+                            <span className="text-gray-400">{t("managerApprovals.detail.status")}:</span>{" "}
                             {travelAndStay.status || "—"}
                         </p>
                     </div>
@@ -230,7 +234,7 @@ export default function ApprovalExpandedRow({
                     disabled={!row.approve}
                     onClick={() => onActionClick(row)}
                 >
-                    Review
+                    {t("managerApprovals.detail.review")}
                 </Button>
             </div>
 

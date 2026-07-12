@@ -15,6 +15,7 @@ import { formatDate } from "@/utils/formatters";
 import { AppAlert } from "@/components/shared/app-alert";
 import { EnrollmentApproval } from "@/types/enrollment";
 import { takeEnrollmentActionAPI } from "@/services/enrollmentApprovalService";
+import { t } from "@/lib/i18n";
 
 const MANAGER_ACTION_TO_STATUS: Record<string, string> = {
   approve: "approved",
@@ -83,7 +84,7 @@ export default function Page() {
 
   const columns = [
     {
-      header: "Employee Name",
+      header: t("managerApprovals.columns.employeeName"),
       render: (row: EnrollmentApproval) => (
         <div className="font-medium">
           {row.employeeId?.name}
@@ -91,23 +92,23 @@ export default function Page() {
       ),
     },
     {
-      header: "Program Title",
+      header: t("managerApprovals.columns.programTitle"),
       render: (row: EnrollmentApproval) => row.programId?.title,
     },
     {
-      header: "From Date",
+      header: t("managerApprovals.columns.fromDate"),
       render: (row: EnrollmentApproval) => formatDate(row.programId?.startDate),
     },
     {
-      header: "To Date",
+      header: t("managerApprovals.columns.toDate"),
       render: (row: EnrollmentApproval) => formatDate(row.programId?.endDate),
     },
     {
-      header: "Venue/City",
+      header: t("managerApprovals.columns.venueCity"),
       render: (row: EnrollmentApproval) => row.programId?.venueName || row.programId?.city,
     },
     {
-      header: "Status",
+      header: t("managerApprovals.columns.status"),
       render: (row: EnrollmentApproval) => (
         <ApprovalStatusBadge
           status={MANAGER_ACTION_TO_STATUS[row.managerApproval?.action] || "pending"}
@@ -130,18 +131,18 @@ export default function Page() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">
-          Approve Training Programs
+          {t("managerApprovals.title")}
         </h1>
 
         <p className="text-gray-400 text-sm">
-          Review and action pending enrollment requests from your team
+          {t("managerApprovals.subtitle")}
         </p>
       </div>
 
       <SearchInput
         value={searchInput}
         onChange={(value) => setSearchInput(value)}
-        placeholder="Search by employee or program..."
+        placeholder={t("managerApprovals.searchPlaceholder")}
         className="max-w-sm"
       />
 
