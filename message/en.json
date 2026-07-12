@@ -454,6 +454,50 @@
       "pending": "Pending",
       "rejected": "Rejected"
    },
+   "managerApprovals": {
+      "title": "Approve Training Programs",
+      "subtitle": "Review and action pending enrollment requests from your team",
+      "searchPlaceholder": "Search by employee or program...",
+      "columns": {
+         "employeeName": "Employee Name",
+         "programTitle": "Program Title",
+         "fromDate": "From Date",
+         "toDate": "To Date",
+         "venueCity": "Venue/City",
+         "status": "Status"
+      },
+      "detail": {
+         "employeeDetails": "Employee Details",
+         "employee": "Employee",
+         "designation": "Designation",
+         "department": "Department",
+         "trainingProgramDetails": "Training Program Details",
+         "programTitle": "Program Title",
+         "startDate": "Start/Check-in Date",
+         "endDate": "End/Check-out Date",
+         "venue": "Venue",
+         "stayType": "Stay Type",
+         "downloadBrochure": "Download Brochure",
+         "employeeRecommendation": "Employee Recommendation",
+         "employeeTrainingHistory": "Employee Training History",
+         "noHistory": "No prior completed trainings.",
+         "tourApprovalForm": "Tour Approval Form",
+         "placeOfTour": "Place of Tour",
+         "frequentFlyerNo": "Frequent Flyer No.",
+         "modeOfTravel": "Mode of Travel",
+         "purpose": "Purpose",
+         "advancePaymentRequired": "Advance Payment Required",
+         "status": "Status",
+         "review": "Review"
+      },
+      "historyColumns": {
+         "program": "Program",
+         "from": "From",
+         "to": "To",
+         "provider": "Provider",
+         "venue": "Venue"
+      }
+   },
    "trainingEnrolment": {
       "breadcrumb": {
          "workspace": "Workspace",
