@@ -21,12 +21,19 @@ export const API = {
       ENROLLMENT_DETAILS: (id: string) => `/employee/enrollments/${id}`,
       UPDATE_TRAVEL: (id: string) => `/employee/enrollments/${id}/travel`,
       SUBMIT_ENROLLMENT: (id: string) => `/employee/enrollments/${id}/submit`,
+      SUBMIT_TOUR: (id: string) => `/employee/enrollments/${id}/tour/submit`,
    },
    MANAGER: {
       DASHBOARD: '/manager/dashboard',
       ENROLLMENTS:"/manager/enrollments",
       ENROLLMENT_ACTION: (id: string) => `/manager/enrollments/${id}/action`,
       TRAINING_HISTORY: (enrollmentId: string) => `/manager/enrollments/${enrollmentId}/training-history`,
+      TOUR_APPROVALS: '/manager/tour-approvals/pending',
+      TOUR_ACTION: (id: string) => `/manager/enrollments/${id}/tour-action`,
+   },
+   OSD: {
+      TOUR_APPROVALS: '/osd/tour-approvals/pending',
+      TOUR_ACTION: (id: string) => `/osd/enrollments/${id}/tour-action`,
    },
    TRAININGPROVIDER: {
       CREATEPROGRAM:    '/training-provider/create/program',

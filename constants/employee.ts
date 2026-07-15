@@ -23,6 +23,7 @@ const SHARED_NAV_ITEMS = (): NavSection['items'] => [
   { label: 'Programs', key: 'programs', href: '/dashboard/programs', icon: 'book-open' },
   { label: 'Enrollments', key: 'enrollments', href: '/dashboard/enrollments', icon: 'download' },
   { label: 'Approvals', key: 'approvals', href: '/dashboard/approvals', icon: 'clipboard-check' },
+  { label: 'Tour Approvals', key: 'tourApprovals', href: '/dashboard/tour-approvals', icon: 'plane' },
   { label: 'Reports', key: 'reports', href: '/dashboard/reports', icon: 'bar-chart-3' },
 ];
 
