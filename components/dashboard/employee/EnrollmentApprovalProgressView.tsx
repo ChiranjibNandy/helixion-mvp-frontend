@@ -13,14 +13,15 @@ import {
     createEnrollmentColumns,
     getProgramDetails,
 } from "./enrolment/enrollmentApproval.constants";
+import { TourSubmissionModal } from "./TourSubmissionModal";
 
 export default function EnrollmentApprovalProgressView() {
     const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
     const [enrollments, setEnrollments] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isTourModalOpen, setIsTourModalOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchEnrollments = async () => {
+    const fetchEnrollments = async () => {
             try {
                 setLoading(true);
                 const data = await getEmployeeEnrollments();
@@ -34,6 +35,8 @@ export default function EnrollmentApprovalProgressView() {
                 setLoading(false);
             }
         };
+
+    useEffect(() => {
         fetchEnrollments();
     }, []);
 
@@ -97,6 +100,22 @@ export default function EnrollmentApprovalProgressView() {
                         {/* Progress Tracker */}
                         {selectedEnrollment && <EnrollmentStepsTracker enrollment={selectedEnrollment} />}
 
+                        {/* Tour Submission CTA */}
+                        {selectedEnrollment?.currentStage === "tour_pending_employee" && (
+                            <div className="flex flex-col items-center justify-center p-6 mt-4 border border-borderCard rounded-xl bg-bgMain text-center space-y-4">
+                                <h3 className="text-lg font-semibold text-white">Tour Form Required</h3>
+                                <p className="text-sm text-textSidebarMuted">
+                                    Your enrollment has been approved by the CTD. Please submit your tour details to proceed.
+                                </p>
+                                <button
+                                    onClick={() => setIsTourModalOpen(true)}
+                                    className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-medium"
+                                >
+                                    Submit Tour Details
+                                </button>
+                            </div>
+                        )}
+
                         {/* Enrolled Programs Table */}
                         <div className="space-y-4">
                             <h2 className="text-lg font-semibold text-white flex items-center gap-2">
@@ -117,6 +136,17 @@ export default function EnrollmentApprovalProgressView() {
                         </div>
                     </div>
                 </Card>
+            )}
+
+            {selectedEnrollment && (
+                <TourSubmissionModal
+                    enrollmentId={selectedEnrollment._id}
+                    isOpen={isTourModalOpen}
+                    onClose={() => setIsTourModalOpen(false)}
+                    onSuccess={() => {
+                        fetchEnrollments();
+                    }}
+                />
             )}
         </div>
     );

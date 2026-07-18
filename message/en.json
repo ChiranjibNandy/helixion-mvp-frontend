@@ -460,6 +460,50 @@
       "pending": "Pending",
       "rejected": "Rejected"
    },
+   "managerApprovals": {
+      "title": "Approve Training Programs",
+      "subtitle": "Review and action pending enrollment requests from your team",
+      "searchPlaceholder": "Search by employee or program...",
+      "columns": {
+         "employeeName": "Employee Name",
+         "programTitle": "Program Title",
+         "fromDate": "From Date",
+         "toDate": "To Date",
+         "venueCity": "Venue/City",
+         "status": "Status"
+      },
+      "detail": {
+         "employeeDetails": "Employee Details",
+         "employee": "Employee",
+         "designation": "Designation",
+         "department": "Department",
+         "trainingProgramDetails": "Training Program Details",
+         "programTitle": "Program Title",
+         "startDate": "Start/Check-in Date",
+         "endDate": "End/Check-out Date",
+         "venue": "Venue",
+         "stayType": "Stay Type",
+         "downloadBrochure": "Download Brochure",
+         "employeeRecommendation": "Employee Recommendation",
+         "employeeTrainingHistory": "Employee Training History",
+         "noHistory": "No prior completed trainings.",
+         "tourApprovalForm": "Tour Approval Form",
+         "placeOfTour": "Place of Tour",
+         "frequentFlyerNo": "Frequent Flyer No.",
+         "modeOfTravel": "Mode of Travel",
+         "purpose": "Purpose",
+         "advancePaymentRequired": "Advance Payment Required",
+         "status": "Status",
+         "review": "Review"
+      },
+      "historyColumns": {
+         "program": "Program",
+         "from": "From",
+         "to": "To",
+         "provider": "Provider",
+         "venue": "Venue"
+      }
+   },
    "trainingEnrolment": {
       "breadcrumb": {
          "workspace": "Workspace",
@@ -526,15 +570,17 @@
       "steps": {
          "submitted": "Application Submitted",
          "manager": "Approved by Reporting Manager",
-         "hrReview": "HR Review",
+         "hrReview": "CTD Review",
+         "osdReview": "OSD Review",
          "reimbursementSubmitted": "Reimbursement Form Submitted",
          "credited": "Reimbursement Credited to Bank Account"
       },
-      "statusMessage": "Your application is currently under HR Review. You will be notified once it proceeds to the next stage.",
+      "statusMessage": "Your application is currently under CTD Review. You will be notified once it proceeds to the next stage.",
       "statusMessages": {
          "submitted": "Your enrollment request has been initialized. Please complete travel and stay details to submit for review.",
          "managerReview": "Your application has been submitted and is currently awaiting approval from your Reporting Manager.",
-         "hrReview": "Your application has been approved by your manager and is currently under HR / Training Department review.",
+         "hrReview": "Your application has been approved by your manager and is currently under CTD review.",
+         "osdReview": "Your application has been approved by CTD and is currently under OSD review.",
          "attendance": "Your attendance for the training has been recorded! You can now submit your reimbursement claim.",
          "reimbursement": "Your reimbursement claim has been submitted and is under financial audit/review.",
          "credited": "Congratulations! Your reimbursement has been approved and successfully credited to your bank account.",

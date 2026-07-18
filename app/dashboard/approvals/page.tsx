@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 import ApprovalExpandedRow from "@/components/dashboard/approvals/ApprovalExpandedRow";
+import ConfirmApprovalModal from "@/components/dashboard/approvals/ConfirmApprovalModal";
 import ApprovalStatusBadge from "@/components/shared/ApprovalStatusBadge";
 import DataTable from "@/components/shared/data-table";
 import PaginationController from "@/components/ui/pagination";
@@ -12,6 +13,16 @@ import SearchInput from "@/components/ui/search-input";
 import { useEnrollmentApprovals } from "@/hooks/useEnrollmentApprovals";
 import { formatDate } from "@/utils/formatters";
 import { AppAlert } from "@/components/shared/app-alert";
+import { EnrollmentApproval } from "@/types/enrollment";
+import { takeEnrollmentActionAPI } from "@/services/enrollmentApprovalService";
+import { t } from "@/lib/i18n";
+
+const MANAGER_ACTION_TO_STATUS: Record<string, string> = {
+  approve: "approved",
+  reject: "rejected",
+  recommend: "pending",
+  pending: "pending",
+};
 
 export default function Page() {
   const {
@@ -23,9 +34,13 @@ export default function Page() {
     setPage,
     search,
     setSearch,
+    refresh,
   } = useEnrollmentApprovals();
 
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [actionRow, setActionRow] = useState<EnrollmentApproval | null>(null);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   // Local state for debounce
   const [searchInput, setSearchInput] = useState(search);
@@ -42,41 +57,68 @@ export default function Page() {
     return () => clearTimeout(timer);
   }, [searchInput, search, setSearch, setPage]);
 
+  const closeModal = () => {
+    if (actionLoading) return;
+    setActionRow(null);
+    setActionError(null);
+  };
+
+  const handleAction = async (action: "approve" | "reject") => {
+    if (!actionRow) return;
+
+    setActionLoading(true);
+    setActionError(null);
+
+    try {
+      await takeEnrollmentActionAPI(actionRow._id, action);
+      setActionRow(null);
+      refresh();
+    } catch (err: any) {
+      setActionError(
+        err?.response?.data?.message || err?.message || "Something went wrong"
+      );
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const columns = [
     {
-      header: "Employee",
-      render: (row: any) => (
+      header: t("managerApprovals.columns.employeeName"),
+      render: (row: EnrollmentApproval) => (
         <div className="font-medium">
           {row.employeeId?.name}
         </div>
       ),
     },
     {
-      header: "Program",
-      render: (row: any) => row.programSnapshot?.title,
+      header: t("managerApprovals.columns.programTitle"),
+      render: (row: EnrollmentApproval) => row.programId?.title,
     },
     {
-      header: "From",
-      render: (row: any) => formatDate(row.programSnapshot?.startDate),
+      header: t("managerApprovals.columns.fromDate"),
+      render: (row: EnrollmentApproval) => formatDate(row.programId?.startDate),
     },
     {
-      header: "To",
-      render: (row: any) => formatDate(row.programSnapshot?.endDate),
+      header: t("managerApprovals.columns.toDate"),
+      render: (row: EnrollmentApproval) => formatDate(row.programId?.endDate),
     },
     {
-      header: "Venue",
-      render: (row: any) => row.programSnapshot?.venue,
+      header: t("managerApprovals.columns.venueCity"),
+      render: (row: EnrollmentApproval) => row.programId?.venueName || row.programId?.city,
     },
     {
-      header: "Status",
-      render: (row: any) => (
-        <ApprovalStatusBadge status={row.status} />
+      header: t("managerApprovals.columns.status"),
+      render: (row: EnrollmentApproval) => (
+        <ApprovalStatusBadge
+          status={MANAGER_ACTION_TO_STATUS[row.managerApproval?.action] || "pending"}
+        />
       ),
     },
     {
       header: "",
       className: "w-10",
-      render: (row: any) =>
+      render: (row: EnrollmentApproval) =>
         expanded === row._id ? (
           <ChevronUp size={16} />
         ) : (
@@ -89,18 +131,18 @@ export default function Page() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">
-          Approve Training Programs
+          {t("managerApprovals.title")}
         </h1>
 
         <p className="text-gray-400 text-sm">
-          Review pending enrollment requests.
+          {t("managerApprovals.subtitle")}
         </p>
       </div>
 
       <SearchInput
         value={searchInput}
         onChange={(value) => setSearchInput(value)}
-        placeholder="Search employee or program..."
+        placeholder={t("managerApprovals.searchPlaceholder")}
         className="max-w-sm"
       />
 
@@ -118,13 +160,13 @@ export default function Page() {
         data={data}
         columns={columns}
         loading={loading}
-        rowKey={(row) => row._id}
-        onRowClick={(row) =>
+        rowKey={(row: EnrollmentApproval) => row._id}
+        onRowClick={(row: EnrollmentApproval) =>
           setExpanded(expanded === row._id ? null : row._id)
         }
-        isRowExpanded={(row) => expanded === row._id}
-        renderExpandedRow={(row) => (
-          <ApprovalExpandedRow row={row} />
+        isRowExpanded={(row: EnrollmentApproval) => expanded === row._id}
+        renderExpandedRow={(row: EnrollmentApproval) => (
+          <ApprovalExpandedRow row={row} onActionClick={setActionRow} />
         )}
       />
 
@@ -132,6 +174,16 @@ export default function Page() {
         page={page}
         totalPages={totalPages}
         onPageChange={setPage}
+      />
+
+      <ConfirmApprovalModal
+        isOpen={Boolean(actionRow)}
+        row={actionRow}
+        loading={actionLoading}
+        error={actionError}
+        onApprove={() => handleAction("approve")}
+        onReject={() => handleAction("reject")}
+        onCancel={closeModal}
       />
     </div>
   );

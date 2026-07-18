@@ -18,8 +18,11 @@ export const getStatusMessage = (enrollment: any, t: (key: string) => string) =>
     if (stage === ENROLLMENT_STAGE.MANAGER_REVIEW) {
         return t("approvalProgress.statusMessages.managerReview");
     }
-    if (stage === ENROLLMENT_STAGE.TRAINING_DEPT_APPROVAL || stage === ENROLLMENT_STAGE.OSD_REVIEW) {
+    if (stage === ENROLLMENT_STAGE.TRAINING_DEPT_APPROVAL) {
         return t("approvalProgress.statusMessages.hrReview");
+    }
+    if (stage === ENROLLMENT_STAGE.OSD_REVIEW) {
+        return t("approvalProgress.statusMessages.osdReview");
     }
     if (stage === ENROLLMENT_STAGE.ATTENDANCE) {
         return t("approvalProgress.statusMessages.attendance");

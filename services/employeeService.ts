@@ -62,3 +62,8 @@ export const submitEnrollment = async (id: string): Promise<any> => {
   const response = await api.post(API.EMPLOYEE.SUBMIT_ENROLLMENT(id));
   return response.data.data;
 };
+
+export const submitTourForm = async (id: string, tourFormData: any): Promise<any> => {
+  const response = await api.post(API.EMPLOYEE.SUBMIT_TOUR(id), tourFormData);
+  return response.data.data;
+};

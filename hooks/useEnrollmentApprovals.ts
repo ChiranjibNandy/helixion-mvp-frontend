@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { getEnrollmentApprovalsAPI } from "@/services/enrollmentApprovalService";
+import { EnrollmentApproval } from "@/types/enrollment";
 
 export function useEnrollmentApprovals() {
    const [loading, setLoading] = useState(false);
-   const [data, setData] = useState([]);
+   const [data, setData] = useState<EnrollmentApproval[]>([]);
    const [error, setError] = useState<string | null>(null);
 
    const [page, setPage] = useState(1);

@@ -40,6 +40,9 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
       if (item.key === 'approvals') {
         return user.permissions.canRecommend;
       }
+      if (item.key === 'tourApprovals') {
+        return user.permissions.canRecommend || user.permissions.canReviewOsd || user.permissions.canApproveOsd;
+      }
       return true;
     }),
   }));

@@ -146,6 +146,17 @@ export interface AvailableProgram {
 export type StayTypeKey = 'single_occupancy' | 'twin_sharing' | 'non_residential';
 
 // ─── Travel & Stay ────────────────────────────────────────────────────────────
+export type TRAVEL_TYPE = "company_assisted" | "self_travel";
+
+export interface TourFormState {
+  travelType: TRAVEL_TYPE;
+  placeOfTour: string;
+  frequentFlyerNo: string;
+  modeOfTravel: string;
+  purpose: string;
+  advancePaymentRequired: number;
+  bookingDetails: BookingRow[];
+}
 export interface BookingRow {
   id: string;
   from: string;
@@ -162,20 +173,10 @@ export interface StepperStep {
 }
 
 export interface TravelDetailsFormProps {
-  placeOfTour: string;
-  setPlaceOfTour: (val: string) => void;
-  frequentFlyerNo: string;
-  setFrequentFlyerNo: (val: string) => void;
-  modeOfTravel: string;
-  setModeOfTravel: (val: string) => void;
-  purpose: string;
-  setPurpose: (val: string) => void;
-  bookingDetails: BookingRow[];
+  tourForm: TourFormState;
+  setTourForm: React.Dispatch<React.SetStateAction<TourFormState>>;
   addBookingRow: () => void;
   removeBookingRow: (id: string) => void;
-  updateBookingField: (id: string, field: keyof Omit<BookingRow, "id">, value: string) => void;
-  advancePaymentRequired: number;
-  setAdvancePaymentRequired: (val: number) => void;
   validationError: string | null;
   submitting: boolean;
   onBack: () => void;

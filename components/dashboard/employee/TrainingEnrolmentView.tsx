@@ -19,7 +19,9 @@ import { ProgramDetailsCard } from "./enrolment/ProgramDetailsCard";
 import { StayTypeCard } from "./enrolment/StayTypeCard";
 import { TravelDetailsForm } from "./enrolment/TravelDetailsForm";
 import { ReviewEnrolmentCard } from "./enrolment/ReviewEnrolmentCard";
-import { BookingRow } from "@/types";
+import { BookingRow, TourFormState } from "@/types";
+import { EMPTY_BOOKING_ROW } from "@/constants/employee";
+import { tourSubmissionSchema } from "@/validations/employee";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -36,16 +38,6 @@ const STEPPER_STEPS = [
     { number: 2, labelKey: "trainingEnrolment.stepper.travelStay" },
     { number: 3, labelKey: "trainingEnrolment.stepper.reviewSubmit" },
 ] as const;
-
-const EMPTY_BOOKING_ROW = {
-    id: "",
-    from: "",
-    to: "",
-    refNo: "",
-    departureTime: "",
-    travelDate: "",
-    travelClass: "Economy",
-};
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -64,8 +56,6 @@ const createBookingRow = (overrides: Partial<Omit<BookingRow, "id">> = {}): Book
     ...overrides,
     id: crypto.randomUUID(),
 });
-
-
 
 /* ------------------------------------------------------------------ */
 /*  Main component                                                     */
@@ -107,12 +97,15 @@ export default function TrainingEnrolmentView() {
     }, [router]);
 
     /* ── Step 2 state ── */
-    const [placeOfTour, setPlaceOfTour] = useState("");
-    const [frequentFlyerNo, setFrequentFlyerNo] = useState("");
-    const [modeOfTravel, setModeOfTravel] = useState("flight");
-    const [purpose, setPurpose] = useState("To Attend Training Program");
-    const [advancePaymentRequired, setAdvancePaymentRequired] = useState(0);
-    const [bookingDetails, setBookingDetails] = useState<BookingRow[]>([]);
+    const [tourForm, setTourForm] = useState<TourFormState>({
+        travelType: "company_assisted",
+        placeOfTour: "",
+        frequentFlyerNo: "",
+        modeOfTravel: "flight",
+        purpose: "To Attend Training Program",
+        advancePaymentRequired: 0,
+        bookingDetails: [],
+    });
 
     /* ── Data loading ── */
     useEffect(() => {
@@ -123,7 +116,6 @@ export default function TrainingEnrolmentView() {
                 setLoading(true);
                 const progData = await getEmployeeProgramById(programId);
                 setProgram(progData);
-                setPlaceOfTour(progData.city || progData.venue || "");
 
                 const enrollments = await getEmployeeEnrollments();
                 const existing = enrollments.find(
@@ -138,22 +130,28 @@ export default function TrainingEnrolmentView() {
 
                     if (existing.travelAndStay) {
                         const ts = existing.travelAndStay;
-                        setPlaceOfTour(ts.placeOfTour || progData.city || "");
-                        setFrequentFlyerNo(ts.frequentFlyerNo || "");
-                        setModeOfTravel(ts.modeOfTravel || "flight");
-                        setPurpose(ts.purpose || "To Attend Training Program");
-                        setAdvancePaymentRequired(ts.advancePaymentRequired || 0);
-                        if (ts.bookingDetails?.length) {
-                            setBookingDetails(
-                                ts.bookingDetails.map((b: any) => ({
-                                    id: b.id || crypto.randomUUID(),
-                                    ...b,
-                                    travelDate: b.travelDate
-                                        ? new Date(b.travelDate).toISOString().split("T")[0]
-                                        : "",
-                                }))
-                            );
-                        }
+                        setTourForm((prev) => ({
+                            ...prev,
+                            placeOfTour: ts.placeOfTour || progData.city || "",
+                            frequentFlyerNo: ts.frequentFlyerNo || "",
+                            modeOfTravel: ts.modeOfTravel || "flight",
+                            purpose: ts.purpose || "To Attend Training Program",
+                            advancePaymentRequired: ts.advancePaymentRequired || 0,
+                            bookingDetails: ts.bookingDetails?.length
+                                ? ts.bookingDetails.map((b: any) => ({
+                                      id: b.id || crypto.randomUUID(),
+                                      ...b,
+                                      travelDate: b.travelDate
+                                          ? new Date(b.travelDate).toISOString().split("T")[0]
+                                          : "",
+                                  }))
+                                : [],
+                        }));
+                    } else {
+                        setTourForm((prev) => ({
+                            ...prev,
+                            placeOfTour: progData.city || progData.venue || "",
+                        }));
                     }
 
                     // Past the initial submission stage → redirect to tracker
@@ -170,7 +168,11 @@ export default function TrainingEnrolmentView() {
                         setActiveStep(2);
                     }
                 } else {
-                    setBookingDetails([]);
+                    setTourForm((prev) => ({
+                        ...prev,
+                        placeOfTour: progData.city || progData.venue || "",
+                        bookingDetails: [],
+                    }));
                 }
             } catch (err) {
                 console.error("Failed to load enrollment details:", err);
@@ -206,64 +208,21 @@ export default function TrainingEnrolmentView() {
         if (!enrollmentId) return;
         setValidationError(null);
 
-        if (!placeOfTour || !placeOfTour.trim()) {
-            setValidationError("Place of Tour is required.");
-            return;
-        }
-        if (!frequentFlyerNo || !frequentFlyerNo.trim()) {
-            setValidationError("Frequent Flyer No. is required.");
-            return;
-        }
-        if (!modeOfTravel) {
-            setValidationError("Mode of Travel is required.");
-            return;
-        }
-        if (!purpose || !purpose.trim()) {
-            setValidationError("Tour Purpose is required.");
-            return;
-        }
-        if (!bookingDetails || bookingDetails.length === 0) {
-            setValidationError("Please add at least one booking detail route.");
-            return;
-        }
-
-        for (let i = 0; i < bookingDetails.length; i++) {
-            const row = bookingDetails[i];
-            if (!row.from || !row.from.trim()) {
-                setValidationError(`Booking Route ${i + 1}: 'From' city is required.`);
-                return;
-            }
-            if (!row.to || !row.to.trim()) {
-                setValidationError(`Booking Route ${i + 1}: 'To' city is required.`);
-                return;
-            }
-            if (!row.refNo || !row.refNo.trim()) {
-                setValidationError(`Booking Route ${i + 1}: Flight/Train Ref No. is required.`);
-                return;
-            }
-            if (!row.departureTime || !row.departureTime.trim()) {
-                setValidationError(`Booking Route ${i + 1}: Departure Time is required.`);
-                return;
-            }
-            if (!row.travelDate) {
-                setValidationError(`Booking Route ${i + 1}: Date of Travel is required.`);
-                return;
-            }
-            if (!row.travelClass || !row.travelClass.trim()) {
-                setValidationError(`Booking Route ${i + 1}: Travel Class is required.`);
-                return;
-            }
+        const validation = tourSubmissionSchema.safeParse(tourForm);
+        if (!validation.success) {
+            const errorMsg = validation.error.errors[0]?.message || "Validation failed";
+            return setValidationError(errorMsg);
         }
 
         try {
             setSubmitting(true);
             await updateTravelDetails(enrollmentId, {
-                placeOfTour,
-                frequentFlyerNo,
-                modeOfTravel,
-                purpose,
-                bookingDetails: bookingDetails.map(({ id, ...row }) => row),
-                advancePaymentRequired,
+                placeOfTour: tourForm.placeOfTour,
+                frequentFlyerNo: tourForm.frequentFlyerNo,
+                modeOfTravel: tourForm.modeOfTravel,
+                purpose: tourForm.purpose,
+                bookingDetails: tourForm.bookingDetails.map(({ id, ...row }) => row),
+                advancePaymentRequired: tourForm.advancePaymentRequired,
             });
             setActiveStep(3);
             setShowConfirmModal(true);
@@ -291,21 +250,17 @@ export default function TrainingEnrolmentView() {
 
     /* ── Booking row helpers ── */
     const addBookingRow = () => {
-        setBookingDetails((prev) => [...prev, createBookingRow()]);
+        setTourForm((prev) => ({
+            ...prev,
+            bookingDetails: [...prev.bookingDetails, createBookingRow()],
+        }));
     };
 
     const removeBookingRow = (id: string) => {
-        setBookingDetails((prev) => prev.filter((row) => row.id !== id));
-    };
-
-    const updateBookingField = (
-        id: string,
-        field: keyof Omit<BookingRow, "id">,
-        value: string
-    ) => {
-        setBookingDetails((prev) =>
-            prev.map((row) => (row.id === id ? { ...row, [field]: value } : row))
-        );
+        setTourForm((prev) => ({
+            ...prev,
+            bookingDetails: prev.bookingDetails.filter((row) => row.id !== id),
+        }));
     };
 
     /* ── Loading / Error states ── */
@@ -324,7 +279,7 @@ export default function TrainingEnrolmentView() {
                     <h1 className="text-white text-3xl font-bold font-sans">
                         {t("trainingEnrolment.title")}
                     </h1>
-                </div>
+                </div>Access token is required
 
                 <Card className="bg-bgStatCard border-borderCard p-8 text-center text-white max-w-xl mx-auto space-y-5 rounded-2xl shadow-xl mt-10">
                     <p className="text-textSidebarMuted text-sm">
@@ -414,20 +369,10 @@ export default function TrainingEnrolmentView() {
                     <ProgramDetailsCard program={program} showEnrolledBadge />
 
                     <TravelDetailsForm
-                        placeOfTour={placeOfTour}
-                        setPlaceOfTour={setPlaceOfTour}
-                        frequentFlyerNo={frequentFlyerNo}
-                        setFrequentFlyerNo={setFrequentFlyerNo}
-                        modeOfTravel={modeOfTravel}
-                        setModeOfTravel={setModeOfTravel}
-                        purpose={purpose}
-                        setPurpose={setPurpose}
-                        bookingDetails={bookingDetails}
+                        tourForm={tourForm}
+                        setTourForm={setTourForm}
                         addBookingRow={addBookingRow}
                         removeBookingRow={removeBookingRow}
-                        updateBookingField={updateBookingField}
-                        advancePaymentRequired={advancePaymentRequired}
-                        setAdvancePaymentRequired={setAdvancePaymentRequired}
                         validationError={validationError}
                         submitting={submitting}
                         onBack={() => {
