@@ -14,29 +14,35 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { t } from "@/lib/i18n";
 
-import { TravelDetailsFormProps } from "@/types";
+import { TravelDetailsFormProps, BookingRow } from "@/types";
 import { BookingDetailsTable } from "./BookingDetailsTable";
 
 export function TravelDetailsForm({
-    placeOfTour,
-    setPlaceOfTour,
-    frequentFlyerNo,
-    setFrequentFlyerNo,
-    modeOfTravel,
-    setModeOfTravel,
-    purpose,
-    setPurpose,
-    bookingDetails,
+    tourForm,
+    setTourForm,
     addBookingRow,
     removeBookingRow,
-    updateBookingField,
-    advancePaymentRequired,
-    setAdvancePaymentRequired,
     validationError,
     submitting,
     onBack,
     onSubmit,
 }: TravelDetailsFormProps) {
+    const { placeOfTour, frequentFlyerNo, modeOfTravel, purpose, advancePaymentRequired, bookingDetails } = tourForm;
+
+    const setPlaceOfTour = (val: string) => setTourForm((prev) => ({ ...prev, placeOfTour: val }));
+    const setFrequentFlyerNo = (val: string) => setTourForm((prev) => ({ ...prev, frequentFlyerNo: val }));
+    const setModeOfTravel = (val: string) => setTourForm((prev) => ({ ...prev, modeOfTravel: val }));
+    const setPurpose = (val: string) => setTourForm((prev) => ({ ...prev, purpose: val }));
+    const setAdvancePaymentRequired = (val: number) => setTourForm((prev) => ({ ...prev, advancePaymentRequired: val }));
+
+    const updateBookingField = (id: string, field: keyof Omit<BookingRow, "id">, value: string) => {
+        setTourForm((prev) => ({
+            ...prev,
+            bookingDetails: prev.bookingDetails.map((row) =>
+                row.id === id ? { ...row, [field]: value } : row
+            ),
+        }));
+    };
     return (
         <Card className="bg-bgStatCard border-borderCard">
             <CardContent className="p-6 space-y-6">

@@ -38,6 +38,15 @@ export interface EnrollmentApproval {
     status?: string;
   };
 
+  tour?: {
+    status?: string;
+    placeOfTour?: string;
+    modeOfTravel?: string;
+    purpose?: string;
+    advancePaymentRequired?: number;
+    bookingDetails?: any[];
+  };
+
   managerApproval: {
     action: string;
     note?: string;
