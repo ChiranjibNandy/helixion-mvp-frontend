@@ -10,6 +10,21 @@ export const EMPTY_FILTERS: Filters = {
   toDate: '',
 };
 
+export const TRAVEL_TYPES = [
+  { value: "company_assisted", label: "Company Assisted" },
+  { value: "self_travel", label: "Self Travel" },
+];
+
+export const EMPTY_BOOKING_ROW = {
+    id: "",
+    from: "",
+    to: "",
+    refNo: "",
+    departureTime: "",
+    travelDate: "",
+    travelClass: "Economy",
+};
+
 export const ROLE_LABEL: Record<string, string> = {
   employee: 'Employee',
   manager: 'Manager',

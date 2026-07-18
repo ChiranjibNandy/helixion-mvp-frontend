@@ -5,7 +5,6 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import ApprovalStatusBadge from "@/components/shared/ApprovalStatusBadge";
 import DataTable from "@/components/shared/data-table";
 import ConfirmApprovalModal from "@/components/dashboard/approvals/ConfirmApprovalModal";
-import ApprovalExpandedRow from "@/components/dashboard/approvals/ApprovalExpandedRow";
 import { useTourApprovals } from "@/hooks/useTourApprovals";
 import { formatDate } from "@/utils/formatters";
 import { AppAlert } from "@/components/shared/app-alert";

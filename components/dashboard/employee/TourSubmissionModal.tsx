@@ -4,10 +4,11 @@ import React, { useState } from "react";
 import AppModal from "@/components/ui/app-modal";
 import { TravelDetailsForm } from "./enrolment/TravelDetailsForm";
 import { submitTourForm } from "@/services/employeeService";
-import { TRAVEL_TYPE } from "@/types";
-import { BookingRow } from "@/types";
+import { BookingRow, TRAVEL_TYPE, TourFormState } from "@/types";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { EMPTY_BOOKING_ROW, TRAVEL_TYPES } from "@/constants/employee";
+import { tourSubmissionSchema } from "@/validations/employee";
 
 interface TourSubmissionModalProps {
     enrollmentId: string;
@@ -16,16 +17,6 @@ interface TourSubmissionModalProps {
     onSuccess: () => void;
 }
 
-const EMPTY_BOOKING_ROW = {
-    id: "",
-    from: "",
-    to: "",
-    refNo: "",
-    departureTime: "",
-    travelDate: "",
-    travelClass: "Economy",
-};
-
 const createBookingRow = (overrides: Partial<Omit<BookingRow, "id">> = {}): BookingRow => ({
     ...EMPTY_BOOKING_ROW,
     ...overrides,
@@ -33,53 +24,47 @@ const createBookingRow = (overrides: Partial<Omit<BookingRow, "id">> = {}): Book
 });
 
 export function TourSubmissionModal({ enrollmentId, isOpen, onClose, onSuccess }: TourSubmissionModalProps) {
-    const [travelType, setTravelType] = useState<TRAVEL_TYPE>("company_assisted" as any);
-    const [placeOfTour, setPlaceOfTour] = useState("");
-    const [frequentFlyerNo, setFrequentFlyerNo] = useState("");
-    const [modeOfTravel, setModeOfTravel] = useState("flight");
-    const [purpose, setPurpose] = useState("To Attend Training Program");
-    const [advancePaymentRequired, setAdvancePaymentRequired] = useState(0);
-    const [bookingDetails, setBookingDetails] = useState<BookingRow[]>([]);
+    const [tourForm, setTourForm] = useState<TourFormState>({
+        travelType: "company_assisted",
+        placeOfTour: "",
+        frequentFlyerNo: "",
+        modeOfTravel: "flight",
+        purpose: "To Attend Training Program",
+        advancePaymentRequired: 0,
+        bookingDetails: [],
+    });
     
     const [submitting, setSubmitting] = useState(false);
     const [validationError, setValidationError] = useState<string | null>(null);
 
-    const addBookingRow = () => setBookingDetails((prev) => [...prev, createBookingRow()]);
-    const removeBookingRow = (id: string) => setBookingDetails((prev) => prev.filter((row) => row.id !== id));
-    const updateBookingField = (id: string, field: keyof BookingRow, value: string) => {
-        setBookingDetails((prev) => prev.map((row) => (row.id === id ? { ...row, [field]: value } : row)));
+    const addBookingRow = () => {
+        setTourForm((prev) => ({
+            ...prev,
+            bookingDetails: [...prev.bookingDetails, createBookingRow()],
+        }));
+    };
+
+    const removeBookingRow = (id: string) => {
+        setTourForm((prev) => ({
+            ...prev,
+            bookingDetails: prev.bookingDetails.filter((row) => row.id !== id),
+        }));
     };
 
     const handleSubmit = async () => {
         setValidationError(null);
 
-        if (travelType === "company_assisted") {
-            if (!placeOfTour || !placeOfTour.trim()) return setValidationError("Place of Tour is required.");
-            if (!frequentFlyerNo || !frequentFlyerNo.trim()) return setValidationError("Frequent Flyer No. is required.");
-            if (!modeOfTravel) return setValidationError("Mode of Travel is required.");
-            if (!purpose || !purpose.trim()) return setValidationError("Tour Purpose is required.");
-            if (!bookingDetails || bookingDetails.length === 0) return setValidationError("Please add at least one booking detail route.");
-
-            for (let i = 0; i < bookingDetails.length; i++) {
-                const row = bookingDetails[i];
-                if (!row.from || !row.from.trim()) return setValidationError(`Booking Route ${i + 1}: 'From' city is required.`);
-                if (!row.to || !row.to.trim()) return setValidationError(`Booking Route ${i + 1}: 'To' city is required.`);
-                if (!row.refNo || !row.refNo.trim()) return setValidationError(`Booking Route ${i + 1}: Flight/Train Ref No. is required.`);
-                if (!row.departureTime || !row.departureTime.trim()) return setValidationError(`Booking Route ${i + 1}: Departure Time is required.`);
-                if (!row.travelDate) return setValidationError(`Booking Route ${i + 1}: Date of Travel is required.`);
-            }
+        const validation = tourSubmissionSchema.safeParse(tourForm);
+        if (!validation.success) {
+            const errorMsg = validation.error.errors[0]?.message || "Validation failed";
+            return setValidationError(errorMsg);
         }
 
         try {
             setSubmitting(true);
             const payload = {
-                travelType,
-                placeOfTour,
-                frequentFlyerNo,
-                modeOfTravel,
-                purpose,
-                advancePaymentRequired,
-                bookingDetails: bookingDetails.map(({ id, ...rest }) => rest), // Remove internal ID
+                ...tourForm,
+                bookingDetails: tourForm.bookingDetails.map(({ id, ...rest }) => rest), // Remove internal ID
             };
             await submitTourForm(enrollmentId, payload);
             toast.success("Tour form submitted successfully");
@@ -92,7 +77,6 @@ export function TourSubmissionModal({ enrollmentId, isOpen, onClose, onSuccess }
         }
     };
 
-    // Need a simple wrapper to choose self_travel vs company_assisted
     return (
         <AppModal
             isOpen={isOpen}
@@ -102,44 +86,26 @@ export function TourSubmissionModal({ enrollmentId, isOpen, onClose, onSuccess }
         >
             <div className="space-y-6">
                 <div className="flex gap-4 p-4 border border-borderCard rounded-xl bg-bgMain">
-                    <label className="flex items-center gap-2 text-white text-sm cursor-pointer">
-                        <input
-                            type="radio"
-                            name="travelType"
-                            checked={travelType === "company_assisted"}
-                            onChange={() => setTravelType("company_assisted" as any)}
-                            className="text-primary accent-primary"
-                        />
-                        Company Assisted
-                    </label>
-                    <label className="flex items-center gap-2 text-white text-sm cursor-pointer">
-                        <input
-                            type="radio"
-                            name="travelType"
-                            checked={travelType === "self_travel"}
-                            onChange={() => setTravelType("self_travel" as any)}
-                            className="text-primary accent-primary"
-                        />
-                        Self Travel
-                    </label>
+                    {TRAVEL_TYPES.map((type) => (
+                        <label key={type.value} className="flex items-center gap-2 text-white text-sm cursor-pointer">
+                            <input
+                                type="radio"
+                                name="travelType"
+                                checked={tourForm.travelType === type.value}
+                                onChange={() => setTourForm((prev) => ({ ...prev, travelType: type.value as TRAVEL_TYPE }))}
+                                className="text-primary accent-primary"
+                            />
+                            {type.label}
+                        </label>
+                    ))}
                 </div>
 
-                {travelType === "company_assisted" ? (
+                {tourForm.travelType === "company_assisted" ? (
                     <TravelDetailsForm
-                        placeOfTour={placeOfTour}
-                        setPlaceOfTour={setPlaceOfTour}
-                        frequentFlyerNo={frequentFlyerNo}
-                        setFrequentFlyerNo={setFrequentFlyerNo}
-                        modeOfTravel={modeOfTravel}
-                        setModeOfTravel={setModeOfTravel}
-                        purpose={purpose}
-                        setPurpose={setPurpose}
-                        bookingDetails={bookingDetails}
+                        tourForm={tourForm}
+                        setTourForm={setTourForm}
                         addBookingRow={addBookingRow}
                         removeBookingRow={removeBookingRow}
-                        updateBookingField={updateBookingField}
-                        advancePaymentRequired={advancePaymentRequired}
-                        setAdvancePaymentRequired={setAdvancePaymentRequired}
                         validationError={validationError}
                         submitting={submitting}
                         onBack={onClose}
