@@ -23,7 +23,8 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
     email: payload.email,
     location: payload.location,
     role: payload.orgRole,
-    permissions: payload.permissions
+    permissions: payload.permissions,
+    hierarchyLevel: payload.hierarchyLevel,
   };
 
   // Choose navigation based on user role

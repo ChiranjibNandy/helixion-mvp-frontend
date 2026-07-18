@@ -1,6 +1,8 @@
 import type { User } from '@/types';
 import { MapPin } from 'lucide-react';
 import { t } from '@/lib/i18n';
+import { NotificationBell } from '@/components/dashboard/notifications/NotificationBell';
+import { USER_ROLES } from '@/constants/navigation';
 
 interface DashboardHeaderProps {
   user: User;
@@ -21,6 +23,8 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
           </p>
         )}
       </div>
+
+      {user.role === USER_ROLES.EMPLOYEE && <NotificationBell />}
     </header>
   );
 }

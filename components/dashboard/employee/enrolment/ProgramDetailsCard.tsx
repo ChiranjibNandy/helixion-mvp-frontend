@@ -23,8 +23,8 @@ function DetailField({ label, value }: { label: string; value: string }) {
 export function ProgramDetailsCard({ program, showEnrolledBadge = false }: ProgramDetailsCardProps) {
     const providerName =
         program.providerName ||
-        (typeof program.training_providerId === "object"
-            ? program.training_providerId.username
+        (typeof program.createdBy === "object"
+            ? program.createdBy.name
             : t("trainingEnrolment.programDetails.trainingProvider"));
 
     return (

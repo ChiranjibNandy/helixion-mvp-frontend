@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css'
 import React from 'react';
 import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 
 const geist = Inter({subsets:['latin'],variable:'--font-sans'});
@@ -22,7 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="m-0 p-0 bg-bgMain font-sans">{children}</body>
+      <body className="m-0 p-0 bg-bgMain font-sans">
+        {children}
+        <Toaster richColors position="top-right" />
+      </body>
     </html>
   );
 }

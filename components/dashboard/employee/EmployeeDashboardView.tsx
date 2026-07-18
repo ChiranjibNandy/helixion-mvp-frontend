@@ -1,7 +1,7 @@
 'use client';
 
 import { ApprovalStatusCard } from "./ApprovalStatusCard";
-import { Bell, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { fetchEmployeeDashboardData } from "@/services/employeeService";
@@ -73,15 +73,6 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
           <h1 className="text-white text-2xl font-bold">{t('dashboard.welcome', { name })}</h1>
         </div>
         <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Notifications"
-            className="relative text-textSecondary hover:text-white"
-          >
-            <Bell className="w-5 h-5" aria-hidden="true" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full" aria-hidden="true" />
-          </Button>
           <Button asChild size="lg">
             <Link href={ROUTES.EMPLOYEE.PROGRAMS}>
               <Plus />

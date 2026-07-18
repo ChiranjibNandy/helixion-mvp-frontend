@@ -21,6 +21,7 @@ export const API = {
       ENROLLMENT_DETAILS: (id: string) => `/employee/enrollments/${id}`,
       UPDATE_TRAVEL: (id: string) => `/employee/enrollments/${id}/travel`,
       SUBMIT_ENROLLMENT: (id: string) => `/employee/enrollments/${id}/submit`,
+      NOTIFICATIONS: '/employee/notifications',
       SUBMIT_TOUR: (id: string) => `/employee/enrollments/${id}/tour/submit`,
    },
    MANAGER: {
