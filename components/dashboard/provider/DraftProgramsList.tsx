@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useDraftPrograms } from '@/hooks/useDraftPrograms';
 import { useDraftActions } from '@/hooks/useDraftActions';
 import { t } from '@/lib/i18n';
-import { formatDate, formatUpdatedAt } from '@/utils/formatters';
+import { formatDate, formatUpdatedAt, getStayOptionPrice } from '@/utils/formatters';
 import Badge from '@/components/ui/badge';
 import SearchInput from '@/components/ui/search-input';
 import AppModal from '@/components/ui/app-modal';
@@ -55,10 +55,14 @@ export default function DraftProgramsList() {
   };
 
   const fmtFee = (p: DraftProgram) => {
+    const singleOccupancyFee = getStayOptionPrice(p.stayOptions, 'single_occupancy');
+    const twinSharingFee = getStayOptionPrice(p.stayOptions, 'twin_sharing');
+    const nonResidentialFee = getStayOptionPrice(p.stayOptions, 'non_residential');
+
     const parts = [];
-    if (p.singleOccupancyFee) parts.push(t('draftPrograms.feeSingle', { fee: p.singleOccupancyFee.toLocaleString('en-IN') }));
-    if (p.twinSharingFee) parts.push(t('draftPrograms.feeTwin', { fee: p.twinSharingFee.toLocaleString('en-IN') }));
-    if (p.nonResidentialFee) parts.push(t('draftPrograms.feeNonRes', { fee: p.nonResidentialFee.toLocaleString('en-IN') }));
+    if (singleOccupancyFee != null) parts.push(t('draftPrograms.feeSingle', { fee: singleOccupancyFee.toLocaleString('en-IN') }));
+    if (twinSharingFee != null) parts.push(t('draftPrograms.feeTwin', { fee: twinSharingFee.toLocaleString('en-IN') }));
+    if (nonResidentialFee != null) parts.push(t('draftPrograms.feeNonRes', { fee: nonResidentialFee.toLocaleString('en-IN') }));
     
     if (parts.length === 0) return <span className="text-sm font-medium text-white/80">—</span>;
     
@@ -160,7 +164,12 @@ export default function DraftProgramsList() {
               {
                 key:"venue",
                 header: t('draftPrograms.columnVenue'),
-                render: (p: DraftProgram) => <span className="text-sm text-white/70">{p.venue || '—'}</span>
+                render: (p: DraftProgram) => <span className="text-sm text-white/70">{p.venueName || '—'}</span>
+              },
+              {
+                key:"city",
+                header: t('draftPrograms.columnCity'),
+                render: (p: DraftProgram) => <span className="text-sm text-white/70">{p.city || '—'}</span>
               },
               {
                 key:"fee",

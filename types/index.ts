@@ -5,6 +5,7 @@ export interface Permissions {
   canApproveEnrollment: boolean,
   canReviewTrainingDept: boolean,
   canApproveTrainingDept: boolean,
+  canApproveTourCtd: boolean,
   canReviewOsd: boolean,
   canApproveOsd: boolean
 }
@@ -68,10 +69,10 @@ export interface DraftProgram {
   title: string;
   startDate: string;
   endDate?: string;
-  venue?: string;
-  singleOccupancyFee?: number;
-  twinSharingFee?: number;
-  nonResidentialFee?: number;
+  venueName?: string;
+  city?: string;
+  state?: string;
+  stayOptions?: { type: string; price: number }[];
   brochureUrl?: string;
   brochurePublicId?: string;
   minParticipants?: number;
@@ -129,11 +130,10 @@ export interface AvailableProgram {
   title: string;
   startDate: string;
   endDate: string;
-  venue: string;
+  venueName: string;
   city?: string;
-  singleOccupancyFee?: number;
-  twinSharingFee?: number;
-  nonResidentialFee?: number;
+  state?: string;
+  stayOptions?: { type: string; price: number }[];
   brochureUrl?: string;
   minParticipants?: number;
   maxParticipants?: number;

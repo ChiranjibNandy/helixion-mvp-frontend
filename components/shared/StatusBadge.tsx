@@ -19,7 +19,7 @@ const statusMap = {
   // Roles
   admin: "active",
   employee: "pending",
-  "training-provider": "completed",
+  training_provider: "completed",
 
   // Actions
   create: "active",

@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getTourApprovalsAPI, getCtdTourApprovalsAPI } from "@/services/enrollmentApprovalService";
+import { getCtdPendingEnrollmentsAPI } from "@/services/enrollmentApprovalService";
+import { EnrollmentApproval } from "@/types/enrollment";
 
-export function useTourApprovals(type: "manager" | "ctd") {
+export function useCtdApprovals() {
    const [loading, setLoading] = useState(false);
-   const [data, setData] = useState<any[]>([]);
+   const [data, setData] = useState<EnrollmentApproval[]>([]);
    const [error, setError] = useState<string | null>(null);
 
    const fetchData = async () => {
@@ -13,13 +14,10 @@ export function useTourApprovals(type: "manager" | "ctd") {
          setLoading(true);
          setError(null);
 
-         const res = type === "manager"
-            ? await getTourApprovalsAPI()
-            : await getCtdTourApprovalsAPI();
-
+         const res = await getCtdPendingEnrollmentsAPI();
          setData(res.data || []);
       } catch (err: any) {
-         console.error("Failed to fetch tour approvals:", err);
+         console.error("Failed to fetch CTD pending enrollments:", err);
 
          setError(
             err?.response?.data?.message ||
@@ -35,7 +33,7 @@ export function useTourApprovals(type: "manager" | "ctd") {
 
    useEffect(() => {
       fetchData();
-   }, [type]);
+   }, []);
 
    return {
       loading,

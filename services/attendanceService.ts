@@ -5,7 +5,7 @@ export interface Program {
   _id: string;
   title: string;
   startDate: string;
-  venue: string;
+  venueName: string;
   status: string;
 }
 

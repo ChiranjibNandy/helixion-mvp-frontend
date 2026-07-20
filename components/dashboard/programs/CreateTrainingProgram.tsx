@@ -108,6 +108,7 @@ export default function CreateTrainingProgram() {
       startDate: form.startDate || undefined,
       endDate: form.endDate || undefined,
       venue: form.venue || undefined,
+      city: form.city || undefined,
 
       singleOccupancyFee,
       twinSharingFee,
@@ -213,6 +214,24 @@ export default function CreateTrainingProgram() {
               value={form.venue}
               onChange={(e) => handleField("venue", e.target.value)}
               placeholder={t('programme.fields.venuePlaceholder')}
+              className="bg-inputBg border-borderDark text-textSecondary h-9 text-sm"
+            />
+          </div>
+
+          {/* City — drives local-vs-outstation travel notifications, must
+              match an employee's placeOfPosting exactly (case/whitespace
+              insensitive) to be treated as local training. */}
+          <div className="grid grid-cols-[160px_1fr] gap-4 items-start">
+            <div className="pt-2">
+              <Label className="text-sm text-textMuted">
+                {t('programme.fields.city')}
+              </Label>
+            </div>
+
+            <InputField
+              value={form.city}
+              onChange={(e) => handleField("city", e.target.value)}
+              placeholder={t('programme.fields.cityPlaceholder')}
               className="bg-inputBg border-borderDark text-textSecondary h-9 text-sm"
             />
           </div>

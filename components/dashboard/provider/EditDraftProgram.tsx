@@ -10,7 +10,7 @@ import AppModal from '@/components/ui/app-modal';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
 import InputField from '@/components/ui/input';
-import { formatUpdatedAt, shortDraftId } from '@/utils/formatters';
+import { formatUpdatedAt, shortDraftId, getStayOptionPrice } from '@/utils/formatters';
 import StayTypeFees from './StayTypeFees';
 import type { UpdateDraftPayload } from '@/services/provider.service';
 
@@ -31,6 +31,7 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [venue, setVenue] = useState('');
+  const [city, setCity] = useState('');
   const [isResidential, setIsResidential] = useState(false);
   const [singleOccupancyFee, setSingleOccupancyFee] = useState('');
   const [twinSharingFee, setTwinSharingFee] = useState('');
@@ -46,14 +47,17 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
     setTitle(draft.title || '');
     setStartDate(draft.startDate ? draft.startDate.split('T')[0] : '');
     setEndDate(draft.endDate ? draft.endDate.split('T')[0] : '');
-    setVenue(draft.venue || '');
-    const hasRes = (draft.singleOccupancyFee && draft.singleOccupancyFee > 0) || (draft.twinSharingFee && draft.twinSharingFee > 0);
-    setIsResidential(!!hasRes);
-    setSingleOccupancyFee(draft.singleOccupancyFee ? String(draft.singleOccupancyFee) : '');
-    setTwinSharingFee(draft.twinSharingFee ? String(draft.twinSharingFee) : '');
-    const hasNonRes = draft.nonResidentialFee && draft.nonResidentialFee > 0;
-    setIsNonResidential(!!hasNonRes);
-    setNonResidentialFee(draft.nonResidentialFee ? String(draft.nonResidentialFee) : '');
+    setVenue(draft.venueName || '');
+    setCity(draft.city || '');
+    const singleOccupancyFeeValue = getStayOptionPrice(draft.stayOptions, 'single_occupancy');
+    const twinSharingFeeValue = getStayOptionPrice(draft.stayOptions, 'twin_sharing');
+    const nonResidentialFeeValue = getStayOptionPrice(draft.stayOptions, 'non_residential');
+    const hasRes = !!singleOccupancyFeeValue || !!twinSharingFeeValue;
+    setIsResidential(hasRes);
+    setSingleOccupancyFee(singleOccupancyFeeValue ? String(singleOccupancyFeeValue) : '');
+    setTwinSharingFee(twinSharingFeeValue ? String(twinSharingFeeValue) : '');
+    setIsNonResidential(!!nonResidentialFeeValue);
+    setNonResidentialFee(nonResidentialFeeValue ? String(nonResidentialFeeValue) : '');
     if (draft.brochureUrl) {
       const parts = draft.brochureUrl.split('/');
       setBrochureFilename(parts[parts.length - 1] || 'brochure.pdf');
@@ -65,6 +69,7 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
     startDate: startDate || undefined,
     endDate: endDate || undefined,
     venue: venue || undefined,
+    city: city || undefined,
     singleOccupancyFee: isResidential && singleOccupancyFee ? Number(singleOccupancyFee) : undefined,
     twinSharingFee: isResidential && twinSharingFee ? Number(twinSharingFee) : undefined,
     nonResidentialFee: isNonResidential && nonResidentialFee ? Number(nonResidentialFee) : undefined,
@@ -187,6 +192,14 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
             {t('draftPrograms.labelVenue')}<span className="text-red-400 ml-1">*</span>
           </label>
           <InputField value={venue} onChange={(e) => setVenue(e.target.value)} id="edit-venue" />
+        </div>
+
+        {/* City — drives local-vs-outstation travel notifications */}
+        <div className="grid grid-cols-[180px_1fr] items-start py-5 border-t border-white/[0.06] gap-4">
+          <label className="text-sm font-medium text-white/70 pt-2">
+            {t('draftPrograms.labelCity')}
+          </label>
+          <InputField value={city} onChange={(e) => setCity(e.target.value)} id="edit-city" />
         </div>
 
         {/* Stay Type & Fees */}

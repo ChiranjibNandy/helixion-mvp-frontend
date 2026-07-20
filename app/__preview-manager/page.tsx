@@ -17,6 +17,7 @@ export default function PreviewManagerDashboardPage() {
       canApproveEnrollment: true,
       canReviewTrainingDept: false,
       canApproveTrainingDept: false,
+      canApproveTourCtd: false,
       canReviewOsd: false,
       canApproveOsd: false,
     },

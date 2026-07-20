@@ -65,10 +65,10 @@ export default function ConfirmApprovalModal({
         </h2>
 
         <p className="text-sm text-white/50 leading-relaxed mb-4">
-          Are you sure you want to approve the Training Enrolment for{' '}
+          Are you sure you want to take action on the Training Enrolment for{' '}
           <span className="text-white/80">{employeeName}</span> for{' '}
-          <span className="text-white/80">{programTitle}</span> and approve the
-          associated Tour Form? This action cannot be undone.
+          <span className="text-white/80">{programTitle}</span>? This action
+          cannot be undone.
         </p>
 
         <div className="rounded-xl bg-black/20 border border-white/10 p-4 mb-6 text-left text-sm space-y-2">

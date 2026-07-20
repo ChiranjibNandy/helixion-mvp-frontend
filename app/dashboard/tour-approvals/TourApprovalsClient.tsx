@@ -9,10 +9,10 @@ import { useTourApprovals } from "@/hooks/useTourApprovals";
 import { formatDate } from "@/utils/formatters";
 import { AppAlert } from "@/components/shared/app-alert";
 import { EnrollmentApproval } from "@/types/enrollment";
-import { takeTourManagerActionAPI, takeOsdTourActionAPI } from "@/services/enrollmentApprovalService";
+import { takeTourManagerActionAPI, takeCtdTourActionAPI } from "@/services/enrollmentApprovalService";
 
 interface TourApprovalsClientProps {
-    roleType: "manager" | "osd";
+    roleType: "manager" | "ctd";
 }
 
 export default function TourApprovalsClient({ roleType }: TourApprovalsClientProps) {
@@ -39,7 +39,7 @@ export default function TourApprovalsClient({ roleType }: TourApprovalsClientPro
             if (roleType === "manager") {
                 await takeTourManagerActionAPI(actionRow._id, action);
             } else {
-                await takeOsdTourActionAPI(actionRow._id, action);
+                await takeCtdTourActionAPI(actionRow._id, action);
             }
             setActionRow(null);
             refresh();
@@ -68,14 +68,14 @@ export default function TourApprovalsClient({ roleType }: TourApprovalsClientPro
         {
             header: "Travel Date",
             render: (row: EnrollmentApproval) => {
-                const dates = row.tour?.bookingDetails?.map((b: any) => b.travelDate).filter(Boolean);
+                const dates = row.tour?.details?.bookingDetails?.map((b: any) => b.travelDate).filter(Boolean);
                 if (dates && dates.length > 0) return formatDate(dates[0]);
                 return "-";
             },
         },
         {
             header: "Place of Tour",
-            render: (row: EnrollmentApproval) => row.tour?.placeOfTour || row.programId?.venueName || row.programId?.city || "-",
+            render: (row: EnrollmentApproval) => row.tour?.details?.placeOfTour || row.programId?.venueName || row.programId?.city || "-",
         },
         {
             header: "Status",
@@ -99,7 +99,7 @@ export default function TourApprovalsClient({ roleType }: TourApprovalsClientPro
         <div className="space-y-6">
             <div>
                 <h1 className="text-2xl font-bold">
-                    {roleType === "osd" ? "OSD Tour Approvals" : "Manager Tour Approvals"}
+                    {roleType === "ctd" ? "CTD Tour Approvals" : "Manager Tour Approvals"}
                 </h1>
                 <p className="text-gray-400 text-sm">
                     Review and approve tour requests submitted by employees.
@@ -133,44 +133,52 @@ export default function TourApprovalsClient({ roleType }: TourApprovalsClientPro
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-white/70">
                                 <div>
                                     <span className="block text-white/50 text-xs uppercase tracking-wider mb-1">Place of Tour</span>
-                                    {row.tour?.placeOfTour || "-"}
+                                    {row.tour?.details?.placeOfTour || "-"}
                                 </div>
                                 <div>
                                     <span className="block text-white/50 text-xs uppercase tracking-wider mb-1">Mode of Travel</span>
-                                    {row.tour?.modeOfTravel || "-"}
+                                    {row.tour?.details?.modeOfTravel || "-"}
+                                </div>
+                                <div>
+                                    <span className="block text-white/50 text-xs uppercase tracking-wider mb-1">Frequent Flyer No.</span>
+                                    {row.tour?.details?.frequentFlyerNo || "-"}
                                 </div>
                                 <div>
                                     <span className="block text-white/50 text-xs uppercase tracking-wider mb-1">Purpose</span>
-                                    {row.tour?.purpose || "-"}
+                                    {row.tour?.details?.purpose || "-"}
                                 </div>
                                 <div>
                                     <span className="block text-white/50 text-xs uppercase tracking-wider mb-1">Advance Payment</span>
-                                    {row.tour?.advancePaymentRequired ? `$${row.tour.advancePaymentRequired}` : "None"}
+                                    {row.tour?.details?.advancePaymentRequired != null ? `₹${row.tour.details.advancePaymentRequired}` : "None"}
                                 </div>
                             </div>
                         </div>
 
                         {/* Booking Details Table if exists */}
-                        {row.tour?.bookingDetails && row.tour.bookingDetails.length > 0 && (
+                        {row.tour?.details?.bookingDetails && row.tour.details.bookingDetails.length > 0 && (
                             <div className="mb-6">
                                 <h4 className="text-sm font-semibold text-white mb-2">Bookings</h4>
-                                <div className="border border-borderCard rounded overflow-hidden">
+                                <div className="border border-borderCard rounded overflow-x-auto">
                                     <table className="w-full text-left text-sm text-white/70">
                                         <thead className="bg-bgMain text-white/50 border-b border-borderCard">
                                             <tr>
-                                                <th className="p-2 font-medium">Date</th>
                                                 <th className="p-2 font-medium">From</th>
                                                 <th className="p-2 font-medium">To</th>
                                                 <th className="p-2 font-medium">Ref No.</th>
+                                                <th className="p-2 font-medium">Departure Time</th>
+                                                <th className="p-2 font-medium">Date of Travel</th>
+                                                <th className="p-2 font-medium">Travel Class</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {row.tour.bookingDetails.map((b: any, i: number) => (
+                                            {row.tour.details.bookingDetails.map((b: any, i: number) => (
                                                 <tr key={i} className="border-b border-borderCard last:border-0 hover:bg-white/5">
-                                                    <td className="p-2">{formatDate(b.travelDate)}</td>
                                                     <td className="p-2">{b.from}</td>
                                                     <td className="p-2">{b.to}</td>
                                                     <td className="p-2">{b.refNo}</td>
+                                                    <td className="p-2">{b.departureTime}</td>
+                                                    <td className="p-2">{formatDate(b.travelDate)}</td>
+                                                    <td className="p-2">{b.travelClass}</td>
                                                 </tr>
                                             ))}
                                         </tbody>

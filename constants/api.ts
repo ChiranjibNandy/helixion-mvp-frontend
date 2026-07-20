@@ -32,9 +32,12 @@ export const API = {
       TOUR_APPROVALS: '/manager/tour-approvals/pending',
       TOUR_ACTION: (id: string) => `/manager/enrollments/${id}/tour-action`,
    },
-   OSD: {
-      TOUR_APPROVALS: '/osd/tour-approvals/pending',
-      TOUR_ACTION: (id: string) => `/osd/enrollments/${id}/tour-action`,
+   TRAININGDEPT: {
+      PENDING: '/training-dept/pending',
+      JUNIOR_ACTION: (id: string) => `/training-dept/enrollments/${id}/junior-action`,
+      SENIOR_ACTION: (id: string) => `/training-dept/enrollments/${id}/senior-action`,
+      TOUR_APPROVALS: '/training-dept/tour-approvals/pending',
+      TOUR_ACTION: (id: string) => `/training-dept/enrollments/${id}/tour-action`,
    },
    TRAININGPROVIDER: {
       CREATEPROGRAM:    '/training-provider/create/program',

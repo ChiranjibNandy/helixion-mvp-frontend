@@ -40,11 +40,15 @@ export interface EnrollmentApproval {
 
   tour?: {
     status?: string;
-    placeOfTour?: string;
-    modeOfTravel?: string;
-    purpose?: string;
-    advancePaymentRequired?: number;
-    bookingDetails?: any[];
+    travelType?: string;
+    details?: {
+      placeOfTour?: string;
+      frequentFlyerNo?: string;
+      modeOfTravel?: string;
+      purpose?: string;
+      advancePaymentRequired?: number;
+      bookingDetails?: any[];
+    };
   };
 
   managerApproval: {

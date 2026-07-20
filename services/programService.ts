@@ -23,6 +23,10 @@ export const createProgramAPI = async (
     formData.append("venue", payload.venue);
   }
 
+  if (payload.city) {
+    formData.append("city", payload.city);
+  }
+
   // FEES
   if (payload.singleOccupancyFee != null) {
     formData.append(

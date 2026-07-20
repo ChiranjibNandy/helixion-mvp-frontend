@@ -150,7 +150,7 @@ export function ManageAttendancePage() {
                 year: "numeric",
               })
               : "-"}{" "}
-            · {program.venue} · {participants.length} participants
+            · {program.venueName} · {participants.length} participants
           </p>
         )}
       </div>

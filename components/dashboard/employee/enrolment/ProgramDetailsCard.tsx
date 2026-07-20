@@ -50,7 +50,7 @@ export function ProgramDetailsCard({ program, showEnrolledBadge = false }: Progr
                         />
                         <DetailField
                              label={t("trainingEnrolment.programDetails.venue")}
-                             value={program.venue || "N/A"}
+                             value={program.venueName || "N/A"}
                         />
                         <DetailField
                              label={t("trainingEnrolment.programDetails.startDate")}

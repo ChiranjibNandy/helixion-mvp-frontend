@@ -6,6 +6,7 @@ export interface createProgramFormData {
   startDate: string;
   endDate: string;
   venue: string;
+  city: string;
   stayTypes: StayType[];
   brochureFile: File | null;
   minParticipants: string;
@@ -17,6 +18,7 @@ export const INITIAL_FORM_STATE: createProgramFormData = {
   startDate: "",
   endDate: "",
   venue: "",
+  city: "",
   stayTypes: structuredClone(STAY_TYPES),
   brochureFile: null,
   minParticipants: "",

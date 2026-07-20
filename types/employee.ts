@@ -27,7 +27,7 @@ export interface ListedProgram {
   title: string;
   startDate: string;
   endDate: string;
-  venue: string;
+  venueName: string;
   status: 'Enrolled' | 'Pending' | 'Open' | 'Approved' | 'Rejected';
 }
 

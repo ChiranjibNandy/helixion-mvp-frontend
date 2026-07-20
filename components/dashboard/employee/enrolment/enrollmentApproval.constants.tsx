@@ -18,36 +18,46 @@ export const getStatusMessage = (enrollment: any, t: (key: string) => string) =>
     if (stage === ENROLLMENT_STAGE.MANAGER_REVIEW) {
         return t("approvalProgress.statusMessages.managerReview");
     }
-    if (stage === ENROLLMENT_STAGE.TRAINING_DEPT_APPROVAL) {
+    if (stage === ENROLLMENT_STAGE.TRAINING_DEPT_REVIEW) {
         return t("approvalProgress.statusMessages.hrReview");
     }
-    if (stage === ENROLLMENT_STAGE.OSD_REVIEW) {
-        return t("approvalProgress.statusMessages.osdReview");
+    if (stage === ENROLLMENT_STAGE.TOUR_PENDING_EMPLOYEE || stage === ENROLLMENT_STAGE.TOUR_MANAGER_REVIEW || stage === ENROLLMENT_STAGE.TOUR_CTD_REVIEW) {
+        return t("approvalProgress.statusMessages.ctdTourReview");
     }
-    if (stage === ENROLLMENT_STAGE.ATTENDANCE) {
+    if (stage === ENROLLMENT_STAGE.ATTENDED || stage === ENROLLMENT_STAGE.ABSENT) {
         return t("approvalProgress.statusMessages.attendance");
     }
-    if (stage === ENROLLMENT_STAGE.REIMBURSEMENT) {
+    if (stage === ENROLLMENT_STAGE.REIMBURSEMENT_SUBMITTED || stage === ENROLLMENT_STAGE.REIMBURSEMENT_MANAGER_REVIEW || stage === ENROLLMENT_STAGE.REIMBURSEMENT_OSD_REVIEW) {
         return t("approvalProgress.statusMessages.reimbursement");
     }
-    if (stage === ENROLLMENT_STAGE.CREDITED) {
+    if (stage === ENROLLMENT_STAGE.COMPLETED) {
         return t("approvalProgress.statusMessages.credited");
+    }
+    if (stage === ENROLLMENT_STAGE.REJECTED) {
+        return t("approvalProgress.statusMessages.rejected");
     }
     return t("approvalProgress.statusMessages.default");
 };
 
-const getBadgeStatus = (status: string) => {
-    if (status === "pending") return "pending";
-    if (status === "active") return "in_progress";
-    if (status === "completed") return "completed";
-    return "pending";
+// The list's Status column reads `currentStage` (the real API field —
+// there's no separate `status` field on an enrollment) and buckets the
+// granular workflow stage into one of four simplified badge states.
+// "active" (green) is used for Completed/Approved rather than "completed"
+// (blue) specifically because Badge's "completed" and "in_progress" share
+// the same blue background — using them together made Approved and
+// In Progress rows visually indistinguishable.
+const getBadgeStatus = (stage: string) => {
+    if (stage === ENROLLMENT_STAGE.COMPLETED || stage === ENROLLMENT_STAGE.APPROVED) return "active";
+    if (stage === ENROLLMENT_STAGE.SUBMITTED) return "pending";
+    return "in_progress";
 };
 
-const getBadgeLabel = (status: string) => {
-    if (status === "pending") return "Pending";
-    if (status === "active") return "In Progress";
-    if (status === "completed") return "Completed";
-    return status;
+const getBadgeLabel = (stage: string) => {
+    if (stage === ENROLLMENT_STAGE.REJECTED) return "Rejected";
+    if (stage === ENROLLMENT_STAGE.COMPLETED) return "Completed";
+    if (stage === ENROLLMENT_STAGE.APPROVED) return "Approved";
+    if (stage === ENROLLMENT_STAGE.SUBMITTED) return "Pending";
+    return "In Progress";
 };
 
 export const createEnrollmentColumns = (t: (key: string) => string) => [
@@ -81,18 +91,47 @@ export const createEnrollmentColumns = (t: (key: string) => string) => [
         className: "text-sm text-textSidebarMuted py-4",
         render: (enrollment: any) => {
             const program = getProgramDetails(enrollment);
-            return program?.city || program?.venue || "N/A";
+            return program?.city || program?.venueName || "N/A";
+        },
+    },
+    {
+        key: "tourFormRequired",
+        header: t("approvalProgress.enrolledPrograms.columns.tourFormRequired"),
+        className: "py-4",
+        render: (enrollment: any) => {
+            if (enrollment.currentStage === ENROLLMENT_STAGE.TOUR_PENDING_EMPLOYEE) {
+                return (
+                    <Badge status="pending" className="capitalize px-3 py-1">
+                        Required
+                    </Badge>
+                );
+            }
+            if (enrollment.tour?.status && enrollment.tour.status !== "not_required") {
+                return (
+                    <Badge status="active" className="capitalize px-3 py-1">
+                        Submitted
+                    </Badge>
+                );
+            }
+            return <span className="text-sm text-textSidebarMuted">Not Required</span>;
         },
     },
     {
         key: "status",
         header: t("approvalProgress.enrolledPrograms.columns.status"),
         className: "py-4",
-        render: (enrollment: any) => (
-            <Badge status={getBadgeStatus(enrollment.status) as any} className="capitalize px-3 py-1">
-                {getBadgeLabel(enrollment.status)}
-            </Badge>
-        ),
+        render: (enrollment: any) => {
+            const isRejected = enrollment.currentStage === ENROLLMENT_STAGE.REJECTED;
+            return (
+                <Badge
+                    variant={isRejected ? "destructive" : "default"}
+                    status={isRejected ? undefined : (getBadgeStatus(enrollment.currentStage) as any)}
+                    className="capitalize px-3 py-1"
+                >
+                    {getBadgeLabel(enrollment.currentStage)}
+                </Badge>
+            );
+        },
     },
     {
         key: "chevron",

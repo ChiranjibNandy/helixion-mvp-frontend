@@ -9,7 +9,7 @@ import { providerService, BulkUploadResult } from '@/services/provider.service';
 import { t } from '@/lib/i18n';
 import { toast } from 'sonner';
 import Papa from 'papaparse';
-import { PROGRAM_CSV_COLUMNS, SAMPLE_CSV_ROW } from '@/constants/provider';
+import { PROGRAM_CSV_COLUMNS, OPTIONAL_CSV_COLUMNS, SAMPLE_CSV_ROW } from '@/constants/provider';
 
 
 import UploadHeader from './UploadHeader';
@@ -55,7 +55,7 @@ export default function BulkProgramUpload() {
 
         const headers = results.meta?.fields || [];
         for (const col of PROGRAM_CSV_COLUMNS) {
-          if (col !== 'brochureUrl' && !headers.includes(col)) {
+          if (!(OPTIONAL_CSV_COLUMNS as readonly string[]).includes(col) && !headers.includes(col)) {
             alert('please fill all the required fields');
             return;
           }
@@ -65,7 +65,7 @@ export default function BulkProgramUpload() {
         for (const row of results.data as any[]) {
           if (!row || typeof row !== 'object') continue;
           for (const col of PROGRAM_CSV_COLUMNS) {
-            if (col !== 'brochureUrl') {
+            if (!(OPTIONAL_CSV_COLUMNS as readonly string[]).includes(col)) {
               const val = row[col];
               if (val === undefined || val === null || String(val).trim() === '') {
                 hasMissingFields = true;
