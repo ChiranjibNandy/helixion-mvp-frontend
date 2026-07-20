@@ -9,12 +9,13 @@ import { t } from '@/lib/i18n';
 import { AppAlert } from '@/components/shared/app-alert';
 import { StayTypeSelector } from './StayTypeSelector';
 import { BrochureDownloadLink } from './BrochureDownloadLink';
+import { getStayOptionPrice } from '@/utils/formatters';
 
 function buildStayOptions(program: AvailableProgram): StayOption[] {
   return ([
-    { key: 'single_occupancy' as StayTypeKey, label: t('programme.list.stayTypeSingle'),         fee: program.singleOccupancyFee },
-    { key: 'twin_sharing'     as StayTypeKey, label: t('programme.list.stayTypeTwin'),            fee: program.twinSharingFee },
-    { key: 'non_residential'  as StayTypeKey, label: t('programme.list.stayTypeNonResidential'), fee: program.nonResidentialFee },
+    { key: 'single_occupancy' as StayTypeKey, label: t('programme.list.stayTypeSingle'),         fee: getStayOptionPrice(program.stayOptions, 'single_occupancy') },
+    { key: 'twin_sharing'     as StayTypeKey, label: t('programme.list.stayTypeTwin'),            fee: getStayOptionPrice(program.stayOptions, 'twin_sharing') },
+    { key: 'non_residential'  as StayTypeKey, label: t('programme.list.stayTypeNonResidential'), fee: getStayOptionPrice(program.stayOptions, 'non_residential') },
   ] as { key: StayTypeKey; label: string; fee: number | undefined }[])
     .filter((o): o is StayOption => o.fee !== undefined && o.fee !== null);
 }
@@ -33,7 +34,7 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
             <p className="text-[10px] font-semibold tracking-widest uppercase text-white/30 mb-1">
               {t('programme.list.detailVenueLabel')}
             </p>
-            <p className="text-[13px] text-white">{program.venue}</p>
+            <p className="text-[13px] text-white">{program.venueName}</p>
           </div>
 
           {stayOptions.length > 0 && (

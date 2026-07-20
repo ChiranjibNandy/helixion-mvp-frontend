@@ -77,7 +77,12 @@ export const USER_ROLES = {
   ADMIN: 'admin',
   USER: 'user',
   EMPLOYEE: 'employee',
-  TRAINING_PROVIDER: 'training-provider',
+  // Must match the backend's ORG_ROLE.TRAINING_PROVIDER enum value exactly
+  // (helixion-mvp-backend/src/constants/enum.ts) — the backend's User schema
+  // also still accepts the legacy hyphenated "training-provider" for
+  // backward compat, but that's not what any current signup/seed/approval
+  // path actually writes, so this constant must track the real one.
+  TRAINING_PROVIDER: 'training_provider',
   MANAGER: 'manager',
 } as const;
 

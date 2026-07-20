@@ -104,7 +104,7 @@ export default function AppModal({
       onClick={handleOverlayClick}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
     >
-      <div className={cn("w-full max-w-md rounded-2xl bg-[#1a1b25] border border-white/10 shadow-2xl p-7 animate-in fade-in zoom-in-95", className)}>
+      <div className={cn("w-full max-w-md max-h-[94vh] overflow-y-auto rounded-2xl bg-[#1a1b25] border border-white/10 shadow-2xl p-6 animate-in fade-in zoom-in-95", className)}>
         {children ? (
           <>
             <div className="flex items-center justify-between mb-5">

@@ -105,7 +105,7 @@ export default function EnrollmentApprovalProgressView() {
                             <div className="flex flex-col items-center justify-center p-6 mt-4 border border-borderCard rounded-xl bg-bgMain text-center space-y-4">
                                 <h3 className="text-lg font-semibold text-white">Tour Form Required</h3>
                                 <p className="text-sm text-textSidebarMuted">
-                                    Your enrollment has been approved by the CTD. Please submit your tour details to proceed.
+                                    Your enrollment has been approved. Please submit your tour details to proceed.
                                 </p>
                                 <button
                                     onClick={() => setIsTourModalOpen(true)}

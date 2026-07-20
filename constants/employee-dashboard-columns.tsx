@@ -18,7 +18,7 @@ export const EMPLOYEE_PROGRAM_COLUMNS = [
   {
     key: 'venue',
     header: t('table.venue'),
-    render: (program: ListedProgram) => program.venue,
+    render: (program: ListedProgram) => program.venueName,
   },
   {
     key: 'status',

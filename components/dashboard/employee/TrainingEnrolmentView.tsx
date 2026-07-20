@@ -11,51 +11,31 @@ import {
     getEmployeeProgramById,
     enrollInProgram,
     getEmployeeEnrollments,
-    updateTravelDetails,
     submitEnrollment,
 } from "@/services/employeeService";
 import { StepperHeader } from "./enrolment/StepperHeader";
 import { ProgramDetailsCard } from "./enrolment/ProgramDetailsCard";
 import { StayTypeCard } from "./enrolment/StayTypeCard";
-import { TravelDetailsForm } from "./enrolment/TravelDetailsForm";
 import { ReviewEnrolmentCard } from "./enrolment/ReviewEnrolmentCard";
-import { BookingRow, TourFormState } from "@/types";
-import { EMPTY_BOOKING_ROW } from "@/constants/employee";
-import { tourSubmissionSchema } from "@/validations/employee";
+import { getStayOptionPrice } from "@/utils/formatters";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
 const STAY_TYPES = [
-    { key: "single_occupancy", labelKey: "trainingEnrolment.programDetails.singleOccupancy", feeField: "singleOccupancyFee" },
-    { key: "twin_sharing", labelKey: "trainingEnrolment.programDetails.twinSharing", feeField: "twinSharingFee" },
-    { key: "non_residential", labelKey: "trainingEnrolment.programDetails.nonResidential", feeField: "nonResidentialFee" },
+    { key: "single_occupancy", labelKey: "trainingEnrolment.programDetails.singleOccupancy" },
+    { key: "twin_sharing", labelKey: "trainingEnrolment.programDetails.twinSharing" },
+    { key: "non_residential", labelKey: "trainingEnrolment.programDetails.nonResidential" },
 ] as const;
 
+// Travel & Stay details are collected later, after Manager + CTD approve the
+// enrollment (EnrollmentApprovalProgressView / TourSubmissionModal, gated on
+// currentStage === "tour_pending_employee") — not here at initial enrollment.
 const STEPPER_STEPS = [
     { number: 1, labelKey: "trainingEnrolment.stepper.programDetails" },
-    { number: 2, labelKey: "trainingEnrolment.stepper.travelStay" },
-    { number: 3, labelKey: "trainingEnrolment.stepper.reviewSubmit" },
+    { number: 2, labelKey: "trainingEnrolment.stepper.reviewSubmit" },
 ] as const;
-
-/* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
-/* ------------------------------------------------------------------ */
-
-const formatDate = (dateString?: string | Date): string => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return String(dateString);
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return `${date.getDate()}-${months[date.getMonth()]}-${date.getFullYear()}`;
-};
-
-const createBookingRow = (overrides: Partial<Omit<BookingRow, "id">> = {}): BookingRow => ({
-    ...EMPTY_BOOKING_ROW,
-    ...overrides,
-    id: crypto.randomUUID(),
-});
 
 /* ------------------------------------------------------------------ */
 /*  Main component                                                     */
@@ -72,7 +52,6 @@ export default function TrainingEnrolmentView() {
     const [enrollmentId, setEnrollmentId] = useState<string | null>(null);
     const [activeStep, setActiveStep] = useState(1);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
-    const [validationError, setValidationError] = useState<string | null>(null);
 
     /* ── Step 1 state ── */
     const [stayType, setStayType] = useState("twin_sharing");
@@ -96,17 +75,6 @@ export default function TrainingEnrolmentView() {
         }
     }, [router]);
 
-    /* ── Step 2 state ── */
-    const [tourForm, setTourForm] = useState<TourFormState>({
-        travelType: "company_assisted",
-        placeOfTour: "",
-        frequentFlyerNo: "",
-        modeOfTravel: "flight",
-        purpose: "To Attend Training Program",
-        advancePaymentRequired: 0,
-        bookingDetails: [],
-    });
-
     /* ── Data loading ── */
     useEffect(() => {
         if (!programId) return;
@@ -128,51 +96,14 @@ export default function TrainingEnrolmentView() {
                         existing.stayType || existing.travelAndStay?.stayType || "twin_sharing"
                     );
 
-                    if (existing.travelAndStay) {
-                        const ts = existing.travelAndStay;
-                        setTourForm((prev) => ({
-                            ...prev,
-                            placeOfTour: ts.placeOfTour || progData.city || "",
-                            frequentFlyerNo: ts.frequentFlyerNo || "",
-                            modeOfTravel: ts.modeOfTravel || "flight",
-                            purpose: ts.purpose || "To Attend Training Program",
-                            advancePaymentRequired: ts.advancePaymentRequired || 0,
-                            bookingDetails: ts.bookingDetails?.length
-                                ? ts.bookingDetails.map((b: any) => ({
-                                      id: b.id || crypto.randomUUID(),
-                                      ...b,
-                                      travelDate: b.travelDate
-                                          ? new Date(b.travelDate).toISOString().split("T")[0]
-                                          : "",
-                                  }))
-                                : [],
-                        }));
-                    } else {
-                        setTourForm((prev) => ({
-                            ...prev,
-                            placeOfTour: progData.city || progData.venue || "",
-                        }));
-                    }
-
-                    // Past the initial submission stage → redirect to tracker
+                    // Past the initial submission stage → redirect to the tracker
                     if (existing.currentStage !== "submitted") {
-                        router.push("/dashboard/approvals");
+                        router.push("/dashboard/enrollments");
                         return;
                     }
-                    
-                    const resolvedStayType = existing.stayType || existing.travelAndStay?.stayType || "twin_sharing";
-                    if (resolvedStayType === "non_residential") {
-                        setActiveStep(3);
-                        setShowConfirmModal(true);
-                    } else {
-                        setActiveStep(2);
-                    }
-                } else {
-                    setTourForm((prev) => ({
-                        ...prev,
-                        placeOfTour: progData.city || progData.venue || "",
-                        bookingDetails: [],
-                    }));
+
+                    setActiveStep(2);
+                    setShowConfirmModal(true);
                 }
             } catch (err) {
                 console.error("Failed to load enrollment details:", err);
@@ -191,44 +122,10 @@ export default function TrainingEnrolmentView() {
             setSubmitting(true);
             const result = await enrollInProgram(programId, stayType as any);
             setEnrollmentId(result.enrollmentId);
-            if (stayType === "non_residential") {
-                setActiveStep(3);
-                setShowConfirmModal(true);
-            } else {
-                setActiveStep(2);
-            }
-        } catch (err) {
-            console.error("Failed to create enrollment:", err);
-        } finally {
-            setSubmitting(false);
-        }
-    };
-
-    const handleStep2Submit = async () => {
-        if (!enrollmentId) return;
-        setValidationError(null);
-
-        const validation = tourSubmissionSchema.safeParse(tourForm);
-        if (!validation.success) {
-            const errorMsg = validation.error.errors[0]?.message || "Validation failed";
-            return setValidationError(errorMsg);
-        }
-
-        try {
-            setSubmitting(true);
-            await updateTravelDetails(enrollmentId, {
-                placeOfTour: tourForm.placeOfTour,
-                frequentFlyerNo: tourForm.frequentFlyerNo,
-                modeOfTravel: tourForm.modeOfTravel,
-                purpose: tourForm.purpose,
-                bookingDetails: tourForm.bookingDetails.map(({ id, ...row }) => row),
-                advancePaymentRequired: tourForm.advancePaymentRequired,
-            });
-            setActiveStep(3);
+            setActiveStep(2);
             setShowConfirmModal(true);
         } catch (err) {
-            console.error("Failed to update travel details:", err);
-            setValidationError("Failed to save travel details. Please try again.");
+            console.error("Failed to create enrollment:", err);
         } finally {
             setSubmitting(false);
         }
@@ -240,27 +137,12 @@ export default function TrainingEnrolmentView() {
             setSubmitting(true);
             setShowConfirmModal(false);
             await submitEnrollment(enrollmentId);
-            router.push("/dashboard/approvals");
+            router.push("/dashboard/enrollments");
         } catch (err) {
             console.error("Failed to submit enrollment:", err);
         } finally {
             setSubmitting(false);
         }
-    };
-
-    /* ── Booking row helpers ── */
-    const addBookingRow = () => {
-        setTourForm((prev) => ({
-            ...prev,
-            bookingDetails: [...prev.bookingDetails, createBookingRow()],
-        }));
-    };
-
-    const removeBookingRow = (id: string) => {
-        setTourForm((prev) => ({
-            ...prev,
-            bookingDetails: prev.bookingDetails.filter((row) => row.id !== id),
-        }));
     };
 
     /* ── Loading / Error states ── */
@@ -279,7 +161,7 @@ export default function TrainingEnrolmentView() {
                     <h1 className="text-white text-3xl font-bold font-sans">
                         {t("trainingEnrolment.title")}
                     </h1>
-                </div>Access token is required
+                </div>
 
                 <Card className="bg-bgStatCard border-borderCard p-8 text-center text-white max-w-xl mx-auto space-y-5 rounded-2xl shadow-xl mt-10">
                     <p className="text-textSidebarMuted text-sm">
@@ -332,7 +214,7 @@ export default function TrainingEnrolmentView() {
                                 <StayTypeCard
                                     key={opt.key}
                                     label={t(opt.labelKey)}
-                                    fee={program[opt.feeField]}
+                                    fee={getStayOptionPrice(program?.stayOptions, opt.key) ?? null}
                                     selected={stayType === opt.key}
                                     onSelect={() => setStayType(opt.key)}
                                 />
@@ -362,29 +244,9 @@ export default function TrainingEnrolmentView() {
             )}
 
             {/* ────────────────────────────────────────────────────────── */}
-            {/*  Steps 2 & 3 — Travel Details + Booking                   */}
+            {/*  Step 2 — Review & Submit                                  */}
             {/* ────────────────────────────────────────────────────────── */}
-            {activeStep >= 2 && stayType !== "non_residential" && (
-                <div className="space-y-6 animate-in fade-in-50 duration-300">
-                    <ProgramDetailsCard program={program} showEnrolledBadge />
-
-                    <TravelDetailsForm
-                        tourForm={tourForm}
-                        setTourForm={setTourForm}
-                        addBookingRow={addBookingRow}
-                        removeBookingRow={removeBookingRow}
-                        validationError={validationError}
-                        submitting={submitting}
-                        onBack={() => {
-                            setValidationError(null);
-                            setActiveStep(1);
-                        }}
-                        onSubmit={handleStep2Submit}
-                    />
-                </div>
-            )}
-
-            {activeStep === 3 && stayType === "non_residential" && (
+            {activeStep === 2 && (
                 <div className="space-y-6 animate-in fade-in-50 duration-300">
                     <ProgramDetailsCard program={program} showEnrolledBadge />
 
@@ -396,7 +258,7 @@ export default function TrainingEnrolmentView() {
                 </div>
             )}
 
-            {/* Confirmation Modal (Step 3) */}
+            {/* Confirmation Modal (Step 2) */}
             <AppModal
                 isOpen={showConfirmModal}
                 type="confirm"
@@ -406,14 +268,7 @@ export default function TrainingEnrolmentView() {
                 cancelLabel={t("trainingEnrolment.disagree")}
                 loading={submitting}
                 onConfirm={handleFinalSubmit}
-                onCancel={() => {
-                    setShowConfirmModal(false);
-                    if (stayType === "non_residential") {
-                        setActiveStep(1);
-                    } else {
-                        setActiveStep(2);
-                    }
-                }}
+                onCancel={() => setShowConfirmModal(false)}
             />
         </div>
     );

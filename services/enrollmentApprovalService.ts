@@ -59,18 +59,47 @@ export const takeTourManagerActionAPI = async (
   return res.data;
 };
 
-// OSD Tour Approvals
-export const getOsdTourApprovalsAPI = async () => {
-  const res = await api.get(API.OSD.TOUR_APPROVALS);
+// CTD Main Enrollment Approval (training_dept_review)
+export const getCtdPendingEnrollmentsAPI = async () => {
+  const res = await api.get(API.TRAININGDEPT.PENDING);
   return res.data;
 };
 
-export const takeOsdTourActionAPI = async (
+export const takeCtdJuniorActionAPI = async (
+  enrollmentId: string,
+  note?: string
+) => {
+  const res = await api.patch(API.TRAININGDEPT.JUNIOR_ACTION(enrollmentId), {
+    action: "reviewed",
+    note,
+  });
+  return res.data;
+};
+
+export const takeCtdSeniorActionAPI = async (
   enrollmentId: string,
   action: "approve" | "reject",
   note?: string
 ) => {
-  const res = await api.patch(API.OSD.TOUR_ACTION(enrollmentId), {
+  const res = await api.patch(API.TRAININGDEPT.SENIOR_ACTION(enrollmentId), {
+    action,
+    note,
+  });
+  return res.data;
+};
+
+// CTD Tour Approvals
+export const getCtdTourApprovalsAPI = async () => {
+  const res = await api.get(API.TRAININGDEPT.TOUR_APPROVALS);
+  return res.data;
+};
+
+export const takeCtdTourActionAPI = async (
+  enrollmentId: string,
+  action: "approve" | "reject",
+  note?: string
+) => {
+  const res = await api.patch(API.TRAININGDEPT.TOUR_ACTION(enrollmentId), {
     action,
     note,
   });

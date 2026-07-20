@@ -27,6 +27,7 @@ export interface UpdateDraftPayload {
   startDate?: string;
   endDate?: string;
   venue?: string;
+  city?: string;
   singleOccupancyFee?: number;
   twinSharingFee?: number;
   nonResidentialFee?: number;

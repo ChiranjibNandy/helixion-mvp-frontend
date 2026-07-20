@@ -47,6 +47,8 @@
          "programDates": "Program dates",
          "venue": "Venue",
          "venuePlaceholder": "e.g. Hotel Ritz, Kolkata",
+         "city": "City",
+         "cityPlaceholder": "e.g. Kolkata",
          "stayType": "Stay type",
          "programFee": "Program fee",
          "attachBrochure": "Attach brochure",
@@ -253,7 +255,7 @@
       "sectionDescription": "Upload a CSV to create many programs at once. Preview before publishing.",
       "trySample": "Try sample CSV",
       "dropLabel": "Drop your CSV here, or click to browse",
-      "expectedColumns": "Expected columns: title, startDate, endDate, venue, isResidential, stayType, singleOccupancyFee, twinSharingFee, nonResidentialFee, brochureUrl, minParticipants, maxParticipants, status",
+      "expectedColumns": "Expected columns: title, startDate, endDate, venue, city, state (optional), isResidential, stayType (single_occupancy/twin_sharing), singleOccupancyFee, twinSharingFee, nonResidentialFee, brochureUrl (optional), minParticipants, maxParticipants, status",
       "footerHint": "Max 500 rows per file - Duplicates will be flagged in preview",
       "preview": "Preview: {fileName} (Showing top 5 rows)",
       "publishButton": "Save to drafts",
@@ -284,6 +286,7 @@
       "columnStartDate": "START DATE",
       "columnEndDate": "END DATE",
       "columnVenue": "VENUE",
+      "columnCity": "CITY",
       "columnFee": "FEE",
       "columnStatus": "STATUS",
       "columnActions": "ACTIONS",
@@ -306,6 +309,7 @@
       "labelStartDate": "Start / Check-in date",
       "labelEndDate": "End / Check-out date",
       "labelVenue": "Venue",
+      "labelCity": "City",
       "labelStayTypeFees": "Stay type & fees",
       "labelResidential": "Residential",
       "labelNonResidential": "Non-Residential",
@@ -425,8 +429,7 @@
          "programsCompleted": "Programs Completed",
          "programsEnrolled": "Programs Enrolled",
          "pendingApprovals": "Pending Approvals",
-         "completedSubtitle": "+3 this quarter",
-         "enrolledInProgress": "{{count}} in progress",
+         "enrolledInProgress": "{count} in progress",
          "pendingSubtitle": "Awaiting manager"
       },
       "quickActions": {
@@ -555,9 +558,9 @@
       "agree": "Agree",
       "disagree": "Disagree",
       "confirmSubmission": "Confirm Submission",
-      "confirmSubmissionDesc": "Are you sure you want to submit the enrolment and tour approval form?",
+      "confirmSubmissionDesc": "Are you sure you want to submit this enrolment for manager approval?",
       "reviewEnrolmentTitle": "Review Enrolment",
-      "reviewEnrolmentDescription": "You have selected the Non-Residential stay option. No travel tour or travel bookings are required for this program."
+      "reviewEnrolmentDescription": "Your enrolment will be sent for Manager and Training Dept approval. If your training requires travel, you'll be asked to fill in travel details once it's approved."
    },
    "approvalProgress": {
       "breadcrumb": {
@@ -571,7 +574,7 @@
          "submitted": "Application Submitted",
          "manager": "Approved by Reporting Manager",
          "hrReview": "CTD Review",
-         "osdReview": "OSD Review",
+         "ctdTourReview": "Final Travel Approval",
          "reimbursementSubmitted": "Reimbursement Form Submitted",
          "credited": "Reimbursement Credited to Bank Account"
       },
@@ -580,10 +583,11 @@
          "submitted": "Your enrollment request has been initialized. Please complete travel and stay details to submit for review.",
          "managerReview": "Your application has been submitted and is currently awaiting approval from your Reporting Manager.",
          "hrReview": "Your application has been approved by your manager and is currently under CTD review.",
-         "osdReview": "Your application has been approved by CTD and is currently under OSD review.",
+         "ctdTourReview": "Your enrollment has been approved and your travel request is being reviewed.",
          "attendance": "Your attendance for the training has been recorded! You can now submit your reimbursement claim.",
          "reimbursement": "Your reimbursement claim has been submitted and is under financial audit/review.",
          "credited": "Congratulations! Your reimbursement has been approved and successfully credited to your bank account.",
+         "rejected": "Your enrollment request was not approved. Please contact your reporting manager for more details.",
          "default": "Track the status of your training program enrollment request above."
       },
       "enrolledPrograms": {
@@ -594,6 +598,7 @@
             "fromDate": "From Date",
             "toDate": "To Date",
             "venueCity": "Venue/City",
+            "tourFormRequired": "Tour Form Required",
             "status": "Status"
          }
       }

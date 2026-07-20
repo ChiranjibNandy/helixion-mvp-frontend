@@ -93,7 +93,7 @@ export function ProgramListTable({
                         })
                       : "-"}
                   </TableCell>
-                  <TableCell>{prog.venue}</TableCell>
+                  <TableCell>{prog.venueName}</TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"

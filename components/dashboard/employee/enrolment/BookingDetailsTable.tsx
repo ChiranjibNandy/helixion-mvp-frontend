@@ -33,7 +33,7 @@ export function BookingDetailsTable({
     const totalColumns = showFlightSpecificColumns ? baseColumnCount + 2 : baseColumnCount;
 
     return (
-        <div className="space-y-4 pt-2">
+        <div className="space-y-2 pt-1">
             <div className="flex items-center justify-between">
                 <h3 className="text-base font-bold text-white">
                     {t("trainingEnrolment.bookingDetails.title")}
@@ -49,7 +49,7 @@ export function BookingDetailsTable({
                 </button>
             </div>
 
-            <div className="rounded-xl border border-borderCard overflow-hidden">
+            <div className="rounded-xl border border-borderCard overflow-x-auto">
                 <Table>
                     <TableHeader className="bg-white/5">
                         <TableRow className="border-borderCard hover:bg-transparent">
@@ -83,7 +83,7 @@ export function BookingDetailsTable({
                             <TableRow className="border-borderCard hover:bg-transparent">
                                 <TableCell
                                     colSpan={totalColumns}
-                                    className="text-center text-xs text-textSidebarMuted py-6"
+                                    className="text-center text-xs text-textSidebarMuted py-3"
                                 >
                                     No travel routes added yet.
                                 </TableCell>

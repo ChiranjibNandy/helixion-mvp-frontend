@@ -45,12 +45,12 @@ export function TravelDetailsForm({
     };
     return (
         <Card className="bg-bgStatCard border-borderCard">
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="p-5 space-y-4">
                 <h2 className="text-lg font-bold text-white">
                     {t("trainingEnrolment.tourApproval.title")}
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-1.5">
                         <Label className="text-xs text-textSidebarMuted">
                             {t("trainingEnrolment.tourApproval.placeOfTour")}
@@ -72,9 +72,6 @@ export function TravelDetailsForm({
                             className="bg-bgMain border-borderCard text-white"
                         />
                     </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-1.5">
                         <Label className="text-xs text-textSidebarMuted">
                             {t("trainingEnrolment.tourApproval.modeOfTravel")}
@@ -90,6 +87,9 @@ export function TravelDetailsForm({
                             </SelectContent>
                         </Select>
                     </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-1.5">
                         <Label className="text-xs text-textSidebarMuted">
                             {t("trainingEnrolment.tourApproval.tourPurpose")}
@@ -100,18 +100,6 @@ export function TravelDetailsForm({
                             className="bg-bgMain border-borderCard text-white"
                         />
                     </div>
-                </div>
-
-                <BookingDetailsTable
-                    modeOfTravel={modeOfTravel}
-                    bookingDetails={bookingDetails}
-                    addBookingRow={addBookingRow}
-                    removeBookingRow={removeBookingRow}
-                    updateBookingField={updateBookingField}
-                />
-
-                {/* Advance Payment */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-1.5">
                         <Label className="text-xs text-textSidebarMuted">
                             {t("trainingEnrolment.advancePayment", { amount: "" })}
@@ -128,14 +116,22 @@ export function TravelDetailsForm({
                     </div>
                 </div>
 
+                <BookingDetailsTable
+                    modeOfTravel={modeOfTravel}
+                    bookingDetails={bookingDetails}
+                    addBookingRow={addBookingRow}
+                    removeBookingRow={removeBookingRow}
+                    updateBookingField={updateBookingField}
+                />
+
                 {validationError && (
-                    <div className="p-4 rounded-xl bg-accentRed/10 border border-accentRed/20 text-accentRed text-sm font-semibold animate-in fade-in duration-200">
+                    <div className="p-3 rounded-xl bg-accentRed/10 border border-accentRed/20 text-accentRed text-sm font-semibold animate-in fade-in duration-200">
                         {validationError}
                     </div>
                 )}
 
                 {/* Action buttons */}
-                <div className="flex items-center justify-between pt-4 border-t border-borderCard">
+                <div className="flex items-center justify-between pt-3 border-t border-borderCard">
                     <Button
                         variant="outline"
                         onClick={onBack}

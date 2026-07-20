@@ -41,7 +41,10 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
         return user.permissions.canRecommend;
       }
       if (item.key === 'tourApprovals') {
-        return user.permissions.canRecommend || user.permissions.canReviewOsd || user.permissions.canApproveOsd;
+        return user.permissions.canRecommend || user.permissions.canApproveTourCtd;
+      }
+      if (item.key === 'ctdApprovals') {
+        return user.permissions.canApproveTrainingDept;
       }
       return true;
     }),

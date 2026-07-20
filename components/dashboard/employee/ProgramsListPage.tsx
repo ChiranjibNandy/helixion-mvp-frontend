@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { getAvailablePrograms, enrollInProgram, getEmployeeEnrollments } from '@/services/employeeService';
+import { getAvailablePrograms, enrollInProgram, submitEnrollment, getEmployeeEnrollments } from '@/services/employeeService';
 import SearchInput from '@/components/ui/search-input';
 import type { AvailableProgram, StayTypeKey } from '@/types';
 import type { Filters } from '@/types/employee-programs';
@@ -52,7 +52,7 @@ const COLUMNS = [
     header: t('programme.list.columnVenue'),
     headerClassName: HEADER_CLASS,
     className: 'text-white/60 text-[13px]',
-    render: (prog: AvailableProgram) => prog.venue,
+    render: (prog: AvailableProgram) => prog.venueName,
   },
   {
     key: 'provider',
@@ -142,8 +142,25 @@ export function ProgramsListPage() {
     setPage(1);
   }
 
-  function handleEnrol(programId: string, stayType: StayTypeKey) {
-    router.push(`/dashboard/enrollments?programId=${programId}&stayType=${stayType}`);
+  async function handleEnrol(programId: string, stayType: StayTypeKey) {
+    setEnrollingId(programId);
+    setEnrollErrors((prev) => {
+      const next = { ...prev };
+      delete next[programId];
+      return next;
+    });
+    try {
+      const { enrollmentId } = await enrollInProgram(programId, stayType);
+      await submitEnrollment(enrollmentId);
+      router.push('/dashboard/enrollments');
+    } catch (err: any) {
+      setEnrollErrors((prev) => ({
+        ...prev,
+        [programId]: err?.response?.data?.message || err?.message || t('programme.list.fetchError'),
+      }));
+    } finally {
+      setEnrollingId(null);
+    }
   }
 
   const totalPages = Math.ceil(total / PAGE_SIZE) || 1;

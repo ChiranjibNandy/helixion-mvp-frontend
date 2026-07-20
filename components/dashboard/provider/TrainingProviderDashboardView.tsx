@@ -13,6 +13,7 @@ import { getProviderDashboardStats } from "@/constants/provider-dashboard-stats"
 import { PROVIDER_PROGRAM_COLUMNS } from "@/constants/provider-program-columns";
 import { getProviderQuickActions } from "@/constants/provider-quick-actions";
 import { Plus } from "lucide-react";
+import { ROUTES } from "@/constants/navigation";
 import Link from "next/link";
 
 export default function TrainingProviderDashboardView({ name }: { name: string }) {
@@ -93,7 +94,7 @@ export default function TrainingProviderDashboardView({ name }: { name: string }
             subtitle="Upcoming programs available for enrollment"
             action={
               <Button asChild variant="ghost" size="sm">
-                <Link href="/employee/programs">
+                <Link href={ROUTES.PROVIDER.PROGRAMS.ROOT}>
                   View all →
                 </Link>
               </Button>

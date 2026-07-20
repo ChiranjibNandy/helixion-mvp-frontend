@@ -29,13 +29,8 @@ export function UpdateAttendanceListPage() {
       const res = await attendanceService.getPrograms(page, limit);
       const payload = res.data ?? res;
       const allPrograms = payload.programs ?? [];
-      const now = Date.now();
-      const filteredPrograms = allPrograms.filter((p: any) => {
-        if (!p.endDate) return false;
-        return new Date(p.endDate).getTime() <= now;
-      });
 
-      setPrograms(filteredPrograms);
+      setPrograms(allPrograms);
       setTotal(payload.total ?? 0);
     } catch (error) {
       console.error("Failed to fetch programs", error);

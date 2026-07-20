@@ -18,11 +18,15 @@ import { EMPLOYEE_PROGRAM_COLUMNS } from "@/constants/employee-dashboard-columns
 import { getEmployeeDashboardStats } from "@/utils/employee-dashboard";
 import { getQuickActions } from "@/constants/employee-quick-actions";
 import { ROUTES } from "@/constants/navigation";
+import PaginationController from "@/components/ui/pagination";
+
+const LISTED_PROGRAMS_PAGE_SIZE = 10;
 
 export default function EmployeeDashboardView({ name }: { name: string }) {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);
+  const [listedProgramsPage, setListedProgramsPage] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +67,13 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
   const stats = getEmployeeDashboardStats(data.summary ?? data);
   const quickActions = getQuickActions();
 
+  const listedPrograms: ListedProgram[] = data.listedPrograms ?? [];
+  const listedProgramsTotalPages = Math.ceil(listedPrograms.length / LISTED_PROGRAMS_PAGE_SIZE) || 1;
+  const pagedListedPrograms = listedPrograms.slice(
+    (listedProgramsPage - 1) * LISTED_PROGRAMS_PAGE_SIZE,
+    listedProgramsPage * LISTED_PROGRAMS_PAGE_SIZE
+  );
+
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between">
@@ -94,17 +105,24 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
             subtitle={t('table.listedSubtitle')}
             action={
               <Button asChild variant="ghost" size="sm">
-                <Link href="/employee/programs">
+                <Link href={ROUTES.EMPLOYEE.PROGRAMS}>
                   {t('table.viewAll')}
                 </Link>
               </Button>
             }
           >
             <DataTable<ListedProgram>
-              data={data.listedPrograms}
+              data={pagedListedPrograms}
               columns={EMPLOYEE_PROGRAM_COLUMNS}
               emptyMessage={t('table.noPrograms')}
             />
+            {listedProgramsTotalPages > 1 && (
+              <PaginationController
+                page={listedProgramsPage}
+                totalPages={listedProgramsTotalPages}
+                onPageChange={setListedProgramsPage}
+              />
+            )}
           </DashboardSectionCard>
         </div>
         <div>

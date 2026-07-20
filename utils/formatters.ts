@@ -60,9 +60,13 @@ export const toDisplayDate = (iso: string): string => {
   return `${d}-${m}-${y}`;
 };
 
-export function formatDateRange(startDate: string, endDate: string): string {
+export function formatDateRange(startDate?: string, endDate?: string): string {
+  if (!startDate || !endDate) return "—";
+
   const start = new Date(startDate);
   const end = new Date(endDate);
+
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) return "—";
 
   const startDay = start.getDate();
   const endDay = end.getDate();
@@ -86,3 +90,12 @@ export const formatDateHyphenated = (dateString?: string | Date): string => {
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   return `${date.getDate()}-${months[date.getMonth()]}-${date.getFullYear()}`;
 };
+
+// Program.stayOptions is a {type, price}[] array on the backend — this pulls
+// out a single tier's price the way the UI's three fixed fee inputs
+// (single/twin/non-residential) expect, since the form itself still models
+// stay pricing as three flat fields rather than the array directly.
+export const getStayOptionPrice = (
+  stayOptions: { type: string; price: number }[] | undefined,
+  type: string
+): number | undefined => stayOptions?.find((o) => o.type === type)?.price;

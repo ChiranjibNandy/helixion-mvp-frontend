@@ -12,10 +12,10 @@ export const NOTIFICATION_TYPE = {
   REIMBURSEMENT_REJECTED:   'reimbursement_rejected',
   SELF_TRAVEL_SELECTED:     'self_travel_selected',
   TRAVEL_REQUEST_SUBMITTED: 'travel_request_submitted',
-  TRAVEL_UNDER_OSD_REVIEW:  'travel_under_osd_review',
+  TRAVEL_UNDER_CTD_REVIEW:  'travel_under_ctd_review',
   TRAVEL_REJECTED_BY_MANAGER: 'travel_rejected_by_manager',
   TRAVEL_APPROVED:          'travel_approved',
-  TRAVEL_REJECTED_BY_OSD:   'travel_rejected_by_osd',
+  TRAVEL_REJECTED_BY_CTD:   'travel_rejected_by_ctd',
   TRAVEL_TIMED_OUT:         'travel_timed_out',
 } as const;
 
@@ -28,9 +28,9 @@ export const NOTIFICATION_DOT_COLORS: Record<string, string> = {
   [NOTIFICATION_TYPE.REIMBURSEMENT_REJECTED]:   'bg-accentRed',
   [NOTIFICATION_TYPE.SELF_TRAVEL_SELECTED]:     'bg-primary',
   [NOTIFICATION_TYPE.TRAVEL_REQUEST_SUBMITTED]: 'bg-primary',
-  [NOTIFICATION_TYPE.TRAVEL_UNDER_OSD_REVIEW]:  'bg-primary',
+  [NOTIFICATION_TYPE.TRAVEL_UNDER_CTD_REVIEW]:  'bg-primary',
   [NOTIFICATION_TYPE.TRAVEL_REJECTED_BY_MANAGER]: 'bg-accentRed',
   [NOTIFICATION_TYPE.TRAVEL_APPROVED]:          'bg-accentGreen',
-  [NOTIFICATION_TYPE.TRAVEL_REJECTED_BY_OSD]:   'bg-accentOrange',
+  [NOTIFICATION_TYPE.TRAVEL_REJECTED_BY_CTD]:   'bg-accentOrange',
   [NOTIFICATION_TYPE.TRAVEL_TIMED_OUT]:         'bg-accentOrange',
 };

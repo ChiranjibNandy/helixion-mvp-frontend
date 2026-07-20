@@ -11,8 +11,6 @@ export function getEmployeeDashboardStats(summary?: {
     {
       title: t('employeeDashboard.stats.programsCompleted'),
       value: s.programsCompleted ?? 0,
-      subtitle: t('employeeDashboard.stats.completedSubtitle'),
-      subtitleColor: 'text-emerald-400',
       icon: <CheckCircle className="w-5 h-5 text-emerald-400" />,
       iconBg: 'bg-emerald-500/15',
     },

@@ -5,6 +5,7 @@ export interface CreateProgramPayload {
   startDate?: string;
   endDate?: string;
   venue?: string;
+  city?: string;
 
   singleOccupancyFee?: number;
   twinSharingFee?: number;

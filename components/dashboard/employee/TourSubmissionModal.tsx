@@ -82,10 +82,10 @@ export function TourSubmissionModal({ enrollmentId, isOpen, onClose, onSuccess }
             isOpen={isOpen}
             onClose={onClose}
             title="Submit Tour Form"
-            className="max-w-4xl"
+            className="w-[90vw] max-w-6xl"
         >
-            <div className="space-y-6">
-                <div className="flex gap-4 p-4 border border-borderCard rounded-xl bg-bgMain">
+            <div className="space-y-4">
+                <div className="flex gap-4 p-3 border border-borderCard rounded-xl bg-bgMain">
                     {TRAVEL_TYPES.map((type) => (
                         <label key={type.value} className="flex items-center gap-2 text-white text-sm cursor-pointer">
                             <input
