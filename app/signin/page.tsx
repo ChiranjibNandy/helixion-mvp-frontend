@@ -83,13 +83,13 @@ function RightPanel() {
 
       if (res.data.success) {
         setAllowSave(true);
-        const { accessToken, role } = res.data;
+        const { accessToken, orgRole } = res.data;
 
         if (accessToken) {
           await setAccessToken(accessToken);
         }
 
-        if (role === USER_ROLES.ADMIN) {
+        if (orgRole === USER_ROLES.ADMIN) {
           router.push(ROUTES.DASHBOARD.ADMIN);
         } else {
           router.push(ROUTES.DASHBOARD.ROOT);
