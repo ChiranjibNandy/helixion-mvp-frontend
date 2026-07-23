@@ -32,15 +32,18 @@ export const ROLE_LABEL: Record<string, string> = {
   training_provider: 'TRAINING PROVIDER',
 };
 
+// 'Profile' and 'Reports' are commented out (not deleted) — neither page
+// exists anywhere under app/dashboard/**, so both links 404'd for every
+// employee/manager. Uncomment once the pages are actually built.
 const SHARED_NAV_ITEMS = (): NavSection['items'] => [
   { label: 'Dashboard', key: 'dashboard', href: '/dashboard', icon: 'layout-dashboard' },
-  { label: 'Profile', key: 'profile', href: '/dashboard/profile', icon: 'user' },
+  // { label: 'Profile', key: 'profile', href: '/dashboard/profile', icon: 'user' },
   { label: 'Programs', key: 'programs', href: '/dashboard/programs', icon: 'book-open' },
   { label: 'Enrollments', key: 'enrollments', href: '/dashboard/enrollments', icon: 'download' },
   { label: 'Approvals', key: 'approvals', href: '/dashboard/approvals', icon: 'clipboard-check' },
   { label: 'Tour Approvals', key: 'tourApprovals', href: '/dashboard/tour-approvals', icon: 'plane' },
   { label: 'CTD Approvals', key: 'ctdApprovals', href: '/dashboard/ctd-approvals', icon: 'clipboard-check' },
-  { label: 'Reports', key: 'reports', href: '/dashboard/reports', icon: 'bar-chart-3' },
+  // { label: 'Reports', key: 'reports', href: '/dashboard/reports', icon: 'bar-chart-3' },
 ];
 
 export const buildNavSections = (): NavSection[] => [

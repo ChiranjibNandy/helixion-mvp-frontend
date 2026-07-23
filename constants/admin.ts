@@ -55,6 +55,9 @@ export const DATE_FORMATS = {
 
 // constants/admin.ts
 
+// Items below are commented out (not deleted) because no corresponding page
+// exists under app/admin/** — every one of them 404'd. Uncomment an entry
+// once its page is actually built.
 export const ADMIN_NAV_SECTION: NavSection[] = [
   {
     category: NAV_SECTIONS.OVERVIEW,
@@ -65,35 +68,35 @@ export const ADMIN_NAV_SECTION: NavSection[] = [
         href: ROUTES.DASHBOARD.ADMIN,
         icon: 'layout-dashboard',
       },
-      {
-        label: NAV_LABELS.ANALYTICS,
-        key: 'analytics',
-        href: ROUTES.ADMIN.ANALYTICS,
-        icon: 'bar-chart',
-      },
+      // {
+      //   label: NAV_LABELS.ANALYTICS,
+      //   key: 'analytics',
+      //   href: ROUTES.ADMIN.ANALYTICS,
+      //   icon: 'bar-chart',
+      // },
     ],
   },
   {
     category: NAV_SECTIONS.MANAGEMENT,
     items: [
-      {
-        label: NAV_LABELS.PENDING,
-        key: 'pending',
-        href: ROUTES.ADMIN.PENDING,
-        icon: 'users',
-      },
-      {
-        label: NAV_LABELS.ALL_USERS,
-        key: 'users',
-        href: ROUTES.ADMIN.USERS,
-        icon: 'users',
-      },
-      {
-        label: NAV_LABELS.ROLES_PERMISSIONS,
-        key: 'roles',
-        href: ROUTES.ADMIN.ROLES,
-        icon: 'shield',
-      },
+      // {
+      //   label: NAV_LABELS.PENDING,
+      //   key: 'pending',
+      //   href: ROUTES.ADMIN.PENDING,
+      //   icon: 'users',
+      // },
+      // {
+      //   label: NAV_LABELS.ALL_USERS,
+      //   key: 'users',
+      //   href: ROUTES.ADMIN.USERS,
+      //   icon: 'users',
+      // },
+      // {
+      //   label: NAV_LABELS.ROLES_PERMISSIONS,
+      //   key: 'roles',
+      //   href: ROUTES.ADMIN.ROLES,
+      //   icon: 'shield',
+      // },
       {
         label: NAV_LABELS.BULK_IMPORT,
         key: 'import',
@@ -114,52 +117,52 @@ export const ADMIN_NAV_SECTION: NavSection[] = [
       },
     ],
   },
-  {
-    category: NAV_SECTIONS.PLATFORM,
-    items: [
-      {
-        label: NAV_LABELS.PROGRAMS,
-        key: 'programs',
-        href: ROUTES.ADMIN.PROGRAMS,
-        icon: 'settings',
-      },
-      {
-        label: NAV_LABELS.ORGANIZATIONS,
-        key: 'organizations',
-        href: ROUTES.ADMIN.ORGANIZATIONS,
-        icon: 'zap',
-      },
-      {
-        label: NAV_LABELS.AUDIT_LOG,
-        key: 'audit',
-        href: ROUTES.ADMIN.AUDIT,
-        icon: 'bell',
-      },
-    ],
-  },
-  {
-    category: NAV_SECTIONS.GENERAL_TOOLS,
-    items: [
-      {
-        icon: "settings",
-        key: 'support',
-        label: NAV_LABELS.SUPPORT,
-        href: ROUTES.ADMIN.SUPPORT,
-      },
-      {
-        icon: "bell",
-        key: 'integrations',
-        label: NAV_LABELS.INTEGRATIONS,
-        href: ROUTES.ADMIN.INTEGRATIONS,
-      },
-      {
-        icon: "bell",
-        key: 'notifications',
-        label: NAV_LABELS.NOTIFICATIONS,
-        href: ROUTES.ADMIN.NOTIFICATIONS,
-      },
-    ],
-  },
+  // {
+  //   category: NAV_SECTIONS.PLATFORM,
+  //   items: [
+  //     {
+  //       label: NAV_LABELS.PROGRAMS,
+  //       key: 'programs',
+  //       href: ROUTES.ADMIN.PROGRAMS,
+  //       icon: 'settings',
+  //     },
+  //     {
+  //       label: NAV_LABELS.ORGANIZATIONS,
+  //       key: 'organizations',
+  //       href: ROUTES.ADMIN.ORGANIZATIONS,
+  //       icon: 'zap',
+  //     },
+  //     {
+  //       label: NAV_LABELS.AUDIT_LOG,
+  //       key: 'audit',
+  //       href: ROUTES.ADMIN.AUDIT,
+  //       icon: 'bell',
+  //     },
+  //   ],
+  // },
+  // {
+  //   category: NAV_SECTIONS.GENERAL_TOOLS,
+  //   items: [
+  //     {
+  //       icon: "settings",
+  //       key: 'support',
+  //       label: NAV_LABELS.SUPPORT,
+  //       href: ROUTES.ADMIN.SUPPORT,
+  //     },
+  //     {
+  //       icon: "bell",
+  //       key: 'integrations',
+  //       label: NAV_LABELS.INTEGRATIONS,
+  //       href: ROUTES.ADMIN.INTEGRATIONS,
+  //     },
+  //     {
+  //       icon: "bell",
+  //       key: 'notifications',
+  //       label: NAV_LABELS.NOTIFICATIONS,
+  //       href: ROUTES.ADMIN.NOTIFICATIONS,
+  //     },
+  //   ],
+  // },
 ];
 
 

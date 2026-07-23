@@ -167,7 +167,7 @@ export default function BulkImportWizard() {
               </div>
               <button
                 onClick={() => {
-                  const template = `email,role,action\narjun@email.com,employee,approve\nsara@trainpro.io,provider,approve\nvikram@corp.in,manager,update`;
+                  const template = `email,role,action\narjun@email.com,employee,approve\nsara@trainpro.io,training_provider,approve\nvikram@corp.in,employee,update`;
                   const blob = new Blob([template], { type: 'text/csv' });
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement('a');

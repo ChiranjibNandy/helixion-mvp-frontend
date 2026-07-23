@@ -2,9 +2,13 @@ import { BulkUser } from '@/types/bulk-import';
 import { t } from '@/lib/i18n';
 
 /**
- * Valid roles and actions for CSV validation
+ * Valid roles and actions for CSV validation.
+ * Must match the backend's actual User.orgRole schema enum
+ * (helixion-mvp-backend/src/constants/enum.ts, ORG_ROLE) — "provider" and
+ * "manager" were previously accepted here but rejected by the backend,
+ * silently failing every row that used them.
  */
-const VALID_ROLES = ['employee', 'provider', 'manager', 'admin'];
+const VALID_ROLES = ['employee', 'training_provider', 'admin'];
 const VALID_ACTIONS = ['approve', 'update'];
 
 /**

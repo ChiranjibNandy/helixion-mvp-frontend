@@ -1,6 +1,10 @@
 import { NavSection } from "@/types/employee";
 import { ROUTES } from "./navigation";
 
+// 'Profile', 'Download Enrolment Data', and 'View Reports' are commented out
+// (not deleted) — none of those pages exist (/dashboard/profile,
+// /dashboard/operations/enrolments, /dashboard/operations/reports), so all
+// three 404'd for every training provider. Uncomment once the pages exist.
 export const PROVIDER_NAV_SECTIONS: NavSection[] = [
   {
     category: 'Workspace',
@@ -11,12 +15,12 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
         href: ROUTES.PROVIDER.DASHBOARD,
         icon: 'layout-dashboard',
       },
-      {
-        label: 'Profile',
-        key: 'profile',
-        href: '/dashboard/profile',
-        icon: 'user-circle',
-      },
+      // {
+      //   label: 'Profile',
+      //   key: 'profile',
+      //   href: '/dashboard/profile',
+      //   icon: 'user-circle',
+      // },
     ],
   },
   {
@@ -45,24 +49,24 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
   {
     category: 'Operations',
     items: [
-      {
-        label: 'Download Enrolment Data',
-        key: 'enrolments',
-        href: '/dashboard/operations/enrolments',
-        icon: 'download',
-      },
+      // {
+      //   label: 'Download Enrolment Data',
+      //   key: 'enrolments',
+      //   href: '/dashboard/operations/enrolments',
+      //   icon: 'download',
+      // },
       {
         label: 'Update Attendance',
         key: 'attendance',
         href: ROUTES.PROVIDER.ATTENDANCE,
         icon: 'clipboard-check',
       },
-      {
-        label: 'View Reports',
-        key: 'reports',
-        href: '/dashboard/operations/reports',
-        icon: 'bar-chart',
-      },
+      // {
+      //   label: 'View Reports',
+      //   key: 'reports',
+      //   href: '/dashboard/operations/reports',
+      //   icon: 'bar-chart',
+      // },
     ],
   },
 ];

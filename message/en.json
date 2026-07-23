@@ -186,7 +186,7 @@
       "template": {
          "stepLabel": "Step 1 — Download template",
          "fileName": "roles_import_template.csv",
-         "description": "Columns: email, role, action · Valid roles: employee · provider · manager · admin · Actions: approve · update",
+         "description": "Columns: email, role, action · Valid roles: employee · training_provider · admin · Actions: approve · update",
          "downloadButton": "Download"
       },
       "upload": {
