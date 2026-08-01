@@ -2,12 +2,6 @@ import { API } from '@/constants/api';
 import { api } from '@/lib/api';
 
 
-export interface BatchCreatePayload {
-  email: string;
-  role: string;
-  action: string;
-}
-
 export interface BatchCreateResponse {
   createdCount: number;
   updatedCount: number;
@@ -16,8 +10,8 @@ export interface BatchCreateResponse {
 }
 
 export const userService = {
-  searchUsers: async (query: string = '', limit: number = 10) => {
-    const response = await api.get(`${API.ADMIN.USERS_SEARCH}?q=${encodeURIComponent(query)}&limit=${limit}`);
+  searchUsers: async (query: string = '', page: number = 1, limit: number = 10) => {
+    const response = await api.get(`${API.ADMIN.USERS_SEARCH}?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
     return response.data;
   },
 
@@ -26,8 +20,15 @@ export const userService = {
     return response.data;
   },
 
-  batchCreateUsers: async (users: BatchCreatePayload[]): Promise<BatchCreateResponse> => {
-    const response = await api.post(API.ADMIN.BATCH_CREATE, { users });
+  // Sends the raw CSV file — the backend now parses and validates it
+  // server-side (name/hierarchy/office-role columns), matching the same
+  // multipart pattern used for org bulk-upload. No client-side row parsing
+  // or per-row preview anymore, since the backend doesn't return per-row
+  // detail to preview against.
+  batchCreateUsers: async (file: File): Promise<BatchCreateResponse> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post(API.ADMIN.BATCH_CREATE, formData);
     return response.data?.data;
   },
 };

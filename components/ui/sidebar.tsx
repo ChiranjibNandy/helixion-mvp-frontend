@@ -108,6 +108,20 @@ function SidebarNavItem({ item, isActive, onClick }: any) {
     </>
   );
 
+  // Disabled items (e.g. gated behind an org-dependent setup step) render as
+  // non-interactive — no Link, no onClick — with a native title tooltip
+  // explaining why, instead of being hidden entirely.
+  if (item.disabled) {
+    return (
+      <div
+        className={`${baseClass} !cursor-not-allowed !text-white/15 hover:!bg-transparent hover:!text-white/15`}
+        title={item.disabledReason}
+      >
+        {inner}
+      </div>
+    );
+  }
+
   if (item.href) {
     return (
       <Link

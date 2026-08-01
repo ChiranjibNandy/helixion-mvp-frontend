@@ -99,6 +99,8 @@ export interface NavItem {
   href?: string;
   icon: string;
   badge?: number;
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
 // stay Options in stay type of program creation

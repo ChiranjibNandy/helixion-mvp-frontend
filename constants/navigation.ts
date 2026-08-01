@@ -19,6 +19,7 @@ export const ROUTES = {
     USERS: '/users',
     ROLES: '/roles',
     IMPORT: '/admin/dashboard/import',
+    ORG_POLICY_SETUP: '/admin/dashboard/org-policy',
     RESET_PASSWORD: '/admin/reset-password',
     PROGRAMS: '/programs',
     ORGANIZATIONS: '/organizations',

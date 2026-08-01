@@ -12,6 +12,9 @@ export const API = {
       USERS_SEARCH: '/admin/users/search',
       BATCH_CREATE: '/admin/users/batch',
       DEACTIVATE_USER: (id: string) => `/admin/users/${id}/deactivate`,
+      ORGANIZATIONS: '/admin/organizations',
+      ORGANIZATIONS_BULK: '/admin/organizations/bulk-upload',
+      ORGANIZATIONS_STATUS: '/admin/organizations/status',
    },
    EMPLOYEE: {
       DASHBOARD: '/employee/dashboard',

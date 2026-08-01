@@ -5,6 +5,7 @@ import { Search, AlertCircle } from 'lucide-react';
 import { COLOR_CLASSES } from '@/constants/admin';
 import { useUsersSearch, UserSearchResult } from '@/hooks/useUsersSearch';
 import { t } from '@/lib/i18n';
+import PaginationController from '@/components/ui/pagination';
 
 
 import {
@@ -32,7 +33,7 @@ const ROLE_BADGE_COLORS: Record<string, string> = {
 };
 
 export default function DeactivateUserPage() {
-  const { users, loading, error, searchUsers, deactivateUser } = useUsersSearch();
+  const { users, loading, error, page, totalPages, searchUsers, goToPage, deactivateUser } = useUsersSearch();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
@@ -254,6 +255,16 @@ export default function DeactivateUserPage() {
               </TableBody>
             </Table>
           </div>
+
+          {!loading && !error && users.length > 0 && (
+            <div className="mt-4">
+              <PaginationController
+                page={page}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
