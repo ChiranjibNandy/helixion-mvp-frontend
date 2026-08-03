@@ -32,3 +32,22 @@ export const approveUserAPI = async (data: { userId: string, role: string }) => 
     role,
   });
 };
+
+// whether an org (with a saved policy) exists yet — drives sidebar gating
+// for org-dependent screens like Bulk Import (ticket 0041)
+export const getOrganizationStatusAPI = async () => {
+  return await api.get(API.ADMIN.ORGANIZATIONS_STATUS);
+};
+
+// create a new organization with its full policy schedule in one step
+export const createOrganizationAPI = async (payload: unknown) => {
+  return await api.post(API.ADMIN.ORGANIZATIONS, payload);
+};
+
+// bulk-create organizations from a CSV (same field name as the training
+// provider's program bulk-upload — the multer middleware expects "file")
+export const bulkUploadOrganizationsAPI = async (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  return await api.post(API.ADMIN.ORGANIZATIONS_BULK, formData);
+};

@@ -68,6 +68,15 @@ export const ADMIN_NAV_SECTION: NavSection[] = [
         href: ROUTES.DASHBOARD.ADMIN,
         icon: 'layout-dashboard',
       },
+      {
+        // Ticket 0041 — always enabled; this is the screen that unlocks
+        // the other org-dependent items below (e.g. Bulk Import), so it
+        // can't itself be gated on the thing it sets up.
+        label: 'Org Policy Setup',
+        key: 'org-policy',
+        href: ROUTES.ADMIN.ORG_POLICY_SETUP,
+        icon: 'zap',
+      },
       // {
       //   label: NAV_LABELS.ANALYTICS,
       //   key: 'analytics',
