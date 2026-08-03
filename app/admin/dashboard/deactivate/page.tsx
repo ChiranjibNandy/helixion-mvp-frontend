@@ -20,15 +20,31 @@ import { AppAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { AppAlert } from '@/components/shared/app-alert';
 
+// Keys are lowercased role labels as returned by searchUsersService's
+// deriveDisplayRole (admin.service.ts) — "CTD"/"Manager"/etc. aren't
+// orgRole values, they're derived from officeRoles/hierarchy, so they're
+// matched here by their display text rather than a fixed enum.
 const ROLE_COLORS: Record<string, string> = {
   employee: 'bg-[#1e3a8a]/40 ring-1 ring-[#1e3a8a]',
-  provider: 'bg-[#166534]/40 ring-1 ring-[#166534]',
+  manager: 'bg-[#9a3412]/40 ring-1 ring-[#9a3412]',
+  ctd: 'bg-[#a16207]/40 ring-1 ring-[#a16207]',
+  'training dept officer': 'bg-[#a16207]/40 ring-1 ring-[#a16207]',
+  'osd senior': 'bg-[#0e7490]/40 ring-1 ring-[#0e7490]',
+  'osd officer': 'bg-[#0e7490]/40 ring-1 ring-[#0e7490]',
+  'training provider': 'bg-[#166534]/40 ring-1 ring-[#166534]',
+  admin: 'bg-[#be123c]/40 ring-1 ring-[#be123c]',
   default: 'bg-[#4c1d95]/40 ring-1 ring-[#4c1d95]'
 };
 
 const ROLE_BADGE_COLORS: Record<string, string> = {
   employee: 'bg-blue-500/10 text-blue-400',
-  provider: 'bg-green-500/10 text-green-400',
+  manager: 'bg-orange-500/10 text-orange-400',
+  ctd: 'bg-yellow-500/10 text-yellow-400',
+  'training dept officer': 'bg-yellow-500/10 text-yellow-400',
+  'osd senior': 'bg-cyan-500/10 text-cyan-400',
+  'osd officer': 'bg-cyan-500/10 text-cyan-400',
+  'training provider': 'bg-green-500/10 text-green-400',
+  admin: 'bg-rose-500/10 text-rose-400',
   default: 'bg-purple-500/10 text-purple-400'
 };
 
@@ -128,7 +144,7 @@ export default function DeactivateUserPage() {
           <div className="mb-10 bg-[#0f1629] border border-white/10 rounded-xl overflow-hidden">
             <div className="p-5 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <AppAvatar initials={getInitials(selectedUser.username)} size="lg" className={ROLE_COLORS[selectedUser.role || 'default'] || ROLE_COLORS.default} />
+                <AppAvatar initials={getInitials(selectedUser.username)} size="lg" className={ROLE_COLORS[(selectedUser.role || '').toLowerCase()] || ROLE_COLORS.default} />
                 <div>
                   <h3 className="text-base font-medium text-white">{selectedUser.username}</h3>
                   <p className="text-sm text-white/50">{selectedUser.email}</p>
@@ -220,7 +236,7 @@ export default function DeactivateUserPage() {
                       
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <AppAvatar initials={getInitials(user.username)} size="sm" className={ROLE_COLORS[user.role || 'default'] || ROLE_COLORS.default} />
+                          <AppAvatar initials={getInitials(user.username)} size="sm" className={ROLE_COLORS[(user.role || '').toLowerCase()] || ROLE_COLORS.default} />
                           <div>
                             <p className="text-sm font-medium text-white/90">{user.username}</p>
                             <p className="text-[12px] text-white/40">{user.email}</p>
@@ -229,8 +245,8 @@ export default function DeactivateUserPage() {
                       </TableCell>
                       
                       <TableCell>
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium ${ROLE_BADGE_COLORS[user.role || 'default'] || ROLE_BADGE_COLORS.default}`}>
-                          {user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'User'}
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium ${ROLE_BADGE_COLORS[(user.role || '').toLowerCase()] || ROLE_BADGE_COLORS.default}`}>
+                          {user.role || 'User'}
                         </span>
                       </TableCell>
                       
