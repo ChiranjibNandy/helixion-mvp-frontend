@@ -44,7 +44,12 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
         return user.permissions.canRecommend || user.permissions.canApproveTourCtd;
       }
       if (item.key === 'ctdApprovals') {
-        return user.permissions.canApproveTrainingDept;
+        // Junior officers (canReviewTrainingDept) need this page too — it's
+        // the only place either role can act. Gating on canApproveTrainingDept
+        // alone locked junior officers out of the training-dept workflow
+        // entirely, since they can review but were never senior enough to
+        // pass this check.
+        return user.permissions.canReviewTrainingDept || user.permissions.canApproveTrainingDept;
       }
       return true;
     }),

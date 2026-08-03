@@ -113,6 +113,16 @@ export const ADMIN_NAV_SECTION: NavSection[] = [
         icon: 'file',
       },
       {
+        // Bulk upload requires every row to have a Reporting Manager Email —
+        // this is the only way to create the one person any org hierarchy
+        // needs at its root (nobody above them). Same org-policy gating as
+        // Bulk Import, since it also needs admin.orgId to be set.
+        label: 'Add Employee',
+        key: 'add-employee',
+        href: ROUTES.ADMIN.ADD_EMPLOYEE,
+        icon: 'plus-circle',
+      },
+      {
         label: NAV_LABELS.RESET_PASSWORD,
         key: 'reset-password',
         href: ROUTES.ADMIN.RESET_PASSWORD,

@@ -51,3 +51,25 @@ export const bulkUploadOrganizationsAPI = async (file: File) => {
   formData.append("file", file);
   return await api.post(API.ADMIN.ORGANIZATIONS_BULK, formData);
 };
+
+// Create a single employee directly — the only way to create someone with
+// no reporting manager, since bulk upload requires one on every row.
+// reportingManagerEmail is intentionally optional here.
+export interface CreateSingleUserPayload {
+  name: string;
+  email: string;
+  employeeCode?: string;
+  mobile?: string;
+  placeOfPosting?: string;
+  designation?: string;
+  department?: string;
+  reportingManagerEmail?: string;
+  trainingDeptJuniorOfficer?: boolean;
+  trainingDeptSeniorOfficer?: boolean;
+  osdJuniorOfficer?: boolean;
+  osdSeniorOfficer?: boolean;
+}
+
+export const createSingleUserAPI = async (payload: CreateSingleUserPayload) => {
+  return await api.post(API.ADMIN.USERS, payload);
+};

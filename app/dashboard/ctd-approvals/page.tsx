@@ -14,6 +14,33 @@ import {
   takeCtdSeniorActionAPI,
 } from '@/services/enrollmentApprovalService';
 
+// Reads the client-readable access token cookie directly — this page has no
+// other way to know the current user's permissions (DashboardShell doesn't
+// expose them via context). A level-1 junior officer can review but is not
+// authorized to call the senior-action endpoint at all; attempting it
+// anyway would 403 even though their own (junior) action already succeeded.
+function canApproveTrainingDept(): boolean {
+  if (typeof document === 'undefined') return false;
+  const token = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith('accessToken_client='))
+    ?.split('=')[1];
+  if (!token) return false;
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const json = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return !!JSON.parse(json)?.permissions?.canApproveTrainingDept;
+  } catch {
+    return false;
+  }
+}
+
 export default function CtdApprovalsPage() {
   const { data, loading, error, refresh } = useCtdApprovals();
 
@@ -43,7 +70,14 @@ export default function CtdApprovalsPage() {
       } catch (err: any) {
         if (err?.response?.status !== 409) throw err;
       }
-      await takeCtdSeniorActionAPI(actionRow._id, action);
+
+      // Only a senior officer may call the senior-action endpoint at all —
+      // a junior-only user's review above already succeeded on its own and
+      // should be treated as complete, not chased with a call that will 403.
+      if (canApproveTrainingDept()) {
+        await takeCtdSeniorActionAPI(actionRow._id, action);
+      }
+
       setActionRow(null);
       refresh();
     } catch (err: any) {
