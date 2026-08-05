@@ -1,12 +1,14 @@
 'use client';
 
 import { useRef, useState, useCallback } from 'react';
-import { FileText, X } from 'lucide-react';
+import { FileText, X, AlertCircle } from 'lucide-react';
 import { userService, BatchCreateResponse } from '@/services/userService';
 import { formatFileSize } from '@/utils/csv-parser';
+import { parseBulkUploadFile, validateBulkEmployeeRows, ValidatedBulkEmployeeRow } from '@/utils/parseBulkUploadFile';
 import { t } from '@/lib/i18n';
 import FileDropzone from '@/components/shared/FileDropzone';
 import PageHeader from '@/components/ui/pageHeader';
+import BulkUploadPreview from './BulkUploadPreview';
 
 interface CommitResult {
   success: boolean;
@@ -14,8 +16,8 @@ interface CommitResult {
   errorMessage?: string;
 }
 
-// Matches the backend's new CSV column set (helixion-mvp-backend
-// batchCreateUsersService — the columns are human-readable, not
+// Matches the backend's CSV/XLSX column set (helixion-mvp-backend
+// mapSpreadsheetEmployee.ts — the columns are human-readable, not
 // machine-friendly keys, so header text must match exactly).
 const CSV_TEMPLATE = `Employee Roll No.,Name of the employee,Email,Mobile,Place of Posting,Designation,Department,Training Department Junior Officer,Training Department Senior Officer,OSD Team Junior Officer,OSD Team Senior Officer,Reporting Manager Email,Skip Level 1 Manager Email,Skip Level 2 Manager Email
 E1001,Arjun Mehta,arjun@corp.in,9876543210,Mumbai,Analyst,Finance,No,No,No,No,manager@corp.in,,
@@ -23,25 +25,39 @@ E1002,Sara Iyer,sara@corp.in,9876543211,Delhi,Senior Analyst,Finance,Yes,No,No,N
 
 export default function BulkImportWizard() {
   const [file, setFile] = useState<File | null>(null);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isParsing, setIsParsing] = useState(false);
+  const [parseError, setParseError] = useState<string | null>(null);
+  const [previewRows, setPreviewRows] = useState<ValidatedBulkEmployeeRow[] | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isCommitting, setIsCommitting] = useState(false);
   const [commitResult, setCommitResult] = useState<CommitResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelected = useCallback((selected: File) => {
+  const handleFileSelected = useCallback(async (selected: File) => {
     setFile(selected);
+    setParseError(null);
+    setPreviewRows(null);
+    setIsParsing(true);
+    try {
+      const rows = await parseBulkUploadFile(selected);
+      setPreviewRows(validateBulkEmployeeRows(rows));
+    } catch (err: any) {
+      setParseError(err?.message || 'Could not parse this file.');
+    } finally {
+      setIsParsing(false);
+    }
   }, []);
 
   const handleRemoveFile = useCallback(() => {
     setFile(null);
+    setPreviewRows(null);
+    setParseError(null);
     setCommitResult(null);
   }, []);
 
   const handleConfirmCommit = useCallback(async () => {
     if (!file) return;
     setIsCommitting(true);
-    setShowConfirmModal(false);
 
     try {
       const data = await userService.batchCreateUsers(file);
@@ -85,6 +101,7 @@ export default function BulkImportWizard() {
             <p className="text-xs text-textSidebarMuted mt-1">
               Columns: Employee Roll No., Name, Email, Mobile, Place of Posting, Designation, Department,
               Training Dept / OSD officer flags, Reporting Manager Email, Skip Level 1/2 Manager Email.
+              Accepts .csv, .xls, or .xlsx.
             </p>
           </div>
           <button
@@ -106,93 +123,71 @@ export default function BulkImportWizard() {
         </div>
       </div>
 
-      {/* Step 2 — Upload file */}
-      <div>
-        <p className="text-xs text-textSidebarMuted mb-3">{t('bulkImport.upload.stepLabel')}</p>
+      {/* Step 2 — Upload file, then preview before committing */}
+      {!previewRows && (
+        <div>
+          <p className="text-xs text-textSidebarMuted mb-3">{t('bulkImport.upload.stepLabel')}</p>
 
-        {!file ? (
-          <FileDropzone
-            accept=".csv"
-            isProcessing={false}
-            label={
-              <>
-                Drop <span className="text-primary">.csv</span> file here or{' '}
-                <span className="text-primary">click to browse</span>
-              </>
-            }
-            hint={t('bulkImport.upload.hint')}
-            fileInputRef={fileInputRef}
-            inputId="bulk-import-file-input"
-            onFileSelected={handleFileSelected}
+          {!file ? (
+            <FileDropzone
+              accept=".csv,.xls,.xlsx"
+              isProcessing={false}
+              label={
+                <>
+                  Drop <span className="text-primary">.csv / .xlsx</span> file here or{' '}
+                  <span className="text-primary">click to browse</span>
+                </>
+              }
+              hint={t('bulkImport.upload.hint')}
+              fileInputRef={fileInputRef}
+              inputId="bulk-import-file-input"
+              onFileSelected={handleFileSelected}
+            />
+          ) : (
+            <div className="flex items-center justify-between p-4 rounded-xl bg-bgStatCard border border-borderCard">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-5 h-5 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-white truncate">{file.name}</p>
+                  <p className="text-xs text-textSidebarMuted">
+                    {formatFileSize(file.size)}
+                    {isParsing && ' · Parsing…'}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button
+                  onClick={handleRemoveFile}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5"
+                  aria-label="Remove file"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {parseError && (
+            <div className="mt-3 flex items-start gap-3 p-4 rounded-lg bg-accentRed/10 border border-accentRed/20">
+              <AlertCircle className="text-accentRed flex-shrink-0 mt-0.5" size={16} />
+              <p className="text-sm text-accentRed">{parseError}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Step 3 — Review every parsed row before it's actually uploaded */}
+      {previewRows && file && (
+        <div className="rounded-xl bg-bgStatCard border border-borderCard overflow-hidden">
+          <BulkUploadPreview
+            rows={previewRows}
+            fileName={file.name}
+            isUploading={isCommitting}
+            onConfirm={handleConfirmCommit}
+            onBack={handleRemoveFile}
           />
-        ) : (
-          <div className="flex items-center justify-between p-4 rounded-xl bg-bgStatCard border border-borderCard">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <FileText className="w-5 h-5 text-primary" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-white truncate">{file.name}</p>
-                <p className="text-xs text-textSidebarMuted">{formatFileSize(file.size)}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={handleRemoveFile}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5"
-                aria-label="Remove file"
-              >
-                <X className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setShowConfirmModal(true)}
-                className="px-5 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primaryDark transition-all duration-200"
-              >
-                Upload
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Confirm Modal */}
-      {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-bgStatCard border border-borderCard rounded-2xl p-8 shadow-2xl">
-            <div className="w-14 h-14 rounded-2xl bg-accentOrange/10 border border-accentOrange/30 flex items-center justify-center mb-5">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" stroke="#f59e0b" strokeWidth="2" />
-                <line x1="12" y1="8" x2="12" y2="13" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-                <circle cx="12" cy="16.5" r="1" fill="#f59e0b" />
-              </svg>
-            </div>
-
-            <h3 className="text-lg font-semibold text-white mb-3">{t('bulkImport.confirm.title')}</h3>
-            <p className="text-sm text-textSidebarMuted leading-relaxed">
-              This will process every row in <span className="text-white/80">{file?.name}</span> — creating
-              new employees and updating existing ones by email. {t('bulkImport.confirm.auditNote')}
-            </p>
-
-            <div className="flex items-center justify-end gap-3 mt-8">
-              <button
-                onClick={() => setShowConfirmModal(false)}
-                className="px-5 py-2.5 text-sm text-white/70 bg-white/5 border border-white/10
-                           rounded-lg hover:bg-white/10 transition-all duration-200"
-                id="confirm-cancel-btn"
-              >
-                {t('bulkImport.confirm.cancelButton')}
-              </button>
-              <button
-                onClick={handleConfirmCommit}
-                disabled={isCommitting}
-                className="px-5 py-2.5 text-sm font-medium text-white bg-primary
-                           rounded-lg hover:bg-primaryDark transition-all duration-200 disabled:opacity-50"
-                id="confirm-commit-btn"
-              >
-                {isCommitting ? t('bulkImport.upload.processing') : t('bulkImport.confirm.confirmButton')}
-              </button>
-            </div>
-          </div>
         </div>
       )}
 
@@ -231,19 +226,26 @@ export default function BulkImportWizard() {
             )}
 
             {commitResult.success && commitResult.data && (
-              <div className="flex items-center gap-2 text-sm mb-8">
-                {commitResult.data.createdCount > 0 && (
-                  <span className="text-accentGreen">
-                    {t('bulkImport.results.approved', { count: commitResult.data.createdCount })}
-                  </span>
-                )}
-                {commitResult.data.createdCount > 0 && commitResult.data.updatedCount > 0 && (
-                  <span className="text-textSidebarMuted">·</span>
-                )}
-                {commitResult.data.updatedCount > 0 && (
-                  <span className="text-accentOrange">
-                    {t('bulkImport.results.roleUpdated', { count: commitResult.data.updatedCount })}
-                  </span>
+              <div className="flex flex-col gap-2 text-sm mb-8">
+                <div className="flex items-center gap-2">
+                  {commitResult.data.createdCount > 0 && (
+                    <span className="text-accentGreen">
+                      {t('bulkImport.results.approved', { count: commitResult.data.createdCount })}
+                    </span>
+                  )}
+                  {commitResult.data.createdCount > 0 && commitResult.data.updatedCount > 0 && (
+                    <span className="text-textSidebarMuted">·</span>
+                  )}
+                  {commitResult.data.updatedCount > 0 && (
+                    <span className="text-accentOrange">
+                      {t('bulkImport.results.roleUpdated', { count: commitResult.data.updatedCount })}
+                    </span>
+                  )}
+                </div>
+                {commitResult.data.skippedCount > 0 && (
+                  <p className="text-xs text-accentRed">
+                    {commitResult.data.skippedCount} row{commitResult.data.skippedCount > 1 ? 's' : ''} skipped by the server: {commitResult.data.skippedEmails.join(', ')}
+                  </p>
                 )}
               </div>
             )}
