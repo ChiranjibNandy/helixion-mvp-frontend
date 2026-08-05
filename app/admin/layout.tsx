@@ -54,7 +54,7 @@ export default async function AdminLayout({ children }: DashboardLayoutProps) {
   const navSections = ADMIN_NAV_SECTION.map((section) => ({
     ...section,
     items: section.items.map((item) =>
-      item.key === 'import' && !hasOrgPolicySetup
+      (item.key === 'import' || item.key === 'add-employee') && !hasOrgPolicySetup
         ? { ...item, disabled: true, disabledReason: 'Complete Org Policy Setup first' }
         : item
     ),

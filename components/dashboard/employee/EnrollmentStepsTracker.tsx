@@ -2,7 +2,7 @@
 
 import React from "react";
 import { t } from "@/lib/i18n";
-import { FileText, UserCheck, ClipboardList, Banknote, Building2 } from "lucide-react";
+import { FileText, UserCheck, ClipboardList } from "lucide-react";
 import EnrollmentProgressTracker from "@/components/ui/EnrollmentProgressTracker";
 import { formatDateHyphenated } from "@/utils/formatters";
 
@@ -51,8 +51,6 @@ const PAST_TOUR: string[] = [
     ENROLLMENT_STAGE.REIMBURSEMENT_SUBMITTED, ENROLLMENT_STAGE.REIMBURSEMENT_MANAGER_REVIEW, ENROLLMENT_STAGE.REIMBURSEMENT_OSD_REVIEW,
     ENROLLMENT_STAGE.COMPLETED,
 ];
-const REIMBURSEMENT_STAGES: string[] = [ENROLLMENT_STAGE.REIMBURSEMENT_SUBMITTED, ENROLLMENT_STAGE.REIMBURSEMENT_MANAGER_REVIEW, ENROLLMENT_STAGE.REIMBURSEMENT_OSD_REVIEW];
-
 interface EnrollmentStepsTrackerProps {
     enrollment: any;
 }
@@ -119,19 +117,6 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
     }
     const stepCtdTourDate = getTimelineDate(ENROLLMENT_STAGE.APPROVED, "tour_ctd_approve");
 
-    // Step 4: Reimbursement Submitted
-    let step4Status: "completed" | "current" | "upcoming" = "upcoming";
-    if (stage === ENROLLMENT_STAGE.COMPLETED) {
-        step4Status = "completed";
-    } else if (REIMBURSEMENT_STAGES.includes(stage)) {
-        step4Status = "current";
-    }
-    const step4Date = getTimelineDate(ENROLLMENT_STAGE.REIMBURSEMENT_MANAGER_REVIEW, "submitted");
-
-    // Step 5: Reimbursement Credited
-    const step5Status: "completed" | "current" | "upcoming" = stage === ENROLLMENT_STAGE.COMPLETED ? "completed" : "upcoming";
-    const step5Date = getTimelineDate(ENROLLMENT_STAGE.COMPLETED);
-
     const steps = [
         {
             id: "1",
@@ -165,23 +150,6 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
             icon: UserCheck,
         });
     }
-
-    steps.push(
-        {
-            id: "4",
-            label: t("approvalProgress.steps.reimbursementSubmitted"),
-            date: step4Date,
-            status: step4Status,
-            icon: Banknote,
-        },
-        {
-            id: "5",
-            label: t("approvalProgress.steps.credited"),
-            date: step5Date,
-            status: step5Status,
-            icon: Building2,
-        }
-    );
 
     return <EnrollmentProgressTracker steps={steps} />;
 }

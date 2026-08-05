@@ -129,6 +129,14 @@ export function validateBulkEmployeeRows(rows: BulkEmployeeRow[]): ValidatedBulk
       escalate('warning', 'Missing name');
     }
 
+    // Reporting Manager Email is mandatory server-side — the backend
+    // rejects any row missing it (see admin.service.ts batchCreateUsersService).
+    // Someone with no manager at all (a root/top-of-chain person) has to be
+    // created separately via "Add Employee" first, not through this file.
+    if (!row.reportingManagerEmail) {
+      escalate('error', 'Missing Reporting Manager Email — every uploaded employee must have a manager. Create a top-of-chain person separately via "Add Employee" first.');
+    }
+
     for (const [label, email] of [
       ['Reporting Manager', row.reportingManagerEmail],
       ['Skip Level 1 Manager', row.skipLevel1ManagerEmail],
