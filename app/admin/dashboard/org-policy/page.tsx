@@ -30,14 +30,12 @@ type PolicyBlockKey = typeof POLICY_BLOCKS[number]['key'];
 
 interface PolicyBlockState {
   enabled: boolean;
-  levels: string;
   minLevelToApprove: string;
   assignmentMode: 'assigned' | 'pool';
 }
 
 const emptyBlock = (mode: 'assigned' | 'pool'): PolicyBlockState => ({
   enabled: true,
-  levels: '1',
   minLevelToApprove: '1',
   assignmentMode: mode,
 });
@@ -58,7 +56,7 @@ const JSON_TEMPLATE = JSON.stringify(
       osdReview: { enabled: true, levels: 2, minLevelToApprove: 1, assignmentMode: 'pool' },
       tourForm: { enabled: true, levels: 2, minLevelToApprove: 1, assignmentMode: 'assigned' },
       reimbursement: { enabled: true, levels: 2, minLevelToApprove: 1, assignmentMode: 'pool' },
-      tourApproval: { managerApprovalRequired: true, ctdApprovalRequired: true },
+      tourApproval: { managerApprovalRequired: true, ctdApprovalRequired: false },
       reimbursementApproval: { managerApprovalRequired: true, osdApprovalRequired: true },
     },
     policyAssignments: { trainingDeptChain: [], osdChain: [] },
@@ -131,13 +129,17 @@ export default function OrgPolicySetupPage() {
           block.key,
           {
             enabled: policy[block.key].enabled,
-            levels: Number(policy[block.key].levels) || 1,
+            // "Total No. of Levels" was removed from the UI — actual chain
+            // depth comes from each employee's own manager hierarchy, not an
+            // org-wide number. The backend schema still requires levels >= 1,
+            // so we send a constant; nothing reads this value.
+            levels: 1,
             minLevelToApprove: Number(policy[block.key].minLevelToApprove) || 1,
             assignmentMode: policy[block.key].assignmentMode,
           },
         ])
       ),
-      tourApproval: { managerApprovalRequired: true, ctdApprovalRequired: true },
+      tourApproval: { managerApprovalRequired: true, ctdApprovalRequired: false },
       reimbursementApproval: { managerApprovalRequired: true, osdApprovalRequired: true },
     },
     policyAssignments: { trainingDeptChain: [], osdChain: [] },
@@ -218,7 +220,7 @@ export default function OrgPolicySetupPage() {
           <div>
             <h2 className="text-base font-semibold text-white">Organization Policy Matrix</h2>
             <p className="text-xs text-white/40 mt-0.5">
-              Define minimum and total approval levels for each stage in the workflow.
+              Set the minimum approver level and assignment mode for each stage in the workflow.
             </p>
           </div>
           <button
@@ -271,10 +273,9 @@ export default function OrgPolicySetupPage() {
         {mode === 'form' ? (
           <div className="rounded-xl border border-white/10 overflow-hidden">
             {/* Table header */}
-            <div className="grid grid-cols-[1fr_120px_150px_140px] gap-3 px-4 py-2.5 bg-white/[0.03] text-[10px] font-semibold tracking-widest uppercase text-white/35">
+            <div className="grid grid-cols-[1fr_120px_140px] gap-3 px-4 py-2.5 bg-white/[0.03] text-[10px] font-semibold tracking-widest uppercase text-white/35">
               <div>Approval Stage</div>
               <div>Min Level</div>
-              <div>Total No. of Levels</div>
               <div>Assignment Mode</div>
             </div>
 
@@ -285,7 +286,7 @@ export default function OrgPolicySetupPage() {
                 return (
                   <div
                     key={block.key}
-                    className="grid grid-cols-[1fr_120px_150px_140px] gap-3 px-4 py-3.5 items-center"
+                    className="grid grid-cols-[1fr_120px_140px] gap-3 px-4 py-3.5 items-center"
                   >
                     <div className="flex items-start gap-2.5">
                       <button
@@ -313,16 +314,6 @@ export default function OrgPolicySetupPage() {
                         className={fieldInputClass}
                         value={state.minLevelToApprove}
                         onChange={(e) => updateBlock(block.key, 'minLevelToApprove', e.target.value)}
-                      />
-                    </FieldBox>
-
-                    <FieldBox label="">
-                      <input
-                        type="number"
-                        min={1}
-                        className={fieldInputClass}
-                        value={state.levels}
-                        onChange={(e) => updateBlock(block.key, 'levels', e.target.value)}
                       />
                     </FieldBox>
 
