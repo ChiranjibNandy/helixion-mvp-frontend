@@ -10,6 +10,7 @@ export const API = {
       USERS: '/admin/users',
       REGISTRATIONS: '/admin/registrations',
       USERS_SEARCH: '/admin/users/search',
+      DIRECTORY: '/admin/users/directory',
       BATCH_CREATE: '/admin/users/batch',
       DEACTIVATE_USER: (id: string) => `/admin/users/${id}/deactivate`,
       ORGANIZATIONS: '/admin/organizations',

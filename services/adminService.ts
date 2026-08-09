@@ -39,6 +39,11 @@ export const getOrganizationStatusAPI = async () => {
   return await api.get(API.ADMIN.ORGANIZATIONS_STATUS);
 };
 
+// employee directory — everyone in the org + role, reporting chain, approvers
+export const getEmployeeDirectoryAPI = async () => {
+  return await api.get(API.ADMIN.DIRECTORY);
+};
+
 // create a new organization with its full policy schedule in one step
 export const createOrganizationAPI = async (payload: unknown) => {
   return await api.post(API.ADMIN.ORGANIZATIONS, payload);
