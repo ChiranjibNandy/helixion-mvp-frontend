@@ -39,9 +39,9 @@ export const getOrganizationStatusAPI = async () => {
   return await api.get(API.ADMIN.ORGANIZATIONS_STATUS);
 };
 
-// employee directory — everyone in the org + role, reporting chain, approvers
-export const getEmployeeDirectoryAPI = async () => {
-  return await api.get(API.ADMIN.DIRECTORY);
+// org-scoped dashboard summary counts (total users, pending approval, deactivated)
+export const getAdminDashboardStatsAPI = async () => {
+  return await api.get(API.ADMIN.DASHBOARD_STATS);
 };
 
 // create a new organization with its full policy schedule in one step

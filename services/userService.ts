@@ -20,6 +20,11 @@ export const userService = {
     return response.data;
   },
 
+  activateUser: async (id: string) => {
+    const response = await api.patch(API.ADMIN.ACTIVATE_USER(id));
+    return response.data;
+  },
+
   // Sends the raw CSV file — the backend now parses and validates it
   // server-side (name/hierarchy/office-role columns), matching the same
   // multipart pattern used for org bulk-upload. No client-side row parsing

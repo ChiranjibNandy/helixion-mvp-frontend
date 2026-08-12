@@ -3,6 +3,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { userService } from '@/services/userService';
 
+interface ChainPerson {
+  name: string;
+  email: string;
+}
+
 export interface UserSearchResult {
   id: string;
   username: string;
@@ -11,6 +16,10 @@ export interface UserSearchResult {
   status: string;
   createdAt: string;
   updatedAt: string;
+  // reporting chain (merged in from the former Employee Directory page)
+  reportingManager?: ChainPerson | null;
+  skipLevel1Manager?: ChainPerson | null;
+  skipLevel2Manager?: ChainPerson | null;
 }
 
 const PAGE_SIZE = 10;
@@ -74,6 +83,22 @@ export function useUsersSearch() {
     }
   };
 
+  const activateUser = async (id: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const result = await userService.activateUser(id);
+
+      return result.success;
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.message || 'Unknown error');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     // Initial load
     fetchUsers('', 1);
@@ -89,5 +114,6 @@ export function useUsersSearch() {
     searchUsers,
     goToPage,
     deactivateUser,
+    activateUser,
   };
 }

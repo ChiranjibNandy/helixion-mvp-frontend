@@ -123,14 +123,6 @@ export const ADMIN_NAV_SECTION: NavSection[] = [
         icon: 'plus-circle',
       },
       {
-        // Read-only org chart: everyone + their role, reporting chain
-        // (direct + skip-level managers), and the org's CTD/OSD approvers.
-        label: 'Employee Directory',
-        key: 'directory',
-        href: ROUTES.ADMIN.DIRECTORY,
-        icon: 'users',
-      },
-      {
         label: NAV_LABELS.RESET_PASSWORD,
         key: 'reset-password',
         href: ROUTES.ADMIN.RESET_PASSWORD,

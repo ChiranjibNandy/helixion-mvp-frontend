@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/table";
 import { AppAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { AppAlert } from '@/components/shared/app-alert';
+import { toast } from 'sonner';
 
 // Keys are lowercased role labels as returned by searchUsersService's
 // deriveDisplayRole (admin.service.ts) — "CTD"/"Manager"/etc. aren't
@@ -49,35 +49,38 @@ const ROLE_BADGE_COLORS: Record<string, string> = {
 };
 
 export default function DeactivateUserPage() {
-  const { users, loading, error, page, totalPages, searchUsers, goToPage, deactivateUser } = useUsersSearch();
+  const { users, loading, error, page, totalPages, searchUsers, goToPage, deactivateUser, activateUser } = useUsersSearch();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
-  const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     searchUsers(searchQuery);
     setSelectedUser(null);
     setIsConfirming(false);
-    setActionSuccess(null);
   };
 
   const handleSelectUser = (user: UserSearchResult) => {
     setSelectedUser(user);
     setIsConfirming(false);
-    setActionSuccess(null);
   };
 
-  const handleDeactivate = async () => {
+  const handleToggleStatus = async () => {
     if (!selectedUser) return;
-    const success = await deactivateUser(selectedUser.id);
+    const name = selectedUser.username;
+    const isActive = selectedUser.status === 'active';
+    const success = isActive
+      ? await deactivateUser(selectedUser.id)
+      : await activateUser(selectedUser.id);
     if (success) {
-      setActionSuccess(`${selectedUser.username} has been deactivated successfully.`);
+      toast.success(`${name} has been ${isActive ? 'deactivated' : 'activated'}.`);
       setSelectedUser(null);
       setIsConfirming(false);
       // Refresh the list
       searchUsers(searchQuery);
+    } else {
+      toast.error(`Could not ${isActive ? 'deactivate' : 'activate'} ${name}. Please try again.`);
     }
   };
 
@@ -85,35 +88,27 @@ export default function DeactivateUserPage() {
     return name.substring(0, 2).toUpperCase();
   };
 
+  const personCell = (p?: { name: string; email: string } | null) =>
+    p ? (
+      <div>
+        <p className="text-[13px] text-white/80">{p.name}</p>
+        <p className="text-[11px] text-white/40">{p.email}</p>
+      </div>
+    ) : (
+      <span className="text-white/25">—</span>
+    );
+
   return (
     <div className={`h-full flex flex-col ${COLOR_CLASSES.BG_MAIN}`}>
       <div className="w-full px-8 pt-8 pb-4">
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-xl font-semibold text-white mb-2">
-            {t('admin.deactivate.title')}
+            Employees & Deactivation
           </h1>
           <p className="text-[13px] text-white/50 leading-relaxed">
-            {t('admin.deactivate.description')}
+            Everyone in your organization — their role and reporting chain. Select a user to deactivate their account.
           </p>
-        </div>
-
-        {/* Action Success Alert */}
-        {actionSuccess && (
-          <div className="mb-6">
-            <AppAlert
-              variant="success"
-              description={actionSuccess}
-            />
-          </div>
-        )}
-
-        {/* Warning Alert */}
-        <div className="mb-8">
-          <AppAlert 
-            variant="warning"
-            description="Immediate effect. The user is signed out of all sessions and blocked from logging in the moment you confirm."
-          />
         </div>
 
         {/* Search Bar */}
@@ -152,40 +147,61 @@ export default function DeactivateUserPage() {
               </div>
               
               {!isConfirming && (
-                <Button 
+                <Button
                   onClick={() => setIsConfirming(true)}
-                  className="bg-white/90 hover:bg-white text-black text-sm px-6 py-5 rounded-lg font-medium"
+                  className={
+                    selectedUser.status === 'active'
+                      ? 'bg-white/90 hover:bg-white text-black text-sm px-6 py-5 rounded-lg font-medium'
+                      : 'bg-emerald-500 hover:bg-emerald-400 text-black text-sm px-6 py-5 rounded-lg font-medium'
+                  }
                 >
-                  Deactivate account
+                  {selectedUser.status === 'active' ? 'Deactivate account' : 'Activate account'}
                 </Button>
               )}
             </div>
 
             {/* Confirmation Dialog */}
             {isConfirming && (
-              <div className="bg-[#241111] border-t border-red-900/30 p-5 mx-2 mb-2 rounded-xl flex items-center justify-between">
+              <div className={`border-t p-5 mx-2 mb-2 rounded-xl flex items-center justify-between ${selectedUser.status === 'active' ? 'bg-[#241111] border-red-900/30' : 'bg-[#0f2418] border-emerald-900/30'}`}>
                 <div>
-                  <p className="text-sm font-medium text-white/90">
-                    <span className="text-red-400">Deactivate {selectedUser.username}?</span> This cannot be undone instantly.
-                  </p>
-                  <p className="text-sm text-white/60 mt-1">
-                    They will be signed out and blocked from login immediately.
-                  </p>
+                  {selectedUser.status === 'active' ? (
+                    <>
+                      <p className="text-sm font-medium text-white/90">
+                        <span className="text-red-400">Deactivate {selectedUser.username}?</span>
+                      </p>
+                      <p className="text-sm text-white/60 mt-1">
+                        They will be signed out and blocked from login immediately.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm font-medium text-white/90">
+                        <span className="text-emerald-400">Activate {selectedUser.username}?</span>
+                      </p>
+                      <p className="text-sm text-white/60 mt-1">
+                        They will be able to log in again.
+                      </p>
+                    </>
+                  )}
                 </div>
                 <div className="flex gap-3">
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     onClick={() => setIsConfirming(false)}
                     className="text-white/50 hover:text-white hover:bg-white/5"
                   >
                     Cancel
                   </Button>
-                  <Button 
-                    onClick={handleDeactivate}
+                  <Button
+                    onClick={handleToggleStatus}
                     disabled={loading}
-                    className="bg-white hover:bg-white/90 text-black px-6 font-medium"
+                    className={
+                      selectedUser.status === 'active'
+                        ? 'bg-white hover:bg-white/90 text-black px-6 font-medium'
+                        : 'bg-emerald-500 hover:bg-emerald-400 text-black px-6 font-medium'
+                    }
                   >
-                    Yes, deactivate
+                    {selectedUser.status === 'active' ? 'Yes, deactivate' : 'Yes, activate'}
                   </Button>
                 </div>
               </div>
@@ -204,22 +220,24 @@ export default function DeactivateUserPage() {
                   <TableHead className="w-12 text-[12px] font-medium text-white/40"></TableHead>
                   <TableHead className="text-[12px] font-medium text-white/40">User</TableHead>
                   <TableHead className="text-[12px] font-medium text-white/40">Role</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">Reporting Manager</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">Skip L1</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">Skip L2</TableHead>
                   <TableHead className="text-[12px] font-medium text-white/40">Status</TableHead>
-                  <TableHead className="text-[12px] font-medium text-white/40">Last active</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <TableRow className="border-white/5 hover:bg-transparent">
-                    <TableCell colSpan={5} className="p-8 text-center text-white/30 text-sm">Loading...</TableCell>
+                    <TableCell colSpan={7} className="p-8 text-center text-white/30 text-sm">Loading...</TableCell>
                   </TableRow>
                 ) : error ? (
                   <TableRow className="border-white/5 hover:bg-transparent">
-                    <TableCell colSpan={5} className="p-8 text-center text-red-400/80 text-sm">{error}</TableCell>
+                    <TableCell colSpan={7} className="p-8 text-center text-red-400/80 text-sm">{error}</TableCell>
                   </TableRow>
                 ) : users.length === 0 ? (
                   <TableRow className="border-white/5 hover:bg-transparent">
-                    <TableCell colSpan={5} className="p-8 text-center text-white/30 text-sm">No users found.</TableCell>
+                    <TableCell colSpan={7} className="p-8 text-center text-white/30 text-sm">No users found.</TableCell>
                   </TableRow>
                 ) : (
                   users.map((user) => (
@@ -249,7 +267,11 @@ export default function DeactivateUserPage() {
                           {user.role || 'User'}
                         </span>
                       </TableCell>
-                      
+
+                      <TableCell>{personCell(user.reportingManager)}</TableCell>
+                      <TableCell>{personCell(user.skipLevel1Manager)}</TableCell>
+                      <TableCell>{personCell(user.skipLevel2Manager)}</TableCell>
+
                       <TableCell>
                         {user.status === 'active' ? (
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-[11px] font-medium border border-emerald-500/20">
@@ -260,10 +282,6 @@ export default function DeactivateUserPage() {
                             Deactivated
                           </span>
                         )}
-                      </TableCell>
-                      
-                      <TableCell className="text-[13px] text-white/40">
-                        {user.status === 'active' ? '2 hours ago' : '3 weeks ago'}
                       </TableCell>
                     </TableRow>
                   ))
