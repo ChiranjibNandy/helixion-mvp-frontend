@@ -67,16 +67,16 @@ export function useUsersSearch() {
     fetchUsers(query, targetPage);
   }, [fetchUsers, query]);
 
+  // Deliberately don't touch `error`/setError here — that state gates
+  // whether the results table renders, and a failed toggle shouldn't wipe
+  // out an already-loaded user list. The caller surfaces toggle failures
+  // via a toast instead.
   const deactivateUser = async (id: string) => {
     try {
       setLoading(true);
-      setError(null);
-
       const result = await userService.deactivateUser(id);
-
       return result.success;
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Unknown error');
       return false;
     } finally {
       setLoading(false);
@@ -86,13 +86,9 @@ export function useUsersSearch() {
   const activateUser = async (id: string) => {
     try {
       setLoading(true);
-      setError(null);
-
       const result = await userService.activateUser(id);
-
       return result.success;
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Unknown error');
       return false;
     } finally {
       setLoading(false);

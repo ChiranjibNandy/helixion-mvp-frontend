@@ -74,13 +74,13 @@ export default function DeactivateUserPage() {
       ? await deactivateUser(selectedUser.id)
       : await activateUser(selectedUser.id);
     if (success) {
-      toast.success(`${name} has been ${isActive ? 'deactivated' : 'activated'}.`);
+      toast.success(t(isActive ? 'admin.deactivate.toastDeactivated' : 'admin.deactivate.toastActivated', { name }));
       setSelectedUser(null);
       setIsConfirming(false);
       // Refresh the list
       searchUsers(searchQuery);
     } else {
-      toast.error(`Could not ${isActive ? 'deactivate' : 'activate'} ${name}. Please try again.`);
+      toast.error(t(isActive ? 'admin.deactivate.toastDeactivateError' : 'admin.deactivate.toastActivateError', { name }));
     }
   };
 
@@ -104,10 +104,10 @@ export default function DeactivateUserPage() {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-xl font-semibold text-white mb-2">
-            Employees & Deactivation
+            {t('admin.deactivate.title')}
           </h1>
           <p className="text-[13px] text-white/50 leading-relaxed">
-            Everyone in your organization — their role and reporting chain. Select a user to deactivate their account.
+            {t('admin.deactivate.description')}
           </p>
         </div>
 
@@ -121,115 +121,115 @@ export default function DeactivateUserPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t('admin.deactivate.searchPlaceholder')}
               className="w-full bg-[#111827] border border-white/10 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-blue-500/50"
             />
           </div>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             variant="default"
             className="bg-transparent border border-white/10 text-white/30 hover:bg-white/5 hover:text-white/50 px-6 font-medium"
             disabled={loading}
           >
-            Search
+            {t('admin.deactivate.searchButton')}
           </Button>
         </form>
 
         {/* Selected User Action Card */}
-        {selectedUser && (
-          <div className="mb-10 bg-[#0f1629] border border-white/10 rounded-xl overflow-hidden">
-            <div className="p-5 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <AppAvatar initials={getInitials(selectedUser.username)} size="lg" className={ROLE_COLORS[(selectedUser.role || '').toLowerCase()] || ROLE_COLORS.default} />
-                <div>
-                  <h3 className="text-base font-medium text-white">{selectedUser.username}</h3>
-                  <p className="text-sm text-white/50">{selectedUser.email}</p>
+        {selectedUser && (() => {
+          const isActive = selectedUser.status === 'active';
+          const accentBtnClass = isActive ? 'bg-white/90 hover:bg-white' : 'bg-emerald-500 hover:bg-emerald-400';
+          const submitBtnClass = isActive ? 'bg-white hover:bg-white/90' : 'bg-emerald-500 hover:bg-emerald-400';
+          const dialogBgClass = isActive ? 'bg-[#241111] border-red-900/30' : 'bg-[#0f2418] border-emerald-900/30';
+
+          return (
+            <div className="mb-10 bg-[#0f1629] border border-white/10 rounded-xl overflow-hidden">
+              <div className="p-5 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <AppAvatar initials={getInitials(selectedUser.username)} size="lg" className={ROLE_COLORS[(selectedUser.role || '').toLowerCase()] || ROLE_COLORS.default} />
+                  <div>
+                    <h3 className="text-base font-medium text-white">{selectedUser.username}</h3>
+                    <p className="text-sm text-white/50">{selectedUser.email}</p>
+                  </div>
                 </div>
+
+                {!isConfirming && (
+                  <Button
+                    onClick={() => setIsConfirming(true)}
+                    className={`text-black text-sm px-6 py-5 rounded-lg font-medium ${accentBtnClass}`}
+                  >
+                    {isActive ? t('admin.deactivate.deactivateAccount') : t('admin.deactivate.activateAccount')}
+                  </Button>
+                )}
               </div>
-              
-              {!isConfirming && (
-                <Button
-                  onClick={() => setIsConfirming(true)}
-                  className={
-                    selectedUser.status === 'active'
-                      ? 'bg-white/90 hover:bg-white text-black text-sm px-6 py-5 rounded-lg font-medium'
-                      : 'bg-emerald-500 hover:bg-emerald-400 text-black text-sm px-6 py-5 rounded-lg font-medium'
-                  }
-                >
-                  {selectedUser.status === 'active' ? 'Deactivate account' : 'Activate account'}
-                </Button>
+
+              {/* Confirmation Dialog */}
+              {isConfirming && (
+                <div className={`border-t p-5 mx-2 mb-2 rounded-xl flex items-center justify-between ${dialogBgClass}`}>
+                  <div>
+                    {isActive ? (
+                      <>
+                        <p className="text-sm font-medium text-white/90">
+                          <span className="text-red-400">{t('admin.deactivate.confirmDeactivateTitle', { name: selectedUser.username })}</span>
+                        </p>
+                        <p className="text-sm text-white/60 mt-1">
+                          {t('admin.deactivate.confirmDeactivateBody')}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-sm font-medium text-white/90">
+                          <span className="text-emerald-400">{t('admin.deactivate.confirmActivateTitle', { name: selectedUser.username })}</span>
+                        </p>
+                        <p className="text-sm text-white/60 mt-1">
+                          {t('admin.deactivate.confirmActivateBody')}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex gap-3">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setIsConfirming(false)}
+                      className="text-white/50 hover:text-white hover:bg-white/5"
+                    >
+                      {t('admin.deactivate.cancel')}
+                    </Button>
+                    <Button
+                      onClick={handleToggleStatus}
+                      disabled={loading}
+                      className={`text-black px-6 font-medium ${submitBtnClass}`}
+                    >
+                      {isActive ? t('admin.deactivate.confirmDeactivateSubmit') : t('admin.deactivate.confirmActivateSubmit')}
+                    </Button>
+                  </div>
+                </div>
               )}
             </div>
-
-            {/* Confirmation Dialog */}
-            {isConfirming && (
-              <div className={`border-t p-5 mx-2 mb-2 rounded-xl flex items-center justify-between ${selectedUser.status === 'active' ? 'bg-[#241111] border-red-900/30' : 'bg-[#0f2418] border-emerald-900/30'}`}>
-                <div>
-                  {selectedUser.status === 'active' ? (
-                    <>
-                      <p className="text-sm font-medium text-white/90">
-                        <span className="text-red-400">Deactivate {selectedUser.username}?</span>
-                      </p>
-                      <p className="text-sm text-white/60 mt-1">
-                        They will be signed out and blocked from login immediately.
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-sm font-medium text-white/90">
-                        <span className="text-emerald-400">Activate {selectedUser.username}?</span>
-                      </p>
-                      <p className="text-sm text-white/60 mt-1">
-                        They will be able to log in again.
-                      </p>
-                    </>
-                  )}
-                </div>
-                <div className="flex gap-3">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setIsConfirming(false)}
-                    className="text-white/50 hover:text-white hover:bg-white/5"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleToggleStatus}
-                    disabled={loading}
-                    className={
-                      selectedUser.status === 'active'
-                        ? 'bg-white hover:bg-white/90 text-black px-6 font-medium'
-                        : 'bg-emerald-500 hover:bg-emerald-400 text-black px-6 font-medium'
-                    }
-                  >
-                    {selectedUser.status === 'active' ? 'Yes, deactivate' : 'Yes, activate'}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+          );
+        })()}
 
         {/* Search Results Table */}
         <div>
-          <h3 className="text-[12px] font-semibold text-white/40 uppercase tracking-wider mb-4">Search results</h3>
-          
+          <h3 className="text-[12px] font-semibold text-white/40 uppercase tracking-wider mb-4">{t('admin.deactivate.resultsHeading')}</h3>
+
           <div className="bg-[#0f1629] border border-white/10 rounded-xl overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow className="border-white/5 hover:bg-transparent">
                   <TableHead className="w-12 text-[12px] font-medium text-white/40"></TableHead>
-                  <TableHead className="text-[12px] font-medium text-white/40">User</TableHead>
-                  <TableHead className="text-[12px] font-medium text-white/40">Role</TableHead>
-                  <TableHead className="text-[12px] font-medium text-white/40">Reporting Manager</TableHead>
-                  <TableHead className="text-[12px] font-medium text-white/40">Skip L1</TableHead>
-                  <TableHead className="text-[12px] font-medium text-white/40">Skip L2</TableHead>
-                  <TableHead className="text-[12px] font-medium text-white/40">Status</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">{t('admin.deactivate.columnUser')}</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">{t('admin.deactivate.columnRole')}</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">{t('admin.deactivate.columnReportingManager')}</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">{t('admin.deactivate.columnSkipL1')}</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">{t('admin.deactivate.columnSkipL2')}</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40">{t('admin.deactivate.columnStatus')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <TableRow className="border-white/5 hover:bg-transparent">
-                    <TableCell colSpan={7} className="p-8 text-center text-white/30 text-sm">Loading...</TableCell>
+                    <TableCell colSpan={7} className="p-8 text-center text-white/30 text-sm">{t('admin.deactivate.loading')}</TableCell>
                   </TableRow>
                 ) : error ? (
                   <TableRow className="border-white/5 hover:bg-transparent">
@@ -237,7 +237,7 @@ export default function DeactivateUserPage() {
                   </TableRow>
                 ) : users.length === 0 ? (
                   <TableRow className="border-white/5 hover:bg-transparent">
-                    <TableCell colSpan={7} className="p-8 text-center text-white/30 text-sm">No users found.</TableCell>
+                    <TableCell colSpan={7} className="p-8 text-center text-white/30 text-sm">{t('admin.deactivate.noResults')}</TableCell>
                   </TableRow>
                 ) : (
                   users.map((user) => (
@@ -264,7 +264,7 @@ export default function DeactivateUserPage() {
                       
                       <TableCell>
                         <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium ${ROLE_BADGE_COLORS[(user.role || '').toLowerCase()] || ROLE_BADGE_COLORS.default}`}>
-                          {user.role || 'User'}
+                          {user.role || t('admin.deactivate.defaultRole')}
                         </span>
                       </TableCell>
 
@@ -275,11 +275,11 @@ export default function DeactivateUserPage() {
                       <TableCell>
                         {user.status === 'active' ? (
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-[11px] font-medium border border-emerald-500/20">
-                            Active
+                            {t('admin.deactivate.statusActive')}
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-red-500/10 text-red-400 text-[11px] font-medium border border-red-500/20">
-                            Deactivated
+                            {t('admin.deactivate.statusDeactivated')}
                           </span>
                         )}
                       </TableCell>

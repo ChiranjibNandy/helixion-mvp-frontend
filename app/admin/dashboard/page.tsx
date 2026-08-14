@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 import { useRegistrations } from '@/hooks/useRegistrations';
 import { useAdminDashboardStats } from '@/hooks/useAdminDashboardStats';
 import { ADMIN_CONTENT } from '@/constants/content';
@@ -17,7 +19,11 @@ export default function AdminDashboard() {
     refetch,
   } = useRegistrations();
 
-  const { stats: dashboardStats, loading: statsLoading } = useAdminDashboardStats();
+  const { stats: dashboardStats, loading: statsLoading, error: statsError } = useAdminDashboardStats();
+
+  useEffect(() => {
+    if (statsError) toast.error(statsError);
+  }, [statsError]);
 
   const { STATS } = ADMIN_CONTENT.DASHBOARD;
 
