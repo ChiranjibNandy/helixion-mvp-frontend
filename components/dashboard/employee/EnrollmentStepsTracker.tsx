@@ -94,11 +94,10 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
     // actorType "training_dept" as the main review, so they're explicitly
     // excluded here — otherwise a tour approval alone would be mistaken for
     // evidence the main review ran, permanently stuck step 3 on "upcoming".
-    const wasTrainingDeptSkipped = !timeline.some((t: any) => t.actorType === "training_dept" && !String(t.action || "").startsWith("tour_ctd_")) && stage !== ENROLLMENT_STAGE.TRAINING_DEPT_REVIEW;
-
+    
     // Step 3: CTD / Training Dept Review
     let step3Status: "completed" | "current" | "upcoming" = "upcoming";
-    if (PAST_TRAINING_DEPT_REVIEW.includes(stage) || wasTrainingDeptSkipped) {
+    if (PAST_TRAINING_DEPT_REVIEW.includes(stage)) {
         step3Status = "completed";
     } else if (stage === ENROLLMENT_STAGE.TRAINING_DEPT_REVIEW) {
         step3Status = "current";

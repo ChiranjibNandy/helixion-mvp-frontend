@@ -86,7 +86,7 @@ export default function EnrollmentApprovalProgressView() {
                 </Card>
             ) : (
                 <Card className="bg-bgStatCard border-borderCard p-8">
-                    <div className="space-y-12">
+                    <div className="space-y-12 p-3">
                         {/* Selected Program Title */}
                         <div className="border-b border-white/5 pb-4">
                             <span className="text-[10px] uppercase tracking-wider text-textSidebarMuted font-bold block mb-1">
@@ -98,6 +98,7 @@ export default function EnrollmentApprovalProgressView() {
                         </div>
 
                         {/* Progress Tracker */}
+                        
                         {selectedEnrollment && <EnrollmentStepsTracker enrollment={selectedEnrollment} />}
 
                         {/* Tour Submission CTA */}

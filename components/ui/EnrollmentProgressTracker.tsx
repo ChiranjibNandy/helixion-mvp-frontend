@@ -43,7 +43,7 @@ export default function EnrollmentProgressTracker({ steps, className }: Enrollme
                     const isCurrent = step.status === "current";
 
                     return (
-                        <div key={step.id} className="relative z-10 flex flex-col items-center">
+                        <div key={step.id} className="relative z-10 flex flex-col items-center p-2">
                             {/* Circle Icon */}
                             <div
                                 className={cn(
@@ -58,17 +58,35 @@ export default function EnrollmentProgressTracker({ steps, className }: Enrollme
                                 {isCompleted ? <Check className="size-6" /> : <Icon className="size-6" />}
                             </div>
 
-                            {/* Label and Date */}
-                            <div className="absolute top-14 flex flex-col items-center text-center min-w-[120px]">
+                            {/* Label, Status Pill & Date */}
+                            <div className="absolute top-14 flex flex-col items-center text-center min-w-[140px]">
                                 <span
                                     className={cn(
-                                        "text-[10px] font-semibold leading-tight",
+                                        "text-xs font-semibold leading-tight mb-1.5",
                                         isCompleted ? "text-accentGreen" : isCurrent ? "text-white" : "text-textSidebarMuted"
                                     )}
                                 >
                                     {step.label}
                                 </span>
-                                {step.date && <span className="text-[10px] text-textSidebarMuted mt-1">{step.date}</span>}
+
+                                {/* Status Button / Pill */}
+                                <button
+                                    type="button"
+                                    className={cn(
+                                        "px-2.5 py-0.5 rounded-full text-[10px] font-medium transition-colors cursor-default border",
+                                        isCompleted
+                                            ? "bg-accentGreen/15 text-accentGreen border-accentGreen/30"
+                                            : isCurrent
+                                                ? "bg-primary/15 text-primary border-primary/30"
+                                                : "bg-bgMain text-textSidebarMuted border-borderCard"
+                                    )}
+                                >
+                                    {isCompleted ? "Completed" : isCurrent ? "In Progress" : "Pending"}
+                                </button>
+
+                                {step.date && (
+                                    <span className="text-[10px] text-textSidebarMuted mt-1">{step.date}</span>
+                                )}
                             </div>
                         </div>
                     );
