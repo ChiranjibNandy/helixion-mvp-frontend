@@ -77,8 +77,8 @@ export const ADMIN_CONTENT = {
     TITLE: 'Admin dashboard',
     STATS: {
       TOTAL_USERS: 'Total users',
+      ACTIVE_USERS: 'Active users',
       PENDING_APPROVAL: 'Pending approval',
-      ACTIVE_TODAY: 'Active today',
       DEACTIVATED: 'Deactivated',
     },
     SECTIONS: {
