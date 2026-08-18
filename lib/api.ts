@@ -23,6 +23,27 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (res) => res,
-  (error) => Promise.reject(error)
+  (error) => {
+    if (error.response) {
+      const status = error.response.status;
+      const url = error.config?.url || '';
+      
+      // Do not trigger global error UX for auth endpoints
+      const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register');
+
+      if (!isAuthEndpoint) {
+        if (status === 401) {
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("api-unauthorized"));
+          }
+        } else if (status === 403) {
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("api-forbidden"));
+          }
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
 );
 
