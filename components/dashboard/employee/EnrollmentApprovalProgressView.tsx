@@ -14,6 +14,7 @@ import {
     getProgramDetails,
 } from "./enrolment/enrollmentApproval.constants";
 import { TourSubmissionModal } from "./TourSubmissionModal";
+import { getEnrollmentPanelByIdAPI } from "@/services/enrollmentApprovalService";
 
 export default function EnrollmentApprovalProgressView() {
     const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
@@ -21,27 +22,60 @@ export default function EnrollmentApprovalProgressView() {
     const [loading, setLoading] = useState(true);
     const [isTourModalOpen, setIsTourModalOpen] = useState(false);
 
+    // States for row expansion & panel API data
+    const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
+    const [panelDataMap, setPanelDataMap] = useState<Record<string, any>>({});
+    const [loadingPanelId, setLoadingPanelId] = useState<string | null>(null);
+
     const fetchEnrollments = async () => {
-            try {
-                setLoading(true);
-                const data = await getEmployeeEnrollments();
-                setEnrollments(data);
-                if (data && data.length > 0) {
-                    setSelectedEnrollmentId(data[0]._id);
-                }
-            } catch (err) {
-                console.error("Failed to fetch enrollments:", err);
-            } finally {
-                setLoading(false);
+        try {
+            setLoading(true);
+            const data = await getEmployeeEnrollments();
+            setEnrollments(data);
+            if (data && data.length > 0) {
+                setSelectedEnrollmentId(data[0]._id);
             }
-        };
+        } catch (err) {
+            console.error("Failed to fetch enrollments:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         fetchEnrollments();
     }, []);
 
-    const selectedEnrollment = enrollments.find(e => e._id === selectedEnrollmentId) || enrollments[0];
+    const selectedEnrollment =
+        enrollments.find((e) => e._id === selectedEnrollmentId) || enrollments[0];
 
+    // Handle clicking row to expand and trigger API fetch
+    const handleRowClick = async (enrollment: any) => {
+        const id = enrollment._id;
+        setSelectedEnrollmentId(id);
+
+        // Toggle collapse if clicking the same expanded row
+        if (expandedRowId === id) {
+            setExpandedRowId(null);
+            return;
+        }
+
+        setExpandedRowId(id);
+
+        // Fetch API panel data if not already cached
+        if (!panelDataMap[id]) {
+            try {
+                setLoadingPanelId(id);
+                const res = await getEnrollmentPanelByIdAPI(id);
+                const panelData = res?.data || res;
+                setPanelDataMap((prev) => ({ ...prev, [id]: panelData }));
+            } catch (err) {
+                console.error("Failed to fetch panel details:", err);
+            } finally {
+                setLoadingPanelId(null);
+            }
+        }
+    };
 
     if (loading) {
         return (
@@ -54,11 +88,88 @@ export default function EnrollmentApprovalProgressView() {
     const getRowClassName = (enrollment: any) => {
         return cn(
             "border-borderCard hover:bg-white/5 cursor-pointer transition-all",
-            selectedEnrollmentId === enrollment._id ? "bg-white/5 border-l-2 border-l-primary" : ""
+            selectedEnrollmentId === enrollment._id
+                ? "bg-white/5 border-l-2 border-l-primary"
+                : ""
         );
     };
 
-    const columns = createEnrollmentColumns(t);
+    // Pass `expandedRowId` to update the icon state dynamically
+    const columns = createEnrollmentColumns(t, expandedRowId);
+
+    // Render content inside the expanded row
+    const renderExpandedRow = (enrollment: any) => {
+        const id = enrollment._id;
+        const isLoading = loadingPanelId === id;
+        const details = panelDataMap[id];
+
+        return (
+            <div className="p-5 bg-bgMain/60 border-t border-borderCard space-y-4">
+                {isLoading ? (
+                    <div className="flex items-center justify-center py-6 gap-2 text-textSidebarMuted text-sm">
+                        <Spinner size="sm" />
+                        <span>Loading details...</span>
+                    </div>
+                ) : details ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                        {/* Stage */}
+                        <div className="p-3 bg-bgStatCard rounded-lg border border-borderCard">
+                            <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
+                                Current Stage
+                            </span>
+                            <p className="text-white font-medium capitalize">
+                                {details.currentStage || "N/A"}
+                            </p>
+                        </div>
+
+                        {/* Created By */}
+                        <div className="p-3 bg-bgStatCard rounded-lg border border-borderCard">
+                            <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
+                                Created By
+                            </span>
+                            {details.createdBy ? (
+                                <div>
+                                    <p className="text-white font-medium">{details.createdBy.name}</p>
+                                    <p className="text-textSidebarMuted text-xs">{details.createdBy.email}</p>
+                                </div>
+                            ) : (
+                                <p className="text-textSidebarMuted">N/A</p>
+                            )}
+                        </div>
+
+                        {/* Brochure */}
+                        <div className="p-3 bg-bgStatCard rounded-lg border border-borderCard">
+                            <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
+                                Brochure
+                            </span>
+                            {details.downloadBrochureUrl ? (
+                                <a
+                                    href={details.downloadBrochureUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center text-primary hover:underline text-xs font-semibold gap-1"
+                                >
+                                    Download Brochure
+                                </a>
+                            ) : (
+                                <p className="text-textSidebarMuted">Not Available</p>
+                            )}
+                        </div>
+
+                        {/* Notes */}
+                        <div className="p-3 bg-bgStatCard rounded-lg border border-borderCard md:col-span-2 lg:col-span-1">
+                            <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
+                                Notes
+                            </span>
+                            <p className="text-white text-xs">{details.notes || "No notes available"}</p>
+                        </div>
+                    </div>
+                ) : (
+                    <p className="text-textSidebarMuted text-xs">Failed to load details.</p>
+                )}
+            </div>
+        );
+    };
 
     return (
         <div className="flex flex-col gap-8 pb-10 w-full">
@@ -77,7 +188,7 @@ export default function EnrollmentApprovalProgressView() {
                     <p className="text-textSidebarMuted">
                         You have not enrolled in any training programs yet.
                     </p>
-                    <Link 
+                    <Link
                         href="/dashboard"
                         className="inline-block px-5 py-2.5 bg-primary text-white font-medium text-sm rounded-lg hover:bg-primary/90 transition-all duration-200"
                     >
@@ -98,15 +209,19 @@ export default function EnrollmentApprovalProgressView() {
                         </div>
 
                         {/* Progress Tracker */}
-                        
-                        {selectedEnrollment && <EnrollmentStepsTracker enrollment={selectedEnrollment} />}
+                        {selectedEnrollment && (
+                            <EnrollmentStepsTracker enrollment={selectedEnrollment} />
+                        )}
 
                         {/* Tour Submission CTA */}
                         {selectedEnrollment?.currentStage === "tour_pending_employee" && (
                             <div className="flex flex-col items-center justify-center p-6 mt-4 border border-borderCard rounded-xl bg-bgMain text-center space-y-4">
-                                <h3 className="text-lg font-semibold text-white">Tour Form Required</h3>
+                                <h3 className="text-lg font-semibold text-white">
+                                    Tour Form Required
+                                </h3>
                                 <p className="text-sm text-textSidebarMuted">
-                                    Your enrollment has been approved. Please submit your tour details to proceed.
+                                    Your enrollment has been approved. Please submit your tour
+                                    details to proceed.
                                 </p>
                                 <button
                                     onClick={() => setIsTourModalOpen(true)}
@@ -129,8 +244,11 @@ export default function EnrollmentApprovalProgressView() {
                                 <DataTable
                                     columns={columns}
                                     data={enrollments}
-                                    onRowClick={(enrollment) => setSelectedEnrollmentId(enrollment._id)}
+                                    rowKey={(row) => row._id}
+                                    onRowClick={handleRowClick}
                                     rowClassName={getRowClassName}
+                                    isRowExpanded={(row) => expandedRowId === row._id}
+                                    renderExpandedRow={renderExpandedRow}
                                     className="w-full"
                                 />
                             </div>

@@ -105,3 +105,12 @@ export const takeCtdTourActionAPI = async (
   });
   return res.data;
 };
+
+
+/**
+ * Fetch detailed panel data for a single enrollment ID
+ */
+export const getEnrollmentPanelByIdAPI = async (id: string) => {
+  const res = await api.get(`${ API.EMPLOYEE.ENROLLMENTPANEL }/${ id }`);
+  return res.data;
+};

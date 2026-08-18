@@ -27,6 +27,7 @@ export const API = {
       SUBMIT_ENROLLMENT: (id: string) => `/employee/enrollments/${id}/submit`,
       NOTIFICATIONS: '/employee/notifications',
       SUBMIT_TOUR: (id: string) => `/employee/enrollments/${id}/tour/submit`,
+      ENROLLMENTPANEL:'/employee/enrollments/panel'
    },
    MANAGER: {
       DASHBOARD: '/manager/dashboard',
