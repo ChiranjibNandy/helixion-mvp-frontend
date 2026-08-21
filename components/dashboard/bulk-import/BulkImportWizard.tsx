@@ -1,19 +1,89 @@
 'use client';
 
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { FileText, X, AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
 import { userService, BatchCreateResponse } from '@/services/userService';
 import { formatFileSize } from '@/utils/csv-parser';
-import { parseBulkUploadFile, validateBulkEmployeeRows, ValidatedBulkEmployeeRow } from '@/utils/parseBulkUploadFile';
+import { parseBulkUploadFile, validateBulkEmployeeRows, rowsToCsvFile, ValidatedBulkEmployeeRow } from '@/utils/parseBulkUploadFile';
 import { t } from '@/lib/i18n';
 import FileDropzone from '@/components/shared/FileDropzone';
 import PageHeader from '@/components/ui/pageHeader';
 import BulkUploadPreview from './BulkUploadPreview';
 
+// "success" from the request's point of view (the HTTP call itself didn't
+// throw) is NOT the same as "the import succeeded" — a 201 response can
+// still mean every single row was rejected server-side. Distinguishing
+// these explicitly so the modal/toast never claims success when nothing
+// was actually imported.
+type CommitOutcome = 'full' | 'partial' | 'allSkipped' | 'requestFailed';
+
 interface CommitResult {
-  success: boolean;
+  outcome: CommitOutcome;
   data?: BatchCreateResponse;
   errorMessage?: string;
+}
+
+// Single source of truth for the title/description shown for a given
+// result — used by BOTH the toast and the modal, so they can't drift out
+// of sync with each other the way they did before (the modal was reading
+// createdCount alone while the toast read created+updated combined).
+function getOutcomeMessage(result: CommitResult): { title: string; description: string; isGood: boolean; severity: 'green' | 'orange' | 'red' } {
+  const { outcome, data, errorMessage } = result;
+  const created = data?.createdCount ?? 0;
+  const updated = data?.updatedCount ?? 0;
+  const skipped = data?.skippedCount ?? 0;
+  const succeeded = created + updated;
+
+  if (outcome === 'full') {
+    // Every row succeeded, but "0 created, N updated" means every single
+    // one of those rows already existed — re-uploading the exact same data
+    // isn't a fresh approval, and saying "approved" here would be wrong.
+    if (created === 0 && updated > 0) {
+      return {
+        title: t('bulkImport.results.alreadyUploadedTitle'),
+        description: t('bulkImport.results.alreadyUploadedDescription', { count: updated, countPlural: updated === 1 ? '' : 's' }),
+        isGood: true,
+        severity: 'green',
+      };
+    }
+    return {
+      title: t('bulkImport.results.successTitle'),
+      description: t('bulkImport.results.successDescription', { count: succeeded }),
+      isGood: true,
+      severity: 'green',
+    };
+  }
+
+  if (outcome === 'partial') {
+    return {
+      title: t('bulkImport.results.partialTitle'),
+      description: t('bulkImport.results.partialDescription', {
+        succeeded,
+        succeededPlural: succeeded === 1 ? '' : 's',
+        skipped,
+        skippedPlural: skipped === 1 ? '' : 's',
+      }),
+      isGood: false,
+      severity: 'orange',
+    };
+  }
+
+  if (outcome === 'allSkipped') {
+    return {
+      title: t('bulkImport.results.allSkippedTitle'),
+      description: t('bulkImport.results.allSkippedDescription', { skipped, skippedPlural: skipped === 1 ? '' : 's' }),
+      isGood: false,
+      severity: 'red',
+    };
+  }
+
+  return {
+    title: t('bulkImport.results.failureTitle'),
+    description: errorMessage || t('bulkImport.results.failureDescription'),
+    isGood: false,
+    severity: 'red',
+  };
 }
 
 // Matches the backend's CSV/XLSX column set (helixion-mvp-backend
@@ -22,6 +92,14 @@ interface CommitResult {
 const CSV_TEMPLATE = `Employee Roll No.,Name of the employee,Email,Mobile,Place of Posting,Designation,Department,Training Department Junior Officer,Training Department Senior Officer,OSD Team Junior Officer,OSD Team Senior Officer,Reporting Manager Email,Skip Level 1 Manager Email,Skip Level 2 Manager Email
 E1001,Arjun Mehta,arjun@corp.in,9876543210,Mumbai,Analyst,Finance,No,No,No,No,manager@corp.in,,
 E1002,Sara Iyer,sara@corp.in,9876543211,Delhi,Senior Analyst,Finance,Yes,No,No,No,manager@corp.in,skiplevel1@corp.in,`;
+
+// These fields feed emailsInFile / manager-reference matching in
+// validateBulkEmployeeRows, which is built from the parser's toRow() output
+// — that always lowercases them. A hand-edited value that isn't normalized
+// the same way silently breaks matching against untouched rows (e.g. row A's
+// email edited to "Alice@x.com" no longer matches row B's still-lowercase
+// "alice@x.com" reference to it).
+const EMAIL_FIELDS = new Set(['email', 'reportingManagerEmail', 'skipLevel1ManagerEmail', 'skipLevel2ManagerEmail']);
 
 export default function BulkImportWizard() {
   const [file, setFile] = useState<File | null>(null);
@@ -33,10 +111,38 @@ export default function BulkImportWizard() {
   const [commitResult, setCommitResult] = useState<CommitResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Server-reported errors from a previous "Fix skipped rows" cycle, keyed
+  // by row id. A ref (not state) because it's an overlay applied on top of
+  // previewRows on every update, not something rendered directly — using
+  // state here would mean choosing between two equally-wrong update orders
+  // (stale closure vs. a second re-render). Cleared per-row the moment that
+  // specific row is edited; untouched rows keep showing their real error
+  // through any number of edits elsewhere, which is the bug this fixes.
+  const serverErrorsByRowIdRef = useRef<Record<string, string>>({});
+
+  // validateBulkEmployeeRows is O(n) over the whole file (rebuilds a
+  // duplicate-code map and an emailsInFile set, then re-scans every row) —
+  // fine as a one-off, but re-running it synchronously on every single
+  // keystroke in a text field makes typing laggy on a large upload. The
+  // field itself still updates immediately (see handleRowEdit) so typing
+  // never feels blocked; only the expensive re-validation pass is debounced.
+  const revalidateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (revalidateTimeoutRef.current) clearTimeout(revalidateTimeoutRef.current);
+  }, []);
+
+  const applyServerErrors = useCallback((rows: ValidatedBulkEmployeeRow[]): ValidatedBulkEmployeeRow[] =>
+    rows.map((row) => {
+      const serverError = serverErrorsByRowIdRef.current[row._rowId];
+      if (!serverError) return row;
+      return { ...row, severity: 'error' as const, issues: [serverError, ...row.issues.filter((i) => i !== serverError)] };
+    }), []);
+
   const handleFileSelected = useCallback(async (selected: File) => {
     setFile(selected);
     setParseError(null);
     setPreviewRows(null);
+    serverErrorsByRowIdRef.current = {};
     setIsParsing(true);
     try {
       const rows = await parseBulkUploadFile(selected);
@@ -53,30 +159,138 @@ export default function BulkImportWizard() {
     setPreviewRows(null);
     setParseError(null);
     setCommitResult(null);
+    serverErrorsByRowIdRef.current = {};
   }, []);
 
+  // Edits made in the preview table re-run the same client-side validation
+  // (issue counts/severity update live) rather than just patching the field
+  // — e.g. fixing a duplicate Roll No. should also clear the error on the
+  // other row that shared it.
+  const handleRowEdit = useCallback((
+    rowId: string,
+    field: 'employeeCode' | 'name' | 'email' | 'mobile' | 'placeOfPosting' | 'designation' | 'department' | 'reportingManagerEmail' | 'skipLevel1ManagerEmail' | 'skipLevel2ManagerEmail',
+    value: string
+  ) => {
+    const normalizedValue = EMAIL_FIELDS.has(field) ? value.trim().toLowerCase() : value;
+    delete serverErrorsByRowIdRef.current[rowId]; // editing this row means the admin is addressing it
+
+    // The field itself updates immediately — this is what the controlled
+    // <input> is bound to, so it must never wait on the debounce below or
+    // typing would visibly lag/stutter.
+    setPreviewRows((prev) => {
+      if (!prev) return prev;
+      return prev.map((row) => (row._rowId === rowId ? { ...row, [field]: normalizedValue } : row));
+    });
+
+    // Issue counts/severity badges are a "soon-ish" concern, not an
+    // every-keystroke one — debounced so the expensive full-file
+    // re-validation runs once after the admin pauses, not on every character.
+    if (revalidateTimeoutRef.current) clearTimeout(revalidateTimeoutRef.current);
+    revalidateTimeoutRef.current = setTimeout(() => {
+      setPreviewRows((prev) => (prev ? applyServerErrors(validateBulkEmployeeRows(prev)) : prev));
+    }, 250);
+  }, [applyServerErrors]);
+
+  // Junior/Senior are mutually exclusive within the same category (matches
+  // the backend's mapSpreadsheetEmployee.ts, which has Senior silently win
+  // if both were ever true — toggling here instead of allowing that
+  // ambiguous state) but Training Dept and OSD are independent of each
+  // other, same as the underlying officeRoles schema.
+  const handleToggleOfficeRole = useCallback((rowId: string, field: 'trainingDeptJunior' | 'trainingDeptSenior' | 'osdJunior' | 'osdSenior') => {
+    delete serverErrorsByRowIdRef.current[rowId];
+    setPreviewRows((prev) => {
+      if (!prev) return prev;
+      const updated = prev.map((row) => {
+        if (row._rowId !== rowId) return row;
+        const next = { ...row, [field]: !row[field] };
+        if (field === 'trainingDeptJunior' && next.trainingDeptJunior) next.trainingDeptSenior = false;
+        if (field === 'trainingDeptSenior' && next.trainingDeptSenior) next.trainingDeptJunior = false;
+        if (field === 'osdJunior' && next.osdJunior) next.osdSenior = false;
+        if (field === 'osdSenior' && next.osdSenior) next.osdJunior = false;
+        return next;
+      });
+      return applyServerErrors(validateBulkEmployeeRows(updated));
+    });
+  }, [applyServerErrors]);
+
   const handleConfirmCommit = useCallback(async () => {
-    if (!file) return;
+    if (!file || !previewRows) return;
     setIsCommitting(true);
 
     try {
-      const data = await userService.batchCreateUsers(file);
-      setCommitResult({ success: true, data });
+      // Upload what's actually in the (possibly hand-edited) preview table,
+      // not the original file — previewRows may no longer match it.
+      const csvFile = rowsToCsvFile(previewRows, file.name);
+      const data = await userService.batchCreateUsers(csvFile);
+      const succeededCount = data.createdCount + data.updatedCount;
+
+      const outcome: CommitOutcome =
+        data.skippedCount === 0 ? 'full' : succeededCount > 0 ? 'partial' : 'allSkipped';
+
+      const result: CommitResult = { outcome, data };
+      setCommitResult(result);
+
+      const { description, severity } = getOutcomeMessage(result);
+      if (severity === 'green') toast.success(description);
+      else if (severity === 'orange') toast.warning(description);
+      else toast.error(description);
     } catch (err: any) {
-      setCommitResult({
-        success: false,
-        errorMessage: err?.response?.data?.message || t('bulkImport.results.failureDescription'),
-      });
+      const errorMessage = err?.response?.data?.message || t('bulkImport.results.failureDescription');
+      setCommitResult({ outcome: 'requestFailed', errorMessage });
+      toast.error(errorMessage);
     } finally {
       setShowSuccessModal(true);
       setIsCommitting(false);
     }
-  }, [file]);
+  }, [file, previewRows]);
 
   const handleDone = useCallback(() => {
     setShowSuccessModal(false);
     handleRemoveFile();
   }, [handleRemoveFile]);
+
+  // Re-opens the preview with the file/edits intact (unlike handleDone,
+  // which discards everything) and flags exactly the rows the server
+  // rejected — using the real per-row reason it returned — so the admin can
+  // fix just those rows and re-upload instead of starting the whole file
+  // over.
+  const handleFixSkippedRows = useCallback(() => {
+    const skipped = commitResult?.data?.skipped;
+    if (skipped && skipped.length > 0) {
+      // Matched primarily by Employee Roll No., not email — two rows can
+      // legitimately share an email (validateBulkEmployeeRows only enforces
+      // Roll No. uniqueness), so matching on email alone could attribute
+      // the same server error to both, or to the wrong one. Falls back to
+      // email only for a row with no roll no. at all.
+      const errorByCode = new Map(
+        skipped.filter((s) => s.employeeCode).map((s) => [s.employeeCode!, s.error])
+      );
+      const errorByEmail = new Map(
+        skipped.filter((s) => s.email).map((s) => [s.email!.toLowerCase(), s.error])
+      );
+      setPreviewRows((prev) => {
+        if (!prev) return prev;
+        // Rebuilt from scratch each cycle, keyed by row id (not email —
+        // the email itself might get edited) so applyServerErrors keeps
+        // flagging these rows through any number of edits to OTHER rows,
+        // and stops only once THIS row is edited (see handleRowEdit).
+        const next: Record<string, string> = {};
+        const flagged = prev.map((row) => {
+          const serverError = errorByCode.get(row.employeeCode) ?? errorByEmail.get(row.email.toLowerCase());
+          if (!serverError) return row;
+          next[row._rowId] = serverError;
+          return {
+            ...row,
+            severity: 'error' as const,
+            issues: [serverError, ...row.issues.filter((i) => i !== serverError)],
+          };
+        });
+        serverErrorsByRowIdRef.current = next;
+        return flagged;
+      });
+    }
+    setShowSuccessModal(false);
+  }, [commitResult]);
 
   return (
     <div className="space-y-6">
@@ -187,82 +401,118 @@ export default function BulkImportWizard() {
             isUploading={isCommitting}
             onConfirm={handleConfirmCommit}
             onBack={handleRemoveFile}
+            onRowEdit={handleRowEdit}
+            onToggleOfficeRole={handleToggleOfficeRole}
           />
         </div>
       )}
 
       {/* Results Modal */}
-      {showSuccessModal && commitResult && (
+      {showSuccessModal && commitResult && (() => {
+        const { data } = commitResult;
+        const { title, description, isGood, severity: iconColor } = getOutcomeMessage(commitResult);
+
+        return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="w-full max-w-md bg-bgStatCard border border-borderCard rounded-2xl p-8 shadow-2xl">
             <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center mb-5 ${
-              commitResult.success ? 'bg-accentGreen/10 border-accentGreen/30' : 'bg-accentRed/10 border-accentRed/30'
+              iconColor === 'green' ? 'bg-accentGreen/10 border-accentGreen/30'
+              : iconColor === 'orange' ? 'bg-accentOrange/10 border-accentOrange/30'
+              : 'bg-accentRed/10 border-accentRed/30'
             }`}>
-              {commitResult.success ? (
+              {isGood ? (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="12" cy="12" r="10" stroke="#16a34a" strokeWidth="2" />
                   <path d="M8 12.5L11 15.5L16 9.5" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               ) : (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="10" stroke="#dc2626" strokeWidth="2" />
-                  <path d="M15 9L9 15M9 9L15 15" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" />
+                  <circle cx="12" cy="12" r="10" stroke={iconColor === 'orange' ? '#f59e0b' : '#dc2626'} strokeWidth="2" />
+                  <path d="M15 9L9 15M9 9L15 15" stroke={iconColor === 'orange' ? '#f59e0b' : '#dc2626'} strokeWidth="2" strokeLinecap="round" />
                 </svg>
               )}
             </div>
 
-            <h3 className={`text-lg font-semibold mb-3 ${commitResult.success ? 'text-white' : 'text-accentRed'}`}>
-              {commitResult.success ? t('bulkImport.results.successTitle') : t('bulkImport.results.failureTitle')}
+            <h3 className={`text-lg font-semibold mb-3 ${isGood ? 'text-white' : iconColor === 'orange' ? 'text-accentOrange' : 'text-accentRed'}`}>
+              {title}
             </h3>
 
-            {commitResult.success ? (
-              <p className="text-sm text-textSidebarMuted leading-relaxed mb-4">
-                {t('bulkImport.results.successDescription', { count: commitResult.data?.createdCount ?? 0 })}
-              </p>
-            ) : (
-              <p className="text-sm text-textSidebarMuted leading-relaxed mb-4">
-                {commitResult.errorMessage || t('bulkImport.results.failureDescription')}
-              </p>
-            )}
+            <p className="text-sm text-textSidebarMuted leading-relaxed mb-4">
+              {description}
+            </p>
 
-            {commitResult.success && commitResult.data && (
+            {data && (
               <div className="flex flex-col gap-2 text-sm mb-8">
                 <div className="flex items-center gap-2">
-                  {commitResult.data.createdCount > 0 && (
+                  {data.createdCount > 0 && (
                     <span className="text-accentGreen">
-                      {t('bulkImport.results.approved', { count: commitResult.data.createdCount })}
+                      {t('bulkImport.results.approved', { count: data.createdCount })}
                     </span>
                   )}
-                  {commitResult.data.createdCount > 0 && commitResult.data.updatedCount > 0 && (
+                  {data.createdCount > 0 && data.updatedCount > 0 && (
                     <span className="text-textSidebarMuted">·</span>
                   )}
-                  {commitResult.data.updatedCount > 0 && (
+                  {data.updatedCount > 0 && (
                     <span className="text-accentOrange">
-                      {t('bulkImport.results.roleUpdated', { count: commitResult.data.updatedCount })}
+                      {t('bulkImport.results.roleUpdated', { count: data.updatedCount })}
                     </span>
                   )}
                 </div>
-                {commitResult.data.skippedCount > 0 && (
-                  <p className="text-xs text-accentRed">
-                    {commitResult.data.skippedCount} row{commitResult.data.skippedCount > 1 ? 's' : ''} skipped by the server: {commitResult.data.skippedEmails.join(', ')}
-                  </p>
+                {data.skippedCount > 0 && (
+                  <div className="text-xs text-accentRed space-y-1">
+                    <p className="font-medium">
+                      {data.skippedCount} row{data.skippedCount > 1 ? 's' : ''} skipped by the server:
+                    </p>
+                    {data.skipped && data.skipped.length > 0 ? (
+                      <ul className="space-y-1 max-h-40 overflow-y-auto">
+                        {data.skipped.map((s, i) => (
+                          <li key={i} className="text-accentRed/80">
+                            <span className="font-mono">{s.email || 'unknown row'}</span>: {s.error}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-accentRed/80">{data.skippedEmails.join(', ')}</p>
+                    )}
+                  </div>
                 )}
               </div>
             )}
 
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={handleDone}
-                className="px-6 py-2.5 text-sm font-medium text-white bg-primary
-                           rounded-lg hover:bg-primaryDark transition-all duration-200"
-                id="success-done-btn"
-              >
-                {t('bulkImport.results.doneButton')}
-              </button>
+            <div className="flex justify-end gap-3 mt-4">
+              {data && data.skippedCount > 0 ? (
+                <>
+                  <button
+                    onClick={handleDone}
+                    className="px-5 py-2.5 text-sm text-white/60 bg-white/5 border border-white/10
+                               rounded-lg hover:bg-white/10 transition-all duration-200"
+                  >
+                    Discard & start over
+                  </button>
+                  <button
+                    onClick={handleFixSkippedRows}
+                    className="px-6 py-2.5 text-sm font-medium text-white bg-primary
+                               rounded-lg hover:bg-primaryDark transition-all duration-200"
+                    id="fix-skipped-rows-btn"
+                  >
+                    Fix skipped rows
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleDone}
+                  className="px-6 py-2.5 text-sm font-medium text-white bg-primary
+                             rounded-lg hover:bg-primaryDark transition-all duration-200"
+                  id="success-done-btn"
+                >
+                  {t('bulkImport.results.doneButton')}
+                </button>
+              )}
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

@@ -180,6 +180,22 @@
          "toastDeactivateError": "Could not deactivate {name}. Please try again.",
          "toastActivateError": "Could not activate {name}. Please try again."
       },
+      "organizations": {
+         "title": "Organizations",
+         "description": "Every organization created on the platform, with its type and status.",
+         "searchPlaceholder": "Search by name or slug",
+         "searchButton": "Search",
+         "resultsHeading": "Organizations",
+         "loading": "Loading...",
+         "noResults": "No organizations found.",
+         "columnName": "Name",
+         "columnSlug": "Slug",
+         "columnType": "Type",
+         "columnStatus": "Status",
+         "columnCreated": "Created",
+         "statusActive": "Active",
+         "statusInactive": "Inactive"
+      },
       "approveUser": {
          "title": "Approve User",
          "selectRole": "Select role",
@@ -264,8 +280,14 @@
       "results": {
          "successTitle": "Import successful",
          "failureTitle": "Import failed",
+         "partialTitle": "Some rows need fixing",
+         "allSkippedTitle": "Nothing was imported",
          "successDescription": "{count} users have been approved and roles assigned. They will receive login emails shortly.",
+         "alreadyUploadedTitle": "Already uploaded",
+         "alreadyUploadedDescription": "All {count} row{countPlural} already existed in the system — their details were refreshed, but no new employees were created.",
          "failureDescription": "An error occurred during the import process.",
+         "partialDescription": "{succeeded} row{succeededPlural} imported successfully. {skipped} row{skippedPlural} failed and still need fixing — see below.",
+         "allSkippedDescription": "All {skipped} row{skippedPlural} failed. Fix the details below and re-upload.",
          "approved": "{count} approved",
          "roleUpdated": "{count} role updated",
          "skipped": "{count} skipped",

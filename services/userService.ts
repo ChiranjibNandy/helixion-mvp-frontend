@@ -2,11 +2,18 @@ import { API } from '@/constants/api';
 import { api } from '@/lib/api';
 
 
+export interface SkippedRow {
+  email?: string;
+  employeeCode?: string;
+  error: string;
+}
+
 export interface BatchCreateResponse {
   createdCount: number;
   updatedCount: number;
   skippedCount: number;
   skippedEmails: string[];
+  skipped?: SkippedRow[];
 }
 
 export const userService = {
@@ -25,11 +32,9 @@ export const userService = {
     return response.data;
   },
 
-  // Sends the raw CSV file — the backend now parses and validates it
-  // server-side (name/hierarchy/office-role columns), matching the same
-  // multipart pattern used for org bulk-upload. No client-side row parsing
-  // or per-row preview anymore, since the backend doesn't return per-row
-  // detail to preview against.
+  // Sends a real CSV file (built client-side from the preview rows, possibly
+  // hand-edited — see BulkImportWizard/rowsToCsvFile) via the same multipart
+  // pattern used for org bulk-upload.
   batchCreateUsers: async (file: File): Promise<BatchCreateResponse> => {
     const formData = new FormData();
     formData.append('file', file);

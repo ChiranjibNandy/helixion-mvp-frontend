@@ -23,7 +23,7 @@ export const ROUTES = {
     ORG_POLICY_SETUP: '/admin/dashboard/org-policy',
     RESET_PASSWORD: '/admin/reset-password',
     PROGRAMS: '/programs',
-    ORGANIZATIONS: '/organizations',
+    ORGANIZATIONS: '/admin/dashboard/organizations',
     AUDIT: '/audit',
     SUPPORT: '/support',
     INTEGRATIONS: '/integrations',

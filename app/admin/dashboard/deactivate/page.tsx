@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, AlertCircle } from 'lucide-react';
+import { Search, AlertCircle, Pencil } from 'lucide-react';
 import { COLOR_CLASSES } from '@/constants/admin';
 import { useUsersSearch, UserSearchResult } from '@/hooks/useUsersSearch';
 import { t } from '@/lib/i18n';
 import PaginationController from '@/components/ui/pagination';
+import { TableRowsSkeleton } from '@/components/ui/skeleton';
+import EditEmployeeModal from '@/components/admin/EditEmployeeModal';
 
 
 import {
@@ -53,6 +55,7 @@ export default function DeactivateUserPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,12 +157,22 @@ export default function DeactivateUserPage() {
                 </div>
 
                 {!isConfirming && (
-                  <Button
-                    onClick={() => setIsConfirming(true)}
-                    className={`text-black text-sm px-6 py-5 rounded-lg font-medium ${accentBtnClass}`}
-                  >
-                    {isActive ? t('admin.deactivate.deactivateAccount') : t('admin.deactivate.activateAccount')}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => setEditingUserId(selectedUser.id)}
+                      variant="outline"
+                      className="border-white/10 text-white/70 hover:bg-white/5 text-sm px-4 py-5 rounded-lg font-medium"
+                    >
+                      <Pencil size={14} className="mr-1.5" />
+                      Edit
+                    </Button>
+                    <Button
+                      onClick={() => setIsConfirming(true)}
+                      className={`text-black text-sm px-6 py-5 rounded-lg font-medium ${accentBtnClass}`}
+                    >
+                      {isActive ? t('admin.deactivate.deactivateAccount') : t('admin.deactivate.activateAccount')}
+                    </Button>
+                  </div>
                 )}
               </div>
 
@@ -228,9 +241,7 @@ export default function DeactivateUserPage() {
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableRow className="border-white/5 hover:bg-transparent">
-                    <TableCell colSpan={7} className="p-8 text-center text-white/30 text-sm">{t('admin.deactivate.loading')}</TableCell>
-                  </TableRow>
+                  <TableRowsSkeleton rows={6} columns={7} />
                 ) : error ? (
                   <TableRow className="border-white/5 hover:bg-transparent">
                     <TableCell colSpan={7} className="p-8 text-center text-red-400/80 text-sm">{error}</TableCell>
@@ -301,6 +312,17 @@ export default function DeactivateUserPage() {
           )}
         </div>
       </div>
+
+      {editingUserId && (
+        <EditEmployeeModal
+          employeeId={editingUserId}
+          onClose={() => setEditingUserId(null)}
+          onSaved={() => {
+            setEditingUserId(null);
+            searchUsers(searchQuery);
+          }}
+        />
+      )}
     </div>
   );
 }

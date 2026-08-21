@@ -1,49 +1,22 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FileJson } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AppModal from '@/components/ui/app-modal';
 import FileDropzone from '@/components/shared/FileDropzone';
+import OrganizationPolicyFields from '@/components/admin/OrganizationPolicyFields';
 import { useCreateOrganization } from '@/hooks/useCreateOrganization';
-
-// Mirrors createOrganizationSchema's policy shape (helixion-mvp-backend
-// src/validators/organization.validator.ts) — one row per approval type,
-// each needing enabled/levels/minLevelToApprove/assignmentMode. Descriptions
-// are display-only, not sent to the backend.
-//
-// Reimbursement is deliberately NOT configurable here for now (not part of
-// this stage's scope) — it still gets submitted with a sensible default
-// below (buildFormPayload), since the backend schema requires the full
-// policy object regardless.
-const POLICY_BLOCKS = [
-  { key: 'managerApproval', label: 'Manager Approval', description: 'First review in the chain', defaultAssignmentMode: 'assigned' },
-  { key: 'trainingDeptApproval', label: 'Training Dept Approval', description: 'Policy gate for training validation', defaultAssignmentMode: 'pool' },
-  { key: 'osdReview', label: 'OSD Review', description: 'Operational scheduling and booking review', defaultAssignmentMode: 'pool' },
-  { key: 'tourForm', label: 'Tour Form', description: 'Travel request approval stage', defaultAssignmentMode: 'assigned' },
-] as const;
-
-const REIMBURSEMENT_DEFAULT = { enabled: true, levels: 1, minLevelToApprove: 1, assignmentMode: 'pool' as const };
-
-type PolicyBlockKey = typeof POLICY_BLOCKS[number]['key'];
-
-interface PolicyBlockState {
-  enabled: boolean;
-  minLevelToApprove: string;
-  assignmentMode: 'assigned' | 'pool';
-}
-
-const emptyBlock = (mode: 'assigned' | 'pool'): PolicyBlockState => ({
-  enabled: true,
-  minLevelToApprove: '1',
-  assignmentMode: mode,
-});
-
-const INITIAL_POLICY = POLICY_BLOCKS.reduce((acc, block) => {
-  acc[block.key] = emptyBlock(block.defaultAssignmentMode);
-  return acc;
-}, {} as Record<PolicyBlockKey, PolicyBlockState>);
+import { useOrganizationDetails } from '@/hooks/useOrganizationDetails';
+import { getOrganizationStatusAPI } from '@/services/adminService';
+import {
+  INITIAL_POLICY,
+  PolicyBlockKey,
+  PolicyBlockState,
+  buildPolicyPayload,
+  policyStateFromOrganization,
+} from '@/utils/organizationPolicyForm';
 
 const JSON_TEMPLATE = JSON.stringify(
   {
@@ -65,47 +38,71 @@ const JSON_TEMPLATE = JSON.stringify(
   2
 );
 
-// Small "label above value" box — matches the Organization Name / Slug / Org
-// Type fields and each table cell in the reference design.
-function FieldBox({
-  label,
-  children,
-}: {
-  label?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-lg border border-white/10 bg-black/30 px-3.5 py-2.5">
-      {label && (
-        <div className="text-[10px] font-semibold tracking-widest uppercase text-white/35 mb-1.5">
-          {label}
-        </div>
-      )}
-      {children}
-    </div>
-  );
-}
-
-const fieldInputClass =
-  'w-full bg-transparent text-sm text-white placeholder:text-white/25 outline-none';
-
 export default function OrgPolicySetupPage() {
   const router = useRouter();
-  const { createOrganization, loading, error } = useCreateOrganization();
+  const { createOrganization, updateOrganization, updateOrganizationPolicy, loading: saving, error } = useCreateOrganization();
+
+  // Step 0 — figure out whether this admin already has an org. Until this
+  // resolves we don't know whether to render the Create or Edit form, so the
+  // page shows a loading state rather than flashing Create then switching.
+  const [orgId, setOrgId] = useState<string | null>(null);
+  const [statusChecked, setStatusChecked] = useState(false);
+  const [statusError, setStatusError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getOrganizationStatusAPI()
+      .then((res) => {
+        if (cancelled) return;
+        setOrgId(res.data?.data?.orgId ?? null);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setStatusError(err?.response?.data?.message || 'Failed to check organization status');
+      })
+      .finally(() => {
+        if (!cancelled) setStatusChecked(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const isEditing = !!orgId;
+  const { organization, loading: orgLoading, error: orgError } = useOrganizationDetails(orgId);
 
   const [mode, setMode] = useState<'form' | 'json'>('form');
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [orgType, setOrgType] = useState<'corporate' | 'training_provider' | 'osd_internal'>('corporate');
-  const [policy, setPolicy] = useState(INITIAL_POLICY);
+  const [status, setStatus] = useState<'active' | 'inactive'>('active');
+  const [policy, setPolicy] = useState<Record<PolicyBlockKey, PolicyBlockState>>(INITIAL_POLICY);
+  // Never edited from this form (nothing else in the app populates it
+  // either), but preserved as-is on save so an edit never silently wipes an
+  // existing chain out from under a future feature that does set it.
+  const [policyAssignments, setPolicyAssignments] = useState<{ trainingDeptChain: unknown[]; osdChain: unknown[] }>({
+    trainingDeptChain: [],
+    osdChain: [],
+  });
 
   const [jsonFile, setJsonFile] = useState<File | null>(null);
   const [jsonParseError, setJsonParseError] = useState<string | null>(null);
-  const [jsonPayload, setJsonPayload] = useState<unknown>(null);
+  const [jsonPayload, setJsonPayload] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
+
+  // Prefill once the existing org's details load.
+  useEffect(() => {
+    if (!organization) return;
+    setName(organization.name);
+    setSlug(organization.slug);
+    setOrgType(organization.orgType as typeof orgType);
+    setStatus(organization.status as typeof status);
+    setPolicy(policyStateFromOrganization(organization.policy));
+    setPolicyAssignments(organization.policyAssignments ?? { trainingDeptChain: [], osdChain: [] });
+  }, [organization]);
 
   const updateBlock = <K extends keyof PolicyBlockState>(
     blockKey: PolicyBlockKey,
@@ -122,27 +119,9 @@ export default function OrgPolicySetupPage() {
     name: name.trim(),
     slug: slug.trim().toLowerCase(),
     orgType,
-    policy: {
-      reimbursement: REIMBURSEMENT_DEFAULT,
-      ...Object.fromEntries(
-        POLICY_BLOCKS.map((block) => [
-          block.key,
-          {
-            enabled: policy[block.key].enabled,
-            // "Total No. of Levels" was removed from the UI — actual chain
-            // depth comes from each employee's own manager hierarchy, not an
-            // org-wide number. The backend schema still requires levels >= 1,
-            // so we send a constant; nothing reads this value.
-            levels: 1,
-            minLevelToApprove: Number(policy[block.key].minLevelToApprove) || 1,
-            assignmentMode: policy[block.key].assignmentMode,
-          },
-        ])
-      ),
-      tourApproval: { managerApprovalRequired: true, ctdApprovalRequired: false },
-      reimbursementApproval: { managerApprovalRequired: true, osdApprovalRequired: true },
-    },
-    policyAssignments: { trainingDeptChain: [], osdChain: [] },
+    status,
+    policy: buildPolicyPayload(policy),
+    policyAssignments,
   });
 
   const handleJsonFileSelected = async (file: File) => {
@@ -162,7 +141,26 @@ export default function OrgPolicySetupPage() {
 
   const handleSubmit = async () => {
     const payload = mode === 'form' ? buildFormPayload() : jsonPayload;
-    const ok = await createOrganization(payload);
+
+    let ok: boolean;
+    if (isEditing && orgId) {
+      const detailsOk = await updateOrganization(orgId, {
+        name: payload.name,
+        slug: payload.slug,
+        orgType: payload.orgType,
+        status: payload.status ?? status,
+      });
+      const policyOk = detailsOk
+        ? await updateOrganizationPolicy(orgId, {
+            policy: payload.policy,
+            policyAssignments: payload.policyAssignments ?? policyAssignments,
+          })
+        : false;
+      ok = detailsOk && policyOk;
+    } else {
+      ok = await createOrganization(payload);
+    }
+
     if (ok) {
       setConfirmOpen(false);
       setSuccessOpen(true);
@@ -177,6 +175,35 @@ export default function OrgPolicySetupPage() {
     router.refresh();
   };
 
+  // Loading gate — avoid flashing the Create form before we know whether an
+  // org already exists, and avoid flashing an empty Edit form before its
+  // details arrive.
+  if (!statusChecked || (isEditing && orgLoading && !organization)) {
+    return (
+      <div className="space-y-5">
+        <div className="text-xs text-white/35">
+          Workspace <span className="mx-1">›</span> Org Policy Setup
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-[#0d0f1a] p-6">
+          <div className="py-10 text-center text-sm text-white/40">Loading organization…</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (statusError || (isEditing && orgError)) {
+    return (
+      <div className="space-y-5">
+        <div className="text-xs text-white/35">
+          Workspace <span className="mx-1">›</span> Org Policy Setup
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-[#0d0f1a] p-6">
+          <p className="text-sm text-accentRed">{statusError || orgError}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-5">
       {/* Breadcrumb */}
@@ -187,10 +214,13 @@ export default function OrgPolicySetupPage() {
       {/* Header + mode toggle */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Org Policy Setup</h1>
+          <h1 className="text-2xl font-bold text-white">
+            {isEditing ? 'Edit Organization' : 'Org Policy Setup'}
+          </h1>
           <p className="text-sm text-white/50 mt-1 max-w-2xl">
-            Create or upload an organization and its approval policy schedule. Org-dependent screens
-            like Bulk Import stay disabled until this is done.
+            {isEditing
+              ? 'Update your organization\'s details and approval policy schedule.'
+              : 'Create or upload an organization and its approval policy schedule. Org-dependent screens like Bulk Import stay disabled until this is done.'}
           </p>
         </div>
 
@@ -239,99 +269,19 @@ export default function OrgPolicySetupPage() {
           </button>
         </div>
 
-        {/* Identity fields */}
-        <div className="grid grid-cols-3 gap-4">
-          <FieldBox label="Organization Name">
-            <input
-              className={fieldInputClass}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Acme Corp"
-            />
-          </FieldBox>
-          <FieldBox label="Slug">
-            <input
-              className={fieldInputClass}
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              placeholder="acme-corp"
-            />
-          </FieldBox>
-          <FieldBox label="Org Type">
-            <select
-              value={orgType}
-              onChange={(e) => setOrgType(e.target.value as typeof orgType)}
-              className={`${fieldInputClass} cursor-pointer [&>option]:bg-[#0d0f1a]`}
-            >
-              <option value="corporate">Corporate</option>
-              <option value="training_provider">Training Provider</option>
-              <option value="osd_internal">OSD Internal</option>
-            </select>
-          </FieldBox>
-        </div>
-
         {mode === 'form' ? (
-          <div className="rounded-xl border border-white/10 overflow-hidden">
-            {/* Table header */}
-            <div className="grid grid-cols-[1fr_120px_140px] gap-3 px-4 py-2.5 bg-white/[0.03] text-[10px] font-semibold tracking-widest uppercase text-white/35">
-              <div>Approval Stage</div>
-              <div>Min Level</div>
-              <div>Assignment Mode</div>
-            </div>
-
-            {/* Table rows */}
-            <div className="divide-y divide-white/5">
-              {POLICY_BLOCKS.map((block) => {
-                const state = policy[block.key];
-                return (
-                  <div
-                    key={block.key}
-                    className="grid grid-cols-[1fr_120px_140px] gap-3 px-4 py-3.5 items-center"
-                  >
-                    <div className="flex items-start gap-2.5">
-                      <button
-                        onClick={() => updateBlock(block.key, 'enabled', !state.enabled)}
-                        className={`mt-0.5 w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 transition-colors ${
-                          state.enabled
-                            ? 'border-primary bg-primary/20 text-primary'
-                            : 'border-white/20 text-transparent'
-                        }`}
-                      >
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none">
-                          <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </button>
-                      <div>
-                        <div className="text-sm font-medium text-white">{block.label}</div>
-                        <div className="text-xs text-white/40">{block.description}</div>
-                      </div>
-                    </div>
-
-                    <FieldBox label="">
-                      <input
-                        type="number"
-                        min={1}
-                        className={fieldInputClass}
-                        value={state.minLevelToApprove}
-                        onChange={(e) => updateBlock(block.key, 'minLevelToApprove', e.target.value)}
-                      />
-                    </FieldBox>
-
-                    <FieldBox label="">
-                      <select
-                        value={state.assignmentMode}
-                        onChange={(e) => updateBlock(block.key, 'assignmentMode', e.target.value as 'assigned' | 'pool')}
-                        className={`${fieldInputClass} cursor-pointer [&>option]:bg-[#0d0f1a]`}
-                      >
-                        <option value="assigned">Assigned</option>
-                        <option value="pool">Pool</option>
-                      </select>
-                    </FieldBox>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <OrganizationPolicyFields
+            name={name}
+            onNameChange={setName}
+            slug={slug}
+            onSlugChange={setSlug}
+            orgType={orgType}
+            onOrgTypeChange={setOrgType}
+            status={status}
+            onStatusChange={setStatus}
+            policy={policy}
+            onPolicyBlockChange={updateBlock}
+          />
         ) : (
           <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5 space-y-4">
             <div className="flex items-center gap-2">
@@ -344,7 +294,7 @@ export default function OrgPolicySetupPage() {
 
             <FileDropzone
               accept=".json"
-              isProcessing={loading}
+              isProcessing={false}
               label={jsonFile ? jsonFile.name : 'Drop a JSON file here or click to browse'}
               hint="Supports nested approval levels, stage names, and assignment modes."
               fileInputRef={fileInputRef}
@@ -360,13 +310,13 @@ export default function OrgPolicySetupPage() {
         {/* Footer */}
         <div className="flex items-center justify-between pt-1">
           <p className="text-xs text-white/35">
-            Bulk Import stays disabled until the org policy is saved.
+            {isEditing ? 'Changes apply immediately once saved.' : 'Bulk Import stays disabled until the org policy is saved.'}
           </p>
           <Button
             onClick={() => setConfirmOpen(true)}
             disabled={mode === 'form' ? !canSubmitForm : !canSubmitJson}
           >
-            Save Org Policy
+            {isEditing ? 'Save Changes' : 'Save Org Policy'}
           </Button>
         </div>
       </div>
@@ -374,13 +324,15 @@ export default function OrgPolicySetupPage() {
       <AppModal
         isOpen={confirmOpen}
         type="confirm"
-        title="Save organization policy?"
+        title={isEditing ? 'Save organization changes?' : 'Save organization policy?'}
         description={
-          mode === 'form'
+          isEditing
+            ? `This will update "${name}" with the details and policy configured above.`
+            : mode === 'form'
             ? `This will create "${name}" with the policy configured above.`
             : `This will create the organization defined in ${jsonFile?.name}.`
         }
-        loading={loading}
+        loading={saving}
         error={error}
         onConfirm={handleSubmit}
         onCancel={() => setConfirmOpen(false)}
@@ -390,7 +342,11 @@ export default function OrgPolicySetupPage() {
         isOpen={successOpen}
         type="success"
         title="Saved"
-        description="Organization policy saved. Org-dependent screens are now unlocked."
+        description={
+          isEditing
+            ? 'Organization details updated.'
+            : 'Organization policy saved. Org-dependent screens are now unlocked.'
+        }
         onDone={handleDone}
       />
     </div>
