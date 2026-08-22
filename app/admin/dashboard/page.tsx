@@ -1,6 +1,9 @@
 'use client';
 
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 import { useRegistrations } from '@/hooks/useRegistrations';
+import { useAdminDashboardStats } from '@/hooks/useAdminDashboardStats';
 import { ADMIN_CONTENT } from '@/constants/content';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import { DashboardStats } from '@/components/shared/dashboard-stats';
@@ -16,24 +19,34 @@ export default function AdminDashboard() {
     refetch,
   } = useRegistrations();
 
+  const { stats: dashboardStats, loading: statsLoading, error: statsError } = useAdminDashboardStats();
+
+  useEffect(() => {
+    if (statsError) toast.error(statsError);
+  }, [statsError]);
+
   const { STATS } = ADMIN_CONTENT.DASHBOARD;
+
+  // Show a dash while stats load; "Active today" was removed — there's no
+  // last-login field to compute it from.
+  const dash = (v: number | undefined) => (statsLoading || v === undefined ? '-' : v);
 
   const stats = [
     {
       title: STATS.TOTAL_USERS,
-      value: '-',
+      value: dash(dashboardStats?.totalUsers),
+    },
+    {
+      title: STATS.ACTIVE_USERS,
+      value: dash(dashboardStats?.activeUsers),
     },
     {
       title: STATS.PENDING_APPROVAL,
-      value: registrations.length,
-    },
-    {
-      title: STATS.ACTIVE_TODAY,
-      value: '-',
+      value: dash(dashboardStats?.pendingApproval),
     },
     {
       title: STATS.DEACTIVATED,
-      value: '-',
+      value: dash(dashboardStats?.deactivated),
     },
   ];
 
