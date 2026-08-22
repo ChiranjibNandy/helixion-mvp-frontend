@@ -89,9 +89,9 @@ function getOutcomeMessage(result: CommitResult): { title: string; description: 
 // Matches the backend's CSV/XLSX column set (helixion-mvp-backend
 // mapSpreadsheetEmployee.ts — the columns are human-readable, not
 // machine-friendly keys, so header text must match exactly).
-const CSV_TEMPLATE = `Employee Roll No.,Name of the employee,Email,Mobile,Place of Posting,Designation,Department,Training Department Junior Officer,Training Department Senior Officer,OSD Team Junior Officer,OSD Team Senior Officer,Reporting Manager Email,Skip Level 1 Manager Email,Skip Level 2 Manager Email
-E1001,Arjun Mehta,arjun@corp.in,9876543210,Mumbai,Analyst,Finance,No,No,No,No,manager@corp.in,,
-E1002,Sara Iyer,sara@corp.in,9876543211,Delhi,Senior Analyst,Finance,Yes,No,No,No,manager@corp.in,skiplevel1@corp.in,`;
+const CSV_TEMPLATE = `Employee Roll No.,Name of the employee,Email,Mobile,Place of Posting,Designation,Department,Manager,Training Department Officer (CTD),OSD Officer,Reporting Manager Email,Skip Level 1 Manager Email,Skip Level 2 Manager Email
+E1001,Arjun Mehta,arjun@corp.in,9876543210,Mumbai,Analyst,Finance,No,No,No,manager@corp.in,,
+E1002,Sara Iyer,sara@corp.in,9876543211,Delhi,Senior Analyst,Finance,Yes,No,No,manager@corp.in,skiplevel1@corp.in,`;
 
 // These fields feed emailsInFile / manager-reference matching in
 // validateBulkEmployeeRows, which is built from the parser's toRow() output
@@ -191,23 +191,19 @@ export default function BulkImportWizard() {
     }, 250);
   }, [applyServerErrors]);
 
-  // Junior/Senior are mutually exclusive within the same category (matches
-  // the backend's mapSpreadsheetEmployee.ts, which has Senior silently win
-  // if both were ever true — toggling here instead of allowing that
-  // ambiguous state) but Training Dept and OSD are independent of each
-  // other, same as the underlying officeRoles schema.
-  const handleToggleOfficeRole = useCallback((rowId: string, field: 'trainingDeptJunior' | 'trainingDeptSenior' | 'osdJunior' | 'osdSenior') => {
+  // One CTD flag, one OSD flag per row — no Junior/Senior tiers. Training
+  // Dept and OSD stay independent of each other, same as the underlying
+  // officeRoles schema. Uniqueness across employees (only one CTD, one OSD
+  // per org) is enforced server-side on commit, not here. isManager is a
+  // separate axis entirely (orgRole, not officeRoles) with no such
+  // uniqueness constraint — any number of employees can be Manager.
+  const handleToggleOfficeRole = useCallback((rowId: string, field: 'isManager' | 'trainingDeptSenior' | 'osdSenior') => {
     delete serverErrorsByRowIdRef.current[rowId];
     setPreviewRows((prev) => {
       if (!prev) return prev;
       const updated = prev.map((row) => {
         if (row._rowId !== rowId) return row;
-        const next = { ...row, [field]: !row[field] };
-        if (field === 'trainingDeptJunior' && next.trainingDeptJunior) next.trainingDeptSenior = false;
-        if (field === 'trainingDeptSenior' && next.trainingDeptSenior) next.trainingDeptJunior = false;
-        if (field === 'osdJunior' && next.osdJunior) next.osdSenior = false;
-        if (field === 'osdSenior' && next.osdSenior) next.osdJunior = false;
-        return next;
+        return { ...row, [field]: !row[field] };
       });
       return applyServerErrors(validateBulkEmployeeRows(updated));
     });

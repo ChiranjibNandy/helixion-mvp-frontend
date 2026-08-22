@@ -17,7 +17,7 @@ type EditableField =
   | 'skipLevel1ManagerEmail'
   | 'skipLevel2ManagerEmail';
 
-type OfficeRoleField = 'trainingDeptJunior' | 'trainingDeptSenior' | 'osdJunior' | 'osdSenior';
+type OfficeRoleField = 'isManager' | 'trainingDeptSenior' | 'osdSenior';
 
 interface BulkUploadPreviewProps {
   rows: ValidatedBulkEmployeeRow[];
@@ -133,12 +133,21 @@ function RowEditPanel({
           </div>
 
           <div>
+            <h4 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-3">Role</h4>
+            <p className="text-xs text-textSidebarMuted mb-2">
+              Independent of office roles below — a Manager can also be a CTD or OSD Officer.
+            </p>
+            <Checkbox label="Manager" checked={row.isManager} onChange={() => onToggleOfficeRole('isManager')} />
+          </div>
+
+          <div>
             <h4 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-3">Office roles</h4>
+            <p className="text-xs text-textSidebarMuted mb-2">
+              Only one CTD and one OSD per org — checking this here takes the role away from whoever currently holds it.
+            </p>
             <div className="grid grid-cols-2 gap-2">
-              <Checkbox label="Training Dept — Junior" checked={row.trainingDeptJunior} onChange={() => onToggleOfficeRole('trainingDeptJunior')} />
-              <Checkbox label="Training Dept — Senior (CTD)" checked={row.trainingDeptSenior} onChange={() => onToggleOfficeRole('trainingDeptSenior')} />
-              <Checkbox label="OSD — Junior" checked={row.osdJunior} onChange={() => onToggleOfficeRole('osdJunior')} />
-              <Checkbox label="OSD — Senior" checked={row.osdSenior} onChange={() => onToggleOfficeRole('osdSenior')} />
+              <Checkbox label="CTD (Training Dept Officer)" checked={row.trainingDeptSenior} onChange={() => onToggleOfficeRole('trainingDeptSenior')} />
+              <Checkbox label="OSD Officer" checked={row.osdSenior} onChange={() => onToggleOfficeRole('osdSenior')} />
             </div>
           </div>
         </div>
@@ -248,19 +257,18 @@ export default function BulkUploadPreview({ rows, fileName, isUploading, onConfi
                     </td>
                     <td className="px-4 py-3.5 min-w-[260px]">
                       <div className="flex flex-wrap items-center gap-1">
-                        {!row.trainingDeptJunior && !row.trainingDeptSenior && !row.osdJunior && !row.osdSenior && (
+                        {!row.isManager && !row.trainingDeptSenior && !row.osdSenior && (
                           // Not a toggle — there's no separate "employee" flag to
                           // flip, this is just the baseline state when none of
-                          // the office-role flags below are set. Shown so it's
+                          // the role flags below is set. Shown so it's
                           // visually confirmed, not just implied by absence.
                           <span className="text-[10px] font-medium px-2 py-0.5 rounded whitespace-nowrap bg-white/5 text-white/40 border border-white/10">
                             Employee
                           </span>
                         )}
-                        <RoleTogglePill label="TD Jr" active={row.trainingDeptJunior} onClick={() => onToggleOfficeRole(row._rowId, 'trainingDeptJunior')} />
-                        <RoleTogglePill label="TD Sr (CTD)" active={row.trainingDeptSenior} onClick={() => onToggleOfficeRole(row._rowId, 'trainingDeptSenior')} />
-                        <RoleTogglePill label="OSD Jr" active={row.osdJunior} onClick={() => onToggleOfficeRole(row._rowId, 'osdJunior')} />
-                        <RoleTogglePill label="OSD Sr" active={row.osdSenior} onClick={() => onToggleOfficeRole(row._rowId, 'osdSenior')} />
+                        <RoleTogglePill label="Manager" active={row.isManager} onClick={() => onToggleOfficeRole(row._rowId, 'isManager')} />
+                        <RoleTogglePill label="CTD" active={row.trainingDeptSenior} onClick={() => onToggleOfficeRole(row._rowId, 'trainingDeptSenior')} />
+                        <RoleTogglePill label="OSD" active={row.osdSenior} onClick={() => onToggleOfficeRole(row._rowId, 'osdSenior')} />
                       </div>
                     </td>
                     <td className="px-4 py-3.5 pr-6"><StatusBadge row={row} /></td>

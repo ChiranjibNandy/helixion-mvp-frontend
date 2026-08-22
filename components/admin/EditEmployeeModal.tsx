@@ -19,10 +19,9 @@ interface FormState {
   reportingManagerEmail: string;
   skip1Email: string;
   skip2Email: string;
-  trainingDeptJuniorOfficer: boolean;
   trainingDeptSeniorOfficer: boolean;
-  osdJuniorOfficer: boolean;
   osdSeniorOfficer: boolean;
+  isManager: boolean;
 }
 
 const EMPTY_STATE: FormState = {
@@ -36,10 +35,9 @@ const EMPTY_STATE: FormState = {
   reportingManagerEmail: '',
   skip1Email: '',
   skip2Email: '',
-  trainingDeptJuniorOfficer: false,
   trainingDeptSeniorOfficer: false,
-  osdJuniorOfficer: false,
   osdSeniorOfficer: false,
+  isManager: false,
 };
 
 interface EditEmployeeModalProps {
@@ -68,10 +66,9 @@ export default function EditEmployeeModal({ employeeId, onClose, onSaved }: Edit
       reportingManagerEmail: employee.reportingManagerEmail || '',
       skip1Email: employee.skip1Email || '',
       skip2Email: employee.skip2Email || '',
-      trainingDeptJuniorOfficer: !!employee.trainingDeptJuniorOfficer,
       trainingDeptSeniorOfficer: !!employee.trainingDeptSeniorOfficer,
-      osdJuniorOfficer: !!employee.osdJuniorOfficer,
       osdSeniorOfficer: !!employee.osdSeniorOfficer,
+      isManager: !!employee.isManager,
     });
   }, [employee]);
 
@@ -103,10 +100,9 @@ export default function EditEmployeeModal({ employeeId, onClose, onSaved }: Edit
       reportingManagerEmail: form.reportingManagerEmail,
       skip1Email: form.skip1Email,
       skip2Email: form.skip2Email,
-      trainingDeptJuniorOfficer: form.trainingDeptJuniorOfficer,
       trainingDeptSeniorOfficer: form.trainingDeptSeniorOfficer,
-      osdJuniorOfficer: form.osdJuniorOfficer,
       osdSeniorOfficer: form.osdSeniorOfficer,
+      isManager: form.isManager,
     });
 
     if (ok) {
@@ -126,9 +122,17 @@ export default function EditEmployeeModal({ employeeId, onClose, onSaved }: Edit
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex items-center gap-2 text-xs text-white/40">
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10">Role: {employee.orgRole}</span>
+          <div className="flex items-center gap-3 text-xs text-white/40">
             <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10">Status: {employee.status}</span>
+            <label className="flex items-center gap-1.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.isManager}
+                onChange={(e) => setField('isManager', e.target.checked)}
+                className="rounded border-white/20 bg-transparent"
+              />
+              <span>Manager</span>
+            </label>
           </div>
 
           <div className="grid grid-cols-2 gap-x-8 gap-y-4">
@@ -175,11 +179,12 @@ export default function EditEmployeeModal({ employeeId, onClose, onSaved }: Edit
               />
 
               <h3 className="text-sm font-semibold text-white pt-1">Office roles</h3>
+              <p className="text-xs text-textSidebarMuted -mt-1">
+                Only one CTD and one OSD per org — checking this takes the role away from whoever currently holds it.
+              </p>
               <div className="grid grid-cols-2 gap-2">
-                <Checkbox label="Training Dept — Junior" checked={form.trainingDeptJuniorOfficer} onChange={(v) => setField('trainingDeptJuniorOfficer', v)} />
-                <Checkbox label="Training Dept — Senior (CTD)" checked={form.trainingDeptSeniorOfficer} onChange={(v) => setField('trainingDeptSeniorOfficer', v)} />
-                <Checkbox label="OSD — Junior" checked={form.osdJuniorOfficer} onChange={(v) => setField('osdJuniorOfficer', v)} />
-                <Checkbox label="OSD — Senior" checked={form.osdSeniorOfficer} onChange={(v) => setField('osdSeniorOfficer', v)} />
+                <Checkbox label="CTD (Training Dept Officer)" checked={form.trainingDeptSeniorOfficer} onChange={(v) => setField('trainingDeptSeniorOfficer', v)} />
+                <Checkbox label="OSD Officer" checked={form.osdSeniorOfficer} onChange={(v) => setField('osdSeniorOfficer', v)} />
               </div>
             </div>
           </div>

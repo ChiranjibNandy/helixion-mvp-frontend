@@ -1,0 +1,47 @@
+'use client';
+
+import { BookOpen, ClipboardCheck, Plane, BarChart2, User } from 'lucide-react';
+import { QuickAction } from '@/types/employee';
+
+export const getTrainingDeptQuickActions = (): QuickAction[] => [
+  {
+    title: 'Enroll in Program',
+    description: 'Browse listed trainings',
+    linkText: 'Browse Programs',
+    href: '/dashboard/programs',
+    icon: <BookOpen className="w-5 h-5 text-blue-400" />,
+    iconBg: 'bg-blue-500/15',
+  },
+  {
+    title: 'CTD Approvals',
+    description: 'Review and act on pending enrollment requests',
+    linkText: 'Review Queue',
+    href: '/dashboard/ctd-approvals',
+    icon: <ClipboardCheck className="w-5 h-5 text-amber-400" />,
+    iconBg: 'bg-amber-500/15',
+  },
+  {
+    title: 'Tour Approvals',
+    description: 'Review and act on pending tour requests',
+    linkText: 'Review Queue',
+    href: '/dashboard/tour-approvals',
+    icon: <Plane className="w-5 h-5 text-violet-400" />,
+    iconBg: 'bg-violet-500/15',
+  },
+  {
+    title: 'View Reports',
+    description: 'Analytics & summaries',
+    linkText: 'View Reports',
+    href: '/dashboard/reports',
+    icon: <BarChart2 className="w-5 h-5 text-purple-400" />,
+    iconBg: 'bg-purple-500/15',
+  },
+  {
+    title: 'My Profile',
+    description: 'Update your details',
+    linkText: 'View Profile',
+    href: '/dashboard/profile',
+    icon: <User className="w-5 h-5 text-slate-400" />,
+    iconBg: 'bg-slate-500/15',
+  },
+];

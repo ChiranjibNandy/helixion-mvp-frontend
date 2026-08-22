@@ -110,10 +110,13 @@ export interface CreateSingleUserPayload {
   designation?: string;
   department?: string;
   reportingManagerEmail?: string;
-  trainingDeptJuniorOfficer?: boolean;
+  // Single CTD/OSD flag per org — no Junior/Senior tiers.
   trainingDeptSeniorOfficer?: boolean;
-  osdJuniorOfficer?: boolean;
   osdSeniorOfficer?: boolean;
+  // Toggles orgRole between EMPLOYEE and MANAGER only — status/password stay
+  // owned by the activate/deactivate flows, and this can never produce an
+  // admin/training_provider account.
+  isManager?: boolean;
 }
 
 export const createSingleUserAPI = async (payload: CreateSingleUserPayload) => {
@@ -121,7 +124,7 @@ export const createSingleUserAPI = async (payload: CreateSingleUserPayload) => {
 };
 
 // Employee-details edit — same field set as CreateSingleUserPayload, all
-// optional since a PATCH may touch just one field. orgRole/status/password
+// optional since a PATCH may touch just one field. status/password
 // are intentionally absent: those stay owned by the approve/activate/
 // deactivate flows. skip1Email/skip2Email are edit-only — Add Employee's
 // single-create endpoint has no skip-level concept, only bulk upload and

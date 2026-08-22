@@ -43,6 +43,7 @@ export const API = {
       TOUR_ACTION: (id: string) => `/manager/enrollments/${id}/tour-action`,
    },
    TRAININGDEPT: {
+      DASHBOARD: '/training-dept/dashboard',
       PENDING: '/training-dept/pending',
       JUNIOR_ACTION: (id: string) => `/training-dept/enrollments/${id}/junior-action`,
       SENIOR_ACTION: (id: string) => `/training-dept/enrollments/${id}/senior-action`,

@@ -17,10 +17,9 @@ interface FormState {
   designation: string;
   department: string;
   reportingManagerEmail: string;
-  trainingDeptJuniorOfficer: boolean;
   trainingDeptSeniorOfficer: boolean;
-  osdJuniorOfficer: boolean;
   osdSeniorOfficer: boolean;
+  isManager: boolean;
 }
 
 const INITIAL_STATE: FormState = {
@@ -32,10 +31,9 @@ const INITIAL_STATE: FormState = {
   designation: '',
   department: '',
   reportingManagerEmail: '',
-  trainingDeptJuniorOfficer: false,
   trainingDeptSeniorOfficer: false,
-  osdJuniorOfficer: false,
   osdSeniorOfficer: false,
+  isManager: false,
 };
 
 export default function AddEmployeePage() {
@@ -64,10 +62,9 @@ export default function AddEmployeePage() {
       designation: form.designation || undefined,
       department: form.department || undefined,
       reportingManagerEmail: form.reportingManagerEmail || undefined,
-      trainingDeptJuniorOfficer: form.trainingDeptJuniorOfficer,
       trainingDeptSeniorOfficer: form.trainingDeptSeniorOfficer,
-      osdJuniorOfficer: form.osdJuniorOfficer,
       osdSeniorOfficer: form.osdSeniorOfficer,
+      isManager: form.isManager,
     });
 
     if (ok) {
@@ -128,12 +125,21 @@ export default function AddEmployeePage() {
         </div>
 
         <div className="rounded-xl bg-bgStatCard border border-borderCard p-6 space-y-3">
+          <h3 className="text-sm font-semibold text-white mb-1">Role</h3>
+          <p className="text-xs text-textSidebarMuted -mt-2 mb-1">
+            Independent of office roles below — a Manager can also be a CTD or OSD Officer.
+          </p>
+          <Checkbox label="Manager" checked={form.isManager} onChange={(v) => setField('isManager', v)} />
+        </div>
+
+        <div className="rounded-xl bg-bgStatCard border border-borderCard p-6 space-y-3">
           <h3 className="text-sm font-semibold text-white mb-1">Office roles</h3>
+          <p className="text-xs text-textSidebarMuted -mt-2 mb-1">
+            Only one employee in the org can be CTD, and only one can be OSD — assigning it here takes it away from whoever currently holds it.
+          </p>
           <div className="grid grid-cols-2 gap-3">
-            <Checkbox label="Training Dept — Junior Officer" checked={form.trainingDeptJuniorOfficer} onChange={(v) => setField('trainingDeptJuniorOfficer', v)} />
-            <Checkbox label="Training Dept — Senior Officer (CTD)" checked={form.trainingDeptSeniorOfficer} onChange={(v) => setField('trainingDeptSeniorOfficer', v)} />
-            <Checkbox label="OSD — Junior Officer" checked={form.osdJuniorOfficer} onChange={(v) => setField('osdJuniorOfficer', v)} />
-            <Checkbox label="OSD — Senior Officer" checked={form.osdSeniorOfficer} onChange={(v) => setField('osdSeniorOfficer', v)} />
+            <Checkbox label="CTD (Training Dept Officer)" checked={form.trainingDeptSeniorOfficer} onChange={(v) => setField('trainingDeptSeniorOfficer', v)} />
+            <Checkbox label="OSD Officer" checked={form.osdSeniorOfficer} onChange={(v) => setField('osdSeniorOfficer', v)} />
           </div>
         </div>
 

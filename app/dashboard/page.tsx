@@ -7,7 +7,14 @@ export default async function DashboardPage() {
   const token = await getAccessToken();
   if (!token) redirect(ROUTES.AUTH.SIGNIN);
 
-  const { orgRole, name, hierarchyLevel } = await decodeJwtPayload(token);
+  const { orgRole, name, officeRoles, permissions } = await decodeJwtPayload(token);
 
-  return <RoleDashboardView role={orgRole} name={name} hierarchyLevel={hierarchyLevel} />;
+  return (
+    <RoleDashboardView
+      role={orgRole}
+      name={name}
+      isCtd={!!officeRoles?.trainingDept?.enabled}
+      canRecommend={!!permissions?.canRecommend}
+    />
+  );
 }

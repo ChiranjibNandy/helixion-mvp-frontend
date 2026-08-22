@@ -106,7 +106,7 @@ export const NAV_LABELS = {
   ROLES_PERMISSIONS: 'Roles & permissions',
   BULK_IMPORT: 'Bulk import',
   RESET_PASSWORD: 'Reset password',
-  DEACTIVATE_USER: 'Deactivate user',
+  DEACTIVATE_USER: 'Employee Directory',
   PROGRAMS: 'Programs',
   ORGANIZATIONS: 'Organizations',
   AUDIT_LOG: 'Audit log',
