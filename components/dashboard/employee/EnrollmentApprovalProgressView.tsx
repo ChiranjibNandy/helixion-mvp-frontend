@@ -15,6 +15,8 @@ import {
 } from "./enrolment/enrollmentApproval.constants";
 import { TourSubmissionModal } from "./TourSubmissionModal";
 import { getEnrollmentPanelByIdAPI } from "@/services/enrollmentApprovalService";
+import SearchInput from "@/components/ui/search-input";
+import PaginationController from "@/components/ui/pagination";
 
 export default function EnrollmentApprovalProgressView() {
     const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
@@ -27,13 +29,33 @@ export default function EnrollmentApprovalProgressView() {
     const [panelDataMap, setPanelDataMap] = useState<Record<string, any>>({});
     const [loadingPanelId, setLoadingPanelId] = useState<string | null>(null);
 
+    //pagination and search
+    const [page, setPage] = useState(1);
+    const [limit] = useState(10);
+    const [search, setSearch] = useState("");
+    const [totalPages, setTotalPages] = useState(1);
+    const [total, setTotal] = useState(0);
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+
     const fetchEnrollments = async () => {
         try {
             setLoading(true);
-            const data = await getEmployeeEnrollments();
-            setEnrollments(data);
-            if (data && data.length > 0) {
-                setSelectedEnrollmentId(data[0]._id);
+
+            const response = await getEmployeeEnrollments({
+                page,
+                limit,
+                search,
+            });
+
+            setEnrollments(response.data || []);
+
+            setTotal(response.pagination?.total || 0);
+            setTotalPages(response.pagination?.totalPages || 1);
+
+            if (response.data?.length > 0) {
+                setSelectedEnrollmentId(response.data[0]._id);
+            } else {
+                setSelectedEnrollmentId(null);
             }
         } catch (err) {
             console.error("Failed to fetch enrollments:", err);
@@ -43,8 +65,25 @@ export default function EnrollmentApprovalProgressView() {
     };
 
     useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search);
+            setPage(1);
+        }, 500);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [search]);
+
+    useEffect(() => {
         fetchEnrollments();
-    }, []);
+    }, [page, debouncedSearch]);
+
+    //search 
+    const handleSearch = (value: string) => {
+        setSearch(value);
+        setPage(1);
+    };
 
     const selectedEnrollment =
         enrollments.find((e) => e._id === selectedEnrollmentId) || enrollments[0];
@@ -66,7 +105,7 @@ export default function EnrollmentApprovalProgressView() {
         if (!panelDataMap[id]) {
             try {
                 setLoadingPanelId(id);
-                const res = await getEnrollmentPanelByIdAPI(id);
+                const res = await getEnrollmentPanelByIdAPI(id)
                 const panelData = res?.data || res;
                 setPanelDataMap((prev) => ({ ...prev, [id]: panelData }));
             } catch (err) {
@@ -142,7 +181,7 @@ export default function EnrollmentApprovalProgressView() {
                             <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
                                 Brochure
                             </span>
-                            {details.downloadBrochureUrl ? (
+                            {details?.downloadBrochureUrl ? (
                                 <a
                                     href={details.downloadBrochureUrl}
                                     target="_blank"
@@ -234,12 +273,26 @@ export default function EnrollmentApprovalProgressView() {
 
                         {/* Enrolled Programs Table */}
                         <div className="space-y-4">
-                            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                                {t("approvalProgress.enrolledPrograms.title")}
-                                <span className="bg-white/10 px-2 py-0.5 rounded-md text-xs text-textSidebarMuted font-normal">
-                                    {enrollments.length}
-                                </span>
-                            </h2>
+
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+                                <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                                    {t("approvalProgress.enrolledPrograms.title")}
+
+                                    <span className="bg-white/10 px-2 py-0.5 rounded-md text-xs text-textSidebarMuted font-normal">
+                                        {total}
+                                    </span>
+                                </h2>
+
+                                <SearchInput
+                                    value={search}
+                                    onChange={handleSearch}
+                                    placeholder="Search programs..."
+                                    className="w-full md:w-64"
+                                />
+
+                            </div>
+
                             <div className="rounded-xl border border-borderCard overflow-hidden">
                                 <DataTable
                                     columns={columns}
@@ -252,6 +305,14 @@ export default function EnrollmentApprovalProgressView() {
                                     className="w-full"
                                 />
                             </div>
+                            {totalPages >= 1 && (
+                                <PaginationController
+                                    page={page}
+                                    totalPages={totalPages}
+                                    onPageChange={setPage}
+                                />
+                            )}
+
                         </div>
                     </div>
                 </Card>
