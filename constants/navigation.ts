@@ -103,8 +103,6 @@ export const ROLE_ACCESS = {
   ],
   [USER_ROLES.USER]: [ROUTES.DASHBOARD.ROOT],
   [USER_ROLES.TRAINING_PROVIDER]: [ROUTES.DASHBOARD.ROOT, ROUTES.PROVIDER.PROGRAMS.BULK],
-  // Managers share the same /dashboard route as employees — RoleDashboardView
-  // renders the manager-specific view based on orgRole, not a separate path.
   [USER_ROLES.MANAGER]: [ROUTES.DASHBOARD.ROOT],
 } as const;
 

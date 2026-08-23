@@ -97,7 +97,7 @@ export default function OrganizationsPage() {
                   <TableHead className="text-[12px] font-medium text-white/40">{t('admin.organizations.columnType')}</TableHead>
                   <TableHead className="text-[12px] font-medium text-white/40">{t('admin.organizations.columnStatus')}</TableHead>
                   <TableHead className="text-[12px] font-medium text-white/40">{t('admin.organizations.columnCreated')}</TableHead>
-                  <TableHead className="text-[12px] font-medium text-white/40 text-right">Actions</TableHead>
+                  <TableHead className="text-[12px] font-medium text-white/40 text-right">{t('admin.organizations.columnActions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -149,7 +149,7 @@ export default function OrganizationsPage() {
                           onClick={() => setEditingOrgId(org.id)}
                           className="text-[12px] font-medium text-primary hover:text-primary/80 transition-colors"
                         >
-                          Edit
+                          {t('admin.organizations.editAction')}
                         </button>
                       </TableCell>
                     </TableRow>

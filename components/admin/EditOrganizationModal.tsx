@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { AlertCircle } from 'lucide-react';
 import AppModal from '@/components/ui/app-modal';
 import OrganizationPolicyFields from '@/components/admin/OrganizationPolicyFields';
+import { t } from '@/lib/i18n';
 import { useOrganizationDetails } from '@/hooks/useOrganizationDetails';
 import { useCreateOrganization } from '@/hooks/useCreateOrganization';
 import {
@@ -117,8 +118,8 @@ export default function EditOrganizationModal({ organizationId, onClose, onSaved
 
           <div className="flex items-center justify-between gap-3">
             <p className="text-xs text-white/35">
-              <span className="text-white/50">Assigned</span> — routed to one specific person in the chain.{' '}
-              <span className="text-white/50">Pool</span> — any officer holding that role can act on it.
+              <span className="text-white/50">{t('admin.organizations.assignedLabel')}</span> — {t('admin.organizations.assignedHint')}{' '}
+              <span className="text-white/50">{t('admin.organizations.poolLabel')}</span> — {t('admin.organizations.poolHint')}
             </p>
             <div className="flex items-center gap-3 flex-shrink-0">
               <button

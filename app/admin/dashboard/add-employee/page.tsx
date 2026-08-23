@@ -6,7 +6,8 @@ import { UserPlus, CheckCircle2, AlertCircle } from 'lucide-react';
 import PageHeader from '@/components/ui/pageHeader';
 import { useCreateSingleUser } from '@/hooks/useCreateSingleUser';
 import { ROUTES } from '@/constants/navigation';
-import { TextField, Checkbox } from '@/components/admin/EmployeeFormFields';
+import { TextField, Checkbox } from '@/components/shared/FormFields';
+import { t } from '@/lib/i18n';
 
 interface FormState {
   name: string;
@@ -68,7 +69,7 @@ export default function AddEmployeePage() {
     });
 
     if (ok) {
-      setSuccess(`${form.name} was created successfully.`);
+      setSuccess(t('admin.addEmployee.successToast', { name: form.name }));
       setForm(INITIAL_STATE);
     }
   };
@@ -77,21 +78,21 @@ export default function AddEmployeePage() {
     <div className="space-y-6 p-8">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm">
-        <span className="text-textSidebarMuted">Users</span>
+        <span className="text-textSidebarMuted">{t('admin.addEmployee.breadcrumbUsers')}</span>
         <span className="text-textSidebarMuted">/</span>
-        <span className="text-primary font-medium">Add Employee</span>
+        <span className="text-primary font-medium">{t('admin.addEmployee.breadcrumbAddEmployee')}</span>
       </div>
 
       <PageHeader
-        title="Add Employee"
-        description="Create a single employee directly. Unlike bulk upload, a reporting manager is optional here — use this for the one person at the top of your org hierarchy who has nobody above them."
+        title={t('admin.addEmployee.pageTitle')}
+        description={t('admin.addEmployee.pageDescription')}
       />
 
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
         <div className="rounded-xl bg-bgStatCard border border-borderCard p-6 space-y-4">
           <div className="flex items-center gap-2 mb-2">
             <UserPlus size={16} className="text-primary" />
-            <h3 className="text-sm font-semibold text-white">Basic details</h3>
+            <h3 className="text-sm font-semibold text-white">{t('admin.addEmployee.basicDetails')}</h3>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -112,9 +113,9 @@ export default function AddEmployeePage() {
         </div>
 
         <div className="rounded-xl bg-bgStatCard border border-borderCard p-6 space-y-3">
-          <h3 className="text-sm font-semibold text-white mb-1">Reporting manager</h3>
+          <h3 className="text-sm font-semibold text-white mb-1">{t('admin.addEmployee.reportingManager')}</h3>
           <p className="text-xs text-textSidebarMuted mb-3">
-            Leave blank if this person is at the top of the hierarchy (nobody above them).
+            {t('admin.addEmployee.reportingManagerHint')}
           </p>
           <TextField
             label="Reporting Manager Email (optional)"
@@ -125,21 +126,11 @@ export default function AddEmployeePage() {
         </div>
 
         <div className="rounded-xl bg-bgStatCard border border-borderCard p-6 space-y-3">
-          <h3 className="text-sm font-semibold text-white mb-1">Role</h3>
-          <p className="text-xs text-textSidebarMuted -mt-2 mb-1">
-            Independent of office roles below — a Manager can also be a CTD or OSD Officer.
-          </p>
-          <Checkbox label="Manager" checked={form.isManager} onChange={(v) => setField('isManager', v)} />
-        </div>
-
-        <div className="rounded-xl bg-bgStatCard border border-borderCard p-6 space-y-3">
-          <h3 className="text-sm font-semibold text-white mb-1">Office roles</h3>
-          <p className="text-xs text-textSidebarMuted -mt-2 mb-1">
-            Only one employee in the org can be CTD, and only one can be OSD — assigning it here takes it away from whoever currently holds it.
-          </p>
-          <div className="grid grid-cols-2 gap-3">
-            <Checkbox label="CTD (Training Dept Officer)" checked={form.trainingDeptSeniorOfficer} onChange={(v) => setField('trainingDeptSeniorOfficer', v)} />
-            <Checkbox label="OSD Officer" checked={form.osdSeniorOfficer} onChange={(v) => setField('osdSeniorOfficer', v)} />
+          <h3 className="text-sm font-semibold text-white mb-1">{t('admin.addEmployee.officeRoles')}</h3>
+          <div className="grid grid-cols-3 gap-3">
+            <Checkbox label={t('admin.addEmployee.managerLabel')} checked={form.isManager} onChange={(v) => setField('isManager', v)} />
+            <Checkbox label={t('admin.addEmployee.ctdLabel')} checked={form.trainingDeptSeniorOfficer} onChange={(v) => setField('trainingDeptSeniorOfficer', v)} />
+            <Checkbox label={t('admin.addEmployee.osdLabel')} checked={form.osdSeniorOfficer} onChange={(v) => setField('osdSeniorOfficer', v)} />
           </div>
         </div>
 
@@ -163,7 +154,7 @@ export default function AddEmployeePage() {
             onClick={() => router.push(ROUTES.DASHBOARD.ADMIN)}
             className="px-5 py-2.5 text-sm text-white/70 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-200"
           >
-            Back to Dashboard
+            {t('admin.addEmployee.backToDashboard')}
           </button>
           <button
             type="submit"
@@ -171,7 +162,7 @@ export default function AddEmployeePage() {
             className="px-6 py-2.5 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primaryDark
                        transition-all duration-200 shadow-glow disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Creating...' : 'Create Employee'}
+            {loading ? t('admin.addEmployee.creatingButton') : t('admin.addEmployee.createButton')}
           </button>
         </div>
       </form>

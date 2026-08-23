@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { AlertCircle } from 'lucide-react';
 import AppModal from '@/components/ui/app-modal';
-import { TextField, Checkbox } from '@/components/admin/EmployeeFormFields';
+import { TextField, Checkbox } from '@/components/shared/FormFields';
 import { useEmployeeDetail } from '@/hooks/useEmployeeDetail';
 import { useUpdateEmployee } from '@/hooks/useUpdateEmployee';
+import { t } from '@/lib/i18n';
 
 interface FormState {
   name: string;
@@ -106,38 +107,29 @@ export default function EditEmployeeModal({ employeeId, onClose, onSaved }: Edit
     });
 
     if (ok) {
-      toast.success(`${form.name} was updated successfully.`);
+      toast.success(t('admin.editEmployee.successToast', { name: form.name }));
       onSaved(form.name);
     }
   };
 
   return (
-    <AppModal isOpen onClose={onClose} className="max-w-4xl" title={employee ? `Edit ${employee.name}` : 'Edit employee'}>
+    <AppModal isOpen onClose={onClose} className="max-w-4xl" title={employee ? t('admin.editEmployee.titleWithName', { name: employee.name }) : t('admin.editEmployee.title')}>
       {fetchLoading ? (
-        <div className="py-10 text-center text-sm text-white/40">Loading employee...</div>
+        <div className="py-10 text-center text-sm text-white/40">{t('admin.editEmployee.loading')}</div>
       ) : fetchError || !employee ? (
         <div className="flex items-start gap-3 py-6">
           <AlertCircle className="text-accentRed flex-shrink-0 mt-0.5" size={16} />
-          <p className="text-sm text-accentRed">{fetchError || 'Employee not found.'}</p>
+          <p className="text-sm text-accentRed">{fetchError || t('admin.editEmployee.notFound')}</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex items-center gap-3 text-xs text-white/40">
-            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10">Status: {employee.status}</span>
-            <label className="flex items-center gap-1.5 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={form.isManager}
-                onChange={(e) => setField('isManager', e.target.checked)}
-                className="rounded border-white/20 bg-transparent"
-              />
-              <span>Manager</span>
-            </label>
+            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10">{t('admin.editEmployee.statusLabel')} {employee.status}</span>
           </div>
 
           <div className="grid grid-cols-2 gap-x-8 gap-y-4">
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-white">Basic details</h3>
+              <h3 className="text-sm font-semibold text-white">{t('admin.editEmployee.basicDetails')}</h3>
 
               <div className="grid grid-cols-2 gap-3">
                 <TextField label="Name" required value={form.name} onChange={(v) => setField('name', v)} placeholder="Jane Doe" />
@@ -158,7 +150,7 @@ export default function EditEmployeeModal({ employeeId, onClose, onSaved }: Edit
             </div>
 
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-white">Reporting manager</h3>
+              <h3 className="text-sm font-semibold text-white">{t('admin.editEmployee.reportingManager')}</h3>
               <TextField
                 label="Reporting Manager Email (optional)"
                 value={form.reportingManagerEmail}
@@ -178,13 +170,11 @@ export default function EditEmployeeModal({ employeeId, onClose, onSaved }: Edit
                 placeholder="skip2@corp.in"
               />
 
-              <h3 className="text-sm font-semibold text-white pt-1">Office roles</h3>
-              <p className="text-xs text-textSidebarMuted -mt-1">
-                Only one CTD and one OSD per org — checking this takes the role away from whoever currently holds it.
-              </p>
+              <h3 className="text-sm font-semibold text-white pt-1">{t('admin.editEmployee.officeRoles')}</h3>
               <div className="grid grid-cols-2 gap-2">
-                <Checkbox label="CTD (Training Dept Officer)" checked={form.trainingDeptSeniorOfficer} onChange={(v) => setField('trainingDeptSeniorOfficer', v)} />
-                <Checkbox label="OSD Officer" checked={form.osdSeniorOfficer} onChange={(v) => setField('osdSeniorOfficer', v)} />
+                <Checkbox label={t('admin.editEmployee.managerLabel')} checked={form.isManager} onChange={(v) => setField('isManager', v)} />
+                <Checkbox label={t('admin.editEmployee.ctdLabel')} checked={form.trainingDeptSeniorOfficer} onChange={(v) => setField('trainingDeptSeniorOfficer', v)} />
+                <Checkbox label={t('admin.editEmployee.osdLabel')} checked={form.osdSeniorOfficer} onChange={(v) => setField('osdSeniorOfficer', v)} />
               </div>
             </div>
           </div>
@@ -202,7 +192,7 @@ export default function EditEmployeeModal({ employeeId, onClose, onSaved }: Edit
               onClick={onClose}
               className="px-5 py-2.5 text-sm text-white/70 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-200"
             >
-              Cancel
+              {t('admin.editEmployee.cancel')}
             </button>
             <button
               type="submit"
@@ -211,7 +201,7 @@ export default function EditEmployeeModal({ employeeId, onClose, onSaved }: Edit
                          transition-all duration-200 shadow-glow disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving && <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
-              Save changes
+              {t('admin.editEmployee.saveChanges')}
             </button>
           </div>
         </form>

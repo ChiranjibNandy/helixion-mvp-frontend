@@ -13,10 +13,9 @@ export interface BulkEmployeeRow {
   placeOfPosting: string;
   designation: string;
   department: string;
-  // Single CTD/OSD flag per org — no Junior/Senior tiers.
   trainingDeptSenior: boolean;
   osdSenior: boolean;
-  // Independent of CTD/OSD — toggles orgRole between EMPLOYEE and MANAGER.
+
   isManager: boolean;
   reportingManagerEmail: string;
   skipLevel1ManagerEmail: string;

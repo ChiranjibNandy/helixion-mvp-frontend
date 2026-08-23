@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Plus, ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApprovalStatusCard } from "../employee/ApprovalStatusCard";
 import { DashboardStats } from "@/components/shared/dashboard-stats";
@@ -17,6 +17,9 @@ import { TRAINING_DEPT_PENDING_REVIEWS_COLUMNS } from "@/constants/training-dept
 import { getTrainingDeptDashboardStats } from "@/utils/training-dept-dashboard";
 import { getTrainingDeptQuickActions } from "@/constants/training-dept-quick-actions";
 import { fetchTrainingDeptDashboardData } from "@/services/trainingDeptService";
+import { t } from "@/lib/i18n";
+import { useSortedPagination } from "@/hooks/useSortedPagination";
+import { withSortableDateColumns } from "@/components/shared/SortableDateColumns";
 
 const PAGE_SIZE = 10;
 
@@ -24,9 +27,11 @@ export default function CtdDashboardView({ name }: { name: string }) {
   const [data, setData] = useState<TrainingDeptDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [page, setPage] = useState(1);
-  const [sortKey, setSortKey] = useState<'fromDate' | 'toDate' | null>(null);
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+
+  // Hooks must run unconditionally — falls back to [] before data has
+  // loaded, same as every other consumer of this hook does pre-fetch.
+  const { page, setPage, totalPages, pagedRows, sortKey, sortDir, handleSort } =
+    useSortedPagination<PendingReviewRow>(data?.pendingReviews ?? [], PAGE_SIZE);
 
   useEffect(() => {
     const load = async () => {
@@ -35,7 +40,7 @@ export default function CtdDashboardView({ name }: { name: string }) {
         setData(result);
       } catch (err) {
         console.error("Failed to fetch CTD dashboard", err);
-        setError(err instanceof Error ? err : new Error("Failed to fetch CTD dashboard"));
+        setError(err instanceof Error ? err : new Error(t('trainingDeptDashboard.errorTitle')));
       } finally {
         setLoading(false);
       }
@@ -47,8 +52,8 @@ export default function CtdDashboardView({ name }: { name: string }) {
     return (
       <AppAlert
         variant="destructive"
-        title="Failed to load dashboard"
-        description={error.message ?? "Could not fetch dashboard data. Please try again later."}
+        title={t('trainingDeptDashboard.errorTitle')}
+        description={error.message ?? t('trainingDeptDashboard.errorDescription')}
       />
     );
   }
@@ -65,65 +70,21 @@ export default function CtdDashboardView({ name }: { name: string }) {
 
   const stats = getTrainingDeptDashboardStats(data.summary);
   const quickActions = getTrainingDeptQuickActions();
-
-  function handleSort(key: 'fromDate' | 'toDate') {
-    if (sortKey === key) {
-      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortKey(key);
-      setSortDir('asc');
-    }
-    setPage(1);
-  }
-
-  function SortIcon({ col }: { col: 'fromDate' | 'toDate' }) {
-    if (sortKey !== col) return <ChevronsUpDown className="inline w-3 h-3 ml-1 opacity-40" />;
-    return sortDir === 'asc'
-      ? <ChevronUp className="inline w-3 h-3 ml-1" />
-      : <ChevronDown className="inline w-3 h-3 ml-1" />;
-  }
-
-  const sorted = sortKey
-    ? [...data.pendingReviews].sort((a, b) => {
-        const cmp = a[sortKey].localeCompare(b[sortKey]);
-        return sortDir === 'asc' ? cmp : -cmp;
-      })
-    : data.pendingReviews;
-
-  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
-  const pagedRows = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-  const columns = TRAINING_DEPT_PENDING_REVIEWS_COLUMNS.map((col) => {
-    if (col.key === 'fromDate' || col.key === 'toDate') {
-      return {
-        ...col,
-        header: (
-          <button
-            onClick={() => handleSort(col.key as 'fromDate' | 'toDate')}
-            className="flex items-center gap-0.5 uppercase tracking-wider text-[10px] font-bold text-textSidebarMuted hover:text-white transition-colors"
-          >
-            {col.header}
-            <SortIcon col={col.key as 'fromDate' | 'toDate'} />
-          </button>
-        ),
-      };
-    }
-    return col;
-  });
+  const columns = withSortableDateColumns(TRAINING_DEPT_PENDING_REVIEWS_COLUMNS, sortKey, sortDir, handleSort);
 
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-white text-2xl font-bold">
-            Welcome back, {name}
+            {t('trainingDeptDashboard.welcome', { name })}
           </h1>
         </div>
         <div className="flex items-center gap-3">
           <Button asChild size="lg">
             <Link href="/dashboard/programs">
               <Plus />
-              Enroll
+              {t('trainingDeptDashboard.enroll')}
             </Link>
           </Button>
         </div>
@@ -139,12 +100,12 @@ export default function CtdDashboardView({ name }: { name: string }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
           <DashboardSectionCard
-            title="Pending Approvals"
-            subtitle="Awaiting your review"
+            title={t('trainingDeptDashboard.pendingApprovalsTitle')}
+            subtitle={t('trainingDeptDashboard.pendingApprovalsSubtitle')}
             count={data.pendingReviews.length}
             action={
               <Button asChild variant="ghost" size="sm">
-                <Link href="/dashboard/ctd-approvals">View all</Link>
+                <Link href="/dashboard/ctd-approvals">{t('trainingDeptDashboard.viewAll')}</Link>
               </Button>
             }
           >
@@ -152,7 +113,7 @@ export default function CtdDashboardView({ name }: { name: string }) {
               data={pagedRows}
               columns={columns}
               rowKey={(row) => row._id}
-              emptyMessage="No pending approvals"
+              emptyMessage={t('trainingDeptDashboard.noPendingApprovals')}
             />
             {totalPages > 1 && (
               <div className="px-4">

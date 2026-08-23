@@ -3,7 +3,8 @@
 import { Fragment, useState } from 'react';
 import { ArrowLeft, FileSpreadsheet, AlertTriangle, AlertCircle, CheckCircle2, ChevronDown, ChevronRight } from 'lucide-react';
 import { ValidatedBulkEmployeeRow } from '@/utils/parseBulkUploadFile';
-import { TextField, Checkbox } from '@/components/admin/EmployeeFormFields';
+import { TextField, Checkbox } from '@/components/shared/FormFields';
+import { t } from '@/lib/i18n';
 
 type EditableField =
   | 'employeeCode'
@@ -133,19 +134,9 @@ function RowEditPanel({
           </div>
 
           <div>
-            <h4 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-3">Role</h4>
-            <p className="text-xs text-textSidebarMuted mb-2">
-              Independent of office roles below — a Manager can also be a CTD or OSD Officer.
-            </p>
-            <Checkbox label="Manager" checked={row.isManager} onChange={() => onToggleOfficeRole('isManager')} />
-          </div>
-
-          <div>
             <h4 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-3">Office roles</h4>
-            <p className="text-xs text-textSidebarMuted mb-2">
-              Only one CTD and one OSD per org — checking this here takes the role away from whoever currently holds it.
-            </p>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
+              <Checkbox label={t('bulkImport.rolePanel.managerLabel')} checked={row.isManager} onChange={() => onToggleOfficeRole('isManager')} />
               <Checkbox label="CTD (Training Dept Officer)" checked={row.trainingDeptSenior} onChange={() => onToggleOfficeRole('trainingDeptSenior')} />
               <Checkbox label="OSD Officer" checked={row.osdSenior} onChange={() => onToggleOfficeRole('osdSenior')} />
             </div>
@@ -266,7 +257,7 @@ export default function BulkUploadPreview({ rows, fileName, isUploading, onConfi
                             Employee
                           </span>
                         )}
-                        <RoleTogglePill label="Manager" active={row.isManager} onClick={() => onToggleOfficeRole(row._rowId, 'isManager')} />
+                        <RoleTogglePill label={t('bulkImport.rolePanel.managerLabel')} active={row.isManager} onClick={() => onToggleOfficeRole(row._rowId, 'isManager')} />
                         <RoleTogglePill label="CTD" active={row.trainingDeptSenior} onClick={() => onToggleOfficeRole(row._rowId, 'trainingDeptSenior')} />
                         <RoleTogglePill label="OSD" active={row.osdSenior} onClick={() => onToggleOfficeRole(row._rowId, 'osdSenior')} />
                       </div>

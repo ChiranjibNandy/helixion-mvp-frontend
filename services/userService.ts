@@ -18,10 +18,6 @@ export interface BatchCreateResponse {
 
 export const userService = {
   searchUsers: async (query: string = '', page: number = 1, limit: number = 10) => {
-    // Backend's searchUsersQuerySchema only recognizes "search" — its
-    // validate() middleware replaces req.query wholesale with its own
-    // parsed output, so a "q" param here was silently dropped and every
-    // search returned the unfiltered list.
     const response = await api.get(`${API.ADMIN.USERS_SEARCH}?search=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
     return response.data;
   },

@@ -110,12 +110,8 @@ export interface CreateSingleUserPayload {
   designation?: string;
   department?: string;
   reportingManagerEmail?: string;
-  // Single CTD/OSD flag per org — no Junior/Senior tiers.
   trainingDeptSeniorOfficer?: boolean;
   osdSeniorOfficer?: boolean;
-  // Toggles orgRole between EMPLOYEE and MANAGER only — status/password stay
-  // owned by the activate/deactivate flows, and this can never produce an
-  // admin/training_provider account.
   isManager?: boolean;
 }
 
