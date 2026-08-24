@@ -1,5 +1,7 @@
 {
    "programme": {
+      "currentlyTracking":"Currently Tracking",
+      "unknownProgram":"Unknown Program",
       "available": "Available Programmes",
       "empty": "No programmes available right now.",
       "enrol": "Enrol",
@@ -53,7 +55,10 @@
          "programFee": "Program fee",
          "attachBrochure": "Attach brochure",
          "minimumParticipants": "Minimum participants",
-         "maximumParticipants": "Maximum participants"
+         "maximumParticipants": "Maximum participants",
+         "brochure":"Brochure",
+         "notes":"Notes",
+         "noNotesAvailable":"No notes available"
       },
       "createpageTitle": "Create new training program",
       "createpageDescription": "Publish a single program to the Helixon marketplace.",
@@ -80,7 +85,10 @@
    "common": {
       "loading": "Loading...",
       "error": "Something went wrong. Please try again.",
-      "success": "Success"
+      "success": "Success",
+      "n/a":"N/A",
+      "notAvailable":"Not Available",
+      "failedToLoad":"Failed to load details."
    },
    "notifications": {
       "title": "Notifications",
@@ -124,7 +132,8 @@
       "confirm": "Confirm & Approve",
       "preview": "preview",
       "browse": "Browse",
-      "saveDraft": "Save draft"
+      "saveDraft": "Save draft",
+      "submitTourDetails":"Submit Tour Details"
    },
    "password": {
       "description": "Choose a strong password you haven’t used before.",
@@ -540,6 +549,9 @@
          "programs": "Programs",
          "enroll": "Enroll in Program"
       },
+      "currentStage": "Current Stage",
+      "createdBy":"Created By",
+
       "title": "Training Program Enrolment Form",
       "programDetails": {
          "title": "Program Details",
@@ -611,6 +623,7 @@
          "managerReview": "Your application has been submitted and is currently awaiting approval from your Reporting Manager.",
          "hrReview": "Your application has been approved by your manager and is currently under CTD review.",
          "ctdTourReview": "Your enrollment has been approved and your travel request is being reviewed.",
+         "submitTourDetails":"Your enrollment has been approved. Please submit your tour details to proceed.",
          "attendance": "Your attendance for the training has been recorded! You can now submit your reimbursement claim.",
          "reimbursement": "Your reimbursement claim has been submitted and is under financial audit/review.",
          "credited": "Congratulations! Your reimbursement has been approved and successfully credited to your bank account.",
@@ -629,11 +642,11 @@
             "status": "Status"
          },
          "browseprogramtoenroll": "Browse programs to enroll",
-         "selectAnUpComingProgram":"Please select an upcoming training program from the Programs menu to enroll.",
-         "notEnrollAnyProgram":"You have not enrolled in any training programs yet."
+         "selectAnUpComingProgram": "Please select an upcoming training program from the Programs menu to enroll.",
+         "notEnrollAnyProgram": "You have not enrolled in any training programs yet."
       }
    },
-   "add":{
-      "enroll":"Add Enrollment"
+   "add": {
+      "enroll": "Add Enrollment"
    }
 }

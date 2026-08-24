@@ -147,14 +147,14 @@ export default function EnrollmentApprovalProgressView() {
                 {isLoading ? (
                     <div className="flex items-center justify-center py-6 gap-2 text-textSidebarMuted text-sm">
                         <Spinner size="sm" />
-                        <span>Loading details...</span>
+                        <span>{t("common.loading")}</span>
                     </div>
                 ) : details ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                         {/* Stage */}
                         <div className="p-3 bg-bgStatCard rounded-lg border border-borderCard">
                             <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
-                                Current Stage
+                               {t("trainingEnrolment.currentStage")}
                             </span>
                             <p className="text-white font-medium capitalize">
                                 {details.currentStage || "N/A"}
@@ -164,7 +164,7 @@ export default function EnrollmentApprovalProgressView() {
                         {/* Created By */}
                         <div className="p-3 bg-bgStatCard rounded-lg border border-borderCard">
                             <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
-                                Created By
+                                {t("trainingEnrolment.createdBy")}
                             </span>
                             {details.createdBy ? (
                                 <div>
@@ -172,14 +172,14 @@ export default function EnrollmentApprovalProgressView() {
                                     <p className="text-textSidebarMuted text-xs">{details.createdBy.email}</p>
                                 </div>
                             ) : (
-                                <p className="text-textSidebarMuted">N/A</p>
+                                <p className="text-textSidebarMuted">{t("common.n/a")}</p>
                             )}
                         </div>
 
                         {/* Brochure */}
                         <div className="p-3 bg-bgStatCard rounded-lg border border-borderCard">
                             <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
-                                Brochure
+                                {t("programme.fields.brochure")}
                             </span>
                             {details?.downloadBrochureUrl ? (
                                 <a
@@ -188,23 +188,23 @@ export default function EnrollmentApprovalProgressView() {
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center text-primary hover:underline text-xs font-semibold gap-1"
                                 >
-                                    Download Brochure
+                                    {t("programme.list.downloadBrochure")}
                                 </a>
                             ) : (
-                                <p className="text-textSidebarMuted">Not Available</p>
+                                <p className="text-textSidebarMuted">{t("common.notAvailable")}</p>
                             )}
                         </div>
 
                         {/* Notes */}
                         <div className="p-3 bg-bgStatCard rounded-lg border border-borderCard md:col-span-2 lg:col-span-1">
                             <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
-                                Notes
+                                {t("programme.fields.notes")}
                             </span>
-                            <p className="text-white text-xs">{details.notes || "No notes available"}</p>
+                            <p className="text-white text-xs">{details.notes || t("programme.fields.noNotesAvailable")}</p>
                         </div>
                     </div>
                 ) : (
-                    <p className="text-textSidebarMuted text-xs">Failed to load details.</p>
+                    <p className="text-textSidebarMuted text-xs">{t("common.failedToLoad")}</p>
                 )}
             </div>
         );
@@ -240,10 +240,10 @@ export default function EnrollmentApprovalProgressView() {
                         {/* Selected Program Title */}
                         <div className="border-b border-white/5 pb-4">
                             <span className="text-[10px] uppercase tracking-wider text-textSidebarMuted font-bold block mb-1">
-                                Currently Tracking
+                                {t("programme.currentlyTracking")}
                             </span>
                             <h2 className="text-xl font-bold text-white">
-                                {getProgramDetails(selectedEnrollment)?.title || "Unknown Program"}
+                                {getProgramDetails(selectedEnrollment)?.title || t("programme.unknownProgram")}
                             </h2>
                         </div>
 
@@ -256,17 +256,16 @@ export default function EnrollmentApprovalProgressView() {
                         {selectedEnrollment?.currentStage === "tour_pending_employee" && (
                             <div className="flex flex-col items-center justify-center p-6 mt-4 border border-borderCard rounded-xl bg-bgMain text-center space-y-4">
                                 <h3 className="text-lg font-semibold text-white">
-                                    Tour Form Required
+                                    {t("approvalProgress.enrolledPrograms.columns.tourFormRequired")}
                                 </h3>
                                 <p className="text-sm text-textSidebarMuted">
-                                    Your enrollment has been approved. Please submit your tour
-                                    details to proceed.
+                                    {t("approvalProgress.statusMessages.submitTourDetails")}
                                 </p>
                                 <button
                                     onClick={() => setIsTourModalOpen(true)}
                                     className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-medium"
                                 >
-                                    Submit Tour Details
+                                    {t("button.submitTourDetails")}
                                 </button>
                             </div>
                         )}
@@ -287,7 +286,7 @@ export default function EnrollmentApprovalProgressView() {
                                 <SearchInput
                                     value={search}
                                     onChange={handleSearch}
-                                    placeholder="Search programs..."
+                                    placeholder={t("programme.list.searchPlaceholder")}
                                     className="w-full md:w-64"
                                 />
 
