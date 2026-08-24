@@ -50,6 +50,7 @@ export const API = {
       PROGRAMS:         '/training-provider/programs',
       PARTICIPANTS:     (id: string) => `/training-provider/programs/${id}/participants`,
       ATTENDANCE:       (id: string) => `/training-provider/programs/${id}/attendance`,
-      ATTENDANCE_SINGLE:(id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}`
+      ATTENDANCE_SINGLE:(id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}`,
+      PROGRAM_LIST:      '/training-provider/programs/list'
    }
 }

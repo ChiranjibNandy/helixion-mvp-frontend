@@ -225,13 +225,13 @@ export default function EnrollmentApprovalProgressView() {
             {enrollments.length === 0 ? (
                 <Card className="bg-bgStatCard border-borderCard p-8 text-center text-white space-y-4">
                     <p className="text-textSidebarMuted">
-                        You have not enrolled in any training programs yet.
+                        {t("approvalProgress.enrolledPrograms.notEnrollAnyProgram")}
                     </p>
                     <Link
-                        href="/dashboard"
+                        href="/dashboard/programs"
                         className="inline-block px-5 py-2.5 bg-primary text-white font-medium text-sm rounded-lg hover:bg-primary/90 transition-all duration-200"
                     >
-                        Browse programs to enroll
+                        {t("approvalProgress.enrolledPrograms.browseprogramtoenroll")}
                     </Link>
                 </Card>
             ) : (

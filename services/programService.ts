@@ -79,3 +79,24 @@ export const createProgramAPI = async (
 
   return response.data;
 };
+
+
+export interface GetProgramsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
+export const getProgramsAPI = async ({
+  page = 1,
+  limit = 10,
+  search = "",
+}: GetProgramsParams = {}) => {
+  return await api.get(API.TRAININGPROVIDER.PROGRAM_LIST, {
+    params: {
+      page,
+      limit,
+      search: search || undefined,
+    },
+  });
+};

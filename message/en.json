@@ -627,7 +627,13 @@
             "venueCity": "Venue/City",
             "tourFormRequired": "Tour Form Required",
             "status": "Status"
-         }
+         },
+         "browseprogramtoenroll": "Browse programs to enroll",
+         "selectAnUpComingProgram":"Please select an upcoming training program from the Programs menu to enroll.",
+         "notEnrollAnyProgram":"You have not enrolled in any training programs yet."
       }
+   },
+   "add":{
+      "enroll":"Add Enrollment"
    }
 }

@@ -53,6 +53,7 @@ export const ROUTES = {
       ACTIVE: '/dashboard/programs/active',
       CREATE: '/dashboard/programs/create',
       EXPORT: '/dashboard/programs/export',
+      LIST: '/dashboard/programs/list'
     },
     ATTENDANCE: '/dashboard/update-attendance',
   },

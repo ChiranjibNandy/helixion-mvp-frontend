@@ -165,13 +165,13 @@ export default function TrainingEnrolmentView() {
 
                 <Card className="bg-bgStatCard border-borderCard p-8 text-center text-white max-w-xl mx-auto space-y-5 rounded-2xl shadow-xl mt-10">
                     <p className="text-textSidebarMuted text-sm">
-                        Please select an upcoming training program from the Programs menu to enroll.
+                        {t("approvalProgress.enrolledPrograms.selectAnUpComingProgram")}
                     </p>
                     <Button 
                         onClick={() => router.push("/dashboard/programs")}
                         className="px-5 py-2.5 bg-primary text-white font-medium text-sm rounded-xl hover:bg-primary/90 transition-all duration-200"
                     >
-                        Browse programs to enroll
+                       {t("approvalProgress.enrolledPrograms.browseprogramtoenroll")}
                     </Button>
                 </Card>
             </div>

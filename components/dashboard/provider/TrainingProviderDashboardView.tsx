@@ -94,7 +94,7 @@ export default function TrainingProviderDashboardView({ name }: { name: string }
             subtitle="Upcoming programs available for enrollment"
             action={
               <Button asChild variant="ghost" size="sm">
-                <Link href={ROUTES.PROVIDER.PROGRAMS.ROOT}>
+                <Link href={ROUTES.PROVIDER.PROGRAMS.LIST}>
                   View all →
                 </Link>
               </Button>
