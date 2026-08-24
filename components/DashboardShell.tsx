@@ -75,17 +75,6 @@ export function DashboardShell({
     setErrorStatus(null);
   }, [pathname]);
 
-  async function handleReauthenticate() {
-    try {
-      document.cookie = "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie = "accessToken_client=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      await removeAccessToken();
-    } catch (err) {
-      console.error(err);
-    }
-    router.push(ROUTES.AUTH.SIGNIN);
-  }
-
   const handleGoToDashboard = () => {
     setErrorStatus(null);
     if (user.role === 'admin') {
@@ -128,8 +117,8 @@ export function DashboardShell({
             Your login session has expired. Please sign in again to restore access to your account.
           </p>
           
-          <Button 
-            onClick={handleReauthenticate}
+          <Button
+            onClick={handleSignOut}
             size="lg"
             className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-[0_4px_20px_0_rgba(37,99,235,0.25)] border border-blue-500/20 flex items-center justify-center gap-2 py-4"
           >
