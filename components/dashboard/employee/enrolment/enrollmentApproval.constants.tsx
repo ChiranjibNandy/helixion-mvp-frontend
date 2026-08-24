@@ -1,5 +1,5 @@
 import React from "react";
-import { ChevronDown, ChevronRight, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Badge from "@/components/ui/badge";
 import { ENROLLMENT_STAGE } from "../EnrollmentStepsTracker";
 import { formatDateHyphenated } from "@/utils/formatters";
@@ -105,18 +105,18 @@ export const createEnrollmentColumns = (
                 if (enrollment.currentStage === ENROLLMENT_STAGE.TOUR_PENDING_EMPLOYEE) {
                     return (
                         <Badge status="pending" className="capitalize px-3 py-1">
-                            Required
+                            {t("common.required")}
                         </Badge>
                     );
                 }
                 if (enrollment.tour?.status && enrollment.tour.status !== "not_required") {
                     return (
                         <Badge status="active" className="capitalize px-3 py-1">
-                            Submitted
+                            {t("button.submitted")}
                         </Badge>
                     );
                 }
-                return <span className="text-sm text-textSidebarMuted">Not Required</span>;
+                return <span className="text-sm text-textSidebarMuted">{t("common.notRequired")}</span>;
             },
         },
         {

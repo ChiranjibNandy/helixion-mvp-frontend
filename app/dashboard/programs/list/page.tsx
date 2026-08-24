@@ -28,7 +28,7 @@ export default function ProgramsPage() {
    const columns = [
       {
          key: "title",
-         header: "PROGRAM",
+         header: t("programme.title"),
          render: (program: Program) => (
             <span className="font-medium text-sm">
                {program.title}
@@ -38,7 +38,7 @@ export default function ProgramsPage() {
 
       {
          key: "startDate",
-         header: "DATE",
+         header: t("programme.date"),
          render: (program: Program) => (
             <span className="text-xs text-textSidebarMuted">
                {new Date(program.startDate).toLocaleDateString(
@@ -55,7 +55,7 @@ export default function ProgramsPage() {
 
       {
          key: "enrolledCount",
-         header: "ENROLLED",
+         header: t("programme.list.enrolledLabel"),
          render: (program: Program) => (
             <span className="text-sm font-medium">
                {program.enrolledCount} / {program.maxParticipants}
@@ -65,7 +65,7 @@ export default function ProgramsPage() {
 
       {
          key: "fillRate",
-         header: "FILL",
+         header: t("providerDashboard.livePrograms.columns.fill"),
          render: (program: Program) => (
             <div className="w-16">
                <div className="h-1.5 w-full rounded-full bg-bgStatCard overflow-hidden">
@@ -141,8 +141,8 @@ export default function ProgramsPage() {
                loading={loading}
                emptyMessage={
                   search
-                     ? "No programs found for your search"
-                     : "No programs available"
+                     ? t("programme.noprogramsfoundsearch")
+                     : t("programme.noprogramsAvailable")
                }
                rowKey={(program: Program) => program._id}
                className="rounded-lg"

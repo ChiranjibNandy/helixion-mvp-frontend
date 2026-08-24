@@ -1,5 +1,7 @@
 {
    "programme": {
+      "title":"PROGRAM",
+      "date":"DATE",
       "currentlyTracking":"Currently Tracking",
       "unknownProgram":"Unknown Program",
       "available": "Available Programmes",
@@ -9,6 +11,8 @@
       "howToSee": "How participants will see this program",
       "defaultTitle": "Program title appears here",
       "defaultVenue": "Venue — not set",
+      "noprogramsfoundsearch":"No programs found for your search",
+      "noprogramsAvailable":"No programs available",
       "list": {
          "title": "Listed Training Programs",
          "description": "Select a program to view details and enroll",
@@ -88,7 +92,9 @@
       "success": "Success",
       "n/a":"N/A",
       "notAvailable":"Not Available",
-      "failedToLoad":"Failed to load details."
+      "failedToLoad":"Failed to load details.",
+      "required":"Required",
+      "notRequired":"Not Required"
    },
    "notifications": {
       "title": "Notifications",
@@ -133,7 +139,8 @@
       "preview": "preview",
       "browse": "Browse",
       "saveDraft": "Save draft",
-      "submitTourDetails":"Submit Tour Details"
+      "submitTourDetails":"Submit Tour Details",
+      "submitted":"Submitted"
    },
    "password": {
       "description": "Choose a strong password you haven’t used before.",
