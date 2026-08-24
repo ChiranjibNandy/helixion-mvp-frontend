@@ -10,6 +10,7 @@ import { removeAccessToken } from '@/utils/token';
 import { ROUTES } from '@/constants/navigation';
 import { KeyRound, ShieldAlert, ArrowLeft, Home, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { t } from '@/lib/i18n';
 
 
 interface DashboardShellProps {
@@ -111,19 +112,19 @@ export function DashboardShell({
           </div>
           
           <h2 className="text-xl font-bold text-slate-100 tracking-tight mb-2 font-sans">
-            Session Expired
+            {t('dashboardShell.sessionExpired.title')}
           </h2>
           <p className="text-xs text-slate-400 leading-relaxed mb-8 max-w-[280px]">
-            Your login session has expired. Please sign in again to restore access to your account.
+            {t('dashboardShell.sessionExpired.description')}
           </p>
-          
+
           <Button
             onClick={handleSignOut}
             size="lg"
             className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-[0_4px_20px_0_rgba(37,99,235,0.25)] border border-blue-500/20 flex items-center justify-center gap-2 py-4"
           >
             <LogOut className="size-4" />
-            Sign In Again
+            {t('dashboardShell.sessionExpired.action')}
           </Button>
         </div>
       </div>
@@ -155,12 +156,12 @@ export function DashboardShell({
                 </div>
                 
                 <h2 className="text-xl font-bold text-slate-100 tracking-tight mb-2 font-sans">
-                  Access Denied
+                  {t('dashboardShell.accessDenied.title')}
                 </h2>
                 <p className="text-xs text-slate-400 leading-relaxed max-w-sm mb-8">
-                  You do not have the required permissions to view this resource. If you believe this is a mistake, please reach out to your administrator.
+                  {t('dashboardShell.accessDenied.description')}
                 </p>
-                
+
                 <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
                   <Button
                     variant="outline"
@@ -168,15 +169,15 @@ export function DashboardShell({
                     className="flex items-center justify-center gap-1.5 border-white/10 hover:bg-white/5 text-slate-300 font-medium"
                   >
                     <ArrowLeft className="size-3.5" />
-                    Go Back
+                    {t('dashboardShell.accessDenied.goBack')}
                   </Button>
-                  
+
                   <Button
                     onClick={handleGoToDashboard}
                     className="flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white font-medium border border-blue-500/20 shadow-[0_4px_15px_0_rgba(37,99,235,0.15)]"
                   >
                     <Home className="size-3.5" />
-                    Dashboard Home
+                    {t('dashboardShell.accessDenied.dashboardHome')}
                   </Button>
                 </div>
               </div>
