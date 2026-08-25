@@ -76,7 +76,8 @@
       "status": {
          "pending": "Not started",
          "active": "In progress",
-         "completed": "Completed"
+         "completed": "Completed",
+         "pend":"Pending"
       }
    },
    "dashboard": {

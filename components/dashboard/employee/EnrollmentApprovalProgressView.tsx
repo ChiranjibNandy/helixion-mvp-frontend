@@ -157,7 +157,7 @@ export default function EnrollmentApprovalProgressView() {
                                {t("trainingEnrolment.currentStage")}
                             </span>
                             <p className="text-white font-medium capitalize">
-                                {details.currentStage || "N/A"}
+                                {details.currentStage || t("common.n/a")}
                             </p>
                         </div>
 

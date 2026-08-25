@@ -4,6 +4,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { t } from "@/lib/i18n";
 
 interface Step {
     id: string;
@@ -81,7 +82,7 @@ export default function EnrollmentProgressTracker({ steps, className }: Enrollme
                                                 : "bg-bgMain text-textSidebarMuted border-borderCard"
                                     )}
                                 >
-                                    {isCompleted ? "Completed" : isCurrent ? "In Progress" : "Pending"}
+                                    {isCompleted ? t("enrollment.status.completed") : isCurrent ? t("enrollment.status.active") : t("enrollment.status.pend")}
                                 </button>
 
                                 {step.date && (
