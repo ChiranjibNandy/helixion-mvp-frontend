@@ -559,8 +559,11 @@
       "enroll": "Enroll",
       "pendingApprovalsTitle": "Pending Approvals",
       "pendingApprovalsSubtitle": "Awaiting your review",
+      "pendingTourApprovalsTitle": "Pending Tour Approvals",
+      "pendingTourApprovalsSubtitle": "Awaiting your review",
       "viewAll": "View all",
       "noPendingApprovals": "No pending approvals",
+      "noPendingTourApprovals": "No pending tour approvals",
       "stats": {
          "programsCompleted": "Programs Completed",
          "programsCompletedSubtitleAll": "All time",

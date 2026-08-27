@@ -10,12 +10,6 @@ export function SortIcon({ col, sortKey, sortDir }: { col: DateSortKey; sortKey:
     : <ChevronDown className="inline w-3 h-3 ml-1" />;
 }
 
-/**
- * Wraps a `fromDate`/`toDate` column's header in a clickable sort button +
- * icon — the exact treatment both ManagerDashboardView and CtdDashboardView
- * need for their pending-items table, previously duplicated in each.
- * Non-date columns pass through unchanged.
- */
 export function withSortableDateColumns<C extends { key: string; header: React.ReactNode }>(
   columns: C[],
   sortKey: DateSortKey | null,

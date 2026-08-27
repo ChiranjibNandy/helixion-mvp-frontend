@@ -27,9 +27,18 @@ export default function ManagerDashboardView({ name }: { name: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  // Hooks must run unconditionally — falls back to [] before data has loaded.
   const { page, setPage, totalPages, pagedRows, sortKey, sortDir, handleSort } =
     useSortedPagination<TeamEnrollmentRow>(data?.pendingTeamEnrollments ?? [], PAGE_SIZE);
+
+  const {
+    page: tourPage,
+    setPage: setTourPage,
+    totalPages: tourTotalPages,
+    pagedRows: tourPagedRows,
+    sortKey: tourSortKey,
+    sortDir: tourSortDir,
+    handleSort: handleTourSort,
+  } = useSortedPagination<TeamEnrollmentRow>(data?.pendingTourApprovals ?? [], PAGE_SIZE);
 
   useEffect(() => {
     const load = async () => {
@@ -69,6 +78,7 @@ export default function ManagerDashboardView({ name }: { name: string }) {
   const stats = getManagerDashboardStats(data.summary);
   const quickActions = getManagerQuickActions();
   const columns = withSortableDateColumns(MANAGER_PENDING_ENROLLMENTS_COLUMNS, sortKey, sortDir, handleSort);
+  const tourColumns = withSortableDateColumns(MANAGER_PENDING_ENROLLMENTS_COLUMNS, tourSortKey, tourSortDir, handleTourSort);
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -94,9 +104,9 @@ export default function ManagerDashboardView({ name }: { name: string }) {
         columns="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
       />
 
-      {/* Pending team enrollments + Approval status */}
+      {/* Pending team enrollments + Pending tour approvals + Approval status */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 flex flex-col gap-y-4">
           <DashboardSectionCard
             title="Pending Team Enrollments"
             subtitle="Awaiting your approval"
@@ -112,6 +122,7 @@ export default function ManagerDashboardView({ name }: { name: string }) {
               columns={columns}
               rowKey={(row) => row._id}
               emptyMessage="No pending team enrollments"
+              emptyStateClassName="h-20"
             />
             {totalPages > 1 && (
               <div className="px-4">
@@ -119,6 +130,34 @@ export default function ManagerDashboardView({ name }: { name: string }) {
                   page={page}
                   totalPages={totalPages}
                   onPageChange={setPage}
+                />
+              </div>
+            )}
+          </DashboardSectionCard>
+
+          <DashboardSectionCard
+            title="Pending Tour Approvals"
+            subtitle="Awaiting your approval"
+            count={data.pendingTourApprovals.length}
+            action={
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/dashboard/tour-approvals">View all</Link>
+              </Button>
+            }
+          >
+            <DataTable<TeamEnrollmentRow>
+              data={tourPagedRows}
+              columns={tourColumns}
+              rowKey={(row) => row._id}
+              emptyMessage="No pending tour approvals"
+              emptyStateClassName="h-20"
+            />
+            {tourTotalPages > 1 && (
+              <div className="px-4">
+                <PaginationController
+                  page={tourPage}
+                  totalPages={tourTotalPages}
+                  onPageChange={setTourPage}
                 />
               </div>
             )}

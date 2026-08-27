@@ -28,8 +28,7 @@ export default function CtdDashboardView({ name }: { name: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  // Hooks must run unconditionally — falls back to [] before data has
-  // loaded, same as every other consumer of this hook does pre-fetch.
+
   const { page, setPage, totalPages, pagedRows, sortKey, sortDir, handleSort } =
     useSortedPagination<PendingReviewRow>(data?.pendingReviews ?? [], PAGE_SIZE);
 

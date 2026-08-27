@@ -76,9 +76,6 @@ function StatusBadge({ row }: { row: ValidatedBulkEmployeeRow }) {
   );
 }
 
-/** Full-size edit form for one row — opens inline below its summary row.
- *  Reuses the same TextField/Checkbox used on Add Employee / Edit Employee
- *  so a row here looks and feels identical to editing a real employee. */
 function RowEditPanel({
   row,
   onRowEdit,

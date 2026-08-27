@@ -64,7 +64,7 @@ export default function AdminDashboard() {
           />
         </div>
 
-        <RecentActivity activities={[]} />
+        <RecentActivity activities={dashboardStats?.recentActivity ?? []} />
       </div>
     </div>
   );
