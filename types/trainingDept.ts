@@ -1,11 +1,10 @@
 import { ApprovalStats, DashboardSummary } from './employee';
 
-export interface ManagerDashboardSummary extends DashboardSummary {
-  teamEnrollments: number;
+export interface TrainingDeptDashboardSummary extends DashboardSummary {
   pendingTourApprovals: number;
 }
 
-export interface TeamEnrollmentRow {
+export interface PendingReviewRow {
   _id: string;
   employeeName: string;
   programTitle: string;
@@ -15,9 +14,8 @@ export interface TeamEnrollmentRow {
   status: 'Pending Approval' | 'Approved' | 'Rejected';
 }
 
-export interface ManagerDashboardData {
-  summary: ManagerDashboardSummary;
+export interface TrainingDeptDashboardData {
+  summary: TrainingDeptDashboardSummary;
   approvalStats: ApprovalStats;
-  pendingTeamEnrollments: TeamEnrollmentRow[];
-  pendingTourApprovals: TeamEnrollmentRow[];
+  pendingReviews: PendingReviewRow[];
 }

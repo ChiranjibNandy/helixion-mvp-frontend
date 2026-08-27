@@ -40,7 +40,7 @@ export function DashboardShell({
   }
 
   return (
-    <div className="grid grid-cols-[180px_1fr] min-h-screen bg-[#0b1120] font-sans">
+    <div className="grid grid-cols-[180px_1fr] h-screen overflow-hidden bg-[#0b1120] font-sans">
       <Sidebar
         user={user}
         navSections={navSections}

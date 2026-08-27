@@ -1,5 +1,4 @@
 import React from "react";
-import { ChevronRight } from "lucide-react";
 import Badge from "@/components/ui/badge";
 import { ENROLLMENT_STAGE } from "../EnrollmentStepsTracker";
 import { formatDateHyphenated } from "@/utils/formatters";
@@ -132,11 +131,5 @@ export const createEnrollmentColumns = (t: (key: string) => string) => [
                 </Badge>
             );
         },
-    },
-    {
-        key: "chevron",
-        header: "",
-        className: "w-10 py-4",
-        render: () => <ChevronRight className="size-4 text-textSidebarMuted" />,
     },
 ];
