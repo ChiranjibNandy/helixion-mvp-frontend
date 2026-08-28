@@ -46,10 +46,10 @@ export function RegistrationActions({
           onClick={openModal}
         />
 
-        <XCircle
+        {/* <XCircle
           size={18}
           className="text-red-400 cursor-pointer"
-        />
+        /> */}
       </div>
 
       <AppModal

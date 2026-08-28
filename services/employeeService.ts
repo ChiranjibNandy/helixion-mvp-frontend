@@ -1,5 +1,6 @@
 import { API } from "@/constants/api";
 import { api } from "@/lib/api";
+import { PaginationParams } from "@/props/paginationPayload";
 import type { AvailableProgram, StayTypeKey } from "@/types";
 
 export const fetchEmployeeDashboardData = async () => {
@@ -43,9 +44,20 @@ export const enrollInProgram = async (
   return response.data.data;
 };
 
-export const getEmployeeEnrollments = async (): Promise<any[]> => {
-  const response = await api.get(API.EMPLOYEE.ENROLLMENTS);
-  return response.data.data;
+export const getEmployeeEnrollments = async ({
+   page = 1,
+   limit = 10,
+   search = "",
+}: PaginationParams = {}) => {
+   const response = await api.get(API.EMPLOYEE.ENROLLMENTS, {
+      params: {
+         page,
+         limit,
+         search,
+      },
+   });
+
+   return response.data.data;
 };
 
 export const getEnrollmentDetails = async (id: string): Promise<any> => {

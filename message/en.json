@@ -1,5 +1,9 @@
 {
    "programme": {
+      "title":"PROGRAM",
+      "date":"DATE",
+      "currentlyTracking":"Currently Tracking",
+      "unknownProgram":"Unknown Program",
       "available": "Available Programmes",
       "empty": "No programmes available right now.",
       "enrol": "Enrol",
@@ -7,6 +11,8 @@
       "howToSee": "How participants will see this program",
       "defaultTitle": "Program title appears here",
       "defaultVenue": "Venue — not set",
+      "noprogramsfoundsearch":"No programs found for your search",
+      "noprogramsAvailable":"No programs available",
       "list": {
          "title": "Listed Training Programs",
          "description": "Select a program to view details and enroll",
@@ -53,7 +59,10 @@
          "programFee": "Program fee",
          "attachBrochure": "Attach brochure",
          "minimumParticipants": "Minimum participants",
-         "maximumParticipants": "Maximum participants"
+         "maximumParticipants": "Maximum participants",
+         "brochure":"Brochure",
+         "notes":"Notes",
+         "noNotesAvailable":"No notes available"
       },
       "createpageTitle": "Create new training program",
       "createpageDescription": "Publish a single program to the Helixon marketplace.",
@@ -67,7 +76,8 @@
       "status": {
          "pending": "Not started",
          "active": "In progress",
-         "completed": "Completed"
+         "completed": "Completed",
+         "pend":"Pending"
       }
    },
    "dashboard": {
@@ -93,7 +103,16 @@
    "common": {
       "loading": "Loading...",
       "error": "Something went wrong. Please try again.",
-      "success": "Success"
+      "success": "Success",
+      "n/a":"N/A",
+      "notAvailable":"Not Available",
+      "failedToLoad":"Failed to load details.",
+      "required":"Required",
+      "notRequired":"Not Required",
+      "cancel": "Cancel",
+      "save": "Save",
+      "edit": "Edit",
+      "actions": "Actions"
    },
    "notifications": {
       "title": "Notifications",
@@ -137,7 +156,9 @@
       "confirm": "Confirm & Approve",
       "preview": "preview",
       "browse": "Browse",
-      "saveDraft": "Save draft"
+      "saveDraft": "Save draft",
+      "submitTourDetails":"Submit Tour Details",
+      "submitted":"Submitted"
    },
    "password": {
       "description": "Choose a strong password you haven’t used before.",
@@ -192,6 +213,63 @@
          "toastActivated": "{name} has been activated.",
          "toastDeactivateError": "Could not deactivate {name}. Please try again.",
          "toastActivateError": "Could not activate {name}. Please try again."
+      },
+      "organizations": {
+         "title": "Organizations",
+         "description": "Every organization created on the platform, with its type and status.",
+         "searchPlaceholder": "Search by name or slug",
+         "searchButton": "Search",
+         "resultsHeading": "Organizations",
+         "loading": "Loading...",
+         "noResults": "No organizations found.",
+         "columnName": "Name",
+         "columnSlug": "Slug",
+         "columnType": "Type",
+         "columnStatus": "Status",
+         "columnCreated": "Created",
+         "columnActions": "Actions",
+         "editAction": "Edit",
+         "statusActive": "Active",
+         "statusInactive": "Inactive",
+         "assignedLabel": "Assigned",
+         "assignedHint": "routed to one specific person in the chain.",
+         "poolLabel": "Pool",
+         "poolHint": "any officer holding that role can act on it."
+      },
+      "addEmployee": {
+         "breadcrumbUsers": "Users",
+         "breadcrumbAddEmployee": "Add Employee",
+         "pageTitle": "Add Employee",
+         "pageDescription": "Create a single employee directly. Unlike bulk upload, a reporting manager is optional here — use this for the one person at the top of your org hierarchy who has nobody above them.",
+         "basicDetails": "Basic details",
+         "reportingManager": "Reporting manager",
+         "reportingManagerHint": "Leave blank if this person is at the top of the hierarchy (nobody above them).",
+         "managerLabel": "Manager",
+         "officeRoles": "Office roles",
+         "officeRolesHint": "Only one employee in the org can be CTD, and only one can be OSD — assigning it here takes it away from whoever currently holds it.",
+         "ctdLabel": "CTD (Training Dept Officer)",
+         "osdLabel": "OSD Officer",
+         "backToDashboard": "Back to Dashboard",
+         "createButton": "Create Employee",
+         "creatingButton": "Creating...",
+         "successToast": "{name} was created successfully."
+      },
+      "editEmployee": {
+         "title": "Edit employee",
+         "titleWithName": "Edit {name}",
+         "loading": "Loading employee...",
+         "notFound": "Employee not found.",
+         "statusLabel": "Status:",
+         "managerLabel": "Manager",
+         "basicDetails": "Basic details",
+         "reportingManager": "Reporting manager",
+         "officeRoles": "Office roles",
+         "officeRolesHint": "Only one CTD and one OSD per org — checking this takes the role away from whoever currently holds it.",
+         "ctdLabel": "CTD (Training Dept Officer)",
+         "osdLabel": "OSD Officer",
+         "cancel": "Cancel",
+         "saveChanges": "Save changes",
+         "successToast": "{name} was updated successfully."
       },
       "approveUser": {
          "title": "Approve User",
@@ -277,13 +355,22 @@
       "results": {
          "successTitle": "Import successful",
          "failureTitle": "Import failed",
+         "partialTitle": "Some rows need fixing",
+         "allSkippedTitle": "Nothing was imported",
          "successDescription": "{count} users have been approved and roles assigned. They will receive login emails shortly.",
+         "alreadyUploadedTitle": "Already uploaded",
+         "alreadyUploadedDescription": "All {count} row{countPlural} already existed in the system — their details were refreshed, but no new employees were created.",
          "failureDescription": "An error occurred during the import process.",
+         "partialDescription": "{succeeded} row{succeededPlural} imported successfully. {skipped} row{skippedPlural} failed and still need fixing — see below.",
+         "allSkippedDescription": "All {skipped} row{skippedPlural} failed. Fix the details below and re-upload.",
          "approved": "{count} approved",
          "roleUpdated": "{count} role updated",
          "skipped": "{count} skipped",
          "doneButton": "Done",
          "noValidUsers": "No valid users to process"
+      },
+      "rolePanel": {
+         "managerLabel": "Manager"
       }
    },
    "bulkProgram": {
@@ -495,6 +582,69 @@
          }
       }
    },
+   "trainingDeptDashboard": {
+      "errorTitle": "Failed to load dashboard",
+      "errorDescription": "Could not fetch dashboard data. Please try again later.",
+      "welcome": "Welcome back, {name}",
+      "enroll": "Enroll",
+      "pendingApprovalsTitle": "Pending Approvals",
+      "pendingApprovalsSubtitle": "Awaiting your review",
+      "pendingTourApprovalsTitle": "Pending Tour Approvals",
+      "pendingTourApprovalsSubtitle": "Awaiting your review",
+      "viewAll": "View all",
+      "noPendingApprovals": "No pending approvals",
+      "noPendingTourApprovals": "No pending tour approvals",
+      "stats": {
+         "programsCompleted": "Programs Completed",
+         "programsCompletedSubtitleAll": "All time",
+         "programsCompletedSubtitleNone": "No completions yet",
+         "programsEnrolled": "Programs Enrolled",
+         "programsEnrolledSubtitleActive": "Currently active",
+         "programsEnrolledSubtitleNone": "None enrolled",
+         "pendingApprovals": "Pending Approvals",
+         "pendingApprovalsSubtitle": "Awaiting your review",
+         "pendingApprovalsBadge": "Action Required",
+         "pendingTourApprovals": "Pending Tour Approvals",
+         "pendingTourApprovalsSubtitleWaiting": "Awaiting your action",
+         "pendingTourApprovalsSubtitleNone": "None pending"
+      },
+      "columns": {
+         "no": "No.",
+         "employee": "Employee",
+         "programTitle": "Program Title",
+         "fromDate": "From Date",
+         "toDate": "To Date",
+         "venueCity": "Venue/City",
+         "status": "Status"
+      },
+      "quickActions": {
+         "enroll": {
+            "title": "Enroll in Program",
+            "description": "Browse listed trainings",
+            "link": "Browse Programs"
+         },
+         "ctdApprovals": {
+            "title": "CTD Approvals",
+            "description": "Review and act on pending enrollment requests",
+            "link": "Review Queue"
+         },
+         "tourApprovals": {
+            "title": "Tour Approvals",
+            "description": "Review and act on pending tour requests",
+            "link": "Review Queue"
+         },
+         "reports": {
+            "title": "View Reports",
+            "description": "Analytics & summaries",
+            "link": "View Reports"
+         },
+         "profile": {
+            "title": "My Profile",
+            "description": "Update your details",
+            "link": "View Profile"
+         }
+      }
+   },
    "approvalStatus": {
       "title": "Approval Status",
       "subtitle": "Current request breakdown",
@@ -553,6 +703,9 @@
          "programs": "Programs",
          "enroll": "Enroll in Program"
       },
+      "currentStage": "Current Stage",
+      "createdBy":"Created By",
+
       "title": "Training Program Enrolment Form",
       "programDetails": {
          "title": "Program Details",
@@ -624,6 +777,7 @@
          "managerReview": "Your application has been submitted and is currently awaiting approval from your Reporting Manager.",
          "hrReview": "Your application has been approved by your manager and is currently under CTD review.",
          "ctdTourReview": "Your enrollment has been approved and your travel request is being reviewed.",
+         "submitTourDetails":"Your enrollment has been approved. Please submit your tour details to proceed.",
          "attendance": "Your attendance for the training has been recorded! You can now submit your reimbursement claim.",
          "reimbursement": "Your reimbursement claim has been submitted and is under financial audit/review.",
          "credited": "Congratulations! Your reimbursement has been approved and successfully credited to your bank account.",
@@ -640,7 +794,13 @@
             "venueCity": "Venue/City",
             "tourFormRequired": "Tour Form Required",
             "status": "Status"
-         }
+         },
+         "browseprogramtoenroll": "Browse programs to enroll",
+         "selectAnUpComingProgram": "Please select an upcoming training program from the Programs menu to enroll.",
+         "notEnrollAnyProgram": "You have not enrolled in any training programs yet."
       }
+   },
+   "add": {
+      "enroll": "Add Enrollment"
    }
 }

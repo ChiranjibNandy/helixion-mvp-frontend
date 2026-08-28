@@ -2,6 +2,7 @@ import { ApprovalStats, DashboardSummary } from './employee';
 
 export interface ManagerDashboardSummary extends DashboardSummary {
   teamEnrollments: number;
+  pendingTourApprovals: number;
 }
 
 export interface TeamEnrollmentRow {
@@ -18,4 +19,5 @@ export interface ManagerDashboardData {
   summary: ManagerDashboardSummary;
   approvalStats: ApprovalStats;
   pendingTeamEnrollments: TeamEnrollmentRow[];
+  pendingTourApprovals: TeamEnrollmentRow[];
 }

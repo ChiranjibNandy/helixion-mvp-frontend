@@ -14,9 +14,14 @@ export const API = {
       BATCH_CREATE: '/admin/users/batch',
       DEACTIVATE_USER: (id: string) => `/admin/users/${id}/deactivate`,
       ACTIVATE_USER: (id: string) => `/admin/users/${id}/activate`,
+      GET_EMPLOYEE: (id: string) => `/admin/users/${id}`,
+      UPDATE_EMPLOYEE: (id: string) => `/admin/users/${id}/profile`,
       ORGANIZATIONS: '/admin/organizations',
       ORGANIZATIONS_BULK: '/admin/organizations/bulk-upload',
       ORGANIZATIONS_STATUS: '/admin/organizations/status',
+      GET_ORGANIZATION: (id: string) => `/admin/organizations/${id}`,
+      UPDATE_ORGANIZATION: (id: string) => `/admin/organizations/${id}`,
+      UPDATE_ORGANIZATION_POLICY: (id: string) => `/admin/organizations/${id}/policy`,
    },
    EMPLOYEE: {
       DASHBOARD: '/employee/dashboard',
@@ -28,6 +33,7 @@ export const API = {
       SUBMIT_ENROLLMENT: (id: string) => `/employee/enrollments/${id}/submit`,
       NOTIFICATIONS: '/employee/notifications',
       SUBMIT_TOUR: (id: string) => `/employee/enrollments/${id}/tour/submit`,
+      ENROLLMENTPANEL:'/employee/enrollments/panel'
    },
    MANAGER: {
       DASHBOARD: '/manager/dashboard',
@@ -38,6 +44,7 @@ export const API = {
       TOUR_ACTION: (id: string) => `/manager/enrollments/${id}/tour-action`,
    },
    TRAININGDEPT: {
+      DASHBOARD: '/training-dept/dashboard',
       PENDING: '/training-dept/pending',
       JUNIOR_ACTION: (id: string) => `/training-dept/enrollments/${id}/junior-action`,
       SENIOR_ACTION: (id: string) => `/training-dept/enrollments/${id}/senior-action`,
@@ -49,6 +56,7 @@ export const API = {
       PROGRAMS:         '/training-provider/programs',
       PARTICIPANTS:     (id: string) => `/training-provider/programs/${id}/participants`,
       ATTENDANCE:       (id: string) => `/training-provider/programs/${id}/attendance`,
-      ATTENDANCE_SINGLE:(id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}`
+      ATTENDANCE_SINGLE:(id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}`,
+      PROGRAM_LIST:      '/training-provider/programs/list'
    }
 }

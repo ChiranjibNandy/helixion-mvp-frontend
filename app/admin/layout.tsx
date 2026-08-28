@@ -24,7 +24,7 @@ async function getHasOrgPolicySetup(token: string): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE_URL}/admin/organizations/status`, {
       headers: { Authorization: `Bearer ${token}` },
-      cache: 'no-store',
+      next: { revalidate: 30 },
     });
     if (!res.ok) return true;
     const body = await res.json();

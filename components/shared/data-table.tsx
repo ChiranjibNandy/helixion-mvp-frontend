@@ -31,6 +31,7 @@ interface DataTableProps<T> {
   rowClassName?: (row: T) => string;
   renderExpandedRow?: (row: T) => React.ReactNode;
   isRowExpanded?: (row: T) => boolean;
+  emptyStateClassName?: string;
 }
 
 export function DataTable<T>({
@@ -44,6 +45,7 @@ export function DataTable<T>({
   rowClassName,
   renderExpandedRow,
   isRowExpanded,
+  emptyStateClassName = "h-48",
 }: DataTableProps<T>) {
   return (
     <div className={cn("overflow-auto", className)}>
@@ -72,7 +74,7 @@ export function DataTable<T>({
             </TableRow>
           ) : data.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-48 text-center">
+              <TableCell colSpan={columns.length} className={cn(emptyStateClassName, "text-center")}>
                 <p className="text-textSidebarMuted text-sm">{emptyMessage}</p>
               </TableCell>
             </TableRow>

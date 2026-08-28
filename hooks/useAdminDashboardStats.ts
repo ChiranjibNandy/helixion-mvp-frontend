@@ -2,12 +2,15 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { getAdminDashboardStatsAPI } from '@/services/adminService';
+import { Activity } from '@/types/admin';
+import { formatUpdatedAt } from '@/utils/formatters';
 
 export interface AdminDashboardStats {
   totalUsers: number;
   activeUsers: number;
   pendingApproval: number;
   deactivated: number;
+  recentActivity: Activity[];
 }
 
 export function useAdminDashboardStats() {
@@ -26,6 +29,10 @@ export function useAdminDashboardStats() {
         activeUsers: body.activeUsers ?? 0,
         pendingApproval: body.pendingApproval ?? 0,
         deactivated: body.deactivated ?? 0,
+        recentActivity: (body.recentActivity ?? []).map((a: Activity) => ({
+          ...a,
+          time: formatUpdatedAt(a.time),
+        })),
       });
     } catch (err: any) {
       setError(err?.response?.data?.message || err?.message || 'Failed to load stats');

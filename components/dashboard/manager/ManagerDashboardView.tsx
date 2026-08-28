@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Plus, ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApprovalStatusCard } from "../employee/ApprovalStatusCard";
 import { DashboardStats } from "@/components/shared/dashboard-stats";
@@ -17,6 +17,8 @@ import { MANAGER_PENDING_ENROLLMENTS_COLUMNS } from "@/constants/manager-dashboa
 import { getManagerDashboardStats } from "@/utils/manager-dashboard";
 import { getManagerQuickActions } from "@/constants/manager-quick-actions";
 import { fetchManagerDashboardData } from "@/services/managerService";
+import { useSortedPagination } from "@/hooks/useSortedPagination";
+import { withSortableDateColumns } from "@/components/shared/SortableDateColumns";
 
 const PAGE_SIZE = 10;
 
@@ -24,9 +26,19 @@ export default function ManagerDashboardView({ name }: { name: string }) {
   const [data, setData] = useState<ManagerDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [page, setPage] = useState(1);
-  const [sortKey, setSortKey] = useState<'fromDate' | 'toDate' | null>(null);
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+
+  const { page, setPage, totalPages, pagedRows, sortKey, sortDir, handleSort } =
+    useSortedPagination<TeamEnrollmentRow>(data?.pendingTeamEnrollments ?? [], PAGE_SIZE);
+
+  const {
+    page: tourPage,
+    setPage: setTourPage,
+    totalPages: tourTotalPages,
+    pagedRows: tourPagedRows,
+    sortKey: tourSortKey,
+    sortDir: tourSortDir,
+    handleSort: handleTourSort,
+  } = useSortedPagination<TeamEnrollmentRow>(data?.pendingTourApprovals ?? [], PAGE_SIZE);
 
   useEffect(() => {
     const load = async () => {
@@ -65,51 +77,8 @@ export default function ManagerDashboardView({ name }: { name: string }) {
 
   const stats = getManagerDashboardStats(data.summary);
   const quickActions = getManagerQuickActions();
-
-  function handleSort(key: 'fromDate' | 'toDate') {
-    if (sortKey === key) {
-      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortKey(key);
-      setSortDir('asc');
-    }
-    setPage(1);
-  }
-
-  function SortIcon({ col }: { col: 'fromDate' | 'toDate' }) {
-    if (sortKey !== col) return <ChevronsUpDown className="inline w-3 h-3 ml-1 opacity-40" />;
-    return sortDir === 'asc'
-      ? <ChevronUp className="inline w-3 h-3 ml-1" />
-      : <ChevronDown className="inline w-3 h-3 ml-1" />;
-  }
-
-  const sorted = sortKey
-    ? [...data.pendingTeamEnrollments].sort((a, b) => {
-        const cmp = a[sortKey].localeCompare(b[sortKey]);
-        return sortDir === 'asc' ? cmp : -cmp;
-      })
-    : data.pendingTeamEnrollments;
-
-  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
-  const pagedRows = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-  const columns = MANAGER_PENDING_ENROLLMENTS_COLUMNS.map((col) => {
-    if (col.key === 'fromDate' || col.key === 'toDate') {
-      return {
-        ...col,
-        header: (
-          <button
-            onClick={() => handleSort(col.key as 'fromDate' | 'toDate')}
-            className="flex items-center gap-0.5 uppercase tracking-wider text-[10px] font-bold text-textSidebarMuted hover:text-white transition-colors"
-          >
-            {col.header}
-            <SortIcon col={col.key as 'fromDate' | 'toDate'} />
-          </button>
-        ),
-      };
-    }
-    return col;
-  });
+  const columns = withSortableDateColumns(MANAGER_PENDING_ENROLLMENTS_COLUMNS, sortKey, sortDir, handleSort);
+  const tourColumns = withSortableDateColumns(MANAGER_PENDING_ENROLLMENTS_COLUMNS, tourSortKey, tourSortDir, handleTourSort);
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -135,9 +104,9 @@ export default function ManagerDashboardView({ name }: { name: string }) {
         columns="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
       />
 
-      {/* Pending team enrollments + Approval status */}
+      {/* Pending team enrollments + Pending tour approvals + Approval status */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 flex flex-col gap-y-4">
           <DashboardSectionCard
             title="Pending Team Enrollments"
             subtitle="Awaiting your approval"
@@ -153,6 +122,7 @@ export default function ManagerDashboardView({ name }: { name: string }) {
               columns={columns}
               rowKey={(row) => row._id}
               emptyMessage="No pending team enrollments"
+              emptyStateClassName="h-20"
             />
             {totalPages > 1 && (
               <div className="px-4">
@@ -160,6 +130,34 @@ export default function ManagerDashboardView({ name }: { name: string }) {
                   page={page}
                   totalPages={totalPages}
                   onPageChange={setPage}
+                />
+              </div>
+            )}
+          </DashboardSectionCard>
+
+          <DashboardSectionCard
+            title="Pending Tour Approvals"
+            subtitle="Awaiting your approval"
+            count={data.pendingTourApprovals.length}
+            action={
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/dashboard/tour-approvals">View all</Link>
+              </Button>
+            }
+          >
+            <DataTable<TeamEnrollmentRow>
+              data={tourPagedRows}
+              columns={tourColumns}
+              rowKey={(row) => row._id}
+              emptyMessage="No pending tour approvals"
+              emptyStateClassName="h-20"
+            />
+            {tourTotalPages > 1 && (
+              <div className="px-4">
+                <PaginationController
+                  page={tourPage}
+                  totalPages={tourTotalPages}
+                  onPageChange={setTourPage}
                 />
               </div>
             )}

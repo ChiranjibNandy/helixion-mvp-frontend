@@ -23,7 +23,7 @@ export const ROUTES = {
     ORG_POLICY_SETUP: '/admin/dashboard/org-policy',
     RESET_PASSWORD: '/admin/reset-password',
     PROGRAMS: '/programs',
-    ORGANIZATIONS: '/organizations',
+    ORGANIZATIONS: '/admin/dashboard/organizations',
     AUDIT: '/audit',
     SUPPORT: '/support',
     INTEGRATIONS: '/integrations',
@@ -53,6 +53,7 @@ export const ROUTES = {
       ACTIVE: '/dashboard/programs/active',
       CREATE: '/dashboard/programs/create',
       EXPORT: '/dashboard/programs/export',
+      LIST: '/dashboard/programs/list'
     },
     ATTENDANCE: '/dashboard/update-attendance',
   },
@@ -103,6 +104,7 @@ export const ROLE_ACCESS = {
   ],
   [USER_ROLES.USER]: [ROUTES.DASHBOARD.ROOT],
   [USER_ROLES.TRAINING_PROVIDER]: [ROUTES.DASHBOARD.ROOT, ROUTES.PROVIDER.PROGRAMS.BULK],
+  [USER_ROLES.MANAGER]: [ROUTES.DASHBOARD.ROOT],
 } as const;
 
 

@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, AlertCircle } from 'lucide-react';
+import { Search, AlertCircle, Pencil } from 'lucide-react';
 import { COLOR_CLASSES } from '@/constants/admin';
 import { useUsersSearch, UserSearchResult } from '@/hooks/useUsersSearch';
 import { t } from '@/lib/i18n';
 import PaginationController from '@/components/ui/pagination';
+import { TableRowsSkeleton } from '@/components/ui/skeleton';
+import EditEmployeeModal from '@/components/admin/EditEmployeeModal';
 
 
 import {
@@ -23,13 +25,13 @@ import { toast } from 'sonner';
 // Keys are lowercased role labels as returned by searchUsersService's
 // deriveDisplayRole (admin.service.ts) — "CTD"/"Manager"/etc. aren't
 // orgRole values, they're derived from officeRoles/hierarchy, so they're
-// matched here by their display text rather than a fixed enum.
+// matched here by their display text rather than a fixed enum. One CTD and
+// one OSD Officer per org — no Junior/Senior tiers, so no separate label
+// for those anymore.
 const ROLE_COLORS: Record<string, string> = {
   employee: 'bg-[#1e3a8a]/40 ring-1 ring-[#1e3a8a]',
   manager: 'bg-[#9a3412]/40 ring-1 ring-[#9a3412]',
   ctd: 'bg-[#a16207]/40 ring-1 ring-[#a16207]',
-  'training dept officer': 'bg-[#a16207]/40 ring-1 ring-[#a16207]',
-  'osd senior': 'bg-[#0e7490]/40 ring-1 ring-[#0e7490]',
   'osd officer': 'bg-[#0e7490]/40 ring-1 ring-[#0e7490]',
   'training provider': 'bg-[#166534]/40 ring-1 ring-[#166534]',
   admin: 'bg-[#be123c]/40 ring-1 ring-[#be123c]',
@@ -40,8 +42,6 @@ const ROLE_BADGE_COLORS: Record<string, string> = {
   employee: 'bg-blue-500/10 text-blue-400',
   manager: 'bg-orange-500/10 text-orange-400',
   ctd: 'bg-yellow-500/10 text-yellow-400',
-  'training dept officer': 'bg-yellow-500/10 text-yellow-400',
-  'osd senior': 'bg-cyan-500/10 text-cyan-400',
   'osd officer': 'bg-cyan-500/10 text-cyan-400',
   'training provider': 'bg-green-500/10 text-green-400',
   admin: 'bg-rose-500/10 text-rose-400',
@@ -53,6 +53,7 @@ export default function DeactivateUserPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,12 +155,22 @@ export default function DeactivateUserPage() {
                 </div>
 
                 {!isConfirming && (
-                  <Button
-                    onClick={() => setIsConfirming(true)}
-                    className={`text-black text-sm px-6 py-5 rounded-lg font-medium ${accentBtnClass}`}
-                  >
-                    {isActive ? t('admin.deactivate.deactivateAccount') : t('admin.deactivate.activateAccount')}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => setEditingUserId(selectedUser.id)}
+                      variant="outline"
+                      className="border-white/10 text-white/70 hover:bg-white/5 text-sm px-4 py-5 rounded-lg font-medium"
+                    >
+                      <Pencil size={14} className="mr-1.5" />
+                      Edit
+                    </Button>
+                    <Button
+                      onClick={() => setIsConfirming(true)}
+                      className={`text-black text-sm px-6 py-5 rounded-lg font-medium ${accentBtnClass}`}
+                    >
+                      {isActive ? t('admin.deactivate.deactivateAccount') : t('admin.deactivate.activateAccount')}
+                    </Button>
+                  </div>
                 )}
               </div>
 
@@ -217,7 +228,6 @@ export default function DeactivateUserPage() {
             <Table>
               <TableHeader>
                 <TableRow className="border-white/5 hover:bg-transparent">
-                  <TableHead className="w-12 text-[12px] font-medium text-white/40"></TableHead>
                   <TableHead className="text-[12px] font-medium text-white/40">{t('admin.deactivate.columnUser')}</TableHead>
                   <TableHead className="text-[12px] font-medium text-white/40">{t('admin.deactivate.columnRole')}</TableHead>
                   <TableHead className="text-[12px] font-medium text-white/40">{t('admin.deactivate.columnReportingManager')}</TableHead>
@@ -228,30 +238,22 @@ export default function DeactivateUserPage() {
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableRow className="border-white/5 hover:bg-transparent">
-                    <TableCell colSpan={7} className="p-8 text-center text-white/30 text-sm">{t('admin.deactivate.loading')}</TableCell>
-                  </TableRow>
+                  <TableRowsSkeleton rows={6} columns={6} />
                 ) : error ? (
                   <TableRow className="border-white/5 hover:bg-transparent">
-                    <TableCell colSpan={7} className="p-8 text-center text-red-400/80 text-sm">{error}</TableCell>
+                    <TableCell colSpan={6} className="p-8 text-center text-red-400/80 text-sm">{error}</TableCell>
                   </TableRow>
                 ) : users.length === 0 ? (
                   <TableRow className="border-white/5 hover:bg-transparent">
-                    <TableCell colSpan={7} className="p-8 text-center text-white/30 text-sm">{t('admin.deactivate.noResults')}</TableCell>
+                    <TableCell colSpan={6} className="p-8 text-center text-white/30 text-sm">{t('admin.deactivate.noResults')}</TableCell>
                   </TableRow>
                 ) : (
                   users.map((user) => (
-                    <TableRow 
-                      key={user.id} 
+                    <TableRow
+                      key={user.id}
                       className={`border-white/5 cursor-pointer transition-colors ${selectedUser?.id === user.id ? 'bg-white/[0.03] hover:bg-white/[0.03]' : 'hover:bg-white/[0.02]'}`}
                       onClick={() => handleSelectUser(user)}
                     >
-                      <TableCell className="w-12 text-center">
-                        <div className={`w-4 h-4 rounded-full border mx-auto flex items-center justify-center ${selectedUser?.id === user.id ? 'border-red-500' : 'border-white/20'}`}>
-                          {selectedUser?.id === user.id && <div className="w-2 h-2 bg-red-500 rounded-full" />}
-                        </div>
-                      </TableCell>
-                      
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <AppAvatar initials={getInitials(user.username)} size="sm" className={ROLE_COLORS[(user.role || '').toLowerCase()] || ROLE_COLORS.default} />
@@ -301,6 +303,17 @@ export default function DeactivateUserPage() {
           )}
         </div>
       </div>
+
+      {editingUserId && (
+        <EditEmployeeModal
+          employeeId={editingUserId}
+          onClose={() => setEditingUserId(null)}
+          onSaved={() => {
+            setEditingUserId(null);
+            searchUsers(searchQuery);
+          }}
+        />
+      )}
     </div>
   );
 }
