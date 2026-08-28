@@ -14,9 +14,17 @@ export const getUsersAPI = async (params: {
 };
 
 //using to approve and assign role of pending user list in admin
-export const getPendingUserAPI = async () => {
-  return await api.get(API.ADMIN.REGISTRATIONS)
-}
+export const getPendingUserAPI = async (
+  page: number,
+  limit: number
+) => {
+  return await api.get(API.ADMIN.REGISTRATIONS, {
+    params: {
+      page,
+      limit,
+    },
+  });
+};
 
 //approve the user and assign role
 export const approveUserAPI = async (data: { userId: string, role: string }) => {

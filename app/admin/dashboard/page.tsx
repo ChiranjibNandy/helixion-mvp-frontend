@@ -8,6 +8,7 @@ import { ADMIN_CONTENT } from '@/constants/content';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import { DashboardStats } from '@/components/shared/dashboard-stats';
 import { PendingRegistrationsSection } from '@/components/admin-dashboard/pending-registrations-section';
+import PaginationController from '@/components/ui/pagination';
 
 
 
@@ -17,6 +18,8 @@ export default function AdminDashboard() {
     loading,
     error,
     refetch,
+    pagination,
+    setPage,
   } = useRegistrations();
 
   const { stats: dashboardStats, loading: statsLoading, error: statsError } = useAdminDashboardStats();
@@ -62,6 +65,14 @@ export default function AdminDashboard() {
             error={error}
             refetch={refetch}
           />
+
+          {pagination && pagination.totalPages >= 1 && (
+            <PaginationController
+              page={pagination.page}
+              totalPages={pagination.totalPages}
+              onPageChange={setPage}
+            />
+          )}
         </div>
 
         <RecentActivity activities={dashboardStats?.recentActivity ?? []} />

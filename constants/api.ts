@@ -33,6 +33,7 @@ export const API = {
       SUBMIT_ENROLLMENT: (id: string) => `/employee/enrollments/${id}/submit`,
       NOTIFICATIONS: '/employee/notifications',
       SUBMIT_TOUR: (id: string) => `/employee/enrollments/${id}/tour/submit`,
+      ENROLLMENTPANEL:'/employee/enrollments/panel'
    },
    MANAGER: {
       DASHBOARD: '/manager/dashboard',
@@ -55,6 +56,7 @@ export const API = {
       PROGRAMS:         '/training-provider/programs',
       PARTICIPANTS:     (id: string) => `/training-provider/programs/${id}/participants`,
       ATTENDANCE:       (id: string) => `/training-provider/programs/${id}/attendance`,
-      ATTENDANCE_SINGLE:(id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}`
+      ATTENDANCE_SINGLE:(id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}`,
+      PROGRAM_LIST:      '/training-provider/programs/list'
    }
 }

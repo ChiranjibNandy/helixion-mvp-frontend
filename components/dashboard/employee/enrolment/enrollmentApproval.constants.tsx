@@ -1,4 +1,5 @@
 import React from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Badge from "@/components/ui/badge";
 import { ENROLLMENT_STAGE } from "../EnrollmentStepsTracker";
 import { formatDateHyphenated } from "@/utils/formatters";
@@ -59,77 +60,93 @@ const getBadgeLabel = (stage: string) => {
     return "In Progress";
 };
 
-export const createEnrollmentColumns = (t: (key: string) => string) => [
-    {
-        key: "no",
-        header: t("approvalProgress.enrolledPrograms.columns.no"),
-        className: "text-sm text-textSidebarMuted py-4 w-16",
-        render: (_: any, index?: number) => `${(index ?? 0) + 1}.`,
-    },
-    {
-        key: "title",
-        header: t("approvalProgress.enrolledPrograms.columns.title"),
-        className: "text-sm text-white font-medium py-4 max-w-xs",
-        render: (enrollment: any) => getProgramDetails(enrollment)?.title || "Unknown",
-    },
-    {
-        key: "fromDate",
-        header: t("approvalProgress.enrolledPrograms.columns.fromDate"),
-        className: "text-sm text-textSidebarMuted py-4",
-        render: (enrollment: any) => formatDateHyphenated(getProgramDetails(enrollment)?.startDate),
-    },
-    {
-        key: "toDate",
-        header: t("approvalProgress.enrolledPrograms.columns.toDate"),
-        className: "text-sm text-textSidebarMuted py-4",
-        render: (enrollment: any) => formatDateHyphenated(getProgramDetails(enrollment)?.endDate),
-    },
-    {
-        key: "venueCity",
-        header: t("approvalProgress.enrolledPrograms.columns.venueCity"),
-        className: "text-sm text-textSidebarMuted py-4",
-        render: (enrollment: any) => {
-            const program = getProgramDetails(enrollment);
-            return program?.city || program?.venueName || "N/A";
+export const createEnrollmentColumns = (
+    t: (key: string) => string,
+    expandedRowId?: string | null
+) => [
+        {
+            key: "no",
+            header: t("approvalProgress.enrolledPrograms.columns.no"),
+            className: "text-sm text-textSidebarMuted py-4 w-16",
+            render: (_: any, index?: number) => `${ (index ?? 0) + 1 }.`,
         },
-    },
-    {
-        key: "tourFormRequired",
-        header: t("approvalProgress.enrolledPrograms.columns.tourFormRequired"),
-        className: "py-4",
-        render: (enrollment: any) => {
-            if (enrollment.currentStage === ENROLLMENT_STAGE.TOUR_PENDING_EMPLOYEE) {
+        {
+            key: "title",
+            header: t("approvalProgress.enrolledPrograms.columns.title"),
+            className: "text-sm text-white font-medium py-4 max-w-xs",
+            render: (enrollment: any) => getProgramDetails(enrollment)?.title || "Unknown",
+        },
+        {
+            key: "fromDate",
+            header: t("approvalProgress.enrolledPrograms.columns.fromDate"),
+            className: "text-sm text-textSidebarMuted py-4",
+            render: (enrollment: any) => formatDateHyphenated(getProgramDetails(enrollment)?.startDate),
+        },
+        {
+            key: "toDate",
+            header: t("approvalProgress.enrolledPrograms.columns.toDate"),
+            className: "text-sm text-textSidebarMuted py-4",
+            render: (enrollment: any) => formatDateHyphenated(getProgramDetails(enrollment)?.endDate),
+        },
+        {
+            key: "venueCity",
+            header: t("approvalProgress.enrolledPrograms.columns.venueCity"),
+            className: "text-sm text-textSidebarMuted py-4",
+            render: (enrollment: any) => {
+                const program = getProgramDetails(enrollment);
+                return program?.city || program?.venueName || "N/A";
+            },
+        },
+        {
+            key: "tourFormRequired",
+            header: t("approvalProgress.enrolledPrograms.columns.tourFormRequired"),
+            className: "py-4",
+            render: (enrollment: any) => {
+                if (enrollment.currentStage === ENROLLMENT_STAGE.TOUR_PENDING_EMPLOYEE) {
+                    return (
+                        <Badge status="pending" className="capitalize px-3 py-1">
+                            {t("common.required")}
+                        </Badge>
+                    );
+                }
+                if (enrollment.tour?.status && enrollment.tour.status !== "not_required") {
+                    return (
+                        <Badge status="active" className="capitalize px-3 py-1">
+                            {t("button.submitted")}
+                        </Badge>
+                    );
+                }
+                return <span className="text-sm text-textSidebarMuted">{t("common.notRequired")}</span>;
+            },
+        },
+        {
+            key: "status",
+            header: t("approvalProgress.enrolledPrograms.columns.status"),
+            className: "py-4",
+            render: (enrollment: any) => {
+                const isRejected = enrollment.currentStage === ENROLLMENT_STAGE.REJECTED;
                 return (
-                    <Badge status="pending" className="capitalize px-3 py-1">
-                        Required
+                    <Badge
+                        variant={isRejected ? "destructive" : "default"}
+                        status={isRejected ? undefined : (getBadgeStatus(enrollment.currentStage) as any)}
+                        className="capitalize px-3 py-1"
+                    >
+                        {getBadgeLabel(enrollment.currentStage)}
                     </Badge>
                 );
-            }
-            if (enrollment.tour?.status && enrollment.tour.status !== "not_required") {
-                return (
-                    <Badge status="active" className="capitalize px-3 py-1">
-                        Submitted
-                    </Badge>
+            },
+        },
+        {
+            key: "chevron",
+            header: "",
+            className: "w-10 py-4",
+            render: (enrollment: any) => {
+                const isExpanded = expandedRowId === enrollment._id;
+                return isExpanded ? (
+                    <ChevronUp className="size-4 text-primary" />
+                ) : (
+                    <ChevronDown className="size-4 text-textSidebarMuted hover:text-white" />
                 );
-            }
-            return <span className="text-sm text-textSidebarMuted">Not Required</span>;
-        },
-    },
-    {
-        key: "status",
-        header: t("approvalProgress.enrolledPrograms.columns.status"),
-        className: "py-4",
-        render: (enrollment: any) => {
-            const isRejected = enrollment.currentStage === ENROLLMENT_STAGE.REJECTED;
-            return (
-                <Badge
-                    variant={isRejected ? "destructive" : "default"}
-                    status={isRejected ? undefined : (getBadgeStatus(enrollment.currentStage) as any)}
-                    className="capitalize px-3 py-1"
-                >
-                    {getBadgeLabel(enrollment.currentStage)}
-                </Badge>
-            );
-        },
-    },
-];
+            },
+        }
+    ];
