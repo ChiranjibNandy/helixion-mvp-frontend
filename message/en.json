@@ -87,6 +87,19 @@
       "employeeBreadcrump": "Workspace › Dashboard",
       "enroll": "enroll"
    },
+   "dashboardShell": {
+      "sessionExpired": {
+         "title": "Session Expired",
+         "description": "Your login session has expired. Please sign in again to restore access to your account.",
+         "action": "Sign In Again"
+      },
+      "accessDenied": {
+         "title": "Access Denied",
+         "description": "You do not have the required permissions to view this resource. If you believe this is a mistake, please reach out to your administrator.",
+         "goBack": "Go Back",
+         "dashboardHome": "Dashboard Home"
+      }
+   },
    "common": {
       "loading": "Loading...",
       "error": "Something went wrong. Please try again.",
