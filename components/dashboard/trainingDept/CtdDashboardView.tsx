@@ -12,42 +12,34 @@ import { AppAlert } from "@/components/shared/app-alert";
 import { Spinner } from "@/components/ui/spinner";
 import PaginationController from "@/components/ui/pagination";
 import Link from "next/link";
-import { TeamEnrollmentRow, ManagerDashboardData } from "@/types/manager";
-import { MANAGER_PENDING_ENROLLMENTS_COLUMNS } from "@/constants/manager-dashboard-columns";
-import { getManagerDashboardStats } from "@/utils/manager-dashboard";
-import { getManagerQuickActions } from "@/constants/manager-quick-actions";
-import { fetchManagerDashboardData } from "@/services/managerService";
+import { PendingReviewRow, TrainingDeptDashboardData } from "@/types/trainingDept";
+import { TRAINING_DEPT_PENDING_REVIEWS_COLUMNS } from "@/constants/training-dept-dashboard-columns";
+import { getTrainingDeptDashboardStats } from "@/utils/training-dept-dashboard";
+import { getTrainingDeptQuickActions } from "@/constants/training-dept-quick-actions";
+import { fetchTrainingDeptDashboardData } from "@/services/trainingDeptService";
+import { t } from "@/lib/i18n";
 import { useSortedPagination } from "@/hooks/useSortedPagination";
 import { withSortableDateColumns } from "@/components/shared/SortableDateColumns";
 
 const PAGE_SIZE = 10;
 
-export default function ManagerDashboardView({ name }: { name: string }) {
-  const [data, setData] = useState<ManagerDashboardData | null>(null);
+export default function CtdDashboardView({ name }: { name: string }) {
+  const [data, setData] = useState<TrainingDeptDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const { page, setPage, totalPages, pagedRows, sortKey, sortDir, handleSort } =
-    useSortedPagination<TeamEnrollmentRow>(data?.pendingTeamEnrollments ?? [], PAGE_SIZE);
 
-  const {
-    page: tourPage,
-    setPage: setTourPage,
-    totalPages: tourTotalPages,
-    pagedRows: tourPagedRows,
-    sortKey: tourSortKey,
-    sortDir: tourSortDir,
-    handleSort: handleTourSort,
-  } = useSortedPagination<TeamEnrollmentRow>(data?.pendingTourApprovals ?? [], PAGE_SIZE);
+  const { page, setPage, totalPages, pagedRows, sortKey, sortDir, handleSort } =
+    useSortedPagination<PendingReviewRow>(data?.pendingReviews ?? [], PAGE_SIZE);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const result = await fetchManagerDashboardData();
+        const result = await fetchTrainingDeptDashboardData();
         setData(result);
       } catch (err) {
-        console.error("Failed to fetch manager dashboard", err);
-        setError(err instanceof Error ? err : new Error("Failed to fetch manager dashboard"));
+        console.error("Failed to fetch CTD dashboard", err);
+        setError(err instanceof Error ? err : new Error(t('trainingDeptDashboard.errorTitle')));
       } finally {
         setLoading(false);
       }
@@ -59,8 +51,8 @@ export default function ManagerDashboardView({ name }: { name: string }) {
     return (
       <AppAlert
         variant="destructive"
-        title="Failed to load dashboard"
-        description={error.message ?? "Could not fetch dashboard data. Please try again later."}
+        title={t('trainingDeptDashboard.errorTitle')}
+        description={error.message ?? t('trainingDeptDashboard.errorDescription')}
       />
     );
   }
@@ -75,24 +67,23 @@ export default function ManagerDashboardView({ name }: { name: string }) {
 
   if (!data) return null;
 
-  const stats = getManagerDashboardStats(data.summary);
-  const quickActions = getManagerQuickActions();
-  const columns = withSortableDateColumns(MANAGER_PENDING_ENROLLMENTS_COLUMNS, sortKey, sortDir, handleSort);
-  const tourColumns = withSortableDateColumns(MANAGER_PENDING_ENROLLMENTS_COLUMNS, tourSortKey, tourSortDir, handleTourSort);
+  const stats = getTrainingDeptDashboardStats(data.summary);
+  const quickActions = getTrainingDeptQuickActions();
+  const columns = withSortableDateColumns(TRAINING_DEPT_PENDING_REVIEWS_COLUMNS, sortKey, sortDir, handleSort);
 
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-white text-2xl font-bold">
-            Welcome back, {name}
+            {t('trainingDeptDashboard.welcome', { name })}
           </h1>
         </div>
         <div className="flex items-center gap-3">
           <Button asChild size="lg">
             <Link href="/dashboard/programs">
               <Plus />
-              Enroll
+              {t('trainingDeptDashboard.enroll')}
             </Link>
           </Button>
         </div>
@@ -104,25 +95,24 @@ export default function ManagerDashboardView({ name }: { name: string }) {
         columns="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
       />
 
-      {/* Pending team enrollments + Pending tour approvals + Approval status */}
+      {/* Pending reviews + Approval status */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 flex flex-col gap-y-4">
+        <div className="lg:col-span-2">
           <DashboardSectionCard
-            title="Pending Team Enrollments"
-            subtitle="Awaiting your approval"
-            count={data.pendingTeamEnrollments.length}
+            title={t('trainingDeptDashboard.pendingApprovalsTitle')}
+            subtitle={t('trainingDeptDashboard.pendingApprovalsSubtitle')}
+            count={data.pendingReviews.length}
             action={
               <Button asChild variant="ghost" size="sm">
-                <Link href="/dashboard/approvals">View all</Link>
+                <Link href="/dashboard/ctd-approvals">{t('trainingDeptDashboard.viewAll')}</Link>
               </Button>
             }
           >
-            <DataTable<TeamEnrollmentRow>
+            <DataTable<PendingReviewRow>
               data={pagedRows}
               columns={columns}
               rowKey={(row) => row._id}
-              emptyMessage="No pending team enrollments"
-              emptyStateClassName="h-20"
+              emptyMessage={t('trainingDeptDashboard.noPendingApprovals')}
             />
             {totalPages > 1 && (
               <div className="px-4">
@@ -130,34 +120,6 @@ export default function ManagerDashboardView({ name }: { name: string }) {
                   page={page}
                   totalPages={totalPages}
                   onPageChange={setPage}
-                />
-              </div>
-            )}
-          </DashboardSectionCard>
-
-          <DashboardSectionCard
-            title="Pending Tour Approvals"
-            subtitle="Awaiting your approval"
-            count={data.pendingTourApprovals.length}
-            action={
-              <Button asChild variant="ghost" size="sm">
-                <Link href="/dashboard/tour-approvals">View all</Link>
-              </Button>
-            }
-          >
-            <DataTable<TeamEnrollmentRow>
-              data={tourPagedRows}
-              columns={tourColumns}
-              rowKey={(row) => row._id}
-              emptyMessage="No pending tour approvals"
-              emptyStateClassName="h-20"
-            />
-            {tourTotalPages > 1 && (
-              <div className="px-4">
-                <PaginationController
-                  page={tourPage}
-                  totalPages={tourTotalPages}
-                  onPageChange={setTourPage}
                 />
               </div>
             )}

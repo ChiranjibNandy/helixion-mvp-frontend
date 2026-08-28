@@ -148,5 +148,5 @@ export const createEnrollmentColumns = (
                     <ChevronDown className="size-4 text-textSidebarMuted hover:text-white" />
                 );
             },
-        },
+        }
     ];

@@ -136,29 +136,29 @@ export const ADMIN_NAV_SECTION: NavSection[] = [
       },
     ],
   },
-  // {
-  //   category: NAV_SECTIONS.PLATFORM,
-  //   items: [
-  //     {
-  //       label: NAV_LABELS.PROGRAMS,
-  //       key: 'programs',
-  //       href: ROUTES.ADMIN.PROGRAMS,
-  //       icon: 'settings',
-  //     },
-  //     {
-  //       label: NAV_LABELS.ORGANIZATIONS,
-  //       key: 'organizations',
-  //       href: ROUTES.ADMIN.ORGANIZATIONS,
-  //       icon: 'zap',
-  //     },
-  //     {
-  //       label: NAV_LABELS.AUDIT_LOG,
-  //       key: 'audit',
-  //       href: ROUTES.ADMIN.AUDIT,
-  //       icon: 'bell',
-  //     },
-  //   ],
-  // },
+  {
+    category: NAV_SECTIONS.PLATFORM,
+    items: [
+      // {
+      //   label: NAV_LABELS.PROGRAMS,
+      //   key: 'programs',
+      //   href: ROUTES.ADMIN.PROGRAMS,
+      //   icon: 'settings',
+      // },
+      {
+        label: NAV_LABELS.ORGANIZATIONS,
+        key: 'organizations',
+        href: ROUTES.ADMIN.ORGANIZATIONS,
+        icon: 'zap',
+      },
+      // {
+      //   label: NAV_LABELS.AUDIT_LOG,
+      //   key: 'audit',
+      //   href: ROUTES.ADMIN.AUDIT,
+      //   icon: 'bell',
+      // },
+    ],
+  },
   // {
   //   category: NAV_SECTIONS.GENERAL_TOOLS,
   //   items: [

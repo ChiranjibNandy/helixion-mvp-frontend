@@ -13,10 +13,10 @@ export interface BulkEmployeeRow {
   placeOfPosting: string;
   designation: string;
   department: string;
-  trainingDeptJunior: boolean;
   trainingDeptSenior: boolean;
-  osdJunior: boolean;
   osdSenior: boolean;
+
+  isManager: boolean;
   reportingManagerEmail: string;
   skipLevel1ManagerEmail: string;
   skipLevel2ManagerEmail: string;
@@ -43,10 +43,9 @@ function toRow(raw: Record<string, any>, idx: number): BulkEmployeeRow {
     placeOfPosting: str(raw['Place of Posting']),
     designation: str(raw['Designation']),
     department: str(raw['Department']),
-    trainingDeptJunior: isYes(raw['Training Department Junior Officer']),
-    trainingDeptSenior: isYes(raw['Training Department Senior Officer']),
-    osdJunior: isYes(raw['OSD Team Junior Officer']),
-    osdSenior: isYes(raw['OSD Team Senior Officer']),
+    trainingDeptSenior: isYes(raw['Training Department Officer (CTD)']),
+    osdSenior: isYes(raw['OSD Officer']),
+    isManager: isYes(raw['Manager']),
     reportingManagerEmail: str(raw['Reporting Manager Email']).toLowerCase(),
     skipLevel1ManagerEmail: str(raw['Skip Level 1 Manager Email']).toLowerCase(),
     skipLevel2ManagerEmail: str(raw['Skip Level 2 Manager Email']).toLowerCase(),
@@ -152,4 +151,36 @@ export function validateBulkEmployeeRows(rows: BulkEmployeeRow[]): ValidatedBulk
 
     return { ...row, severity, issues };
   });
+}
+
+/**
+ * Serializes the (possibly hand-edited) preview rows back into a real CSV
+ * file — the backend endpoint only accepts multipart file uploads
+ * (uploadCsv.single("file")), so edits made in the preview table have to be
+ * turned back into a file rather than sent as JSON. Column order/headers
+ * must match parseBulkUploadFile's own `toRow` mapping exactly, since both
+ * ultimately have to agree with the backend's mapSpreadsheetEmployee.ts.
+ */
+export function rowsToCsvFile(rows: BulkEmployeeRow[], originalFileName: string): File {
+  const yesNo = (v: boolean) => (v ? 'Yes' : 'No');
+
+  const records = rows.map((row) => ({
+    'Employee Roll No.': row.employeeCode,
+    'Name of the employee': row.name,
+    'Email': row.email,
+    'Mobile': row.mobile,
+    'Place of Posting': row.placeOfPosting,
+    'Designation': row.designation,
+    'Department': row.department,
+    'Training Department Officer (CTD)': yesNo(row.trainingDeptSenior),
+    'OSD Officer': yesNo(row.osdSenior),
+    'Manager': yesNo(row.isManager),
+    'Reporting Manager Email': row.reportingManagerEmail,
+    'Skip Level 1 Manager Email': row.skipLevel1ManagerEmail,
+    'Skip Level 2 Manager Email': row.skipLevel2ManagerEmail,
+  }));
+
+  const csv = Papa.unparse(records);
+  const fileName = originalFileName.replace(/\.(csv|xlsx|xls)$/i, '') + '.csv';
+  return new File([csv], fileName, { type: 'text/csv' });
 }
