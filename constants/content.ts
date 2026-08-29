@@ -4,27 +4,69 @@ import { StayType } from "@/types";
 
 // Sign In page content
 export const SIGNIN_CONTENT = {
-  STATS: [
-    { value: '2.4M', accent: '+', label: 'Active learners' },
-    { value: '98', accent: '%', label: 'Completion rate' },
-    { value: '500', accent: '+', label: 'Enterprise clients' },
+  BADGES: [
+    { icon: 'shield', label: 'Secure' },
+    { icon: 'shield', label: 'Compliant' },
+    { icon: 'star', label: 'Reliable' },
   ] as const,
-  LEFT_PANEL: {
-    HEADLINE: 'One platform.\nThree workspaces.',
-    DESCRIPTION:
-      'Training Admins, Corporate Employees, and Reporting Managers — each with a purpose-built dashboard, accessed through one unified login.',
+  HEADLINE: {
+    LINE_1: 'THE COMPLETE PLATFORM',
+    LINE_2_PLAIN: 'FOR ',
+    LINE_2_ACCENT: 'CORPORATE TRAINING.',
+  },
+  DESCRIPTION:
+    'Unify discovery, approvals, attendance, and payments in a single, secure workflow platform built for enterprises.',
+  FEATURES: [
+    {
+      icon: 'book-open',
+      title: 'DISCOVER',
+      description: 'Access programs from trusted training providers.',
+    },
+    {
+      icon: 'shield-check',
+      title: 'APPROVE',
+      description: 'Automate multi-level approvals with full transparency.',
+    },
+    {
+      icon: 'bar-chart',
+      title: 'MANAGE',
+      description: 'Track attendance, certificates and seat reservations.',
+    },
+    {
+      icon: 'wallet',
+      title: 'PAY & CLOSE',
+      description: 'Invoices, payments and ERP integration in one seamless flow.',
+    },
+  ] as const,
+  TRUST_ITEMS: [
+    { icon: 'lock', label: 'Role-based access' },
+    { icon: 'shield', label: 'Enterprise grade security' },
+    { icon: 'file-check', label: 'Audit ready' },
+    { icon: 'cloud', label: 'Scalable & reliable' },
+  ] as const,
+  TRUSTED_BY: {
+    EYEBROW: 'TRUSTED BY LEADING ENTERPRISES',
+    // Placeholder wordmarks — swap for real logo assets once actual
+    // enterprise customers/partners are confirmed (see chat: don't imply
+    // endorsement by named companies without a real relationship).
+    LOGOS: ['Northbridge', 'Meridian', 'Vertex Industries', 'Solstice', 'Atlas Group', 'Primeworks'] as const,
   },
   FORM: {
-    TITLE: 'Sign In',
+    TITLE: 'Welcome Back',
+    SUBTITLE: 'Sign in to continue to your workspace',
     EMAIL_LABEL: 'Email',
     EMAIL_PLACEHOLDER: 'you@company.com',
     PASSWORD_LABEL: 'Password',
-    PASSWORD_PLACEHOLDER: '••••••••',
+    PASSWORD_PLACEHOLDER: 'Enter your password',
     FORGOT_PASSWORD: 'Forgot password?',
     SUBMIT_BUTTON: 'Sign In →',
     OR_DIVIDER: 'OR',
     NO_ACCOUNT: "Don't have an account?",
     CREATE_ACCOUNT: 'Create account →',
+  },
+  FOOTER: {
+    COPYRIGHT: `© ${new Date().getFullYear()} Helixon Technologies Pvt. Ltd. All rights reserved.`,
+    LINKS: ['Privacy Policy', 'Terms of Service', 'Support'] as const,
   },
 } as const;
 
@@ -38,10 +80,11 @@ export const SIGNUP_CONTENT = {
   ] as const,
   LEFT_PANEL: {
     HEADLINE: 'Your workspace, ready in seconds.',
-      
+
   },
   FORM: {
     TITLE: 'Create your account',
+    SUBTITLE: 'Set up your workspace to get started',
     USERNAME_LABEL: 'Username',
     USERNAME_PLACEHOLDER: 'johndoe',
     EMAIL_LABEL: 'Work Email',
@@ -61,7 +104,7 @@ export const BRAND = {
   NAME: 'Helixon',
   LOGO_TEXT: 'He',
   LOGO_SHORT: 'Hx',
-  TAGLINE: 'Enterprise Multi-Role Platform',
+  TAGLINE: 'Enterprise Learning Platform',
 } as const;
 
 // Admin dashboard content
