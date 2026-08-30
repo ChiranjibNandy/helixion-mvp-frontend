@@ -1,9 +1,9 @@
 'use client';
 
-import { CheckCircle2, KeyRound, Mail, User, Star } from 'lucide-react';
+import { CheckCircle2, KeyRound, Mail, User } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import AuthLayout from '../../components/AuthLayout';
+import AuthScene from '@/components/auth/AuthScene';
 import { SIGNUP_CONTENT } from '@/constants/content';
 import { ROUTES } from '@/constants/navigation';
 import { registerAPI } from '@/services/authService';
@@ -12,44 +12,24 @@ import InputField from '@/components/ui/input';
 import { useState } from 'react';
 import { parseApiError } from '@/utils/parseError';
 
-function LeftPanel() {
+function MarketingPanel() {
   const { FEATURES, LEFT_PANEL } = SIGNUP_CONTENT;
 
   return (
-    <div className="flex flex-col gap-7">
-      {/* 
-       TAG: 'JOIN HELIXON · GET STARTED FREE', 
-       */}
-
-      {/* <div className="flex items-center gap-2">
-        <div className="h-px w-6 bg-primaryDark" />
-        <div className="text-xs tracking-widest font-medium text-textMuted flex items-center gap-1">
-          <span>{LEFT_PANEL.TAG}</span>
-          <Star size={12} className="text-accentYellow fill-accentYellow" />
-        </div>
-      </div> */}
-
-      <div>
-        <h1 className="text-5xl font-extrabold leading-tight text-white">
-          {LEFT_PANEL.HEADLINE}
-        </h1>
-      </div>
-
-      {/* Sign up once and get immediate access to the dashboard built for your role — no setup required. */}
-
-      {/* <p className="text-sm leading-relaxed text-textMuted">
-        {LEFT_PANEL.DESCRIPTION}
-      </p> */}
+    <div className="flex flex-col gap-7 max-w-lg">
+      <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight text-white">
+        {LEFT_PANEL.HEADLINE}
+      </h1>
 
       <div className="h-px w-full bg-borderDark" />
 
       <ul className="flex flex-col gap-4">
         {FEATURES.map((f) => (
           <li key={f} className="flex items-start gap-3">
-            <span className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 icon-bg">
+            <span className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 bg-primary/15">
               <CheckCircle2 size={13} className="text-primary" />
             </span>
-            <span className="text-sm text-textSecondary">{f}</span>
+            <span className="text-sm text-textMuted">{f}</span>
           </li>
         ))}
       </ul>
@@ -57,7 +37,7 @@ function LeftPanel() {
   );
 }
 
-function RightPanel() {
+function SignUpCard() {
   const router = useRouter();
   const { FORM } = SIGNUP_CONTENT;
 
@@ -74,11 +54,7 @@ function RightPanel() {
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-
-    setErrors((prev) => ({
-      ...prev,
-      [field]: "",
-    }));
+    setErrors((prev) => ({ ...prev, [field]: '' }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -92,11 +68,7 @@ function RightPanel() {
         router.push(ROUTES.AUTH.SIGNIN);
       }
     } catch (err: any) {
-      if (
-        err &&
-        typeof err === "object" &&
-        !err.response
-      ) {
+      if (err && typeof err === 'object' && !err.response) {
         setErrors(err);
         return;
       }
@@ -108,14 +80,11 @@ function RightPanel() {
   };
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold text-white mb-8">
-        {FORM.TITLE}
-      </h2>
+    <div className="w-full max-w-lg rounded-2xl border border-borderDark bg-bgCard/90 backdrop-blur-xl p-9 shadow-2xl">
+      <h2 className="text-2xl font-bold text-white">{FORM.TITLE}</h2>
+      <p className="text-sm text-textMuted mt-1.5 mb-7">{FORM.SUBTITLE}</p>
 
-      {formError && (
-        <div className="text-red-500 text-sm mb-4">{formError}</div>
-      )}
+      {formError && <div className="text-red-500 text-sm mb-4">{formError}</div>}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5" autoComplete="off">
         <InputField
@@ -174,10 +143,7 @@ function RightPanel() {
 
         <p className="text-center text-sm text-textMuted">
           {FORM.HAS_ACCOUNT}{' '}
-          <Link
-            href={ROUTES.AUTH.SIGNIN}
-            className="font-semibold hover:underline text-primary"
-          >
+          <Link href={ROUTES.AUTH.SIGNIN} className="font-semibold hover:underline text-primary">
             {FORM.SIGN_IN}
           </Link>
         </p>
@@ -186,8 +152,6 @@ function RightPanel() {
   );
 }
 
-
-
 export default function SignUpPage() {
-  return <AuthLayout leftPanel={<LeftPanel />} rightPanel={<RightPanel />} />;
+  return <AuthScene marketing={<MarketingPanel />} card={<SignUpCard />} />;
 }
