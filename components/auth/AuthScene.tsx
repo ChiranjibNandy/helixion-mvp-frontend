@@ -60,12 +60,6 @@ type AuthSceneProps = {
   card: React.ReactNode;
 };
 
-/**
- * Shared full-bleed backdrop for the sign-in / sign-up pages: real skyline
- * photo + dark scrim (so copy on the left stays legible regardless of what's
- * behind it) + top bar + footer, with a two-column slot for page-specific
- * marketing copy and the auth form card.
- */
 export default function AuthScene({ marketing, card }: AuthSceneProps) {
   return (
     <div className="relative min-h-screen flex flex-col font-sans overflow-hidden bg-bgMain">

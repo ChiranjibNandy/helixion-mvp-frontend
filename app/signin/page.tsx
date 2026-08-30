@@ -171,6 +171,13 @@ function SignInCard() {
             FORM.SUBMIT_BUTTON
           )}
         </Button>
+
+        <p className="text-center text-sm text-textMuted">
+          {FORM.NO_ACCOUNT}{' '}
+          <Link href={ROUTES.AUTH.SIGNUP} className="font-semibold hover:underline text-primary">
+            {FORM.CREATE_ACCOUNT}
+          </Link>
+        </p>
       </form>
     </div>
   );
