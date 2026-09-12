@@ -41,7 +41,9 @@
          "enrolledLabel": "Enrolled",
          "enrollButton": "Enrol in Program",
          "enrollingButton": "Enrolling...",
-         "enrollError": "Enrollment failed. Please try again."
+         "enrollError": "Enrollment failed. Please try again.",
+         "confirmedLabel": "Confirmed",
+         "duplicateButton": "Duplicate"
       },
       "fields": {
          "start": "Starts",

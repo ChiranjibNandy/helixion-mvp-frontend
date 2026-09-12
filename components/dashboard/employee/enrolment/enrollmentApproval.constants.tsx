@@ -34,7 +34,9 @@ export const getStatusMessage = (enrollment: any, t: (key: string) => string) =>
         return t("approvalProgress.statusMessages.credited");
     }
     if (stage === ENROLLMENT_STAGE.REJECTED) {
-        return t("approvalProgress.statusMessages.rejected");
+        return enrollment.rejectionReason === "quota_full"
+            ? "This program reached its maximum attendance capacity before your enrollment could be approved. Please contact the Training Provider."
+            : t("approvalProgress.statusMessages.rejected");
     }
     return t("approvalProgress.statusMessages.default");
 };
@@ -52,8 +54,14 @@ const getBadgeStatus = (stage: string) => {
     return "in_progress";
 };
 
-const getBadgeLabel = (stage: string) => {
-    if (stage === ENROLLMENT_STAGE.REJECTED) return "Rejected";
+// rejectionReason is optional and only ever set when currentStage is
+// REJECTED — mirrors the backend's ENROLLMENT_REJECTION_REASON enum
+// (helixion-mvp-backend/src/constants/enum.ts), same manual-sync caveat as
+// ENROLLMENT_STAGE above.
+const getBadgeLabel = (stage: string, rejectionReason?: string) => {
+    if (stage === ENROLLMENT_STAGE.REJECTED) {
+        return rejectionReason === "quota_full" ? "Rejected - Program Full" : "Rejected";
+    }
     if (stage === ENROLLMENT_STAGE.COMPLETED) return "Completed";
     if (stage === ENROLLMENT_STAGE.APPROVED) return "Approved";
     if (stage === ENROLLMENT_STAGE.SUBMITTED) return "Pending";
@@ -131,7 +139,7 @@ export const createEnrollmentColumns = (
                         status={isRejected ? undefined : (getBadgeStatus(enrollment.currentStage) as any)}
                         className="capitalize px-3 py-1"
                     >
-                        {getBadgeLabel(enrollment.currentStage)}
+                        {getBadgeLabel(enrollment.currentStage, enrollment.rejectionReason)}
                     </Badge>
                 );
             },
