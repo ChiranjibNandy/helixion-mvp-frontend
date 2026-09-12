@@ -12,6 +12,8 @@ export const API = {
       USERS_SEARCH: '/admin/users/search',
       DASHBOARD_STATS: '/admin/dashboard/stats',
       BATCH_CREATE: '/admin/users/batch',
+      BATCH_CREATE_ASYNC: '/admin/users/batch-async',
+      BATCH_CREATE_STATUS: (jobId: string) => `/admin/users/batch/${jobId}`,
       DEACTIVATE_USER: (id: string) => `/admin/users/${id}/deactivate`,
       ACTIVATE_USER: (id: string) => `/admin/users/${id}/activate`,
       GET_EMPLOYEE: (id: string) => `/admin/users/${id}`,

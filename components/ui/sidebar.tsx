@@ -185,7 +185,7 @@ function SidebarFooter({ onSignOut }: SidebarFooterProps) {
 // ─── Component ────────────────────────────────────────────────────────────────
 export function Sidebar({ user, navSections, activeKey, onNavChange, onSignOut }: SidebarProps) {
   return (
-    <aside className="flex flex-col h-full bg-[#080e1a] border-r border-white/[0.06]">
+    <aside className="flex flex-col h-full min-h-0 overflow-hidden bg-[#080e1a] border-r border-white/[0.06]">
       <SidebarLogo />
       <SidebarProfile user={user} />
       <SidebarMenu

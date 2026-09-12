@@ -4,11 +4,13 @@ import { useRef, useState, useCallback, useEffect } from 'react';
 import { FileText, X, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { userService, BatchCreateResponse } from '@/services/userService';
+import { useBulkUploadJobPolling, isTerminal } from '@/hooks/useBulkUploadJobPolling';
 import { formatFileSize } from '@/utils/csv-parser';
 import { parseBulkUploadFile, validateBulkEmployeeRows, rowsToCsvFile, ValidatedBulkEmployeeRow } from '@/utils/parseBulkUploadFile';
 import { t } from '@/lib/i18n';
 import FileDropzone from '@/components/shared/FileDropzone';
 import PageHeader from '@/components/ui/pageHeader';
+import { Progress } from '@/components/ui/progress';
 import BulkUploadPreview from './BulkUploadPreview';
 
 // "success" from the request's point of view (the HTTP call itself didn't
@@ -101,6 +103,9 @@ E1002,Sara Iyer,sara@corp.in,9876543211,Delhi,Senior Analyst,Finance,Yes,No,No,m
 // "alice@x.com" reference to it).
 const EMAIL_FIELDS = new Set(['email', 'reportingManagerEmail', 'skipLevel1ManagerEmail', 'skipLevel2ManagerEmail']);
 
+
+const ACTIVE_JOB_STORAGE_KEY = 'bulkImport.activeJobId';
+
 export default function BulkImportWizard() {
   const [file, setFile] = useState<File | null>(null);
   const [isParsing, setIsParsing] = useState(false);
@@ -109,7 +114,30 @@ export default function BulkImportWizard() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isCommitting, setIsCommitting] = useState(false);
   const [commitResult, setCommitResult] = useState<CommitResult | null>(null);
+  const [activeJobId, setActiveJobId] = useState<string | null>(null);
+  const { job: uploadJob } = useBulkUploadJobPolling(activeJobId);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isInitialMountRef = useRef(true);
+  const isResumedJob = !!activeJobId && !file;
+
+  useEffect(() => {
+    if (isInitialMountRef.current) {
+      isInitialMountRef.current = false;
+      try {
+        const stored = sessionStorage.getItem(ACTIVE_JOB_STORAGE_KEY);
+        if (stored && stored !== activeJobId) {
+          setActiveJobId(stored);
+          return;
+        }
+      } catch {
+      }
+    }
+    try {
+      if (activeJobId) sessionStorage.setItem(ACTIVE_JOB_STORAGE_KEY, activeJobId);
+      else sessionStorage.removeItem(ACTIVE_JOB_STORAGE_KEY);
+    } catch {
+    }
+  }, [activeJobId]);
 
   // Server-reported errors from a previous "Fix skipped rows" cycle, keyed
   // by row id. A ref (not state) because it's an overlay applied on top of
@@ -217,28 +245,50 @@ export default function BulkImportWizard() {
       // Upload what's actually in the (possibly hand-edited) preview table,
       // not the original file — previewRows may no longer match it.
       const csvFile = rowsToCsvFile(previewRows, file.name);
-      const data = await userService.batchCreateUsers(csvFile);
-      const succeededCount = data.createdCount + data.updatedCount;
-
-      const outcome: CommitOutcome =
-        data.skippedCount === 0 ? 'full' : succeededCount > 0 ? 'partial' : 'allSkipped';
-
-      const result: CommitResult = { outcome, data };
-      setCommitResult(result);
-
-      const { description, severity } = getOutcomeMessage(result);
-      if (severity === 'green') toast.success(description);
-      else if (severity === 'orange') toast.warning(description);
-      else toast.error(description);
+      const { jobId } = await userService.batchCreateUsersAsync(csvFile);
+      if (!jobId) throw new Error('Upload started but no job id was returned.');
+      setActiveJobId(jobId);
     } catch (err: any) {
-      const errorMessage = err?.response?.data?.message || t('bulkImport.results.failureDescription');
+      const errorMessage = err?.response?.data?.message || err?.message || t('bulkImport.results.failureDescription');
+      console.error('Failed to start bulk upload', err);
       setCommitResult({ outcome: 'requestFailed', errorMessage });
       toast.error(errorMessage);
-    } finally {
       setShowSuccessModal(true);
       setIsCommitting(false);
     }
   }, [file, previewRows]);
+
+  useEffect(() => {
+    if (!uploadJob || !isTerminal(uploadJob.status)) return;
+    try {
+      if (uploadJob.status === 'failed') {
+        const errorMessage = uploadJob.error || t('bulkImport.results.failureDescription');
+        setCommitResult({ outcome: 'requestFailed', errorMessage });
+        toast.error(errorMessage);
+      } else {
+        const data: BatchCreateResponse = {
+          createdCount: uploadJob.createdCount,
+          updatedCount: uploadJob.updatedCount,
+          skippedCount: uploadJob.skippedCount,
+          skippedEmails: uploadJob.skippedEmails,
+          skipped: uploadJob.skipped,
+        };
+        const succeededCount = data.createdCount + data.updatedCount;
+        const outcome: CommitOutcome = data.skippedCount === 0 ? 'full' : succeededCount > 0 ? 'partial' : 'allSkipped';
+        const result: CommitResult = { outcome, data };
+        setCommitResult(result);
+
+        const { description, severity } = getOutcomeMessage(result);
+        if (severity === 'green') toast.success(description);
+        else if (severity === 'orange') toast.warning(description);
+        else toast.error(description);
+      }
+    } finally {
+      setShowSuccessModal(true);
+      setIsCommitting(false);
+      setActiveJobId(null);
+    }
+  }, [uploadJob]);
 
   const handleDone = useCallback(() => {
     setShowSuccessModal(false);
@@ -301,6 +351,19 @@ export default function BulkImportWizard() {
         title={t('bulkImport.header.title')}
         description={t('bulkImport.header.description')}
       />
+      {isResumedJob && (
+        <div className="p-4 rounded-xl bg-bgStatCard border border-borderCard">
+          <div className="flex items-center justify-between text-xs text-textSidebarMuted mb-2">
+            <span>
+              {uploadJob
+                ? `Resuming a previously started upload… ${uploadJob.processedRows}/${uploadJob.totalRows} rows`
+                : 'Checking on a previously started upload…'}
+            </span>
+            {uploadJob && <span>{uploadJob.progress}%</span>}
+          </div>
+          <Progress value={uploadJob?.progress ?? 0} className="h-2" />
+        </div>
+      )}
 
       {/* Step 1 — Download template */}
       <div>
@@ -391,6 +454,19 @@ export default function BulkImportWizard() {
       {/* Step 3 — Review every parsed row before it's actually uploaded */}
       {previewRows && file && (
         <div className="rounded-xl bg-bgStatCard border border-borderCard overflow-hidden">
+          {isCommitting && (
+            <div className="px-6 pt-5 pb-1">
+              <div className="flex items-center justify-between text-xs text-textSidebarMuted mb-2">
+                <span>
+                  {uploadJob
+                    ? `Uploading… ${uploadJob.processedRows}/${uploadJob.totalRows} rows`
+                    : 'Starting upload…'}
+                </span>
+                {uploadJob && <span>{uploadJob.progress}%</span>}
+              </div>
+              <Progress value={uploadJob?.progress ?? 0} className="h-2" />
+            </div>
+          )}
           <BulkUploadPreview
             rows={previewRows}
             fileName={file.name}

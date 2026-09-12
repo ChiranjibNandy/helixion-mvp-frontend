@@ -49,7 +49,7 @@ const ROLE_BADGE_COLORS: Record<string, string> = {
 };
 
 export default function DeactivateUserPage() {
-  const { users, loading, error, page, totalPages, searchUsers, goToPage, deactivateUser, activateUser } = useUsersSearch();
+  const { users, loading, error, page, totalPages, searchUsers, goToPage, refresh, deactivateUser, activateUser } = useUsersSearch();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
@@ -78,8 +78,7 @@ export default function DeactivateUserPage() {
       toast.success(t(isActive ? 'admin.deactivate.toastDeactivated' : 'admin.deactivate.toastActivated', { name }));
       setSelectedUser(null);
       setIsConfirming(false);
-      // Refresh the list
-      searchUsers(searchQuery);
+      refresh();
     } else {
       toast.error(t(isActive ? 'admin.deactivate.toastDeactivateError' : 'admin.deactivate.toastActivateError', { name }));
     }
@@ -100,7 +99,12 @@ export default function DeactivateUserPage() {
     );
 
   return (
-    <div className={`h-full flex flex-col ${COLOR_CLASSES.BG_MAIN}`}>
+    // Not h-full/flex-col — this page's parent (<main>) already scrolls its
+    // own overflow, so forcing this container to the full viewport height
+    // just meant a short results list (few rows + a compact pagination bar)
+    // left a large empty stretch of background below it. Sizing to content
+    // instead means the page is only as tall as it needs to be.
+    <div className={COLOR_CLASSES.BG_MAIN}>
       <div className="w-full px-8 pt-8 pb-4">
         {/* Header */}
         <div className="mb-6">
@@ -310,7 +314,7 @@ export default function DeactivateUserPage() {
           onClose={() => setEditingUserId(null)}
           onSaved={() => {
             setEditingUserId(null);
-            searchUsers(searchQuery);
+            refresh();
           }}
         />
       )}
