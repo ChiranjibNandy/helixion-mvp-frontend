@@ -126,22 +126,27 @@ interface Props {
 }
 
 const SIBLING_COUNT = 1;
+const BUFFER_SLOTS = 2; // space for the first and last page numbers
+const ELLIPSIS_SLOTS = 2; // "..." on each side when truncated
+const CURRENT_PAGE_SLOT = 1; // the active page itself
 
 type PageEntry = number | 'ellipsis-start' | 'ellipsis-end';
 
 function getPageEntries(page: number, totalPages: number): PageEntry[] {
-  const totalNumberSlots = SIBLING_COUNT * 2 + 5; 
+  const FIRST_PAGE = 1;
+  const LAST_PAGE = totalPages;
+  const totalNumberSlots = SIBLING_COUNT * 2 + BUFFER_SLOTS + ELLIPSIS_SLOTS + CURRENT_PAGE_SLOT;
   if (totalPages <= totalNumberSlots) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
 
-  const leftSibling = Math.max(page - SIBLING_COUNT, 1);
-  const rightSibling = Math.min(page + SIBLING_COUNT, totalPages);
+  const leftSibling = Math.max(page - SIBLING_COUNT, FIRST_PAGE);
+  const rightSibling = Math.min(page + SIBLING_COUNT, LAST_PAGE);
 
   const showLeftEllipsis = leftSibling > 2;
   const showRightEllipsis = rightSibling < totalPages - 1;
 
-  const entries: PageEntry[] = [1];
+  const entries: PageEntry[] = [FIRST_PAGE];
 
   if (showLeftEllipsis) {
     entries.push('ellipsis-start');
@@ -159,9 +164,13 @@ function getPageEntries(page: number, totalPages: number): PageEntry[] {
     entries.push(totalPages - 1);
   }
 
-  entries.push(totalPages);
+  entries.push(LAST_PAGE);
 
   return entries.filter((entry, i) => entries[i - 1] !== entry);
+}
+
+function usePagination(page: number, totalPages: number): PageEntry[] {
+  return React.useMemo(() => getPageEntries(page, totalPages), [page, totalPages]);
 }
 
 export default function PaginationController({
@@ -182,7 +191,7 @@ export default function PaginationController({
         </PaginationItem>
 
         {/* Pages */}
-        {getPageEntries(page, totalPages).map((entry, i) =>
+        {usePagination(page, totalPages).map((entry, i) =>
           typeof entry === 'number' ? (
             <PaginationItem key={entry}>
               <PaginationLink

@@ -246,11 +246,11 @@ export default function BulkImportWizard() {
       // not the original file — previewRows may no longer match it.
       const csvFile = rowsToCsvFile(previewRows, file.name);
       const { jobId } = await userService.batchCreateUsersAsync(csvFile);
-      if (!jobId) throw new Error('Upload started but no job id was returned.');
+      if (!jobId) throw new Error(t('bulkImport.results.noJobIdReturned'));
       setActiveJobId(jobId);
     } catch (err: any) {
       const errorMessage = err?.response?.data?.message || err?.message || t('bulkImport.results.failureDescription');
-      console.error('Failed to start bulk upload', err);
+      console.error(t('bulkImport.results.startFailedLog'), err);
       setCommitResult({ outcome: 'requestFailed', errorMessage });
       toast.error(errorMessage);
       setShowSuccessModal(true);
