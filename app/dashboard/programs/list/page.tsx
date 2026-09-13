@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { usePrograms } from "@/hooks/UseProgramReturn";
 import DataTable from "@/components/shared/data-table";
 import PaginationController from "@/components/ui/pagination";
+import ProgramActions from "@/components/dashboard/provider/ProgramActions";
 import { Program } from "@/types/program";
 import { ROUTES } from "@/constants/navigation";
 import { t } from "@/lib/i18n";
@@ -76,6 +77,28 @@ export default function ProgramsPage() {
                   />
                </div>
             </div>
+         ),
+      },
+
+      {
+         key: "confirmedEnrollmentCount",
+         header: t("programme.list.confirmedLabel"),
+         render: (program: Program) => (
+            <span className="text-sm font-medium">
+               {program.confirmedEnrollmentCount ?? 0} / {program.maxParticipants}
+            </span>
+         ),
+      },
+
+      {
+         key: "actions",
+         header: "",
+         render: (program: Program) => (
+            <ProgramActions
+               onDuplicate={() =>
+                  router.push(`${ ROUTES.PROVIDER.PROGRAMS.CREATE }?duplicateFrom=${ program._id }`)
+               }
+            />
          ),
       },
    ];
