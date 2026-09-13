@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Upload } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import InputField, { Label } from "../../ui/input";
 import { t } from "@/lib/i18n";
@@ -96,6 +97,7 @@ export default function CreateTrainingProgram() {
         });
       } catch (err) {
         console.error("Failed to load source program for duplication:", err);
+        toast.error(t("programme.duplicateLoadError"));
       }
     })();
   }, [duplicateFromId]);
