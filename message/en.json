@@ -367,7 +367,9 @@
          "roleUpdated": "{count} role updated",
          "skipped": "{count} skipped",
          "doneButton": "Done",
-         "noValidUsers": "No valid users to process"
+         "noValidUsers": "No valid users to process",
+         "noJobIdReturned": "Upload started but no job id was returned.",
+         "startFailedLog": "Failed to start bulk upload"
       },
       "rolePanel": {
          "managerLabel": "Manager"

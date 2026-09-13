@@ -132,7 +132,7 @@ export function DashboardShell({
   }
 
   return (
-    <div className="grid grid-cols-[180px_1fr] h-screen overflow-hidden bg-[#0b1120] font-sans">
+    <div className="fixed inset-0 grid grid-cols-[180px_1fr] overflow-hidden bg-[#0b1120] font-sans">
       <Sidebar
         user={user}
         navSections={navSections}
@@ -141,10 +141,10 @@ export function DashboardShell({
         onSignOut={handleSignOut}
       />
 
-      <div className="flex flex-col overflow-hidden">
+      <div className="flex flex-col overflow-hidden min-h-0">
         <DashboardHeader user={user} />
 
-        <main className="flex-1 overflow-y-auto px-5 py-4">
+        <main className="flex-1 min-h-0 overflow-y-auto px-5 py-4">
           {errorStatus === 403 ? (
             <div className="flex flex-col items-center justify-center min-h-[70vh] text-center">
               <div className="relative overflow-hidden bg-[#0d1527]/40 border border-white/[0.06] backdrop-blur-lg rounded-2xl p-8 max-w-lg w-full shadow-lg flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-300">

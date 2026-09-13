@@ -125,21 +125,59 @@ interface Props {
   onPageChange: (page: number) => void;
 }
 
+const SIBLING_COUNT = 1;
+const BUFFER_SLOTS = 2; // space for the first and last page numbers
+const ELLIPSIS_SLOTS = 2; // "..." on each side when truncated
+const CURRENT_PAGE_SLOT = 1; // the active page itself
+
+type PageEntry = number | 'ellipsis-start' | 'ellipsis-end';
+
+function getPageEntries(page: number, totalPages: number): PageEntry[] {
+  const FIRST_PAGE = 1;
+  const LAST_PAGE = totalPages;
+  const totalNumberSlots = SIBLING_COUNT * 2 + BUFFER_SLOTS + ELLIPSIS_SLOTS + CURRENT_PAGE_SLOT;
+  if (totalPages <= totalNumberSlots) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  const leftSibling = Math.max(page - SIBLING_COUNT, FIRST_PAGE);
+  const rightSibling = Math.min(page + SIBLING_COUNT, LAST_PAGE);
+
+  const showLeftEllipsis = leftSibling > 2;
+  const showRightEllipsis = rightSibling < totalPages - 1;
+
+  const entries: PageEntry[] = [FIRST_PAGE];
+
+  if (showLeftEllipsis) {
+    entries.push('ellipsis-start');
+  } else if (leftSibling > 1) {
+    entries.push(2);
+  }
+
+  for (let p = leftSibling === 1 ? 2 : leftSibling; p <= (rightSibling === totalPages ? totalPages - 1 : rightSibling); p++) {
+    if (p > 1 && p < totalPages) entries.push(p);
+  }
+
+  if (showRightEllipsis) {
+    entries.push('ellipsis-end');
+  } else if (rightSibling < totalPages) {
+    entries.push(totalPages - 1);
+  }
+
+  entries.push(LAST_PAGE);
+
+  return entries.filter((entry, i) => entries[i - 1] !== entry);
+}
+
+function usePagination(page: number, totalPages: number): PageEntry[] {
+  return React.useMemo(() => getPageEntries(page, totalPages), [page, totalPages]);
+}
+
 export default function PaginationController({
   page,
   totalPages,
   onPageChange,
 }: Props) {
-  const getPages = () => {
-    const pages = [];
-
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(i);
-    }
-
-    return pages;
-  };
-
   return (
     <Pagination className="mt-4">
       <PaginationContent>
@@ -153,16 +191,22 @@ export default function PaginationController({
         </PaginationItem>
 
         {/* Pages */}
-        {getPages().map((p) => (
-          <PaginationItem key={p}>
-            <PaginationLink
-              isActive={p === page}
-              onClick={() => onPageChange(p)}
-            >
-              {p}
-            </PaginationLink>
-          </PaginationItem>
-        ))}
+        {usePagination(page, totalPages).map((entry, i) =>
+          typeof entry === 'number' ? (
+            <PaginationItem key={entry}>
+              <PaginationLink
+                isActive={entry === page}
+                onClick={() => onPageChange(entry)}
+              >
+                {entry}
+              </PaginationLink>
+            </PaginationItem>
+          ) : (
+            <PaginationItem key={`${entry}-${i}`}>
+              <PaginationEllipsis />
+            </PaginationItem>
+          )
+        )}
 
         {/* Next */}
         <PaginationItem>

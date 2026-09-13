@@ -1,10 +1,13 @@
 'use client';
 
-import { Fragment, useState } from 'react';
+import { Fragment, memo, useMemo, useState } from 'react';
 import { ArrowLeft, FileSpreadsheet, AlertTriangle, AlertCircle, CheckCircle2, ChevronDown, ChevronRight } from 'lucide-react';
 import { ValidatedBulkEmployeeRow } from '@/utils/parseBulkUploadFile';
 import { TextField, Checkbox } from '@/components/shared/FormFields';
 import { t } from '@/lib/i18n';
+import PaginationController from '@/components/ui/pagination';
+
+const PREVIEW_PAGE_SIZE = 25;
 
 type EditableField =
   | 'employeeCode'
@@ -37,19 +40,22 @@ function RoleTogglePill({
   label,
   active,
   onClick,
+  disabled,
 }: {
   label: string;
   active: boolean;
   onClick: () => void;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
+      disabled={disabled}
       onClick={(e) => {
         e.stopPropagation(); // don't also trigger the row's expand/collapse
         onClick();
       }}
-      className={`text-[10px] font-medium px-2 py-0.5 rounded whitespace-nowrap border transition-colors ${
+      className={`text-[10px] font-medium px-2 py-0.5 rounded whitespace-nowrap border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
         active
           ? 'text-primary bg-primary/10 border-primary/30'
           : 'text-white/30 bg-transparent border-white/10 hover:border-white/25 hover:text-white/50'
@@ -80,10 +86,12 @@ function RowEditPanel({
   row,
   onRowEdit,
   onToggleOfficeRole,
+  disabled,
 }: {
   row: ValidatedBulkEmployeeRow;
   onRowEdit: (field: EditableField, value: string) => void;
   onToggleOfficeRole: (field: OfficeRoleField) => void;
+  disabled?: boolean;
 }) {
   return (
     <div className="p-5 bg-black/20 border-t border-white/5 space-y-4">
@@ -108,15 +116,15 @@ function RowEditPanel({
         <div>
           <h4 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-3">Basic details</h4>
           <div className="grid grid-cols-2 gap-3">
-            <TextField label="Employee Roll No." required value={row.employeeCode} onChange={(v) => onRowEdit('employeeCode', v)} placeholder="e.g. E1001" />
-            <TextField label="Name" required value={row.name} onChange={(v) => onRowEdit('name', v)} placeholder="Jane Doe" />
-            <TextField label="Email" required value={row.email} onChange={(v) => onRowEdit('email', v)} placeholder="jane@corp.in" />
-            <TextField label="Mobile" value={row.mobile} onChange={(v) => onRowEdit('mobile', v)} />
-            <TextField label="Place of Posting" value={row.placeOfPosting} onChange={(v) => onRowEdit('placeOfPosting', v)} />
-            <TextField label="Designation" value={row.designation} onChange={(v) => onRowEdit('designation', v)} />
+            <TextField label="Employee Roll No." required value={row.employeeCode} onChange={(v) => onRowEdit('employeeCode', v)} placeholder="e.g. E1001" disabled={disabled} />
+            <TextField label="Name" required value={row.name} onChange={(v) => onRowEdit('name', v)} placeholder="Jane Doe" disabled={disabled} />
+            <TextField label="Email" required value={row.email} onChange={(v) => onRowEdit('email', v)} placeholder="jane@corp.in" disabled={disabled} />
+            <TextField label="Mobile" value={row.mobile} onChange={(v) => onRowEdit('mobile', v)} disabled={disabled} />
+            <TextField label="Place of Posting" value={row.placeOfPosting} onChange={(v) => onRowEdit('placeOfPosting', v)} disabled={disabled} />
+            <TextField label="Designation" value={row.designation} onChange={(v) => onRowEdit('designation', v)} disabled={disabled} />
           </div>
           <div className="mt-3">
-            <TextField label="Department" value={row.department} onChange={(v) => onRowEdit('department', v)} />
+            <TextField label="Department" value={row.department} onChange={(v) => onRowEdit('department', v)} disabled={disabled} />
           </div>
         </div>
 
@@ -124,18 +132,18 @@ function RowEditPanel({
           <div>
             <h4 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-3">Reporting chain</h4>
             <div className="space-y-3">
-              <TextField label="Reporting Manager Email" required value={row.reportingManagerEmail} onChange={(v) => onRowEdit('reportingManagerEmail', v)} placeholder="manager@corp.in" />
-              <TextField label="Skip Level 1 Manager Email" value={row.skipLevel1ManagerEmail} onChange={(v) => onRowEdit('skipLevel1ManagerEmail', v)} />
-              <TextField label="Skip Level 2 Manager Email" value={row.skipLevel2ManagerEmail} onChange={(v) => onRowEdit('skipLevel2ManagerEmail', v)} />
+              <TextField label="Reporting Manager Email" required value={row.reportingManagerEmail} onChange={(v) => onRowEdit('reportingManagerEmail', v)} placeholder="manager@corp.in" disabled={disabled} />
+              <TextField label="Skip Level 1 Manager Email" value={row.skipLevel1ManagerEmail} onChange={(v) => onRowEdit('skipLevel1ManagerEmail', v)} disabled={disabled} />
+              <TextField label="Skip Level 2 Manager Email" value={row.skipLevel2ManagerEmail} onChange={(v) => onRowEdit('skipLevel2ManagerEmail', v)} disabled={disabled} />
             </div>
           </div>
 
           <div>
             <h4 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-3">Office roles</h4>
             <div className="grid grid-cols-3 gap-2">
-              <Checkbox label={t('bulkImport.rolePanel.managerLabel')} checked={row.isManager} onChange={() => onToggleOfficeRole('isManager')} />
-              <Checkbox label="CTD (Training Dept Officer)" checked={row.trainingDeptSenior} onChange={() => onToggleOfficeRole('trainingDeptSenior')} />
-              <Checkbox label="OSD Officer" checked={row.osdSenior} onChange={() => onToggleOfficeRole('osdSenior')} />
+              <Checkbox label={t('bulkImport.rolePanel.managerLabel')} checked={row.isManager} onChange={() => onToggleOfficeRole('isManager')} disabled={disabled} />
+              <Checkbox label="CTD (Training Dept Officer)" checked={row.trainingDeptSenior} onChange={() => onToggleOfficeRole('trainingDeptSenior')} disabled={disabled} />
+              <Checkbox label="OSD Officer" checked={row.osdSenior} onChange={() => onToggleOfficeRole('osdSenior')} disabled={disabled} />
             </div>
           </div>
         </div>
@@ -144,11 +152,23 @@ function RowEditPanel({
   );
 }
 
-export default function BulkUploadPreview({ rows, fileName, isUploading, onConfirm, onBack, onRowEdit, onToggleOfficeRole }: BulkUploadPreviewProps) {
+function BulkUploadPreview({ rows, fileName, isUploading, onConfirm, onBack, onRowEdit, onToggleOfficeRole }: BulkUploadPreviewProps) {
   const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
   const errorCount = rows.filter((r) => r.severity === 'error').length;
   const warningCount = rows.filter((r) => r.severity === 'warning').length;
   const validCount = rows.length - errorCount - warningCount;
+
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(rows.length / PREVIEW_PAGE_SIZE));
+  // Clamped rather than reset via effect — editing a row never changes
+  // rows.length, so there's nothing to react to; this just guards the one
+  // case where it matters (e.g. a future filter/reload shrinking the list
+  // while sitting on a now out-of-range page).
+  const currentPage = Math.min(page, totalPages);
+  const pagedRows = useMemo(
+    () => rows.slice((currentPage - 1) * PREVIEW_PAGE_SIZE, currentPage * PREVIEW_PAGE_SIZE),
+    [rows, currentPage]
+  );
 
   return (
     <div className="flex flex-col">
@@ -211,13 +231,14 @@ export default function BulkUploadPreview({ rows, fileName, isUploading, onConfi
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, idx) => {
+            {pagedRows.map((row, pageIdx) => {
+              const idx = (currentPage - 1) * PREVIEW_PAGE_SIZE + pageIdx;
               const isExpanded = expandedRowId === row._rowId;
               return (
                 <Fragment key={row._rowId}>
                   <tr
-                    onClick={() => setExpandedRowId(isExpanded ? null : row._rowId)}
-                    className={`border-b border-white/[0.03] cursor-pointer transition-colors hover:bg-white/[0.03] ${
+                    onClick={() => !isUploading && setExpandedRowId(isExpanded ? null : row._rowId)}
+                    className={`border-b border-white/[0.03] transition-colors ${isUploading ? 'cursor-not-allowed' : 'cursor-pointer hover:bg-white/[0.03]'} ${
                       isExpanded ? 'bg-white/[0.03]' : row.severity === 'error' ? 'bg-accentRed/[0.03]' : row.severity === 'warning' ? 'bg-accentOrange/[0.03]' : ''
                     }`}
                   >
@@ -254,9 +275,9 @@ export default function BulkUploadPreview({ rows, fileName, isUploading, onConfi
                             Employee
                           </span>
                         )}
-                        <RoleTogglePill label={t('bulkImport.rolePanel.managerLabel')} active={row.isManager} onClick={() => onToggleOfficeRole(row._rowId, 'isManager')} />
-                        <RoleTogglePill label="CTD" active={row.trainingDeptSenior} onClick={() => onToggleOfficeRole(row._rowId, 'trainingDeptSenior')} />
-                        <RoleTogglePill label="OSD" active={row.osdSenior} onClick={() => onToggleOfficeRole(row._rowId, 'osdSenior')} />
+                        <RoleTogglePill label={t('bulkImport.rolePanel.managerLabel')} active={row.isManager} onClick={() => onToggleOfficeRole(row._rowId, 'isManager')} disabled={isUploading} />
+                        <RoleTogglePill label="CTD" active={row.trainingDeptSenior} onClick={() => onToggleOfficeRole(row._rowId, 'trainingDeptSenior')} disabled={isUploading} />
+                        <RoleTogglePill label="OSD" active={row.osdSenior} onClick={() => onToggleOfficeRole(row._rowId, 'osdSenior')} disabled={isUploading} />
                       </div>
                     </td>
                     <td className="px-4 py-3.5 pr-6"><StatusBadge row={row} /></td>
@@ -268,6 +289,7 @@ export default function BulkUploadPreview({ rows, fileName, isUploading, onConfi
                           row={row}
                           onRowEdit={(field, value) => onRowEdit(row._rowId, field, value)}
                           onToggleOfficeRole={(field) => onToggleOfficeRole(row._rowId, field)}
+                          disabled={isUploading}
                         />
                       </td>
                     </tr>
@@ -278,6 +300,15 @@ export default function BulkUploadPreview({ rows, fileName, isUploading, onConfi
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center px-6 pt-4">
+          <span className="text-xs text-white/30">
+            Showing {(currentPage - 1) * PREVIEW_PAGE_SIZE + 1}–{Math.min(currentPage * PREVIEW_PAGE_SIZE, rows.length)} of {rows.length} rows
+          </span>
+          <PaginationController page={currentPage} totalPages={totalPages} onPageChange={setPage} />
+        </div>
+      )}
 
       {/* Warning banner */}
       {(errorCount > 0 || warningCount > 0) && (
@@ -324,3 +355,5 @@ export default function BulkUploadPreview({ rows, fileName, isUploading, onConfi
     </div>
   );
 }
+
+export default memo(BulkUploadPreview);

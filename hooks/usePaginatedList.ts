@@ -44,7 +44,7 @@ export function usePaginatedList<T>(
 
       if (result.success && result.data) {
         setItems(result.data);
-        setTotalPages(result.meta?.totalPages || 1);
+        setTotalPages(result.meta?.totalPages ?? 1);
       } else {
         setItems([]);
         setTotalPages(1);
@@ -74,10 +74,15 @@ export function usePaginatedList<T>(
     fetchItems(query, targetPage);
   }, [fetchItems, query]);
 
+
+  const refresh = useCallback(() => {
+    fetchItems(query, page);
+  }, [fetchItems, query, page]);
+
   useEffect(() => {
     fetchItems('', 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { items, loading, error, page, totalPages, search, goToPage };
+  return { items, loading, error, page, totalPages, search, goToPage, refresh };
 }
