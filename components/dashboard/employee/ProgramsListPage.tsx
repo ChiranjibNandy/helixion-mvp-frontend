@@ -220,7 +220,7 @@ export function ProgramsListPage() {
         )}
       />
 
-      {totalPages > 1 && (
+      {totalPages >= 1 && (
         <PaginationController
           page={page}
           totalPages={totalPages}
