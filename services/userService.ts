@@ -15,6 +15,21 @@ export interface BatchCreateResponse {
   skippedEmails: string[];
   skipped?: SkippedRow[];
 }
+export type BulkUploadJobStatus = 'pending' | 'processing' | 'completed' | 'failed';
+
+export interface BulkUploadJob {
+  jobId: string;
+  status: BulkUploadJobStatus;
+  totalRows: number;
+  processedRows: number;
+  progress: number;
+  createdCount: number;
+  updatedCount: number;
+  skippedCount: number;
+  skippedEmails: string[];
+  skipped?: SkippedRow[];
+  error?: string;
+}
 
 export const userService = {
   searchUsers: async (query: string = '', page: number = 1, limit: number = 10) => {
@@ -34,11 +49,20 @@ export const userService = {
 
   // Sends a real CSV file (built client-side from the preview rows, possibly
   // hand-edited — see BulkImportWizard/rowsToCsvFile) via the same multipart
-  // pattern used for org bulk-upload.
-  batchCreateUsers: async (file: File): Promise<BatchCreateResponse> => {
+
+  batchCreateUsersAsync: async (file: File): Promise<{ jobId: string; statusUrl: string }> => {
     const formData = new FormData();
     formData.append('file', file);
-    const response = await api.post(API.ADMIN.BATCH_CREATE, formData);
+    const response = await api.post(API.ADMIN.BATCH_CREATE_ASYNC, formData);
     return response.data?.data;
+  },
+
+  getBatchUploadJobStatus: async (jobId: string): Promise<BulkUploadJob> => {
+
+    const response = await api.get(API.ADMIN.BATCH_CREATE_STATUS(jobId), { timeout: 10_000 });
+    const data = response.data?.data;
+
+    if (!data) throw new Error('Malformed response from upload status endpoint');
+    return data;
   },
 };

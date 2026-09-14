@@ -30,7 +30,7 @@ export function useUsersSearch() {
     return await userService.searchUsers(query, page, limit);
   }, []);
 
-  const { items: users, loading: listLoading, error, page, totalPages, search: searchUsers, goToPage } =
+  const { items: users, loading: listLoading, error, page, totalPages, search: searchUsers, goToPage, refresh } =
     usePaginatedList<UserSearchResult>(fetchPage, PAGE_SIZE);
 
   // Separate from the list's own loading — deactivate/activate shouldn't
@@ -75,6 +75,7 @@ export function useUsersSearch() {
     totalPages,
     searchUsers,
     goToPage,
+    refresh,
     deactivateUser,
     activateUser,
   };
