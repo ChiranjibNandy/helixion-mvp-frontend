@@ -24,7 +24,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
         )}
       </div>
 
-      {user.role === USER_ROLES.EMPLOYEE && <NotificationBell />}
+      <NotificationBell />
     </header>
   );
 }

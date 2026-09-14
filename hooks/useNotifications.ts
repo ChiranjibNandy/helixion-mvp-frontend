@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { EmployeeNotification, getEmployeeNotifications } from "@/services/notificationService";
+import { EmployeeNotification, getNotifications } from "@/services/notificationService";
 
 export function useNotifications() {
   const [notifications, setNotifications] = useState<EmployeeNotification[]>([]);
@@ -11,7 +11,7 @@ export function useNotifications() {
 
   const fetchNotifications = useCallback(async () => {
     try {
-      const res = await getEmployeeNotifications()
+      const res = await getNotifications()
       
       const list: EmployeeNotification[] = res.notifications || [];
       setNotifications(list);
