@@ -1,7 +1,6 @@
 "use client";
 
 import { Bell } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { NotificationList } from "./NotificationList";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -12,7 +11,7 @@ export function NotificationBell() {
 
   return (
     <Popover onOpenChange={(open) => open && markAllSeen()}>
-      <PopoverTrigger className="relative text-textSecondary hover:text-white p-2 rounded-md transition-colors">
+      <PopoverTrigger  aria-label={t("notifications.ariaLabel")} className="relative text-textSecondary hover:text-white p-2 rounded-md transition-colors">
         <Bell className="w-5 h-5" aria-hidden="true" />
         {unreadCount > 0 && (
           <span
