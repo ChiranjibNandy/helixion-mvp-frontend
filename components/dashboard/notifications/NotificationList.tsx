@@ -1,3 +1,5 @@
+"use client";
+
 import { EmployeeNotification } from "@/services/notificationService";
 import { NotificationItem } from "./NotificationItem";
 import { t } from "@/lib/i18n";
@@ -29,9 +31,8 @@ export function NotificationList({ notifications, lastSeenAt, error }: Notificat
     <div className="max-h-96 overflow-y-auto -mx-1">
       {notifications.map((notification) => (
         <NotificationItem
-          key={notification.id}
           notification={notification}
-          unread={new Date(notification.at).getTime() > lastSeenAt}
+          read={notification.read}
         />
       ))}
     </div>
