@@ -11,6 +11,8 @@ import { AppAlert } from '@/components/shared/app-alert';
 import { ApproveModalContent } from './approve-modal-content';
 
 import { t } from '@/lib/i18n';
+import { useRejectUser } from '@/hooks/useRejectUser';
+import { RejectModalContent } from './reject-modal-content';
 
 interface Props {
   user: Registration;
@@ -30,9 +32,23 @@ export function RegistrationActions({
     setRole,
     openModal,
     closeModal,
-    approveUser,
+    approveUser: handleApproveUser,
     closeSuccess,
   } = useApproveUser({
+    userId: user.id,
+    onSuccess: refetch,
+  });
+
+  const {
+    isOpen: rejectIsOpen,
+    successOpen: rejectSuccessOpen,
+    loading: rejectLoading,
+    error: rejectError,
+    openModal: rejectOpenModal,
+    closeModal: rejectCloseModal,
+    rejectUser: rejectRejectUser,
+    closeSuccess: rejectCloseSuccess,
+  } = useRejectUser({
     userId: user.id,
     onSuccess: refetch,
   });
@@ -46,12 +62,14 @@ export function RegistrationActions({
           onClick={openModal}
         />
 
-        {/* <XCircle
+        <XCircle
           size={18}
           className="text-red-400 cursor-pointer"
-        /> */}
+          onClick={rejectOpenModal}
+        />
       </div>
 
+      {/* Approve Modal */}
       <AppModal
         isOpen={isOpen}
         type="confirm"
@@ -78,7 +96,7 @@ export function RegistrationActions({
         confirmLabel={t('button.confirm')}
         cancelLabel={t('button.cancel')}
         loading={loading}
-        onConfirm={approveUser}
+        onConfirm={handleApproveUser}
         onCancel={closeModal}
       />
 
@@ -101,6 +119,46 @@ export function RegistrationActions({
           },
         ]}
         onDone={closeSuccess}
+      />
+
+      {/* Reject Modal */}
+      <AppModal
+        isOpen={rejectIsOpen}
+        type="confirm"
+        title={t('admin.rejectUser.title')}
+        description={
+          <>
+            <RejectModalContent
+              name={user.name}
+              email={user.email}
+            />
+
+            {rejectError && (
+              <div className="mt-3">
+                <AppAlert
+                  variant="destructive"
+                  description={rejectError}
+                />
+              </div>
+            )}
+          </>
+        }
+        confirmLabel={t('button.reject')}
+        cancelLabel={t('button.cancel')}
+        loading={rejectLoading}
+        onConfirm={rejectRejectUser}
+        onCancel={rejectCloseModal}
+      />
+
+      <AppModal
+        isOpen={rejectSuccessOpen}
+        type="success"
+        title={t('admin.rejectUser.successTitle')}
+        description={t(
+          'admin.rejectUser.successDescription'
+        )}
+        doneLabel={t('button.done')}
+        onDone={rejectCloseSuccess}
       />
     </>
   );
