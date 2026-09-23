@@ -1,9 +1,9 @@
 {
    "programme": {
-      "title":"PROGRAM",
-      "date":"DATE",
-      "currentlyTracking":"Currently Tracking",
-      "unknownProgram":"Unknown Program",
+      "title": "PROGRAM",
+      "date": "DATE",
+      "currentlyTracking": "Currently Tracking",
+      "unknownProgram": "Unknown Program",
       "available": "Available Programmes",
       "empty": "No programmes available right now.",
       "enrol": "Enrol",
@@ -11,8 +11,8 @@
       "howToSee": "How participants will see this program",
       "defaultTitle": "Program title appears here",
       "defaultVenue": "Venue — not set",
-      "noprogramsfoundsearch":"No programs found for your search",
-      "noprogramsAvailable":"No programs available",
+      "noprogramsfoundsearch": "No programs found for your search",
+      "noprogramsAvailable": "No programs available",
       "list": {
          "title": "Listed Training Programs",
          "description": "Select a program to view details and enroll",
@@ -60,9 +60,9 @@
          "attachBrochure": "Attach brochure",
          "minimumParticipants": "Minimum participants",
          "maximumParticipants": "Maximum participants",
-         "brochure":"Brochure",
-         "notes":"Notes",
-         "noNotesAvailable":"No notes available"
+         "brochure": "Brochure",
+         "notes": "Notes",
+         "noNotesAvailable": "No notes available"
       },
       "createpageTitle": "Create new training program",
       "createpageDescription": "Publish a single program to the Helixon marketplace.",
@@ -77,7 +77,7 @@
          "pending": "Not started",
          "active": "In progress",
          "completed": "Completed",
-         "pend":"Pending"
+         "pend": "Pending"
       }
    },
    "dashboard": {
@@ -104,11 +104,11 @@
       "loading": "Loading...",
       "error": "Something went wrong. Please try again.",
       "success": "Success",
-      "n/a":"N/A",
-      "notAvailable":"Not Available",
-      "failedToLoad":"Failed to load details.",
-      "required":"Required",
-      "notRequired":"Not Required",
+      "n/a": "N/A",
+      "notAvailable": "Not Available",
+      "failedToLoad": "Failed to load details.",
+      "required": "Required",
+      "notRequired": "Not Required",
       "cancel": "Cancel",
       "save": "Save",
       "edit": "Edit",
@@ -157,8 +157,8 @@
       "preview": "preview",
       "browse": "Browse",
       "saveDraft": "Save draft",
-      "submitTourDetails":"Submit Tour Details",
-      "submitted":"Submitted"
+      "submitTourDetails": "Submit Tour Details",
+      "submitted": "Submitted"
    },
    "password": {
       "description": "Choose a strong password you haven’t used before.",
@@ -288,7 +288,7 @@
       },
       "header": {
          "title": "Bulk import users",
-         "description": "Upload a CSV to approve pending users and assign roles in one step. Each row is validated before any changes are committed."
+         "description": "Upload a spreadsheet (.csv, .xls, or .xlsx) to approve pending users and assign roles in bulk. All rows are validated before changes are applied."
       },
       "formats": {
          "label": "Supported formats",
@@ -303,7 +303,7 @@
       },
       "template": {
          "stepLabel": "Step 1 — Download template",
-         "fileName": "roles_import_template.csv",
+         "fileName": "roles_import_template (CSV / Excel)",
          "description": "Columns: email, role, action · Valid roles: employee · training_provider · admin · Actions: approve · update",
          "downloadButton": "Download"
       },
@@ -381,11 +381,13 @@
       "pageTitleFull": "Bulk Upload Programs | Helixion Training Provider",
       "breadcrumb": "PROGRAMS - BATCH PUBLISH",
       "sectionTitle": "Bulk upload programs",
-      "sectionDescription": "Upload a CSV to create many programs at once. Preview before publishing.",
-      "trySample": "Try sample CSV",
-      "dropLabel": "Drop your CSV here, or click to browse",
+      "sectionDescription": "Upload a CSV, XLS, or XLSX file to create many programs at once. Preview before publishing.",
+      "trySample": "Try sample Files",
+      "trySampleXls": "Try sample XLS",
+      "trySampleXlsx": "Try sample XLSX",
+      "dropLabel": "Drop your CSV, XLS, or XLSX file here, or click to browse",
       "expectedColumns": "Expected columns: title, startDate, endDate, venue, city, state (optional), isResidential, stayType (single_occupancy/twin_sharing), singleOccupancyFee, twinSharingFee, nonResidentialFee, brochureUrl (optional), minParticipants, maxParticipants, status",
-      "footerHint": "Max 500 rows per file - Duplicates will be flagged in preview",
+      "footerHint": "Supported formats: CSV, XLS, XLSX. Maximum file size: 5MB.",
       "preview": "Preview: {fileName} (Showing top 5 rows)",
       "publishButton": "Save to drafts",
       "publishing": "Publishing...",
@@ -542,13 +544,13 @@
             "link": "Start →"
          },
          "batchPublish": {
-            "title": "Batch publish via CSV",
-            "desc": "Upload a CSV to publish multiple programs at once.",
+            "title": "Batch publish via spreadsheet",
+            "desc": "Upload a CSV or Excel file to publish multiple programs at once.",
             "link": "Upload →"
          },
          "exportEnrolment": {
             "title": "Export enrolment data",
-            "desc": "Download attendee data per program as CSV.",
+            "desc": "Download attendee data per program as CSV or Excel.",
             "link": "Export →"
          }
       }
@@ -706,8 +708,7 @@
          "enroll": "Enroll in Program"
       },
       "currentStage": "Current Stage",
-      "createdBy":"Created By",
-
+      "createdBy": "Created By",
       "title": "Training Program Enrolment Form",
       "programDetails": {
          "title": "Program Details",
@@ -779,7 +780,7 @@
          "managerReview": "Your application has been submitted and is currently awaiting approval from your Reporting Manager.",
          "hrReview": "Your application has been approved by your manager and is currently under CTD review.",
          "ctdTourReview": "Your enrollment has been approved and your travel request is being reviewed.",
-         "submitTourDetails":"Your enrollment has been approved. Please submit your tour details to proceed.",
+         "submitTourDetails": "Your enrollment has been approved. Please submit your tour details to proceed.",
          "attendance": "Your attendance for the training has been recorded! You can now submit your reimbursement claim.",
          "reimbursement": "Your reimbursement claim has been submitted and is under financial audit/review.",
          "credited": "Congratulations! Your reimbursement has been approved and successfully credited to your bank account.",

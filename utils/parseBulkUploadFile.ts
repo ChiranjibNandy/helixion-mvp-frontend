@@ -30,10 +30,19 @@ export interface ValidatedBulkEmployeeRow extends BulkEmployeeRow {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const isYes = (v: unknown) => typeof v === 'string' && v.trim().toLowerCase() === 'yes';
+const isYes = (v: unknown) =>
+  typeof v === 'string'
+    ? v.trim().toLowerCase() === 'yes'
+    : typeof v === 'boolean'
+      ? v
+      : false;
 
 function toRow(raw: Record<string, any>, idx: number): BulkEmployeeRow {
-  const str = (v: unknown) => (v === undefined || v === null ? '' : String(v).trim());
+  const str = (v: unknown) => {
+    if (v === undefined || v === null) return '';
+    return String(v).trim();
+  };
+
   return {
     _rowId: `row-${idx}`,
     employeeCode: str(raw['Employee Roll No.']),
@@ -57,6 +66,7 @@ async function parseCsvFile(file: File): Promise<Record<string, any>[]> {
   const result = Papa.parse<Record<string, any>>(text, {
     header: true,
     skipEmptyLines: true,
+    transformHeader: (h) => h.trim(),
   });
   return result.data;
 }
@@ -64,8 +74,24 @@ async function parseCsvFile(file: File): Promise<Record<string, any>[]> {
 async function parseExcelFile(file: File): Promise<Record<string, any>[]> {
   const buffer = await file.arrayBuffer();
   const workbook = XLSX.read(buffer, { type: 'array' });
+
+  if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+    return [];
+  }
+
   const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-  return XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+  if (!firstSheet) return [];
+
+  const rawRows = XLSX.utils.sheet_to_json<Record<string, any>>(firstSheet, { defval: '' });
+
+  // Clean and trim header keys for every row to handle accidental whitespace in spreadsheets
+  return rawRows.map((row) => {
+    const cleaned: Record<string, any> = {};
+    for (const key of Object.keys(row)) {
+      cleaned[key.trim()] = row[key];
+    }
+    return cleaned;
+  });
 }
 
 /** Parses a .csv, .xls, or .xlsx bulk-upload file into row objects. */
@@ -121,7 +147,10 @@ export function validateBulkEmployeeRows(rows: BulkEmployeeRow[]): ValidatedBulk
     if (!row.employeeCode) {
       escalate('error', 'Missing Employee Roll No.');
     } else if ((codeCounts.get(row.employeeCode) ?? 0) > 1) {
-      escalate('error', `Duplicate Employee Roll No. "${row.employeeCode}" — used by ${codeCounts.get(row.employeeCode)} rows`);
+      escalate(
+        'error',
+        `Duplicate Employee Roll No. "${row.employeeCode}" — used by ${codeCounts.get(row.employeeCode)} rows`
+      );
     }
 
     if (!row.name) {
@@ -133,7 +162,12 @@ export function validateBulkEmployeeRows(rows: BulkEmployeeRow[]): ValidatedBulk
     // Someone with no manager at all (a root/top-of-chain person) has to be
     // created separately via "Add Employee" first, not through this file.
     if (!row.reportingManagerEmail) {
-      escalate('error', 'Missing Reporting Manager Email — every uploaded employee must have a manager. Create a top-of-chain person separately via "Add Employee" first.');
+      escalate(
+        'error',
+        'Missing Reporting Manager Email — every uploaded employee must have a manager. Create a top-of-chain person separately via "Add Employee" first.'
+      );
+    } else if (row.email && row.reportingManagerEmail === row.email) {
+      escalate('error', 'An employee cannot be listed as their own Reporting Manager');
     }
 
     for (const [label, email] of [

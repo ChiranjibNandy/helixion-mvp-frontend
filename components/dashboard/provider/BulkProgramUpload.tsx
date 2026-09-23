@@ -2,16 +2,13 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import FileDropzone from '@/components/shared/FileDropzone';
 import AppModal from '@/components/ui/app-modal';
-import { Button } from '@/components/ui/button';
 import { providerService, BulkUploadResult } from '@/services/provider.service';
 import { t } from '@/lib/i18n';
 import { toast } from 'sonner';
 import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
 import { PROGRAM_CSV_COLUMNS, OPTIONAL_CSV_COLUMNS, SAMPLE_CSV_ROW } from '@/constants/provider';
-
-
 import UploadHeader from './UploadHeader';
 import UploadDropzone from './UploadDropzone';
 import UploadPreview from './UploadPreview';
@@ -28,8 +25,100 @@ export default function BulkProgramUpload() {
   const [uploadResult, setUploadResult] = useState<BulkUploadResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelected = (file: File) => {
-    if (!file.name.endsWith('.csv')) {
+  const handleReset = () => {
+    setSelectedFile(null);
+    setPreviewData([]);
+    setUploadResult(null);
+    setShowSuccessModal(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const parseFileRows = async (file: File, extension: string): Promise<any[]> => {
+    if (extension === '.csv') {
+      return new Promise((resolve, reject) => {
+        Papa.parse(file, {
+          header: true,
+          skipEmptyLines: 'greedy',
+          transformHeader: (h) => h.trim(),
+          complete: (results) => {
+            if (results.errors.length > 0 && results.data.length === 0) {
+              reject(new Error('Failed to parse CSV file.'));
+            } else {
+              resolve(results.data);
+            }
+          },
+          error: reject,
+        });
+      });
+    }
+
+    // Process XLS / XLSX formats
+    const buffer = await file.arrayBuffer();
+    const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
+
+    if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+      throw new Error('Excel file contains no readable sheets.');
+    }
+
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+
+    if (!worksheet) {
+      throw new Error('Unable to read Excel sheet contents.');
+    }
+
+    // Convert worksheet to JSON objects using header row
+    return XLSX.utils.sheet_to_json<Record<string, any>>(worksheet, {
+      defval: '',
+      raw: false,
+    });
+  };
+
+  const validateFileContent = (rows: any[]): boolean => {
+    if (!rows || rows.length === 0) {
+      toast.error(t('bulkProgram.errorEmptyFile'));
+      return false;
+    }
+
+    const headers = Object.keys(rows[0] || {}).map((h) => h.trim());
+    const requiredColumns = PROGRAM_CSV_COLUMNS.filter(
+      (col) => !(OPTIONAL_CSV_COLUMNS as readonly string[]).includes(col)
+    );
+
+    // Validate presence of required headers
+    const missingHeaders = requiredColumns.filter((col) => !headers.includes(col));
+    if (missingHeaders.length > 0) {
+      toast.error(`Missing required column headers: ${ missingHeaders.join(', ') }`);
+      return false;
+    }
+
+    // Validate required cell values across all rows
+    for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+      const row = rows[rowIndex];
+      if (!row || typeof row !== 'object') continue;
+
+      for (const col of requiredColumns) {
+        const val = row[col];
+        if (val === undefined || val === null || String(val).trim() === '') {
+          toast.error(`Row ${ rowIndex + 1 } has a missing required field: "${ col }"`);
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  const handleFileSelected = async (file: File) => {
+    const extension = file.name
+      .substring(file.name.lastIndexOf('.'))
+      .toLowerCase();
+
+    const allowedExtensions = ['.csv', '.xls', '.xlsx'];
+
+    if (!allowedExtensions.includes(extension)) {
       toast.error(t('bulkProgram.errorInvalidFile'));
       return;
     }
@@ -38,57 +127,23 @@ export default function BulkProgramUpload() {
     setSelectedFile(file);
     setUploadResult(null);
 
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      preview: 5, // Only preview the first 5 rows
-      complete: (results) => {
-        setIsProcessing(false);
-        if (results.errors.length > 0 && results.data.length === 0) {
-          toast.error(t('bulkProgram.errorParseFailed'));
-          return;
-        }
-        if (results.data.length === 0) {
-          toast.error(t('bulkProgram.errorEmptyFile'));
-          return;
-        }
+    try {
+      const allRows = await parseFileRows(file, extension);
 
-        const headers = results.meta?.fields || [];
-        for (const col of PROGRAM_CSV_COLUMNS) {
-          if (!(OPTIONAL_CSV_COLUMNS as readonly string[]).includes(col) && !headers.includes(col)) {
-            alert('please fill all the required fields');
-            return;
-          }
-        }
+      if (!validateFileContent(allRows)) {
+        handleReset();
+        return;
+      }
 
-        let hasMissingFields = false;
-        for (const row of results.data as any[]) {
-          if (!row || typeof row !== 'object') continue;
-          for (const col of PROGRAM_CSV_COLUMNS) {
-            if (!(OPTIONAL_CSV_COLUMNS as readonly string[]).includes(col)) {
-              const val = row[col];
-              if (val === undefined || val === null || String(val).trim() === '') {
-                hasMissingFields = true;
-                break;
-              }
-            }
-          }
-          if (hasMissingFields) break;
-        }
-
-        if (hasMissingFields) {
-          alert('please fill all the required fields');
-          return;
-        }
-
-        setPreviewData(results.data);
-      },
-      error: (error) => {
-        setIsProcessing(false);
-        toast.error(t('bulkProgram.errorParseFailed'));
-        console.error(error);
-      },
-    });
+      // Preview top 5 rows
+      setPreviewData(allRows.slice(0, 5));
+    } catch (error: any) {
+      console.error('File parsing error:', error);
+      toast.error(t('bulkProgram.errorParseFailed'));
+      handleReset();
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handlePublish = async () => {
@@ -108,25 +163,61 @@ export default function BulkProgramUpload() {
     }
   };
 
-  const handleReset = () => {
-    setSelectedFile(null);
-    setPreviewData([]);
-    setUploadResult(null);
-    setShowSuccessModal(false);
-  };
+  const handleDownloadSample = (format: 'csv' | 'xls' | 'xlsx') => {
+    const headers = [...PROGRAM_CSV_COLUMNS];
 
-  const handleDownloadSample = () => {
-    const csvContent = `${PROGRAM_CSV_COLUMNS.join(',')}\n${SAMPLE_CSV_ROW}`;
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    // Parse sample row string into array elements cleanly
+    const sampleRowValues = SAMPLE_CSV_ROW.split(',').map((item) => item.trim());
+
+    // 1. CSV Download
+    if (format === 'csv') {
+      const csvContent = Papa.unparse({
+        fields: headers,
+        data: [sampleRowValues],
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'sample_programs.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      return;
+    }
+
+    // 2. Excel (XLS / XLSX) Download
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, sampleRowValues]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Programs');
+
+    // Set proper SheetJS bookType ('biff8' for legacy .xls, 'xlsx' for .xlsx)
+    const bookType = format === 'xls' ? 'biff8' : 'xlsx';
+    const mimeType =
+      format === 'xls'
+        ? 'application/vnd.ms-excel'
+        : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+    // Write workbook to a binary array buffer
+    const excelBuffer = XLSX.write(workbook, {
+      bookType,
+      type: 'array',
+    });
+
+    const blob = new Blob([excelBuffer], { type: mimeType });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'sample_programs.csv';
-    a.click();
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `sample_programs.${ format }`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
 
-  // Build modal stats and description from upload result
+  
   const modalStats = uploadResult
     ? [
       {
