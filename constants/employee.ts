@@ -8,6 +8,7 @@ export const EMPTY_FILTERS: Filters = {
   venue: '',
   fromDate: '',
   toDate: '',
+  hidePast: false,
 };
 
 export const TRAVEL_TYPES = [

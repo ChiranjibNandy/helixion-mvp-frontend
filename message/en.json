@@ -26,6 +26,7 @@
          "filterDateTo": "To",
          "clearFilters": "Clear Filters",
          "applyFilters": "Apply",
+         "hidePastPrograms": "Hide past programs",
          "columnTitle": "Program Title",
          "columnFromDate": "From Date",
          "columnToDate": "To Date",
