@@ -5,7 +5,7 @@ import { FileText, X, AlertCircle, Download, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { userService, BatchCreateResponse } from '@/services/userService';
 import { useBulkUploadJobPolling, isTerminal } from '@/hooks/useBulkUploadJobPolling';
-import { formatFileSize } from '@/utils/csv-parser';
+import { formatFileSize } from '@/utils/formatters';
 import { validateBulkEmployeeRows, rowsToCsvFile, ValidatedBulkEmployeeRow, BulkEmployeeRow } from '@/utils/parseBulkUploadFile';
 import { downloadSampleTemplate } from '@/utils/downloadTemplate';
 import { t } from '@/lib/i18n';
