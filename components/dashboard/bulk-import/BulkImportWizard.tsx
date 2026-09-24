@@ -6,13 +6,15 @@ import { toast } from 'sonner';
 import { userService, BatchCreateResponse } from '@/services/userService';
 import { useBulkUploadJobPolling, isTerminal } from '@/hooks/useBulkUploadJobPolling';
 import { formatFileSize } from '@/utils/csv-parser';
-import { parseBulkUploadFile, validateBulkEmployeeRows, rowsToCsvFile, ValidatedBulkEmployeeRow } from '@/utils/parseBulkUploadFile';
+import { validateBulkEmployeeRows, rowsToCsvFile, ValidatedBulkEmployeeRow, BulkEmployeeRow } from '@/utils/parseBulkUploadFile';
 import { downloadSampleTemplate } from '@/utils/downloadTemplate';
 import { t } from '@/lib/i18n';
 import FileDropzone from '@/components/shared/FileDropzone';
 import PageHeader from '@/components/ui/pageHeader';
 import { Progress } from '@/components/ui/progress';
 import BulkUploadPreview from './BulkUploadPreview';
+import { BULK_EMPLOYEE_SAMPLE_ROWS, BULK_EMPLOYEE_TEMPLATE_HEADERS } from '@/constants/bulk.Employee';
+import { parseSpreadsheetFile } from '@/utils/parseBulkUpload';
 
 type CommitOutcome = 'full' | 'partial' | 'allSkipped' | 'requestFailed';
 
@@ -21,6 +23,39 @@ interface CommitResult {
   data?: BatchCreateResponse;
   errorMessage?: string;
 }
+
+//change to row value what we need when upload
+const isYes = (v: unknown) =>
+  typeof v === 'string'
+    ? v.trim().toLowerCase() === 'yes'
+    : typeof v === 'boolean'
+      ? v
+      : false;
+
+function toRow(raw: Record<string, any>, idx: number): BulkEmployeeRow {
+  const str = (v: unknown) => {
+    if (v === undefined || v === null) return '';
+    return String(v).trim();
+  };
+
+  return {
+    _rowId: `row-${idx}`,
+    employeeCode: str(raw['Employee Roll No.']),
+    name: str(raw['Name of the employee']),
+    email: str(raw['Email']).toLowerCase(),
+    mobile: str(raw['Mobile']),
+    placeOfPosting: str(raw['Place of Posting']),
+    designation: str(raw['Designation']),
+    department: str(raw['Department']),
+    trainingDeptSenior: isYes(raw['Training Department Officer (CTD)']),
+    osdSenior: isYes(raw['OSD Officer']),
+    isManager: isYes(raw['Manager']),
+    reportingManagerEmail: str(raw['Reporting Manager Email']).toLowerCase(),
+    skipLevel1ManagerEmail: str(raw['Skip Level 1 Manager Email']).toLowerCase(),
+    skipLevel2ManagerEmail: str(raw['Skip Level 2 Manager Email']).toLowerCase(),
+  };
+}
+
 
 function getOutcomeMessage(result: CommitResult): { title: string; description: string; isGood: boolean; severity: 'green' | 'orange' | 'red' } {
   const { outcome, data, errorMessage } = result;
@@ -77,6 +112,12 @@ function getOutcomeMessage(result: CommitResult): { title: string; description: 
   };
 }
 
+//Bulk upload of employee function works here , call the helper function
+async function parseBulkUploadFile(file: File): Promise<BulkEmployeeRow[]> {
+  const raw = await parseSpreadsheetFile(file);
+  return raw.map(toRow);
+}
+
 const EMAIL_FIELDS = new Set(['email', 'reportingManagerEmail', 'skipLevel1ManagerEmail', 'skipLevel2ManagerEmail']);
 const ACTIVE_JOB_STORAGE_KEY = 'bulkImport.activeJobId';
 
@@ -117,12 +158,12 @@ export default function BulkImportWizard() {
           setActiveJobId(stored);
           return;
         }
-      } catch {}
+      } catch { }
     }
     try {
       if (activeJobId) sessionStorage.setItem(ACTIVE_JOB_STORAGE_KEY, activeJobId);
       else sessionStorage.removeItem(ACTIVE_JOB_STORAGE_KEY);
-    } catch {}
+    } catch { }
   }, [activeJobId]);
 
   const serverErrorsByRowIdRef = useRef<Record<string, string>>({});
@@ -298,7 +339,7 @@ export default function BulkImportWizard() {
           <div className="flex items-center justify-between text-xs text-textSidebarMuted mb-2">
             <span>
               {uploadJob
-                ? `Resuming a previously started upload… ${uploadJob.processedRows}/${uploadJob.totalRows} rows`
+                ? `Resuming a previously started upload… ${ uploadJob.processedRows }/${ uploadJob.totalRows } rows`
                 : 'Checking on a previously started upload…'}
             </span>
             {uploadJob && <span>{uploadJob.progress}%</span>}
@@ -330,14 +371,14 @@ export default function BulkImportWizard() {
             >
               <Download size={15} />
               <span>{t('bulkImport.template.downloadButton')}</span>
-              <ChevronDown size={14} className={`transition-transform ${isDownloadDropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown size={14} className={`transition-transform ${ isDownloadDropdownOpen ? 'rotate-180' : '' }`} />
             </button>
 
             {isDownloadDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 rounded-xl bg-bgStatCard border border-borderCard shadow-xl z-20 overflow-hidden py-1">
                 <button
                   onClick={() => {
-                    downloadSampleTemplate('csv');
+                    downloadSampleTemplate('csv', BULK_EMPLOYEE_TEMPLATE_HEADERS, BULK_EMPLOYEE_SAMPLE_ROWS, 'employee_bulk_upload_template');
                     setIsDownloadDropdownOpen(false);
                   }}
                   className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10 flex items-center justify-between"
@@ -347,7 +388,7 @@ export default function BulkImportWizard() {
                 </button>
                 <button
                   onClick={() => {
-                    downloadSampleTemplate('xlsx');
+                    downloadSampleTemplate('xlsx', BULK_EMPLOYEE_TEMPLATE_HEADERS, BULK_EMPLOYEE_SAMPLE_ROWS, 'employee_bulk_upload_template');
                     setIsDownloadDropdownOpen(false);
                   }}
                   className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10 flex items-center justify-between"
@@ -357,7 +398,7 @@ export default function BulkImportWizard() {
                 </button>
                 <button
                   onClick={() => {
-                    downloadSampleTemplate('xls');
+                    downloadSampleTemplate('xls', BULK_EMPLOYEE_TEMPLATE_HEADERS, BULK_EMPLOYEE_SAMPLE_ROWS, 'employee_bulk_upload_template');
                     setIsDownloadDropdownOpen(false);
                   }}
                   className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10 flex items-center justify-between"
@@ -434,7 +475,7 @@ export default function BulkImportWizard() {
               <div className="flex items-center justify-between text-xs text-textSidebarMuted mb-2">
                 <span>
                   {uploadJob
-                    ? `Uploading… ${uploadJob.processedRows}/${uploadJob.totalRows} rows`
+                    ? `Uploading… ${ uploadJob.processedRows }/${ uploadJob.totalRows } rows`
                     : 'Starting upload…'}
                 </span>
                 {uploadJob && <span>{uploadJob.progress}%</span>}
@@ -462,11 +503,10 @@ export default function BulkImportWizard() {
         return (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div className="w-full max-w-md bg-bgStatCard border border-borderCard rounded-2xl p-8 shadow-2xl">
-              <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center mb-5 ${
-                iconColor === 'green' ? 'bg-accentGreen/10 border-accentGreen/30'
+              <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center mb-5 ${ iconColor === 'green' ? 'bg-accentGreen/10 border-accentGreen/30'
                 : iconColor === 'orange' ? 'bg-accentOrange/10 border-accentOrange/30'
-                : 'bg-accentRed/10 border-accentRed/30'
-              }`}>
+                  : 'bg-accentRed/10 border-accentRed/30'
+                }`}>
                 {isGood ? (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="12" cy="12" r="10" stroke="#16a34a" strokeWidth="2" />
@@ -480,7 +520,7 @@ export default function BulkImportWizard() {
                 )}
               </div>
 
-              <h3 className={`text-lg font-semibold mb-3 ${isGood ? 'text-white' : iconColor === 'orange' ? 'text-accentOrange' : 'text-accentRed'}`}>
+              <h3 className={`text-lg font-semibold mb-3 ${ isGood ? 'text-white' : iconColor === 'orange' ? 'text-accentOrange' : 'text-accentRed' }`}>
                 {title}
               </h3>
 

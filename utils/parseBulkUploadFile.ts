@@ -30,85 +30,8 @@ export interface ValidatedBulkEmployeeRow extends BulkEmployeeRow {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const isYes = (v: unknown) =>
-  typeof v === 'string'
-    ? v.trim().toLowerCase() === 'yes'
-    : typeof v === 'boolean'
-      ? v
-      : false;
 
-function toRow(raw: Record<string, any>, idx: number): BulkEmployeeRow {
-  const str = (v: unknown) => {
-    if (v === undefined || v === null) return '';
-    return String(v).trim();
-  };
 
-  return {
-    _rowId: `row-${idx}`,
-    employeeCode: str(raw['Employee Roll No.']),
-    name: str(raw['Name of the employee']),
-    email: str(raw['Email']).toLowerCase(),
-    mobile: str(raw['Mobile']),
-    placeOfPosting: str(raw['Place of Posting']),
-    designation: str(raw['Designation']),
-    department: str(raw['Department']),
-    trainingDeptSenior: isYes(raw['Training Department Officer (CTD)']),
-    osdSenior: isYes(raw['OSD Officer']),
-    isManager: isYes(raw['Manager']),
-    reportingManagerEmail: str(raw['Reporting Manager Email']).toLowerCase(),
-    skipLevel1ManagerEmail: str(raw['Skip Level 1 Manager Email']).toLowerCase(),
-    skipLevel2ManagerEmail: str(raw['Skip Level 2 Manager Email']).toLowerCase(),
-  };
-}
-
-async function parseCsvFile(file: File): Promise<Record<string, any>[]> {
-  const text = await file.text();
-  const result = Papa.parse<Record<string, any>>(text, {
-    header: true,
-    skipEmptyLines: true,
-    transformHeader: (h) => h.trim(),
-  });
-  return result.data;
-}
-
-async function parseExcelFile(file: File): Promise<Record<string, any>[]> {
-  const buffer = await file.arrayBuffer();
-  const workbook = XLSX.read(buffer, { type: 'array' });
-
-  if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
-    return [];
-  }
-
-  const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-  if (!firstSheet) return [];
-
-  const rawRows = XLSX.utils.sheet_to_json<Record<string, any>>(firstSheet, { defval: '' });
-
-  // Clean and trim header keys for every row to handle accidental whitespace in spreadsheets
-  return rawRows.map((row) => {
-    const cleaned: Record<string, any> = {};
-    for (const key of Object.keys(row)) {
-      cleaned[key.trim()] = row[key];
-    }
-    return cleaned;
-  });
-}
-
-/** Parses a .csv, .xls, or .xlsx bulk-upload file into row objects. */
-export async function parseBulkUploadFile(file: File): Promise<BulkEmployeeRow[]> {
-  const name = file.name.toLowerCase();
-  let raw: Record<string, any>[];
-
-  if (name.endsWith('.csv')) {
-    raw = await parseCsvFile(file);
-  } else if (name.endsWith('.xlsx') || name.endsWith('.xls')) {
-    raw = await parseExcelFile(file);
-  } else {
-    throw new Error('Unsupported file type — only .csv, .xls, and .xlsx are supported.');
-  }
-
-  return raw.map(toRow);
-}
 
 /**
  * Client-side pre-flight checks — catches the same class of bugs that

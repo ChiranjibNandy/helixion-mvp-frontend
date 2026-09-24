@@ -1,67 +1,22 @@
-//dowload template for bulk upload user
 import * as XLSX from 'xlsx';
 
-const TEMPLATE_HEADERS = [
-  'Employee Roll No.',
-  'Name of the employee',
-  'Email',
-  'Mobile',
-  'Place of Posting',
-  'Designation',
-  'Department',
-  'Manager',
-  'Training Department Officer (CTD)',
-  'OSD Officer',
-  'Reporting Manager Email',
-  'Skip Level 1 Manager Email',
-  'Skip Level 2 Manager Email',
-];
-
-const SAMPLE_ROWS = [
-  [
-    'E1001',
-    'Arjun Mehta',
-    'arjun@corp.in',
-    '9876543210',
-    'Mumbai',
-    'Analyst',
-    'Finance',
-    'No',
-    'No',
-    'No',
-    'manager@corp.in',
-    '',
-    '',
-  ],
-  [
-    'E1002',
-    'Sara Iyer',
-    'sara@corp.in',
-    '9876543211',
-    'Delhi',
-    'Senior Analyst',
-    'Finance',
-    'Yes',
-    'No',
-    'No',
-    'manager@corp.in',
-    'skiplevel1@corp.in',
-    '',
-  ],
-];
-
-export function downloadSampleTemplate(format: 'csv' | 'xlsx' | 'xls') {
-  const worksheet = XLSX.utils.aoa_to_sheet([TEMPLATE_HEADERS, ...SAMPLE_ROWS]);
+export function downloadSampleTemplate(
+  format: 'csv' | 'xlsx' | 'xls',
+  headers: string[],
+  rows: (string | number | boolean)[][],
+  fileName: string = 'sample_template'
+) {
+  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
   const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Employees');
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
-  const fileName = `employee_bulk_upload_template.${format}`;
+  const fullFileName = `${fileName}.${format}`;
 
   if (format === 'csv') {
-    XLSX.writeFile(workbook, fileName, { bookType: 'csv' });
+    XLSX.writeFile(workbook, fullFileName, { bookType: 'csv' });
   } else if (format === 'xls') {
-    XLSX.writeFile(workbook, fileName, { bookType: 'biff8' });
+    XLSX.writeFile(workbook, fullFileName, { bookType: 'biff8' });
   } else {
-    XLSX.writeFile(workbook, fileName, { bookType: 'xlsx' });
+    XLSX.writeFile(workbook, fullFileName, { bookType: 'xlsx' });
   }
 }

@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import PageHeader from '@/components/ui/pageHeader';
 import { t } from '@/lib/i18n';
 import {
@@ -10,14 +9,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
+import { downloadSampleTemplate } from '@/utils/downloadTemplate';
+import { PROGRAM_CSV_COLUMNS, SAMPLE_PROGRAM_ROWS } from '@/constants/provider';
 
-interface UploadHeaderProps {
-  onDownloadSample: (format: 'csv' | 'xls' | 'xlsx') => void;
-}
 
 export default function UploadHeader({
-  onDownloadSample,
-}: UploadHeaderProps) {
+}) {
   return (
     <div className="flex justify-between items-start mb-8">
       <PageHeader
@@ -32,13 +29,13 @@ export default function UploadHeader({
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onSelect={() => onDownloadSample('csv')}>
+          <DropdownMenuItem onSelect={() => downloadSampleTemplate('csv', PROGRAM_CSV_COLUMNS, SAMPLE_PROGRAM_ROWS, 'sample_programs')}>
             {t('bulkProgram.sampleCsv')}
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => onDownloadSample('xls')}>
+          <DropdownMenuItem onSelect={() => downloadSampleTemplate('xls', PROGRAM_CSV_COLUMNS, SAMPLE_PROGRAM_ROWS, 'sample_programs')}>
             {t('bulkProgram.sampleXls')}
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => onDownloadSample('xlsx')}>
+          <DropdownMenuItem onSelect={() => downloadSampleTemplate('xlsx', PROGRAM_CSV_COLUMNS, SAMPLE_PROGRAM_ROWS, 'sample_programs')}>
             {t('bulkProgram.sampleXlsx')}
           </DropdownMenuItem>
         </DropdownMenuContent>

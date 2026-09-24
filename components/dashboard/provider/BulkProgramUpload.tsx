@@ -8,12 +8,13 @@ import { t } from '@/lib/i18n';
 import { toast } from 'sonner';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
-import { PROGRAM_CSV_COLUMNS, OPTIONAL_CSV_COLUMNS, SAMPLE_CSV_ROW } from '@/constants/provider';
+import { PROGRAM_CSV_COLUMNS, OPTIONAL_CSV_COLUMNS } from '@/constants/provider';
 import UploadHeader from './UploadHeader';
 import UploadDropzone from './UploadDropzone';
 import UploadPreview from './UploadPreview';
 import UploadResults from './UploadResults';
 import { ROUTES } from '@/constants/navigation';
+import { parseSpreadsheetFile } from '@/utils/parseBulkUpload';
 
 export default function BulkProgramUpload() {
   const router = useRouter();
@@ -35,46 +36,46 @@ export default function BulkProgramUpload() {
     }
   };
 
-  const parseFileRows = async (file: File, extension: string): Promise<any[]> => {
-    if (extension === '.csv') {
-      return new Promise((resolve, reject) => {
-        Papa.parse(file, {
-          header: true,
-          skipEmptyLines: 'greedy',
-          transformHeader: (h) => h.trim(),
-          complete: (results) => {
-            if (results.errors.length > 0 && results.data.length === 0) {
-              reject(new Error('Failed to parse CSV file.'));
-            } else {
-              resolve(results.data);
-            }
-          },
-          error: reject,
-        });
-      });
-    }
+  // const parseFileRows = async (file: File, extension: string): Promise<any[]> => {
+  //   if (extension === '.csv') {
+  //     return new Promise((resolve, reject) => {
+  //       Papa.parse(file, {
+  //         header: true,
+  //         skipEmptyLines: 'greedy',
+  //         transformHeader: (h) => h.trim(),
+  //         complete: (results) => {
+  //           if (results.errors.length > 0 && results.data.length === 0) {
+  //             reject(new Error('Failed to parse CSV file.'));
+  //           } else {
+  //             resolve(results.data);
+  //           }
+  //         },
+  //         error: reject,
+  //       });
+  //     });
+  //   }
 
-    // Process XLS / XLSX formats
-    const buffer = await file.arrayBuffer();
-    const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
+  //   // Process XLS / XLSX formats
+  //   const buffer = await file.arrayBuffer();
+  //   const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
 
-    if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
-      throw new Error('Excel file contains no readable sheets.');
-    }
+  //   if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+  //     throw new Error('Excel file contains no readable sheets.');
+  //   }
 
-    const firstSheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[firstSheetName];
+  //   const firstSheetName = workbook.SheetNames[0];
+  //   const worksheet = workbook.Sheets[firstSheetName];
 
-    if (!worksheet) {
-      throw new Error('Unable to read Excel sheet contents.');
-    }
+  //   if (!worksheet) {
+  //     throw new Error('Unable to read Excel sheet contents.');
+  //   }
 
-    // Convert worksheet to JSON objects using header row
-    return XLSX.utils.sheet_to_json<Record<string, any>>(worksheet, {
-      defval: '',
-      raw: false,
-    });
-  };
+  //   // Convert worksheet to JSON objects using header row
+  //   return XLSX.utils.sheet_to_json<Record<string, any>>(worksheet, {
+  //     defval: '',
+  //     raw: false,
+  //   });
+  // };
 
   const validateFileContent = (rows: any[]): boolean => {
     if (!rows || rows.length === 0) {
@@ -128,7 +129,7 @@ export default function BulkProgramUpload() {
     setUploadResult(null);
 
     try {
-      const allRows = await parseFileRows(file, extension);
+      const allRows = await parseSpreadsheetFile(file);
 
       if (!validateFileContent(allRows)) {
         handleReset();
@@ -161,60 +162,6 @@ export default function BulkProgramUpload() {
     } finally {
       setIsUploading(false);
     }
-  };
-
-  const handleDownloadSample = (format: 'csv' | 'xls' | 'xlsx') => {
-    const headers = [...PROGRAM_CSV_COLUMNS];
-
-    // Parse sample row string into array elements cleanly
-    const sampleRowValues = SAMPLE_CSV_ROW.split(',').map((item) => item.trim());
-
-    // 1. CSV Download
-    if (format === 'csv') {
-      const csvContent = Papa.unparse({
-        fields: headers,
-        data: [sampleRowValues],
-      });
-
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'sample_programs.csv';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      return;
-    }
-
-    // 2. Excel (XLS / XLSX) Download
-    const worksheet = XLSX.utils.aoa_to_sheet([headers, sampleRowValues]);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Programs');
-
-    // Set proper SheetJS bookType ('biff8' for legacy .xls, 'xlsx' for .xlsx)
-    const bookType = format === 'xls' ? 'biff8' : 'xlsx';
-    const mimeType =
-      format === 'xls'
-        ? 'application/vnd.ms-excel'
-        : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-
-    // Write workbook to a binary array buffer
-    const excelBuffer = XLSX.write(workbook, {
-      bookType,
-      type: 'array',
-    });
-
-    const blob = new Blob([excelBuffer], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `sample_programs.${ format }`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
   };
 
   
@@ -255,7 +202,7 @@ export default function BulkProgramUpload() {
       <AppModal
         isOpen={showSuccessModal}
         type="success"
-        title={t('bulkProgram.successTitle')}
+        title={t('bulkProgram.draftSuccess')}
         description={modalDescription}
         stats={modalStats}
         doneLabel={t('button.done')}
@@ -265,7 +212,7 @@ export default function BulkProgramUpload() {
         }}
       />
 
-      <UploadHeader onDownloadSample={handleDownloadSample} />
+      <UploadHeader  />
 
       {uploadResult ? (
         <UploadResults uploadResult={uploadResult} onReset={handleReset} />

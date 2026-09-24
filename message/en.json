@@ -398,6 +398,7 @@
       "rowsFailed": "{count} rows failed",
       "rowErrors": "Row-level errors",
       "successTitle": "Programs published!",
+      "draftSuccess":"Programs drafted!",
       "successDescription": "{count} programs have been created successfully and are ready for review.",
       "partialSuccessDescription": "{inserted} programs created. {failed} rows had validation errors.",
       "errorInvalidFile": "Please upload a valid CSV file.",
