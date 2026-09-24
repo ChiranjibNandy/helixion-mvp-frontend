@@ -16,6 +16,7 @@ export const getAvailablePrograms = async (
     venue?:    string;
     fromDate?: string;
     toDate?:   string;
+    hidePast?: boolean;
   },
   signal?: AbortSignal
 ): Promise<{ programs: AvailableProgram[]; total: number; page: number; totalPages: number }> => {
