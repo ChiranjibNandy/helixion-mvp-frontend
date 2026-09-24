@@ -32,6 +32,8 @@ export interface UpdateDraftPayload {
   twinSharingFee?: number;
   nonResidentialFee?: number;
   brochureUrl?: string;
+  minParticipants?:number,
+  maxParticipants?:number
 }
 
 // ─── Dashboard Types ─────────────────────────────────────────────────────────

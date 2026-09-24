@@ -34,6 +34,7 @@
          "detailVenueLabel": "Venue",
          "detailStayTypeLabel": "Stay Type",
          "stayTypeSingle": "Single Occupancy",
+         "dayScholar":"Day Scholar",
          "stayTypeTwin": "Twin Sharing",
          "stayTypeNonResidential": "Non-Residential",
          "fetchError": "Failed to load programs. Please try again.",

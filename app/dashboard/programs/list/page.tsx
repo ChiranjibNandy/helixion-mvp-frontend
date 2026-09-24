@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePrograms } from "@/hooks/UseProgramReturn";
@@ -75,6 +75,24 @@ export default function ProgramsPage() {
                      }}
                   />
                </div>
+            </div>
+         ),
+      },
+
+      {
+         key: "actions",
+         header: "",
+         render: (program: Program) => (
+            <div className="flex items-center justify-end">
+               <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => router.push(`/dashboard/programs/edit-published/${ program._id }`)}
+                  className="h-8 w-8 text-textSidebarMuted hover:text-white hover:bg-bgButton"
+                  title="Edit Program"
+               >
+                  <Pencil size={15} />
+               </Button>
             </div>
          ),
       },
