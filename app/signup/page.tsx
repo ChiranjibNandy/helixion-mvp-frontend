@@ -87,8 +87,6 @@ function SignUpCard() {
       <h2 className="text-2xl font-bold text-white">{FORM.TITLE}</h2>
       <p className="text-sm text-textMuted mt-1.5 mb-7">{FORM.SUBTITLE}</p>
 
-      {formError && <div className="text-red-500 text-sm mb-4">{formError}</div>}
-
       <form onSubmit={handleSubmit} className="flex flex-col gap-5" autoComplete="off">
         <InputField
           label={FORM.USERNAME_LABEL}
