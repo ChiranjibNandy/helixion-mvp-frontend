@@ -73,8 +73,8 @@ export default function BaseProgramForm({
                <div className="grid grid-cols-[160px_1fr] items-start gap-4">
                   <Label className="pt-2 text-sm text-textMuted">{t('programme.fields.programTitle')}*</Label>
                   <InputField
-                     value={formState.programTitle || formState.title || ''}
-                     onChange={(e) => onFieldChange("programTitle", e.target.value)}
+                     value={formState.title || ''}
+                     onChange={(e) => onFieldChange("title", e.target.value)}
                      placeholder={t('programme.fields.programTitlePlaceholder')}
                      className="bg-inputBg border-borderDark text-textSecondary h-9 text-sm"
                   />
