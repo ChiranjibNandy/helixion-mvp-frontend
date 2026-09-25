@@ -36,47 +36,6 @@ export default function BulkProgramUpload() {
     }
   };
 
-  // const parseFileRows = async (file: File, extension: string): Promise<any[]> => {
-  //   if (extension === '.csv') {
-  //     return new Promise((resolve, reject) => {
-  //       Papa.parse(file, {
-  //         header: true,
-  //         skipEmptyLines: 'greedy',
-  //         transformHeader: (h) => h.trim(),
-  //         complete: (results) => {
-  //           if (results.errors.length > 0 && results.data.length === 0) {
-  //             reject(new Error('Failed to parse CSV file.'));
-  //           } else {
-  //             resolve(results.data);
-  //           }
-  //         },
-  //         error: reject,
-  //       });
-  //     });
-  //   }
-
-  //   // Process XLS / XLSX formats
-  //   const buffer = await file.arrayBuffer();
-  //   const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
-
-  //   if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
-  //     throw new Error('Excel file contains no readable sheets.');
-  //   }
-
-  //   const firstSheetName = workbook.SheetNames[0];
-  //   const worksheet = workbook.Sheets[firstSheetName];
-
-  //   if (!worksheet) {
-  //     throw new Error('Unable to read Excel sheet contents.');
-  //   }
-
-  //   // Convert worksheet to JSON objects using header row
-  //   return XLSX.utils.sheet_to_json<Record<string, any>>(worksheet, {
-  //     defval: '',
-  //     raw: false,
-  //   });
-  // };
-
   const validateFileContent = (rows: any[]): boolean => {
     if (!rows || rows.length === 0) {
       toast.error(t('bulkProgram.errorEmptyFile'));

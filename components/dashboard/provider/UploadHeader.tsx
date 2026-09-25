@@ -23,7 +23,7 @@ export default function UploadHeader({
       />
 
       <DropdownMenu>
-        <DropdownMenuTrigger className="inline-flex items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline">
+        <DropdownMenuTrigger className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
           {t('bulkProgram.trySample')}
           <ChevronDown className="size-4" />
         </DropdownMenuTrigger>
