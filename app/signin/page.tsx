@@ -12,6 +12,7 @@ import { setAccessToken } from '@/utils/token';
 import InputField from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import AuthScene from '@/components/auth/AuthScene';
+import { toast } from 'sonner';
 
 const FEATURE_ICONS = { 'book-open': BookOpen, 'shield-check': ShieldCheck, 'bar-chart': BarChart3, wallet: Wallet } as const;
 const TRUST_ICONS = { lock: Lock, shield: ShieldCheck, 'file-check': FileCheck2, cloud: Cloud } as const;
@@ -94,11 +95,14 @@ function SignInCard() {
 
       if (res.data.success) {
         setAllowSave(true);
+
         const { accessToken, orgRole } = res.data;
 
         if (accessToken) {
           await setAccessToken(accessToken);
         }
+
+        toast.success(res.data.message);
 
         if (orgRole === USER_ROLES.ADMIN) {
           router.push(ROUTES.DASHBOARD.ADMIN);
@@ -111,8 +115,11 @@ function SignInCard() {
         setErrors(err);
         return;
       }
+
       const parsed = parseApiError(err);
+
       setFormError(parsed.message);
+      toast.error(parsed.message);
     } finally {
       setLoading(false);
     }
@@ -127,8 +134,6 @@ function SignInCard() {
     <div className="w-full max-w-lg rounded-2xl border border-borderDark bg-bgCard/90 backdrop-blur-xl p-9 shadow-2xl">
       <h2 className="text-2xl font-bold text-white">{FORM.TITLE}</h2>
       <p className="text-sm text-textMuted mt-1.5 mb-7">{FORM.SUBTITLE}</p>
-
-      {formError && <div className="text-red-500 text-sm mb-4">{formError}</div>}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5" autoComplete={allowSave ? 'on' : 'off'} noValidate>
         <InputField

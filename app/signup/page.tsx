@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import InputField from '@/components/ui/input';
 import { useState } from 'react';
 import { parseApiError } from '@/utils/parseError';
+import { toast } from 'sonner';
 
 function MarketingPanel() {
   const { FEATURES, LEFT_PANEL } = SIGNUP_CONTENT;
@@ -65,6 +66,7 @@ function SignUpCard() {
       const res = await registerAPI(form);
 
       if (res.data.success) {
+        toast.success(res.data.message);
         router.push(ROUTES.AUTH.SIGNIN);
       }
     } catch (err: any) {
@@ -74,6 +76,7 @@ function SignUpCard() {
       }
       const parsed = parseApiError(err);
       setFormError(parsed.message);
+      toast.error(parsed.message);
     } finally {
       setLoading(false);
     }
@@ -83,8 +86,6 @@ function SignUpCard() {
     <div className="w-full max-w-lg rounded-2xl border border-borderDark bg-bgCard/90 backdrop-blur-xl p-9 shadow-2xl">
       <h2 className="text-2xl font-bold text-white">{FORM.TITLE}</h2>
       <p className="text-sm text-textMuted mt-1.5 mb-7">{FORM.SUBTITLE}</p>
-
-      {formError && <div className="text-red-500 text-sm mb-4">{formError}</div>}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5" autoComplete="off">
         <InputField
