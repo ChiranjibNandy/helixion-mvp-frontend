@@ -181,7 +181,7 @@ export default function EditPublishedProgram() {
          // Keep modal open and display API error message
          setModalState((prev) => ({
             ...prev,
-            error: error?.message || 'Failed to update program. Please try again.',
+            error: error?.response.message || 'Failed to update program. Please try again.',
          }));
       } finally {
          setIsSaving(false);

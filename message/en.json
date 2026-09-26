@@ -21,7 +21,9 @@
          "successTitle": "Program Updated Successfully!",
          "successDescription": "Your changes have been saved and applied.",
          "validation": {
-            "maxParticipants": "Maximum participants must be greater than or equal to minimum participants."
+            "title":"Warning",
+            "maxParticipants":"Maximum Participant Reach",
+            "maxParticipantsError": "Maximum participants must be greater than or equal to minimum participants."
          }
       },
       "list": {
