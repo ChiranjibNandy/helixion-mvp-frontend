@@ -274,6 +274,7 @@
       },
       "rejectUser": {
          "title": "Reject User",
+         "warning": "Warning: This action can't be undone",
          "successTitle": "User Rejected Successfully",
          "successDescription": "The user has been rejected successfully."
       },

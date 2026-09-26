@@ -1,5 +1,7 @@
 'use client';
 
+import { t } from "@/lib/i18n";
+
 interface Props {
     name: string;
     email: string;
@@ -15,6 +17,7 @@ export function RejectModalContent({
                 <p className="text-sm font-medium text-white">{name}</p>
                 <p className="text-xs text-white/40 mt-0.5">{email}</p>
             </div>
+            <p>{t("admin.rejectUser.warning")}</p>
         </div>
     );
 }

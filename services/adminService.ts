@@ -51,9 +51,7 @@ export const rejectUserAPI = async (data: { userId: string }) => {
 
   const { userId } = parsed.data;
 
-  return await api.patch(`${API.ADMIN.USERS}/${userId}/reject`, {
-    isRejected: true,
-  });
+  return await api.patch(`${API.ADMIN.USERS}/${userId}/reject`);
 };
 
 // whether an org (with a saved policy) exists yet — drives sidebar gating

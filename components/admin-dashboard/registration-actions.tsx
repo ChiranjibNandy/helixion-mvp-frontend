@@ -56,17 +56,29 @@ export function RegistrationActions({
   return (
     <>
       <div className="flex justify-end gap-3">
-        <CheckCircle2
-          size={18}
-          className="text-green-400 cursor-pointer"
+        <button
+          type="button"
+          aria-label="Approve"
           onClick={openModal}
-        />
+          className="cursor-pointer"
+        >
+          <CheckCircle2
+            size={18}
+            className="text-green-400"
+          />
+        </button>
 
-        <XCircle
-          size={18}
-          className="text-red-400 cursor-pointer"
+        <button
+          type="button"
+          aria-label="Reject"
           onClick={rejectOpenModal}
-        />
+          className="cursor-pointer"
+        >
+          <XCircle
+            size={18}
+            className="text-red-400"
+          />
+        </button>
       </div>
 
       {/* Approve Modal */}

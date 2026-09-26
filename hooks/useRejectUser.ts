@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { rejectUserAPI } from '@/services/adminService';
+import { parseApiError } from '@/utils/parseError';
 
 type UseRejectUserParams = {
     userId: string;
@@ -43,26 +44,8 @@ export function useRejectUser({ userId, onSuccess }: UseRejectUserParams) {
             setIsOpen(false);
             setSuccessOpen(true);
         } catch (err: any) {
-            //  Zod validation error
-            if (err?.errors && Array.isArray(err.errors)) {
-                setError(err.errors[0]?.message);
-                return;
-            }
-
-            // API response error
-            if (Array.isArray(err?.response?.data)) {
-                setError(err.response.data[0]?.message);
-                return;
-            }
-
-            // backend string message
-            if (typeof err?.response?.data?.message === 'string') {
-                setError(err.response.data.message);
-                return;
-            }
-
-            // fallback
-            setError(err?.message || 'Something went wrong');
+            const parsed = parseApiError(err);
+            setError(parsed.message);
         } finally {
             setLoading(false);
         }
