@@ -7,7 +7,8 @@ import { Spinner } from '@/components/ui/spinner';
 import { providerService } from '@/services/provider.service';
 import { updatePublishedProgramAPI } from '@/services/programService';
 import BaseProgramForm from '@/components/dashboard/programs/BaseProgram';
-import AppModal from '@/components/ui/app-modal'; 
+import AppModal from '@/components/ui/app-modal';
+import { STAY_TYPE_IDS } from '@/constants/program';
 
 export default function EditPublishedProgram() {
    const router = useRouter();
@@ -40,7 +41,7 @@ export default function EditPublishedProgram() {
       city: '',
       stayTypes: [
          {
-            id: 'residential',
+            id: STAY_TYPE_IDS.RESIDENTIAL,
             label: t('draftPrograms.labelResidential'),
             enabled: false,
             options: [
@@ -49,11 +50,11 @@ export default function EditPublishedProgram() {
             ],
          },
          {
-            id: 'non_residential',
+            id: STAY_TYPE_IDS.NON_RESIDENTIAL,
             label: t('programme.fields.nonResidential'),
             enabled: false,
             options: [
-               { id: 'non_residential', label: t('programme.fields.nonResidentialFee'), price: '' },
+               { id: STAY_TYPE_IDS.NON_RESIDENTIAL, label: t('programme.fields.nonResidentialFee'), price: '' },
             ],
          },
       ],
@@ -74,7 +75,7 @@ export default function EditPublishedProgram() {
             };
             const singleOccVal = getStayOptionPrice(program.stayOptions || [], 'single_occupancy');
             const twinShareVal = getStayOptionPrice(program.stayOptions || [], 'twin_sharing');
-            const nonResVal = getStayOptionPrice(program.stayOptions || [], 'non_residential');
+            const nonResVal = getStayOptionPrice(program.stayOptions || [], STAY_TYPE_IDS.NON_RESIDENTIAL);
 
             const hasRes = !!singleOccVal || !!twinShareVal;
             const hasNonRes = !!nonResVal;
@@ -94,7 +95,7 @@ export default function EditPublishedProgram() {
                brochureFilename: filename,
                stayTypes: [
                   {
-                     id: 'residential',
+                     id: STAY_TYPE_IDS.RESIDENTIAL,
                      label: t('draftPrograms.labelResidential'),
                      enabled: hasRes,
                      options: [
@@ -103,11 +104,11 @@ export default function EditPublishedProgram() {
                      ],
                   },
                   {
-                     id: 'non_residential',
+                     id: STAY_TYPE_IDS.NON_RESIDENTIAL,
                      label: t('programme.list.stayTypeNonResidential'),
                      enabled: hasNonRes,
                      options: [
-                        { id: 'non_residential', label: t('programme.list.dayScholar'), price: nonResVal },
+                        { id: STAY_TYPE_IDS.NON_RESIDENTIAL, label: t('programme.list.dayScholar'), price: nonResVal },
                      ],
                   },
                ],
@@ -137,9 +138,9 @@ export default function EditPublishedProgram() {
          setModalState({
             isOpen: true,
             type: 'confirm',
-            title: 'Validation Error',
-            description: 'Maximum participants must be greater than or equal to minimum participants.',
-            error: 'Maximum participants cannot be less than minimum participants.',
+            title: t('programme.edit.validation.title'),
+            description: t('programme.edit.validation.maxParticipants'),
+            error: t('programme.edit.validation.maxParticipantsError'),
          });
          return;
       }
@@ -148,8 +149,8 @@ export default function EditPublishedProgram() {
       setModalState({
          isOpen: true,
          type: 'confirm',
-         title: 'Save Changes',
-         description: 'Are you sure you want to update the core details of this published program?',
+         title: t('programme.edit.confirmTitle'),
+         description: t('programme.edit.confirmDescription'),
          error: null,
       });
    };
@@ -171,8 +172,8 @@ export default function EditPublishedProgram() {
          setModalState({
             isOpen: true,
             type: 'success',
-            title: 'Program Updated Successfully!',
-            description: 'Your changes have been saved and applied.',
+            title: t('programme.edit.successTitle'),
+            description: t('programme.edit.successDescription'),
             error: null,
          });
       } catch (error: any) {
@@ -205,8 +206,8 @@ export default function EditPublishedProgram() {
       <>
          <BaseProgramForm
             mode="edit"
-            title="Edit Program Details"
-            description="Update core details and participant limits for your published program."
+            title={t('programme.edit.title')}
+            description={t('programme.edit.description')}
             formState={form}
             onFieldChange={handleFieldChange}
             onToggleStayType={() => { }}
@@ -215,7 +216,7 @@ export default function EditPublishedProgram() {
             onSubmitEdit={handleFormSubmitClick}
             onBack={() => router.push('/dashboard/programs/list')}
             loading={isSaving}
-            backLabel="Back to Programs"
+             backLabel={t('button.backToPrograms')}
          />
 
          {/* Confirmation and Success Modal Handler */}
@@ -226,8 +227,8 @@ export default function EditPublishedProgram() {
             description={modalState.description}
             error={modalState.error}
             loading={isSaving}
-            confirmLabel="Save Changes"
-            doneLabel="View Programs"
+            confirmLabel={t('button.saveChanges')}
+            doneLabel={t('button.viewPrograms')}
             onConfirm={handleConfirmUpdate}
             onCancel={() => setModalState((prev) => ({ ...prev, isOpen: false }))}
             onDone={handleSuccessDone}

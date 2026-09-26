@@ -1,9 +1,9 @@
 {
    "programme": {
-      "title":"PROGRAM",
-      "date":"DATE",
-      "currentlyTracking":"Currently Tracking",
-      "unknownProgram":"Unknown Program",
+      "title": "PROGRAM",
+      "date": "DATE",
+      "currentlyTracking": "Currently Tracking",
+      "unknownProgram": "Unknown Program",
       "available": "Available Programmes",
       "empty": "No programmes available right now.",
       "enrol": "Enrol",
@@ -11,8 +11,19 @@
       "howToSee": "How participants will see this program",
       "defaultTitle": "Program title appears here",
       "defaultVenue": "Venue — not set",
-      "noprogramsfoundsearch":"No programs found for your search",
-      "noprogramsAvailable":"No programs available",
+      "noprogramsfoundsearch": "No programs found for your search",
+      "noprogramsAvailable": "No programs available",
+      "edit": {
+         "title": "Edit Program Details",
+         "description": "Update core details and participant limits for your published program.",
+         "confirmTitle": "Save Changes",
+         "confirmDescription": "Are you sure you want to update the core details of this published program?",
+         "successTitle": "Program Updated Successfully!",
+         "successDescription": "Your changes have been saved and applied.",
+         "validation": {
+            "maxParticipants": "Maximum participants must be greater than or equal to minimum participants."
+         }
+      },
       "list": {
          "title": "Listed Training Programs",
          "description": "Select a program to view details and enroll",
@@ -34,7 +45,7 @@
          "detailVenueLabel": "Venue",
          "detailStayTypeLabel": "Stay Type",
          "stayTypeSingle": "Single Occupancy",
-         "dayScholar":"Day Scholar",
+         "dayScholar": "Day Scholar",
          "stayTypeTwin": "Twin Sharing",
          "stayTypeNonResidential": "Non-Residential",
          "fetchError": "Failed to load programs. Please try again.",
@@ -61,9 +72,9 @@
          "attachBrochure": "Attach brochure",
          "minimumParticipants": "Minimum participants",
          "maximumParticipants": "Maximum participants",
-         "brochure":"Brochure",
-         "notes":"Notes",
-         "noNotesAvailable":"No notes available"
+         "brochure": "Brochure",
+         "notes": "Notes",
+         "noNotesAvailable": "No notes available"
       },
       "createpageTitle": "Create new training program",
       "createpageDescription": "Publish a single program to the Helixon marketplace.",
@@ -78,7 +89,7 @@
          "pending": "Not started",
          "active": "In progress",
          "completed": "Completed",
-         "pend":"Pending"
+         "pend": "Pending"
       }
    },
    "dashboard": {
@@ -105,11 +116,11 @@
       "loading": "Loading...",
       "error": "Something went wrong. Please try again.",
       "success": "Success",
-      "n/a":"N/A",
-      "notAvailable":"Not Available",
-      "failedToLoad":"Failed to load details.",
-      "required":"Required",
-      "notRequired":"Not Required",
+      "n/a": "N/A",
+      "notAvailable": "Not Available",
+      "failedToLoad": "Failed to load details.",
+      "required": "Required",
+      "notRequired": "Not Required",
       "cancel": "Cancel",
       "save": "Save",
       "edit": "Edit",
@@ -158,8 +169,11 @@
       "preview": "preview",
       "browse": "Browse",
       "saveDraft": "Save draft",
-      "submitTourDetails":"Submit Tour Details",
-      "submitted":"Submitted"
+      "submitTourDetails": "Submit Tour Details",
+      "submitted": "Submitted",
+      "saveChanges": "Save Changes",
+      "viewPrograms": "View Programs",
+      "backToPrograms": "Back to Programs"
    },
    "password": {
       "description": "Choose a strong password you haven’t used before.",
@@ -707,8 +721,7 @@
          "enroll": "Enroll in Program"
       },
       "currentStage": "Current Stage",
-      "createdBy":"Created By",
-
+      "createdBy": "Created By",
       "title": "Training Program Enrolment Form",
       "programDetails": {
          "title": "Program Details",
@@ -780,7 +793,7 @@
          "managerReview": "Your application has been submitted and is currently awaiting approval from your Reporting Manager.",
          "hrReview": "Your application has been approved by your manager and is currently under CTD review.",
          "ctdTourReview": "Your enrollment has been approved and your travel request is being reviewed.",
-         "submitTourDetails":"Your enrollment has been approved. Please submit your tour details to proceed.",
+         "submitTourDetails": "Your enrollment has been approved. Please submit your tour details to proceed.",
          "attendance": "Your attendance for the training has been recorded! You can now submit your reimbursement claim.",
          "reimbursement": "Your reimbursement claim has been submitted and is under financial audit/review.",
          "credited": "Congratulations! Your reimbursement has been approved and successfully credited to your bank account.",
