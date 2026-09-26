@@ -1,6 +1,6 @@
 import { API } from "@/constants/api";
 import { api } from "@/lib/api";
-import { approveUserSchema } from "@/validations/admin";
+import { approveUserSchema, rejectUserSchema } from "@/validations/admin";
 
 //using reset password- all user list
 export const getUsersAPI = async (params: {
@@ -36,9 +36,22 @@ export const approveUserAPI = async (data: { userId: string, role: string }) => 
 
   const { userId, role } = parsed.data;
 
-  return await api.patch(`${ API.ADMIN.USERS }/${ userId }`, {
+  return await api.patch(`${API.ADMIN.USERS}/${userId}/approve`, {
     role,
   });
+};
+
+// reject user registration
+export const rejectUserAPI = async (data: { userId: string }) => {
+  const parsed = rejectUserSchema.safeParse(data);
+
+  if (!parsed.success) {
+    throw parsed.error;
+  }
+
+  const { userId } = parsed.data;
+
+  return await api.patch(`${API.ADMIN.USERS}/${userId}/reject`);
 };
 
 // whether an org (with a saved policy) exists yet — drives sidebar gating

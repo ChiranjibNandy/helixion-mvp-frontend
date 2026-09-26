@@ -11,4 +11,9 @@ export const approveUserSchema = z.object({
   }),
 });
 
+export const rejectUserSchema = z.object({
+  userId: z.string().min(1, REQUIRED_ERRORS.USERID),
+});
+
 export type ApproveUserInput = z.infer<typeof approveUserSchema>;
+export type RejectUserInput = z.infer<typeof rejectUserSchema>;
