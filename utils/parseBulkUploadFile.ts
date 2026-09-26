@@ -30,59 +30,8 @@ export interface ValidatedBulkEmployeeRow extends BulkEmployeeRow {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const isYes = (v: unknown) => typeof v === 'string' && v.trim().toLowerCase() === 'yes';
 
-function toRow(raw: Record<string, any>, idx: number): BulkEmployeeRow {
-  const str = (v: unknown) => (v === undefined || v === null ? '' : String(v).trim());
-  return {
-    _rowId: `row-${idx}`,
-    employeeCode: str(raw['Employee Roll No.']),
-    name: str(raw['Name of the employee']),
-    email: str(raw['Email']).toLowerCase(),
-    mobile: str(raw['Mobile']),
-    placeOfPosting: str(raw['Place of Posting']),
-    designation: str(raw['Designation']),
-    department: str(raw['Department']),
-    trainingDeptSenior: isYes(raw['Training Department Officer (CTD)']),
-    osdSenior: isYes(raw['OSD Officer']),
-    isManager: isYes(raw['Manager']),
-    reportingManagerEmail: str(raw['Reporting Manager Email']).toLowerCase(),
-    skipLevel1ManagerEmail: str(raw['Skip Level 1 Manager Email']).toLowerCase(),
-    skipLevel2ManagerEmail: str(raw['Skip Level 2 Manager Email']).toLowerCase(),
-  };
-}
 
-async function parseCsvFile(file: File): Promise<Record<string, any>[]> {
-  const text = await file.text();
-  const result = Papa.parse<Record<string, any>>(text, {
-    header: true,
-    skipEmptyLines: true,
-  });
-  return result.data;
-}
-
-async function parseExcelFile(file: File): Promise<Record<string, any>[]> {
-  const buffer = await file.arrayBuffer();
-  const workbook = XLSX.read(buffer, { type: 'array' });
-  const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-  return XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
-}
-
-/** Parses a .csv, .xls, or .xlsx bulk-upload file into row objects. */
-export async function parseBulkUploadFile(file: File): Promise<BulkEmployeeRow[]> {
-  const name = file.name.toLowerCase();
-  let raw: Record<string, any>[];
-
-  if (name.endsWith('.csv')) {
-    raw = await parseCsvFile(file);
-  } else if (name.endsWith('.xlsx') || name.endsWith('.xls')) {
-    raw = await parseExcelFile(file);
-  } else {
-    throw new Error('Unsupported file type — only .csv, .xls, and .xlsx are supported.');
-  }
-
-  return raw.map(toRow);
-}
 
 /**
  * Client-side pre-flight checks — catches the same class of bugs that
@@ -121,7 +70,10 @@ export function validateBulkEmployeeRows(rows: BulkEmployeeRow[]): ValidatedBulk
     if (!row.employeeCode) {
       escalate('error', 'Missing Employee Roll No.');
     } else if ((codeCounts.get(row.employeeCode) ?? 0) > 1) {
-      escalate('error', `Duplicate Employee Roll No. "${row.employeeCode}" — used by ${codeCounts.get(row.employeeCode)} rows`);
+      escalate(
+        'error',
+        `Duplicate Employee Roll No. "${row.employeeCode}" — used by ${codeCounts.get(row.employeeCode)} rows`
+      );
     }
 
     if (!row.name) {
@@ -133,7 +85,12 @@ export function validateBulkEmployeeRows(rows: BulkEmployeeRow[]): ValidatedBulk
     // Someone with no manager at all (a root/top-of-chain person) has to be
     // created separately via "Add Employee" first, not through this file.
     if (!row.reportingManagerEmail) {
-      escalate('error', 'Missing Reporting Manager Email — every uploaded employee must have a manager. Create a top-of-chain person separately via "Add Employee" first.');
+      escalate(
+        'error',
+        'Missing Reporting Manager Email — every uploaded employee must have a manager. Create a top-of-chain person separately via "Add Employee" first.'
+      );
+    } else if (row.email && row.reportingManagerEmail === row.email) {
+      escalate('error', 'An employee cannot be listed as their own Reporting Manager');
     }
 
     for (const [label, email] of [
