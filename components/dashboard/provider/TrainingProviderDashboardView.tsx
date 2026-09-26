@@ -15,13 +15,11 @@ import { getProviderQuickActions } from "@/constants/provider-quick-actions";
 import { Plus } from "lucide-react";
 import { ROUTES } from "@/constants/navigation";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function TrainingProviderDashboardView({ name }: { name: string }) {
   const [data, setData] = useState<ProviderDashboardResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-   const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,12 +72,24 @@ export default function TrainingProviderDashboardView({ name }: { name: string }
           </h1>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="bg-bgButton border-borderCard text-textSecondary text-xs"  onClick={() => router.push("/dashboard/programs/bulk")}>
-            {t("providerDashboard.quickActions.bulkUpload")}
+          <Button
+            asChild
+            variant="outline"
+            className="bg-bgButton border-borderCard text-textSecondary text-xs"
+          >
+            <Link href={ROUTES.PROVIDER.PROGRAMS.BULK}>
+              {t("providerDashboard.quickActions.bulkUpload")}
+            </Link>
           </Button>
-          <Button className="bg-primary hover:bg-primaryDark text-white text-xs gap-1"  onClick={() => router.push("/dashboard/programs/create")}>
-            <Plus className="size-4" />
-            {t("providerDashboard.quickActions.createProgram")}
+
+          <Button
+            asChild
+            className="bg-primary hover:bg-primaryDark text-white text-xs gap-1"
+          >
+            <Link href={ROUTES.PROVIDER.PROGRAMS.CREATE}>
+              <Plus className="size-4" />
+              {t("providerDashboard.quickActions.createProgram")}
+            </Link>
           </Button>
         </div>
       </div>

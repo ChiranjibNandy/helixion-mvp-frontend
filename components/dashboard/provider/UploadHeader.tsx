@@ -13,8 +13,7 @@ import { downloadSampleTemplate } from '@/utils/downloadTemplate';
 import { PROGRAM_CSV_COLUMNS, SAMPLE_PROGRAM_ROWS } from '@/constants/provider';
 
 
-export default function UploadHeader({
-}) {
+export default function UploadHeader() {
   return (
     <div className="flex justify-between items-start mb-8">
       <PageHeader
@@ -28,15 +27,32 @@ export default function UploadHeader({
           <ChevronDown className="size-4" />
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onSelect={() => downloadSampleTemplate('csv', PROGRAM_CSV_COLUMNS, SAMPLE_PROGRAM_ROWS, 'sample_programs')}>
-            {t('bulkProgram.sampleCsv')}
+        <DropdownMenuContent align="end" className="flex flex-col gap-1 p-1">
+          <DropdownMenuItem asChild>
+            <button
+              onClick={() => downloadSampleTemplate('csv', PROGRAM_CSV_COLUMNS, SAMPLE_PROGRAM_ROWS, 'sample_programs')}
+              className="w-full text-left px-2 py-1.5 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
+            >
+              {t('bulkProgram.sampleCsv')}
+            </button>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => downloadSampleTemplate('xls', PROGRAM_CSV_COLUMNS, SAMPLE_PROGRAM_ROWS, 'sample_programs')}>
-            {t('bulkProgram.sampleXls')}
+
+          <DropdownMenuItem asChild>
+            <button
+              onClick={() => downloadSampleTemplate('xls', PROGRAM_CSV_COLUMNS, SAMPLE_PROGRAM_ROWS, 'sample_programs')}
+              className="w-full text-left px-2 py-1.5 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
+            >
+              {t('bulkProgram.sampleXls')}
+            </button>
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={() => downloadSampleTemplate('xlsx', PROGRAM_CSV_COLUMNS, SAMPLE_PROGRAM_ROWS, 'sample_programs')}>
-            {t('bulkProgram.sampleXlsx')}
+
+          <DropdownMenuItem asChild>
+            <button
+              onClick={() => downloadSampleTemplate('xlsx', PROGRAM_CSV_COLUMNS, SAMPLE_PROGRAM_ROWS, 'sample_programs')}
+              className="w-full text-left px-2 py-1.5 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors"
+            >
+              {t('bulkProgram.sampleXlsx')}
+            </button>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

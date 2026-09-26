@@ -6,8 +6,6 @@ import AppModal from '@/components/ui/app-modal';
 import { providerService, BulkUploadResult } from '@/services/provider.service';
 import { t } from '@/lib/i18n';
 import { toast } from 'sonner';
-import Papa from 'papaparse';
-import * as XLSX from 'xlsx';
 import { PROGRAM_CSV_COLUMNS, OPTIONAL_CSV_COLUMNS } from '@/constants/provider';
 import UploadHeader from './UploadHeader';
 import UploadDropzone from './UploadDropzone';
@@ -25,6 +23,7 @@ export default function BulkProgramUpload() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [uploadResult, setUploadResult] = useState<BulkUploadResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
   const handleReset = () => {
     setSelectedFile(null);
@@ -79,7 +78,12 @@ export default function BulkProgramUpload() {
     const allowedExtensions = ['.csv', '.xls', '.xlsx'];
 
     if (!allowedExtensions.includes(extension)) {
-      toast.error(t('bulkProgram.errorInvalidFile'));
+      toast.error(t('bulkImport.upload.errorFileSize'));
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error(t('bulkProgram.errorFileTooLarge'));
       return;
     }
 
@@ -123,7 +127,7 @@ export default function BulkProgramUpload() {
     }
   };
 
-  
+
   const modalStats = uploadResult
     ? [
       {
@@ -171,7 +175,7 @@ export default function BulkProgramUpload() {
         }}
       />
 
-      <UploadHeader  />
+      <UploadHeader />
 
       {uploadResult ? (
         <UploadResults uploadResult={uploadResult} onReset={handleReset} />
