@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Upload } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import InputField, { Label } from "../../ui/input";
 import { t } from "@/lib/i18n";
@@ -13,6 +15,8 @@ import { useCreateProgram } from "@/hooks/useCreateProgram";
 import AppModal from "../../ui/app-modal";
 import { createProgramFormData, INITIAL_FORM_STATE } from "@/constants/training-provider";
 import { STAY_TYPES } from "@/constants/content";
+import { providerService } from "@/services/provider.service";
+import { getStayOptionPrice } from "@/utils/formatters";
 import LivePreview from "./Live-preview";
 import StayOptionRow from "./Stay-option-row";
 import PageHeader from "@/components/ui/pageHeader";
@@ -29,6 +33,74 @@ export default function CreateTrainingProgram() {
   >(null);
 
   const [form, setForm] = useState<createProgramFormData>(INITIAL_FORM_STATE);
+
+  // ── Duplicate prefill ──────────────────────────────────────────────────────
+  // "Duplicate" on a published program (programs/list) links here with
+  // ?duplicateFrom=<id>. Reuses the same GET /training-provider/programs/:id
+  // call the drafts editor uses (getProgramByIdRepo isn't actually
+  // draft-scoped despite its name/route naming) to fetch full details and
+  // prefill this form as a brand-new, unpublished draft — id/status/counter
+  // are intentionally left out so submitting creates a distinct program.
+  const searchParams = useSearchParams();
+  const duplicateFromId = searchParams.get("duplicateFrom");
+
+  useEffect(() => {
+    if (!duplicateFromId) return;
+
+    (async () => {
+      try {
+        const source = await providerService.getDraftById(duplicateFromId);
+
+        const singleOccupancyFeeValue = getStayOptionPrice(source.stayOptions, "single_occupancy");
+        const twinSharingFeeValue = getStayOptionPrice(source.stayOptions, "twin_sharing");
+        const nonResidentialFeeValue = getStayOptionPrice(source.stayOptions, "non_residential");
+
+        const stayTypes = structuredClone(STAY_TYPES).map((stay) => {
+          if (stay.id === "residential") {
+            return {
+              ...stay,
+              enabled: !!singleOccupancyFeeValue || !!twinSharingFeeValue,
+              options: stay.options.map((opt) => ({
+                ...opt,
+                price:
+                  opt.id === "single"
+                    ? (singleOccupancyFeeValue ? String(singleOccupancyFeeValue) : "")
+                    : opt.id === "twin"
+                    ? (twinSharingFeeValue ? String(twinSharingFeeValue) : "")
+                    : opt.price,
+              })),
+            };
+          }
+          if (stay.id === "non-residential") {
+            return {
+              ...stay,
+              enabled: !!nonResidentialFeeValue,
+              options: stay.options.map((opt) => ({
+                ...opt,
+                price: nonResidentialFeeValue ? String(nonResidentialFeeValue) : "",
+              })),
+            };
+          }
+          return stay;
+        });
+
+        setForm({
+          programTitle: source.title ? `${source.title} (Copy)` : "",
+          startDate: source.startDate ? String(source.startDate).split("T")[0] : "",
+          endDate: source.endDate ? String(source.endDate).split("T")[0] : "",
+          venue: source.venueName || "",
+          city: source.city || "",
+          stayTypes,
+          brochureFile: null,
+          minParticipants: source.minParticipants ? String(source.minParticipants) : "",
+          maxParticipants: source.maxParticipants ? String(source.maxParticipants) : "",
+        });
+      } catch (err) {
+        console.error("Failed to load source program for duplication:", err);
+        toast.error(t("programme.duplicateLoadError"));
+      }
+    })();
+  }, [duplicateFromId]);
 
   // ── Handlers ────────────────────────────────────────────────────────────────
 

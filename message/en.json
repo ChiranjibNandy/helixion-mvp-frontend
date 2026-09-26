@@ -41,7 +41,9 @@
          "enrolledLabel": "Enrolled",
          "enrollButton": "Enrol in Program",
          "enrollingButton": "Enrolling...",
-         "enrollError": "Enrollment failed. Please try again."
+         "enrollError": "Enrollment failed. Please try again.",
+         "confirmedLabel": "Confirmed",
+         "duplicateButton": "Duplicate"
       },
       "fields": {
          "start": "Starts",
@@ -68,7 +70,8 @@
       "createpageDescription": "Publish a single program to the Helixon marketplace.",
       "createdetailsTitle": "Program details",
       "createdetailsDescription": "All fields are required unless marked optional.",
-      "publishProgram": "Publish program"
+      "publishProgram": "Publish program",
+      "duplicateLoadError": "Failed to load the program to duplicate. Please fill in the details manually or try again."
    },
    "enrollment": {
       "title": "My Enrollments",
@@ -784,6 +787,7 @@
          "reimbursement": "Your reimbursement claim has been submitted and is under financial audit/review.",
          "credited": "Congratulations! Your reimbursement has been approved and successfully credited to your bank account.",
          "rejected": "Your enrollment request was not approved. Please contact your reporting manager for more details.",
+         "quotaFull": "This program reached its maximum attendance capacity before your enrollment could be approved. Please contact the Training Provider.",
          "default": "Track the status of your training program enrollment request above."
       },
       "enrolledPrograms": {
@@ -799,7 +803,11 @@
          },
          "browseprogramtoenroll": "Browse programs to enroll",
          "selectAnUpComingProgram": "Please select an upcoming training program from the Programs menu to enroll.",
-         "notEnrollAnyProgram": "You have not enrolled in any training programs yet."
+         "notEnrollAnyProgram": "You have not enrolled in any training programs yet.",
+         "badgeLabels": {
+            "rejected": "Rejected",
+            "rejectedQuotaFull": "Rejected - Program Full"
+         }
       }
    },
    "add": {
