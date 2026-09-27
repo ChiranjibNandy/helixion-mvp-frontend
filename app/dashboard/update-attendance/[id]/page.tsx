@@ -1,7 +1,7 @@
 "use client";
 
-import { ManageAttendancePage } from "@/components/dashboard/update-attendance/ManageAttendancePage";
+import { AttendanceGrid } from "@/components/training-provider/AttendanceGrid";
 
 export default function ManageAttendanceRoutePage() {
-  return <ManageAttendancePage />;
+  return <AttendanceGrid />;
 }

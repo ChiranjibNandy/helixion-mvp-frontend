@@ -7,6 +7,8 @@ export interface Program {
   enrolledCount: number;
   maxParticipants: number;
   fillRate: number;
+  /** Authoritative "sent to TP" count — see backend Program.confirmedEnrollmentCount */
+  confirmedEnrollmentCount: number;
 }
 
 

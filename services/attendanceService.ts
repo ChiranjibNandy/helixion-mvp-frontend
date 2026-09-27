@@ -5,19 +5,52 @@ export interface Program {
   _id: string;
   title: string;
   startDate: string;
+  endDate?: string;
   venueName: string;
   status: string;
 }
 
-export interface Participant {
-  id: string;
-  username: string;
-  email: string;
+export type AttendanceDayStatus = "present" | "absent";
+
+export interface AttendanceDayEntry {
+  status: AttendanceDayStatus;
+  markedAt: string;
 }
 
-export interface AttendanceRecord {
-  participantId: string;
-  present_status: "present" | "absent";
+export interface AttendanceEnrollmentRow {
+  enrollmentId: string;
+  employeeId: string;
+  employeeName: string;
+  employeeEmail: string;
+  department: string;
+  attendanceByDay: Record<string, AttendanceDayEntry | null>;
+  notes: string;
+  totalPresent: number;
+  totalAbsent: number;
+  totalPending: number;
+  isComplete: boolean;
+  hasAttendanceMarked: boolean;
+}
+
+export interface AttendanceGridResponse {
+  programId: string;
+  programTitle: string;
+  programDates: { start: string; end: string; totalDays: number };
+  enrollments: AttendanceEnrollmentRow[];
+  summary: {
+    byDay: Record<string, { present: number; absent: number; pending: number }>;
+    totalEnrollments: number;
+    programHasAttendance: boolean;
+  };
+  pagination: { page: number; limit: number; total: number; totalPages: number };
+}
+
+export interface AttendanceGridQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: "name" | "email";
+  sortOrder?: "asc" | "desc";
 }
 
 export const attendanceService = {
@@ -33,36 +66,26 @@ export const attendanceService = {
     }
   },
 
-  getParticipants: async (programId: string) => {
-    try {
-      const response = await api.get(API.TRAININGPROVIDER.PARTICIPANTS(programId));
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching participants:", error);
-      throw error;
-    }
+  getAttendanceGrid: async (programId: string, query: AttendanceGridQuery = {}): Promise<AttendanceGridResponse> => {
+    const response = await api.get(API.TRAININGPROVIDER.ATTENDANCE(programId), { params: query });
+    return response.data.data;
   },
 
-  getAttendance: async (programId: string) => {
-    try {
-      const response = await api.get(API.TRAININGPROVIDER.ATTENDANCE(programId));
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching attendance:", error);
-      throw error;
-    }
+  markAttendanceDay: async (
+    programId: string,
+    enrollmentId: string,
+    date: string,
+    status: AttendanceDayStatus | null
+  ) => {
+    const response = await api.patch(API.TRAININGPROVIDER.ATTENDANCE_SINGLE(programId, enrollmentId), {
+      date,
+      status,
+    });
+    return response.data.data;
   },
 
-  saveAttendance: async (programId: string, date: string, participants: AttendanceRecord[]) => {
-    try {
-      const response = await api.put(API.TRAININGPROVIDER.ATTENDANCE(programId), {
-        date,
-        participants,
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error saving attendance:", error);
-      throw error;
-    }
+  updateAttendanceNotes: async (programId: string, enrollmentId: string, notes: string) => {
+    const response = await api.patch(API.TRAININGPROVIDER.ATTENDANCE_NOTES(programId, enrollmentId), { notes });
+    return response.data.data;
   },
 };
