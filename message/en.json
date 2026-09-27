@@ -13,6 +13,19 @@
       "defaultVenue": "Venue — not set",
       "noprogramsfoundsearch": "No programs found for your search",
       "noprogramsAvailable": "No programs available",
+      "edit": {
+         "title": "Edit Program Details",
+         "description": "Update core details and participant limits for your published program.",
+         "confirmTitle": "Save Changes",
+         "confirmDescription": "Are you sure you want to update the core details of this published program?",
+         "successTitle": "Program Updated Successfully!",
+         "successDescription": "Your changes have been saved and applied.",
+         "validation": {
+            "title":"Warning",
+            "maxParticipants":"Maximum Participant Reach",
+            "maxParticipantsError": "Maximum participants must be greater than or equal to minimum participants."
+         }
+      },
       "list": {
          "title": "Listed Training Programs",
          "description": "Select a program to view details and enroll",
@@ -34,6 +47,7 @@
          "detailVenueLabel": "Venue",
          "detailStayTypeLabel": "Stay Type",
          "stayTypeSingle": "Single Occupancy",
+         "dayScholar": "Day Scholar",
          "stayTypeTwin": "Twin Sharing",
          "stayTypeNonResidential": "Non-Residential",
          "fetchError": "Failed to load programs. Please try again.",
@@ -41,7 +55,9 @@
          "enrolledLabel": "Enrolled",
          "enrollButton": "Enrol in Program",
          "enrollingButton": "Enrolling...",
-         "enrollError": "Enrollment failed. Please try again."
+         "enrollError": "Enrollment failed. Please try again.",
+         "confirmedLabel": "Confirmed",
+         "duplicateButton": "Duplicate"
       },
       "fields": {
          "start": "Starts",
@@ -68,7 +84,8 @@
       "createpageDescription": "Publish a single program to the Helixon marketplace.",
       "createdetailsTitle": "Program details",
       "createdetailsDescription": "All fields are required unless marked optional.",
-      "publishProgram": "Publish program"
+      "publishProgram": "Publish program",
+      "duplicateLoadError": "Failed to load the program to duplicate. Please fill in the details manually or try again."
    },
    "enrollment": {
       "title": "My Enrollments",
@@ -154,11 +171,15 @@
       "done": "Done",
       "send": "Send",
       "confirm": "Confirm & Approve",
+      "reject": "Reject",
       "preview": "preview",
       "browse": "Browse",
       "saveDraft": "Save draft",
       "submitTourDetails": "Submit Tour Details",
-      "submitted": "Submitted"
+      "submitted": "Submitted",
+      "saveChanges": "Save Changes",
+      "viewPrograms": "View Programs",
+      "backToPrograms": "Back to Programs"
    },
    "password": {
       "description": "Choose a strong password you haven’t used before.",
@@ -270,6 +291,12 @@
          "cancel": "Cancel",
          "saveChanges": "Save changes",
          "successToast": "{name} was updated successfully."
+      },
+      "rejectUser": {
+         "title": "Reject User",
+         "warning": "Warning: This action can't be undone",
+         "successTitle": "User Rejected Successfully",
+         "successDescription": "The user has been rejected successfully."
       },
       "approveUser": {
          "title": "Approve User",
@@ -491,24 +518,24 @@
       "columnStartDate": "Start date",
       "columnVenue": "Venue",
       "columnStatus": "Status",
-      "rowsPerPage": "Rows per page:",
       "updateButton": "Update attendance →",
-      "participantList": "Participant list",
-      "columnName": "# Name",
-      "columnPresent": "Present",
-      "columnAbsent": "Absent",
+      "errorLoadPrograms": "Failed to load programs"
+   },
+   "dailyAttendanceGrid": {
+      "searchPlaceholder": "Search by name or email...",
+      "exportCsv": "Export CSV",
       "backButton": "← Back",
-      "saveButton": "Save attendance",
-      "confirmModalTitle": "Save attendance?",
-      "confirmModalDesc": "You are saving attendance for {program}. This will update records for {count} participants.",
-      "confirmDisagree": "Disagree",
-      "confirmAgree": "Agree",
-      "successModalTitle": "Attendance saved!",
-      "successModalDesc": "Attendance for {program} has been recorded successfully.",
-      "successOkay": "Okay",
-      "errorLoadPrograms": "Failed to load programs",
-      "errorLoadParticipants": "Failed to load participants",
-      "errorSaveAttendance": "Failed to save attendance"
+      "columnName": "Name",
+      "columnPresent": "P",
+      "columnAbsent": "A",
+      "columnPending": "Pending",
+      "columnNotes": "Notes",
+      "notesPlaceholder": "Add a note...",
+      "dailyTotals": "Daily totals",
+      "noEnrollments": "No enrollments found.",
+      "errorSaveDay": "Failed to save attendance for that day — please try again.",
+      "errorSaveNotes": "Failed to save notes — please try again.",
+      "errorLoadGrid": "Failed to load attendance"
    },
    "providerDashboard": {
       "welcome": "Welcome back, {name} — here's what's running today.",
@@ -787,6 +814,7 @@
          "reimbursement": "Your reimbursement claim has been submitted and is under financial audit/review.",
          "credited": "Congratulations! Your reimbursement has been approved and successfully credited to your bank account.",
          "rejected": "Your enrollment request was not approved. Please contact your reporting manager for more details.",
+         "quotaFull": "This program reached its maximum attendance capacity before your enrollment could be approved. Please contact the Training Provider.",
          "default": "Track the status of your training program enrollment request above."
       },
       "enrolledPrograms": {
@@ -802,7 +830,11 @@
          },
          "browseprogramtoenroll": "Browse programs to enroll",
          "selectAnUpComingProgram": "Please select an upcoming training program from the Programs menu to enroll.",
-         "notEnrollAnyProgram": "You have not enrolled in any training programs yet."
+         "notEnrollAnyProgram": "You have not enrolled in any training programs yet.",
+         "badgeLabels": {
+            "rejected": "Rejected",
+            "rejectedQuotaFull": "Rejected - Program Full"
+         }
       }
    },
    "add": {

@@ -4,6 +4,13 @@ import Badge from "@/components/ui/badge";
 import { ENROLLMENT_STAGE } from "../EnrollmentStepsTracker";
 import { formatDateHyphenated } from "@/utils/formatters";
 
+enum ENROLLMENT_BADGE_LABEL {
+    COMPLETED = "Completed",
+    APPROVED = "Approved",
+    PENDING = "Pending",
+    IN_PROGRESS = "In Progress",
+}
+
 export const getProgramDetails = (enrollment: any) => {
     if (!enrollment) return {};
     const program = enrollment.programId;
@@ -34,7 +41,9 @@ export const getStatusMessage = (enrollment: any, t: (key: string) => string) =>
         return t("approvalProgress.statusMessages.credited");
     }
     if (stage === ENROLLMENT_STAGE.REJECTED) {
-        return t("approvalProgress.statusMessages.rejected");
+        return enrollment.rejectionReason === "quota_full"
+            ? t("approvalProgress.statusMessages.quotaFull")
+            : t("approvalProgress.statusMessages.rejected");
     }
     return t("approvalProgress.statusMessages.default");
 };
@@ -52,12 +61,20 @@ const getBadgeStatus = (stage: string) => {
     return "in_progress";
 };
 
-const getBadgeLabel = (stage: string) => {
-    if (stage === ENROLLMENT_STAGE.REJECTED) return "Rejected";
-    if (stage === ENROLLMENT_STAGE.COMPLETED) return "Completed";
-    if (stage === ENROLLMENT_STAGE.APPROVED) return "Approved";
-    if (stage === ENROLLMENT_STAGE.SUBMITTED) return "Pending";
-    return "In Progress";
+// rejectionReason is optional and only ever set when currentStage is
+// REJECTED — mirrors the backend's ENROLLMENT_REJECTION_REASON enum
+// (helixion-mvp-backend/src/constants/enum.ts), same manual-sync caveat as
+// ENROLLMENT_STAGE above.
+const getBadgeLabel = (stage: string, rejectionReason: string | undefined, t: (key: string) => string) => {
+    if (stage === ENROLLMENT_STAGE.REJECTED) {
+        return rejectionReason === "quota_full"
+            ? t("approvalProgress.enrolledPrograms.badgeLabels.rejectedQuotaFull")
+            : t("approvalProgress.enrolledPrograms.badgeLabels.rejected");
+    }
+    if (stage === ENROLLMENT_STAGE.COMPLETED) return ENROLLMENT_BADGE_LABEL.COMPLETED;
+    if (stage === ENROLLMENT_STAGE.APPROVED) return ENROLLMENT_BADGE_LABEL.APPROVED;
+    if (stage === ENROLLMENT_STAGE.SUBMITTED) return ENROLLMENT_BADGE_LABEL.PENDING;
+    return ENROLLMENT_BADGE_LABEL.IN_PROGRESS;
 };
 
 export const createEnrollmentColumns = (
@@ -131,7 +148,7 @@ export const createEnrollmentColumns = (
                         status={isRejected ? undefined : (getBadgeStatus(enrollment.currentStage) as any)}
                         className="capitalize px-3 py-1"
                     >
-                        {getBadgeLabel(enrollment.currentStage)}
+                        {getBadgeLabel(enrollment.currentStage, enrollment.rejectionReason, t)}
                     </Badge>
                 );
             },
