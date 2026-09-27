@@ -58,8 +58,9 @@ export const API = {
       PARTICIPANTS:     (id: string) => `/training-provider/programs/${id}/participants`,
       ATTENDANCE:       (id: string) => `/training-provider/programs/${id}/attendance`,
       ATTENDANCE_SINGLE:(id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}`,
+      PROGRAM_LIST:      '/training-provider/programs/list',
+      UPDATE_PROGRAM:   (id: string) => `/training-provider/program/${id}`,
       ATTENDANCE_NOTES: (id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}/notes`,
-      PROGRAM_LIST:      '/training-provider/programs/list'
    },
    NOTIFICATION:{
       READ:(id:string) => `/notifications/${id}/read`,

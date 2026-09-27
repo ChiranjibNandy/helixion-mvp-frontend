@@ -13,6 +13,19 @@
       "defaultVenue": "Venue — not set",
       "noprogramsfoundsearch": "No programs found for your search",
       "noprogramsAvailable": "No programs available",
+      "edit": {
+         "title": "Edit Program Details",
+         "description": "Update core details and participant limits for your published program.",
+         "confirmTitle": "Save Changes",
+         "confirmDescription": "Are you sure you want to update the core details of this published program?",
+         "successTitle": "Program Updated Successfully!",
+         "successDescription": "Your changes have been saved and applied.",
+         "validation": {
+            "title":"Warning",
+            "maxParticipants":"Maximum Participant Reach",
+            "maxParticipantsError": "Maximum participants must be greater than or equal to minimum participants."
+         }
+      },
       "list": {
          "title": "Listed Training Programs",
          "description": "Select a program to view details and enroll",
@@ -34,6 +47,7 @@
          "detailVenueLabel": "Venue",
          "detailStayTypeLabel": "Stay Type",
          "stayTypeSingle": "Single Occupancy",
+         "dayScholar": "Day Scholar",
          "stayTypeTwin": "Twin Sharing",
          "stayTypeNonResidential": "Non-Residential",
          "fetchError": "Failed to load programs. Please try again.",
@@ -162,7 +176,10 @@
       "browse": "Browse",
       "saveDraft": "Save draft",
       "submitTourDetails": "Submit Tour Details",
-      "submitted": "Submitted"
+      "submitted": "Submitted",
+      "saveChanges": "Save Changes",
+      "viewPrograms": "View Programs",
+      "backToPrograms": "Back to Programs"
    },
    "password": {
       "description": "Choose a strong password you haven’t used before.",

@@ -1,16 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePrograms } from "@/hooks/UseProgramReturn";
 import DataTable from "@/components/shared/data-table";
 import PaginationController from "@/components/ui/pagination";
-import ProgramActions from "@/components/dashboard/provider/ProgramActions";
 import { Program } from "@/types/program";
 import { ROUTES } from "@/constants/navigation";
 import { t } from "@/lib/i18n";
+import ProgramActions from "@/components/dashboard/provider/ProgramActions";
 
 export default function ProgramsPage() {
    const router = useRouter();
@@ -30,9 +30,14 @@ export default function ProgramsPage() {
          key: "title",
          header: t("programme.title"),
          render: (program: Program) => (
-            <span className="font-medium text-sm">
-               {program.title}
-            </span>
+            <div className="min-w-[220px] max-w-[320px]">
+               <span
+                  className="block truncate text-sm font-semibold text-textPrimary"
+                  title={program.title}
+               >
+                  {program.title}
+               </span>
+            </div>
          ),
       },
 
@@ -40,15 +45,12 @@ export default function ProgramsPage() {
          key: "startDate",
          header: t("programme.date"),
          render: (program: Program) => (
-            <span className="text-xs text-textSidebarMuted">
-               {new Date(program.startDate).toLocaleDateString(
-                  "en-GB",
-                  {
-                     day: "2-digit",
-                     month: "short",
-                     year: "numeric",
-                  }
-               )}
+            <span className="whitespace-nowrap text-sm text-textSidebarMuted">
+               {new Date(program.startDate).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+               })}
             </span>
          ),
       },
@@ -57,9 +59,15 @@ export default function ProgramsPage() {
          key: "enrolledCount",
          header: t("programme.list.enrolledLabel"),
          render: (program: Program) => (
-            <span className="text-sm font-medium">
-               {program.enrolledCount} / {program.maxParticipants}
-            </span>
+            <div className="flex items-center">
+               <span className="rounded-md bg-bgStatCard px-2.5 py-1 text-sm font-semibold text-textPrimary">
+                  {program.enrolledCount}
+                  <span className="mx-1 text-textSidebarMuted">/</span>
+                  <span className="text-textSidebarMuted">
+                     {program.maxParticipants}
+                  </span>
+               </span>
+            </div>
          ),
       },
 
@@ -67,10 +75,16 @@ export default function ProgramsPage() {
          key: "fillRate",
          header: t("providerDashboard.livePrograms.columns.fill"),
          render: (program: Program) => (
-            <div className="w-16">
-               <div className="h-1.5 w-full rounded-full bg-bgStatCard overflow-hidden">
+            <div className="flex w-24 flex-col gap-1.5">
+               <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-textPrimary">
+                     {Math.round(program.fillRate)}%
+                  </span>
+               </div>
+
+               <div className="h-1.5 w-full overflow-hidden rounded-full bg-bgStatCard">
                   <div
-                     className="h-full rounded-full bg-primary transition-all"
+                     className="h-full rounded-full bg-primary transition-all duration-300"
                      style={{
                         width: `${ Math.min(program.fillRate, 100) }%`,
                      }}
@@ -84,9 +98,15 @@ export default function ProgramsPage() {
          key: "confirmedEnrollmentCount",
          header: t("programme.list.confirmedLabel"),
          render: (program: Program) => (
-            <span className="text-sm font-medium">
-               {program.confirmedEnrollmentCount ?? 0} / {program.maxParticipants}
-            </span>
+            <div className="flex items-center">
+               <span className="rounded-md bg-primary/10 px-2.5 py-1 text-sm font-semibold text-primary">
+                  {program.confirmedEnrollmentCount ?? 0}
+                  <span className="mx-1 opacity-50">/</span>
+                  <span className="opacity-70">
+                     {program.maxParticipants}
+                  </span>
+               </span>
+            </div>
          ),
       },
 
@@ -94,15 +114,39 @@ export default function ProgramsPage() {
          key: "actions",
          header: "",
          render: (program: Program) => (
-            <ProgramActions
-               onDuplicate={() =>
-                  router.push(`${ ROUTES.PROVIDER.PROGRAMS.CREATE }?duplicateFrom=${ program._id }`)
-               }
-            />
+            <div className="flex items-center justify-end gap-1">
+               <ProgramActions
+                  onDuplicate={() =>
+                     router.push(
+                        `${ ROUTES.PROVIDER.PROGRAMS.CREATE }?duplicateFrom=${ program._id }`
+                     )
+                  }
+               />
+
+               <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() =>
+                     router.push(
+                        `/dashboard/programs/edit-published/${ program._id }`
+                     )
+                  }
+                  className="
+                  h-8 w-8
+                  rounded-md
+                  text-textSidebarMuted
+                  transition-colors
+                  hover:bg-bgButton
+                  hover:text-white
+               "
+                  title="Edit Program"
+               >
+                  <Pencil size={15} />
+               </Button>
+            </div>
          ),
       },
    ];
-
    return (
       <div className="flex flex-col gap-5">
 
