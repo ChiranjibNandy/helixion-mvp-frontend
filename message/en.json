@@ -315,7 +315,7 @@
       },
       "header": {
          "title": "Bulk import users",
-         "description": "Upload a CSV to approve pending users and assign roles in one step. Each row is validated before any changes are committed."
+         "description": "Upload a spreadsheet (.csv, .xls, or .xlsx) to approve pending users and assign roles in bulk. All rows are validated before changes are applied."
       },
       "formats": {
          "label": "Supported formats",
@@ -330,7 +330,7 @@
       },
       "template": {
          "stepLabel": "Step 1 — Download template",
-         "fileName": "roles_import_template.csv",
+         "fileName": "roles_import_template (CSV / Excel)",
          "description": "Columns: email, role, action · Valid roles: employee · training_provider · admin · Actions: approve · update",
          "downloadButton": "Download"
       },
@@ -340,7 +340,7 @@
          "hint": ".xlsx available on paid plan · Max 50 rows",
          "processing": "Processing file...",
          "errorTitle": "Upload Error",
-         "errorInvalidType": "Please upload a CSV file (.csv)",
+         "errorInvalidType": "Please upload a CSV or Excel file (.csv or .xlsx or xls)",
          "errorFileSize": "File size must be under 5MB",
          "errorNoData": "No valid data found in the file. Ensure it has an \"email\" column.",
          "errorMaxRows": "Maximum 50 rows allowed per batch. Your file contains {count} rows.",
@@ -408,11 +408,14 @@
       "pageTitleFull": "Bulk Upload Programs | Helixion Training Provider",
       "breadcrumb": "PROGRAMS - BATCH PUBLISH",
       "sectionTitle": "Bulk upload programs",
-      "sectionDescription": "Upload a CSV to create many programs at once. Preview before publishing.",
-      "trySample": "Try sample CSV",
-      "dropLabel": "Drop your CSV here, or click to browse",
+      "sectionDescription": "Upload a CSV, XLS, or XLSX file to create many programs at once. Preview before publishing.",
+      "trySample": "Try sample Files",
+      "sampleCsv": "Try sample CSV",
+      "sampleXls": "Try sample XLS",
+      "sampleXlsx": "Try sample XLSX",
+      "dropLabel": "Drop your CSV, XLS, or XLSX file here, or click to browse",
       "expectedColumns": "Expected columns: title, startDate, endDate, venue, city, state (optional), isResidential, stayType (single_occupancy/twin_sharing), singleOccupancyFee, twinSharingFee, nonResidentialFee, brochureUrl (optional), minParticipants, maxParticipants, status",
-      "footerHint": "Max 500 rows per file - Duplicates will be flagged in preview",
+      "footerHint": "Supported formats: CSV, XLS, XLSX. Maximum file size: 5MB.",
       "preview": "Preview: {fileName} (Showing top 5 rows)",
       "publishButton": "Save to drafts",
       "publishing": "Publishing...",
@@ -423,9 +426,10 @@
       "rowsFailed": "{count} rows failed",
       "rowErrors": "Row-level errors",
       "successTitle": "Programs published!",
+      "draftSuccess": "Programs drafted!",
       "successDescription": "{count} programs have been created successfully and are ready for review.",
       "partialSuccessDescription": "{inserted} programs created. {failed} rows had validation errors.",
-      "errorInvalidFile": "Please upload a valid CSV file.",
+      "errorInvalidFile": "Please upload a valid CSV, XLS, or XLSX file.",
       "errorEmptyFile": "CSV file appears to be empty or invalid.",
       "errorParseFailed": "Failed to parse CSV preview.",
       "errorMissingFields": "All fields except brochureUrl are required.",
@@ -569,13 +573,13 @@
             "link": "Start →"
          },
          "batchPublish": {
-            "title": "Batch publish via CSV",
-            "desc": "Upload a CSV to publish multiple programs at once.",
+            "title": "Batch publish via spreadsheet",
+            "desc": "Upload a CSV or Excel file to publish multiple programs at once.",
             "link": "Upload →"
          },
          "exportEnrolment": {
             "title": "Export enrolment data",
-            "desc": "Download attendee data per program as CSV.",
+            "desc": "Download attendee data per program as CSV or Excel.",
             "link": "Export →"
          }
       }

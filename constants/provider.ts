@@ -76,9 +76,28 @@ export const PROGRAM_CSV_COLUMNS = [
   'title', 'startDate', 'endDate', 'venue', 'city', 'state', 'isResidential', 'stayType',
   'singleOccupancyFee', 'twinSharingFee', 'nonResidentialFee',
   'brochureUrl', 'minParticipants', 'maxParticipants', 'status',
-] as const;
+];
 
 /** Columns that are optional even though listed above — excluded from the "required" checks in BulkProgramUpload.tsx */
 export const OPTIONAL_CSV_COLUMNS = ['brochureUrl', 'state'] as const;
 
-export const SAMPLE_CSV_ROW = 'Leadership Workshop,2026-06-01,2026-06-03,Taj Lands End,Mumbai,Maharashtra,true,single_occupancy,15000,12000,8000,,10,50,draft';
+// Fixed as a proper 2D array matching the headers length
+export const SAMPLE_PROGRAM_ROWS = [
+  [
+    'Leadership Workshop',
+    '2026-06-01',
+    '2026-06-03',
+    'Taj Lands End',
+    'Mumbai',
+    'Maharashtra',
+    true,
+    'single_occupancy',
+    15000,
+    12000,
+    8000,
+    '',
+    10,
+    50,
+    'draft',
+  ],
+];

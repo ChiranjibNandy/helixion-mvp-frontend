@@ -72,7 +72,7 @@ export default function CreateTrainingProgram() {
         });
 
         setForm({
-          programTitle: source.title ? `${ source.title } (Copy)` : "",
+          title: source.title ? `${ source.title } (Copy)` : "",
           startDate: source.startDate ? String(source.startDate).split("T")[0] : "",
           endDate: source.endDate ? String(source.endDate).split("T")[0] : "",
           venue: source.venueName || "",
@@ -151,7 +151,7 @@ export default function CreateTrainingProgram() {
         : undefined;
 
     const payload = {
-      title: form.programTitle,
+      title: form.title,
       startDate: form.startDate || undefined,
       endDate: form.endDate || undefined,
       venue: form.venue || undefined,
@@ -164,6 +164,7 @@ export default function CreateTrainingProgram() {
       maxParticipants: form.maxParticipants ? Number(form.maxParticipants) : undefined,
       status: actionType,
     };
+    console.log(payload)
 
     const success = await createProgram(payload);
 

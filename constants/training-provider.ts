@@ -2,7 +2,7 @@ import { StayType } from "@/types";
 import { STAY_TYPES } from "./content";
 
 export interface createProgramFormData {
-  programTitle: string;
+  title: string;
   startDate: string;
   endDate: string;
   venue: string;
@@ -14,7 +14,7 @@ export interface createProgramFormData {
 }
 
 export const INITIAL_FORM_STATE: createProgramFormData = {
-  programTitle: "",
+  title: "",
   startDate: "",
   endDate: "",
   venue: "",
