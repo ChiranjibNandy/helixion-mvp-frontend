@@ -1,9 +1,9 @@
 {
    "programme": {
-      "title":"PROGRAM",
-      "date":"DATE",
-      "currentlyTracking":"Currently Tracking",
-      "unknownProgram":"Unknown Program",
+      "title": "PROGRAM",
+      "date": "DATE",
+      "currentlyTracking": "Currently Tracking",
+      "unknownProgram": "Unknown Program",
       "available": "Available Programmes",
       "empty": "No programmes available right now.",
       "enrol": "Enrol",
@@ -11,8 +11,21 @@
       "howToSee": "How participants will see this program",
       "defaultTitle": "Program title appears here",
       "defaultVenue": "Venue — not set",
-      "noprogramsfoundsearch":"No programs found for your search",
-      "noprogramsAvailable":"No programs available",
+      "noprogramsfoundsearch": "No programs found for your search",
+      "noprogramsAvailable": "No programs available",
+      "edit": {
+         "title": "Edit Program Details",
+         "description": "Update core details and participant limits for your published program.",
+         "confirmTitle": "Save Changes",
+         "confirmDescription": "Are you sure you want to update the core details of this published program?",
+         "successTitle": "Program Updated Successfully!",
+         "successDescription": "Your changes have been saved and applied.",
+         "validation": {
+            "title":"Warning",
+            "maxParticipants":"Maximum Participant Reach",
+            "maxParticipantsError": "Maximum participants must be greater than or equal to minimum participants."
+         }
+      },
       "list": {
          "title": "Listed Training Programs",
          "description": "Select a program to view details and enroll",
@@ -35,6 +48,7 @@
          "detailVenueLabel": "Venue",
          "detailStayTypeLabel": "Stay Type",
          "stayTypeSingle": "Single Occupancy",
+         "dayScholar": "Day Scholar",
          "stayTypeTwin": "Twin Sharing",
          "stayTypeNonResidential": "Non-Residential",
          "fetchError": "Failed to load programs. Please try again.",
@@ -42,7 +56,9 @@
          "enrolledLabel": "Enrolled",
          "enrollButton": "Enrol in Program",
          "enrollingButton": "Enrolling...",
-         "enrollError": "Enrollment failed. Please try again."
+         "enrollError": "Enrollment failed. Please try again.",
+         "confirmedLabel": "Confirmed",
+         "duplicateButton": "Duplicate"
       },
       "fields": {
          "start": "Starts",
@@ -61,15 +77,16 @@
          "attachBrochure": "Attach brochure",
          "minimumParticipants": "Minimum participants",
          "maximumParticipants": "Maximum participants",
-         "brochure":"Brochure",
-         "notes":"Notes",
-         "noNotesAvailable":"No notes available"
+         "brochure": "Brochure",
+         "notes": "Notes",
+         "noNotesAvailable": "No notes available"
       },
       "createpageTitle": "Create new training program",
       "createpageDescription": "Publish a single program to the Helixon marketplace.",
       "createdetailsTitle": "Program details",
       "createdetailsDescription": "All fields are required unless marked optional.",
-      "publishProgram": "Publish program"
+      "publishProgram": "Publish program",
+      "duplicateLoadError": "Failed to load the program to duplicate. Please fill in the details manually or try again."
    },
    "enrollment": {
       "title": "My Enrollments",
@@ -78,7 +95,7 @@
          "pending": "Not started",
          "active": "In progress",
          "completed": "Completed",
-         "pend":"Pending"
+         "pend": "Pending"
       }
    },
    "dashboard": {
@@ -105,11 +122,11 @@
       "loading": "Loading...",
       "error": "Something went wrong. Please try again.",
       "success": "Success",
-      "n/a":"N/A",
-      "notAvailable":"Not Available",
-      "failedToLoad":"Failed to load details.",
-      "required":"Required",
-      "notRequired":"Not Required",
+      "n/a": "N/A",
+      "notAvailable": "Not Available",
+      "failedToLoad": "Failed to load details.",
+      "required": "Required",
+      "notRequired": "Not Required",
       "cancel": "Cancel",
       "save": "Save",
       "edit": "Edit",
@@ -155,11 +172,15 @@
       "done": "Done",
       "send": "Send",
       "confirm": "Confirm & Approve",
+      "reject": "Reject",
       "preview": "preview",
       "browse": "Browse",
       "saveDraft": "Save draft",
-      "submitTourDetails":"Submit Tour Details",
-      "submitted":"Submitted"
+      "submitTourDetails": "Submit Tour Details",
+      "submitted": "Submitted",
+      "saveChanges": "Save Changes",
+      "viewPrograms": "View Programs",
+      "backToPrograms": "Back to Programs"
    },
    "password": {
       "description": "Choose a strong password you haven’t used before.",
@@ -272,6 +293,12 @@
          "saveChanges": "Save changes",
          "successToast": "{name} was updated successfully."
       },
+      "rejectUser": {
+         "title": "Reject User",
+         "warning": "Warning: This action can't be undone",
+         "successTitle": "User Rejected Successfully",
+         "successDescription": "The user has been rejected successfully."
+      },
       "approveUser": {
          "title": "Approve User",
          "selectRole": "Select role",
@@ -289,7 +316,7 @@
       },
       "header": {
          "title": "Bulk import users",
-         "description": "Upload a CSV to approve pending users and assign roles in one step. Each row is validated before any changes are committed."
+         "description": "Upload a spreadsheet (.csv, .xls, or .xlsx) to approve pending users and assign roles in bulk. All rows are validated before changes are applied."
       },
       "formats": {
          "label": "Supported formats",
@@ -304,7 +331,7 @@
       },
       "template": {
          "stepLabel": "Step 1 — Download template",
-         "fileName": "roles_import_template.csv",
+         "fileName": "roles_import_template (CSV / Excel)",
          "description": "Columns: email, role, action · Valid roles: employee · training_provider · admin · Actions: approve · update",
          "downloadButton": "Download"
       },
@@ -314,7 +341,7 @@
          "hint": ".xlsx available on paid plan · Max 50 rows",
          "processing": "Processing file...",
          "errorTitle": "Upload Error",
-         "errorInvalidType": "Please upload a CSV file (.csv)",
+         "errorInvalidType": "Please upload a CSV or Excel file (.csv or .xlsx or xls)",
          "errorFileSize": "File size must be under 5MB",
          "errorNoData": "No valid data found in the file. Ensure it has an \"email\" column.",
          "errorMaxRows": "Maximum 50 rows allowed per batch. Your file contains {count} rows.",
@@ -382,11 +409,14 @@
       "pageTitleFull": "Bulk Upload Programs | Helixion Training Provider",
       "breadcrumb": "PROGRAMS - BATCH PUBLISH",
       "sectionTitle": "Bulk upload programs",
-      "sectionDescription": "Upload a CSV to create many programs at once. Preview before publishing.",
-      "trySample": "Try sample CSV",
-      "dropLabel": "Drop your CSV here, or click to browse",
+      "sectionDescription": "Upload a CSV, XLS, or XLSX file to create many programs at once. Preview before publishing.",
+      "trySample": "Try sample Files",
+      "sampleCsv": "Try sample CSV",
+      "sampleXls": "Try sample XLS",
+      "sampleXlsx": "Try sample XLSX",
+      "dropLabel": "Drop your CSV, XLS, or XLSX file here, or click to browse",
       "expectedColumns": "Expected columns: title, startDate, endDate, venue, city, state (optional), isResidential, stayType (single_occupancy/twin_sharing), singleOccupancyFee, twinSharingFee, nonResidentialFee, brochureUrl (optional), minParticipants, maxParticipants, status",
-      "footerHint": "Max 500 rows per file - Duplicates will be flagged in preview",
+      "footerHint": "Supported formats: CSV, XLS, XLSX. Maximum file size: 5MB.",
       "preview": "Preview: {fileName} (Showing top 5 rows)",
       "publishButton": "Save to drafts",
       "publishing": "Publishing...",
@@ -397,9 +427,10 @@
       "rowsFailed": "{count} rows failed",
       "rowErrors": "Row-level errors",
       "successTitle": "Programs published!",
+      "draftSuccess": "Programs drafted!",
       "successDescription": "{count} programs have been created successfully and are ready for review.",
       "partialSuccessDescription": "{inserted} programs created. {failed} rows had validation errors.",
-      "errorInvalidFile": "Please upload a valid CSV file.",
+      "errorInvalidFile": "Please upload a valid CSV, XLS, or XLSX file.",
       "errorEmptyFile": "CSV file appears to be empty or invalid.",
       "errorParseFailed": "Failed to parse CSV preview.",
       "errorMissingFields": "All fields except brochureUrl are required.",
@@ -488,24 +519,24 @@
       "columnStartDate": "Start date",
       "columnVenue": "Venue",
       "columnStatus": "Status",
-      "rowsPerPage": "Rows per page:",
       "updateButton": "Update attendance →",
-      "participantList": "Participant list",
-      "columnName": "# Name",
-      "columnPresent": "Present",
-      "columnAbsent": "Absent",
+      "errorLoadPrograms": "Failed to load programs"
+   },
+   "dailyAttendanceGrid": {
+      "searchPlaceholder": "Search by name or email...",
+      "exportCsv": "Export CSV",
       "backButton": "← Back",
-      "saveButton": "Save attendance",
-      "confirmModalTitle": "Save attendance?",
-      "confirmModalDesc": "You are saving attendance for {program}. This will update records for {count} participants.",
-      "confirmDisagree": "Disagree",
-      "confirmAgree": "Agree",
-      "successModalTitle": "Attendance saved!",
-      "successModalDesc": "Attendance for {program} has been recorded successfully.",
-      "successOkay": "Okay",
-      "errorLoadPrograms": "Failed to load programs",
-      "errorLoadParticipants": "Failed to load participants",
-      "errorSaveAttendance": "Failed to save attendance"
+      "columnName": "Name",
+      "columnPresent": "P",
+      "columnAbsent": "A",
+      "columnPending": "Pending",
+      "columnNotes": "Notes",
+      "notesPlaceholder": "Add a note...",
+      "dailyTotals": "Daily totals",
+      "noEnrollments": "No enrollments found.",
+      "errorSaveDay": "Failed to save attendance for that day — please try again.",
+      "errorSaveNotes": "Failed to save notes — please try again.",
+      "errorLoadGrid": "Failed to load attendance"
    },
    "providerDashboard": {
       "welcome": "Welcome back, {name} — here's what's running today.",
@@ -543,13 +574,13 @@
             "link": "Start →"
          },
          "batchPublish": {
-            "title": "Batch publish via CSV",
-            "desc": "Upload a CSV to publish multiple programs at once.",
+            "title": "Batch publish via spreadsheet",
+            "desc": "Upload a CSV or Excel file to publish multiple programs at once.",
             "link": "Upload →"
          },
          "exportEnrolment": {
             "title": "Export enrolment data",
-            "desc": "Download attendee data per program as CSV.",
+            "desc": "Download attendee data per program as CSV or Excel.",
             "link": "Export →"
          }
       }
@@ -707,8 +738,7 @@
          "enroll": "Enroll in Program"
       },
       "currentStage": "Current Stage",
-      "createdBy":"Created By",
-
+      "createdBy": "Created By",
       "title": "Training Program Enrolment Form",
       "programDetails": {
          "title": "Program Details",
@@ -780,11 +810,12 @@
          "managerReview": "Your application has been submitted and is currently awaiting approval from your Reporting Manager.",
          "hrReview": "Your application has been approved by your manager and is currently under CTD review.",
          "ctdTourReview": "Your enrollment has been approved and your travel request is being reviewed.",
-         "submitTourDetails":"Your enrollment has been approved. Please submit your tour details to proceed.",
+         "submitTourDetails": "Your enrollment has been approved. Please submit your tour details to proceed.",
          "attendance": "Your attendance for the training has been recorded! You can now submit your reimbursement claim.",
          "reimbursement": "Your reimbursement claim has been submitted and is under financial audit/review.",
          "credited": "Congratulations! Your reimbursement has been approved and successfully credited to your bank account.",
          "rejected": "Your enrollment request was not approved. Please contact your reporting manager for more details.",
+         "quotaFull": "This program reached its maximum attendance capacity before your enrollment could be approved. Please contact the Training Provider.",
          "default": "Track the status of your training program enrollment request above."
       },
       "enrolledPrograms": {
@@ -800,7 +831,11 @@
          },
          "browseprogramtoenroll": "Browse programs to enroll",
          "selectAnUpComingProgram": "Please select an upcoming training program from the Programs menu to enroll.",
-         "notEnrollAnyProgram": "You have not enrolled in any training programs yet."
+         "notEnrollAnyProgram": "You have not enrolled in any training programs yet.",
+         "badgeLabels": {
+            "rejected": "Rejected",
+            "rejectedQuotaFull": "Rejected - Program Full"
+         }
       }
    },
    "add": {

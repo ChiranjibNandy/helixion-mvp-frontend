@@ -100,3 +100,24 @@ export const getProgramsAPI = async ({
     },
   });
 };
+
+
+export interface UpdatePublishedProgramParams {
+  id: string;
+  title?: string;
+  minParticipants?: number;
+  maxParticipants?: number;
+}
+
+export const updatePublishedProgramAPI = async ({
+  id,
+  title,
+  minParticipants,
+  maxParticipants,
+}: UpdatePublishedProgramParams) => {
+  return await api.patch(API.TRAININGPROVIDER.UPDATE_PROGRAM(id), {
+    title,
+    minParticipants,
+    maxParticipants,
+  });
+};

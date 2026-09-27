@@ -2,7 +2,6 @@
 
 import FileDropzone from '@/components/shared/FileDropzone';
 import { t } from '@/lib/i18n';
-import { PROGRAM_CSV_COLUMNS } from '@/constants/provider';
 import React from 'react';
 
 interface UploadDropzoneProps {
@@ -22,6 +21,7 @@ export default function UploadDropzone({
         <h2 className="text-lg font-medium mb-0.5 text-slate-200">
           {t('bulkProgram.sectionTitle')}
         </h2>
+
         <p className="text-xs text-white/50">
           {t('bulkProgram.sectionDescription')}
         </p>
@@ -29,10 +29,10 @@ export default function UploadDropzone({
 
       <div className="w-full bg-[#111827] rounded-xl border border-white/5 px-6 py-10 shadow-lg">
         <FileDropzone
-          accept=".csv"
+          accept=".csv,.xls,.xlsx"
           onFileSelected={onFileSelected}
           isProcessing={isProcessing}
-          fileInputRef={fileInputRef as any}
+          fileInputRef={fileInputRef}
           label={
             <span className="font-medium text-slate-200">
               {t('bulkProgram.dropLabel')}
