@@ -15,6 +15,7 @@ import { getProviderQuickActions } from "@/constants/provider-quick-actions";
 import { Plus } from "lucide-react";
 import { ROUTES } from "@/constants/navigation";
 import Link from "next/link";
+import { PendingConfirmations } from "./PendingConfirmations";
 
 export default function TrainingProviderDashboardView({ name }: { name: string }) {
   const [data, setData] = useState<ProviderDashboardResponse | null>(null);
@@ -97,6 +98,7 @@ export default function TrainingProviderDashboardView({ name }: { name: string }
       {/* Stats Cards */}
       <DashboardStats stats={stats} />
 
+      <PendingConfirmations />
 
       {/* Main Content: Table and Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

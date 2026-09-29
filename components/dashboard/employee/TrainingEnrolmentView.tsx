@@ -85,7 +85,8 @@ export default function TrainingEnrolmentView() {
                 const progData = await getEmployeeProgramById(programId);
                 setProgram(progData);
 
-                const enrollments = await getEmployeeEnrollments();
+                const res = await getEmployeeEnrollments({ limit: 100 });
+                const enrollments: any[] = Array.isArray(res) ? res : res?.data ?? [];
                 const existing = enrollments.find(
                     (e: any) => e.programId === programId || e.programId?._id === programId
                 );

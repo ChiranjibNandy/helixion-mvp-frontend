@@ -582,6 +582,24 @@
             "desc": "Download attendee data per program as CSV or Excel.",
             "link": "Export →"
          }
+      },
+      "pendingConfirmations": {
+         "title": "Pending Enrollment Confirmations",
+         "subtitle": "CTD-approved enrollments waiting on your confirmation before the tour form opens",
+         "empty": "No enrollments are waiting on your confirmation right now.",
+         "ctdApprovedOn": "CTD Approved {date}",
+         "confirmButton": "Confirm",
+         "modalTitle": "Confirm Enrollment",
+         "modalDescription": "Confirming lets {name} proceed to the tour form for {program}.",
+         "notesLabel": "Notes (optional)",
+         "notesPlaceholder": "e.g. Rooms booked and ready",
+         "confirmCta": "Confirm Enrollment",
+         "successToast": "Enrollment confirmed. {name} has been notified.",
+         "errorToast": "Failed to confirm this enrollment. Please try again.",
+         "declineButton": "Decline",
+         "declineCta": "Decline Enrollment",
+         "declineSuccessToast": "Enrollment declined. {name} has been notified.",
+         "declineErrorToast": "Failed to decline this enrollment. Please try again."
       }
    },
    "employeeDashboard": {
@@ -799,6 +817,7 @@
          "submitted": "Application Submitted",
          "manager": "Approved by Reporting Manager",
          "hrReview": "CTD Review",
+         "tpConfirmation": "Training Provider Confirmation",
          "ctdTourReview": "Final Travel Approval",
          "reimbursementSubmitted": "Reimbursement Form Submitted",
          "credited": "Reimbursement Credited to Bank Account"
@@ -809,6 +828,7 @@
          "managerReview": "Your application has been submitted and is currently awaiting approval from your Reporting Manager.",
          "hrReview": "Your application has been approved by your manager and is currently under CTD review.",
          "ctdTourReview": "Your enrollment has been approved and your travel request is being reviewed.",
+         "waitingTpConfirmation": "Your enrollment has been approved by the Training Dept. Waiting for the Training Provider to confirm before your tour form is enabled.",
          "submitTourDetails": "Your enrollment has been approved. Please submit your tour details to proceed.",
          "attendance": "Your attendance for the training has been recorded! You can now submit your reimbursement claim.",
          "reimbursement": "Your reimbursement claim has been submitted and is under financial audit/review.",
@@ -831,6 +851,7 @@
          "browseprogramtoenroll": "Browse programs to enroll",
          "selectAnUpComingProgram": "Please select an upcoming training program from the Programs menu to enroll.",
          "notEnrollAnyProgram": "You have not enrolled in any training programs yet.",
+         "tourFormAfterTpConfirmation": "After confirmation",
          "badgeLabels": {
             "rejected": "Rejected",
             "rejectedQuotaFull": "Rejected - Program Full"

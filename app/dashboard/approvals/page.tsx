@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { toast } from "sonner";
 
 import ApprovalExpandedRow from "@/components/dashboard/approvals/ApprovalExpandedRow";
 import ConfirmApprovalModal from "@/components/dashboard/approvals/ConfirmApprovalModal";
@@ -66,6 +67,8 @@ export default function Page() {
   const handleAction = async (action: "approve" | "reject") => {
     if (!actionRow) return;
 
+    const employeeName = actionRow.employeeId?.name || "Employee";
+
     setActionLoading(true);
     setActionError(null);
 
@@ -73,10 +76,15 @@ export default function Page() {
       await takeEnrollmentActionAPI(actionRow._id, action);
       setActionRow(null);
       refresh();
-    } catch (err: any) {
-      setActionError(
-        err?.response?.data?.message || err?.message || "Something went wrong"
+      toast.success(
+        action === "approve"
+          ? `${employeeName}'s enrollment was approved.`
+          : `${employeeName}'s enrollment was rejected.`
       );
+    } catch (err: any) {
+      const message = err?.response?.data?.message || err?.message || "Something went wrong";
+      setActionError(message);
+      toast.error(message);
     } finally {
       setActionLoading(false);
     }

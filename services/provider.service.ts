@@ -68,6 +68,21 @@ export interface ProviderDashboardResponse {
   recentActivities: DashboardActivity[];
 }
 
+export interface PendingTpConfirmation {
+  _id: string;
+  programId: string;
+  programTitle: string;
+  employeeId: string;
+  employeeName: string;
+  employeeCode?: string;
+  ctdApprovedAt: string | null;
+}
+
+export interface ConfirmEnrollmentResponse {
+  status: string;
+  tpConfirmationDate: string | null;
+}
+
 // ─── Provider Service ────────────────────────────────────────────────────────
 
 export const providerService = {
@@ -156,6 +171,39 @@ export const providerService = {
   getDashboardData: async (): Promise<ProviderDashboardResponse> => {
     const response = await api.get<{ data: ProviderDashboardResponse }>(
       '/training-provider/dashboard'
+    );
+    return response.data.data;
+  },
+
+  getPendingTpConfirmations: async (): Promise<PendingTpConfirmation[]> => {
+    const response = await api.get<{ data: PendingTpConfirmation[] }>(
+      '/training-provider/enrollments/pending-confirmations'
+    );
+    return response.data.data;
+  },
+
+ 
+  confirmEnrollment: async (
+    programId: string,
+    enrollmentId: string,
+    notes?: string
+  ): Promise<ConfirmEnrollmentResponse> => {
+    const response = await api.patch<{ data: ConfirmEnrollmentResponse }>(
+      `/training-provider/programs/${programId}/enrollments/${enrollmentId}/confirm`,
+      { notes }
+    );
+    return response.data.data;
+  },
+
+
+  declineEnrollment: async (
+    programId: string,
+    enrollmentId: string,
+    notes?: string
+  ): Promise<{ status: string }> => {
+    const response = await api.patch<{ data: { status: string } }>(
+      `/training-provider/programs/${programId}/enrollments/${enrollmentId}/decline`,
+      { notes }
     );
     return response.data.data;
   },

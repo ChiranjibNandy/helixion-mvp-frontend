@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { toast } from 'sonner';
 import ApprovalStatusBadge from '@/components/shared/ApprovalStatusBadge';
 import DataTable from '@/components/shared/data-table';
 import ConfirmApprovalModal from '@/components/dashboard/approvals/ConfirmApprovalModal';
@@ -58,6 +59,9 @@ export default function CtdApprovalsPage() {
   const handleAction = async (action: 'approve' | 'reject') => {
     if (!actionRow) return;
 
+    const employeeName = actionRow.employeeId?.name || 'Employee';
+    const isSenior = canApproveTrainingDept();
+
     setActionLoading(true);
     setActionError(null);
 
@@ -74,16 +78,23 @@ export default function CtdApprovalsPage() {
       // Only a senior officer may call the senior-action endpoint at all —
       // a junior-only user's review above already succeeded on its own and
       // should be treated as complete, not chased with a call that will 403.
-      if (canApproveTrainingDept()) {
+      if (isSenior) {
         await takeCtdSeniorActionAPI(actionRow._id, action);
       }
 
       setActionRow(null);
       refresh();
-    } catch (err: any) {
-      setActionError(
-        err?.response?.data?.message || err?.message || 'Something went wrong'
+      toast.success(
+        !isSenior
+          ? `${employeeName}'s enrolment was reviewed.`
+          : action === 'approve'
+            ? `${employeeName}'s enrolment was approved.`
+            : `${employeeName}'s enrolment was rejected.`
       );
+    } catch (err: any) {
+      const message = err?.response?.data?.message || err?.message || 'Something went wrong';
+      setActionError(message);
+      toast.error(message);
     } finally {
       setActionLoading(false);
     }
