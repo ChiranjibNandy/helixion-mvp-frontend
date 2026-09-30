@@ -21,8 +21,8 @@
          "successTitle": "Program Updated Successfully!",
          "successDescription": "Your changes have been saved and applied.",
          "validation": {
-            "title":"Warning",
-            "maxParticipants":"Maximum Participant Reach",
+            "title": "Warning",
+            "maxParticipants": "Maximum Participant Reach",
             "maxParticipantsError": "Maximum participants must be greater than or equal to minimum participants."
          }
       },
@@ -839,5 +839,28 @@
    },
    "add": {
       "enroll": "Add Enrollment"
+   },
+   "feedback": {
+      "title": "Add Feedback",
+      "selectProgramLabel": "Select the program",
+      "loadingPrograms": "Loading completed programs...",
+      "noPrograms": "No completed programs available for feedback.",
+      "ratingLabel": "How would you rate this program?",
+      "ratingSuffix": "out of 5",
+      "remarkLabel": "Please share your feedback",
+      "remarkPlaceholder": "Enter your feedback...",
+      "submitButton": "Submit Feedback",
+      "submittingButton": "Submitting...",
+      "successModal": {
+         "title": "Feedback Submitted Successfully",
+         "description": "Thank you for sharing your feedback.",
+         "button": "Submit Another Response"
+      },
+      "errors": {
+         "selectProgram": "Please select a program.",
+         "selectRating": "Please select a rating.",
+         "fetchFailed": "Failed to load completed programs.",
+         "submitFailed": "Failed to submit feedback. Please try again."
+      }
    }
 }

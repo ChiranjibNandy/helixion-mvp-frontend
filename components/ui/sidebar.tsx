@@ -1,7 +1,7 @@
 import { SidebarFooterProps, SidebarMenuProps, SidebarNavItemProps, SidebarProfileProps, SidebarProps } from '../../props/sidebar';
 import { ROLE_LABEL } from '../../constants/employee';
 import Link from 'next/link';
-import { Award, BarChart3, Bell, BookOpen, ClipboardCheck, Download, FileText, LayoutDashboard, Plane, PlusCircle, Search, Settings, Shield, Upload, UploadCloud, User, UserCircle, Users, Zap, KeyRound } from 'lucide-react';
+import { Award, BarChart3, Bell, BookOpen, ClipboardCheck, Download, FileText, LayoutDashboard, Plane, PlusCircle, Search, Settings, Shield, Upload, UploadCloud, User, UserCircle, Users, Zap, KeyRound, MessageSquare } from 'lucide-react';
 import { NavItem } from '@/types';
 import { AppAvatar } from './avatar';
 import CountBadge from './count-badge';
@@ -31,6 +31,7 @@ const ICON_MAP: Record<string, any> = {
   'bar-chart-3': BarChart3,
   user: User,
   plane: Plane,
+  'messageSquare': MessageSquare
 };
 
 

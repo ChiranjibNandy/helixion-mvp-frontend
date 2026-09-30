@@ -34,7 +34,9 @@ export const API = {
       UPDATE_TRAVEL: (id: string) => `/employee/enrollments/${id}/travel`,
       SUBMIT_ENROLLMENT: (id: string) => `/employee/enrollments/${id}/submit`,
       SUBMIT_TOUR: (id: string) => `/employee/enrollments/${id}/tour/submit`,
-      ENROLLMENTPANEL:'/employee/enrollments/panel'
+      ENROLLMENTPANEL:'/employee/enrollments/panel',
+      FEEDBACK_PROGRAMS: '/employee/feedback/programs',
+      FEEDBACK: '/employee/feedback'
    },
    MANAGER: {
       DASHBOARD: '/manager/dashboard',
