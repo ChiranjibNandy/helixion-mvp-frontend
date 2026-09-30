@@ -53,10 +53,8 @@ export const signinSchema = z.object({
 // validate only the email is required and in correct format or not
 export const forgotPasswordSchema = z.object({
   email: z
-    .string()
-    .trim()
-    .min(1, { message: "Email is required" })
-    .email({ message: "Invalid email format" }),
+    .array(z.string().email({ message: "Invalid email format" }))
+    .min(1, { message: "At least one email is required" }),
 });
 
 //validate UserId password

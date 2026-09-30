@@ -48,7 +48,7 @@ export const registerAPI = async (data: RegisterCredentials) => {
 
 // ── Forgot Password ────────────────────────────────────────────────────────
 
-export const forgotPasswordAPI = async (data: { email: string }) => {
+export const forgotPasswordAPI = async (data: { email: string[] }) => {
   const parsed = forgotPasswordSchema.safeParse(data);
 
   if (!parsed.success) {
