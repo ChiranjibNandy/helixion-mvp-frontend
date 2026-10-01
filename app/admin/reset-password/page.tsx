@@ -156,16 +156,16 @@ export default function UsersPage() {
   // SEND RESET LINKS
   // --------------------------------------------------
 
-  const handlesendResetLink = async () => {
+  const handleSendResetLink = async () => {
     if (selectedUsers.length === 0) return;
 
-    const email = selectedUsers
+    const emails = selectedUsers
       .map((user) => user.email)
       .filter(Boolean);
 
-    if (email.length === 0) return;
+    if (emails.length === 0) return;
 
-    const result = await sendResetLink(email);
+    const result = await sendResetLink(emails);
 
     if (!result) return;
 
@@ -417,7 +417,7 @@ export default function UsersPage() {
         cancelLabel={t("button.cancel")}
         loading={loadingAction}
         error={resetLinkError}
-        onConfirm={handlesendResetLink}
+        onConfirm={handleSendResetLink}
         onCancel={closeConfirmModal}
       />
 
