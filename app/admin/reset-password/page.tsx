@@ -424,11 +424,7 @@ export default function UsersPage() {
       {/* SUCCESS / RESULT MODAL */}
       <AppModal
         isOpen={successOpen}
-        type={
-          resetResult?.failed.length
-            ? "confirm"
-            : "success"
-        }
+        type={resetResult?.failed.length ? "confirm" : "success"}
         title={
           resetResult?.failed.length
             ? "Reset Links Processed"
@@ -437,18 +433,30 @@ export default function UsersPage() {
         description={
           resetResult
             ? resetResult.failed.length === 0
-              ? `Password reset links were successfully sent to ${resetResult.successful.length} ${resetResult.successful.length === 1
-                ? "user"
-                : "users"
+              ? `Password reset links were successfully sent to ${resetResult.successful.length
+              } ${resetResult.successful.length === 1 ? "user" : "users"
               }.`
-              : `Password reset links were sent to ${resetResult.successful.length} users, but ${resetResult.failed.length} ${resetResult.failed.length === 1
+              : `Password reset links were sent to ${resetResult.successful.length
+              } ${resetResult.successful.length === 1 ? "user" : "users"
+              }, but ${resetResult.failed.length
+              } ${resetResult.failed.length === 1
                 ? "user could not"
                 : "users could not"
               } be processed.`
             : ""
         }
         doneLabel={t("button.done")}
+        confirmLabel={t("button.done")}
+        cancelLabel={t("button.cancel")}
         onDone={() => {
+          setSuccessOpen(false);
+          setResetResult(null);
+        }}
+        onConfirm={() => {
+          setSuccessOpen(false);
+          setResetResult(null);
+        }}
+        onCancel={() => {
           setSuccessOpen(false);
           setResetResult(null);
         }}
