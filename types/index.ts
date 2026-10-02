@@ -185,14 +185,6 @@ export interface TravelDetailsFormProps {
   onSubmit: () => void;
 }
 
-export interface BulkResetResult {
-  successful: string[];
-  failed: {
-    email: string;
-    reason: string;
-  }[];
-}
-
 export interface ResetLinkResult {
   successful: string[];
   failed: {

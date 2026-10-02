@@ -34,15 +34,18 @@ export function useResetPasswordFlow(userId?: string) {
 
    const sendResetLink = async (emailOverride?: string) => {
       const emailToUse = emailOverride || email;
+      const normalizedEmail = emailToUse.trim().toLowerCase();
 
-      const result = await forgot.sendResetLink([emailToUse]);
+      const result = await forgot.sendResetLink([normalizedEmail]);
 
       if (!result) {
          return false;
-      }
+   }
 
-      return result.successful.includes(emailToUse);
-   };
+   return result.successful.some(
+      (email) => email.trim().toLowerCase() === normalizedEmail
+   );
+};
 
    // 🔹 Step 2: Reset password
    const submitNewPassword = async () => {
