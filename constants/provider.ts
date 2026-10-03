@@ -33,6 +33,12 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
         icon: 'plus-circle',
       },
       {
+        label: 'View Programs',
+        key: 'programs-list',
+        href: ROUTES.PROVIDER.PROGRAMS.LIST,
+        icon: 'book-open',
+      },
+      {
         label: 'Bulk Upload',
         key: 'bulk-upload',
         href: ROUTES.PROVIDER.PROGRAMS.BULK,
@@ -43,6 +49,17 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
         key: 'drafts',
         href: ROUTES.PROVIDER.PROGRAMS.DRAFTS,
         icon: 'file-text',
+      },
+    ],
+  },
+  {
+    category: 'Approvals',
+    items: [
+      {
+        label: 'Pending Confirmations',
+        key: 'pending-confirmations',
+        href: ROUTES.PROVIDER.PENDING_CONFIRMATIONS,
+        icon: 'clipboard-check',
       },
     ],
   },

@@ -1,4 +1,5 @@
 import { api } from '@/lib/api';
+import { API } from '@/constants/api';
 import type { DraftProgram, DraftProgramsResponse } from '@/types';
 
 // ΓöÇΓöÇΓöÇ Bulk Upload ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
@@ -66,6 +67,21 @@ export interface ProviderDashboardResponse {
   overview: DashboardOverview;
   topPrograms: DashboardTopProgram[];
   recentActivities: DashboardActivity[];
+}
+
+export interface PendingTpConfirmation {
+  _id: string;
+  programId: string;
+  programTitle: string;
+  employeeId: string;
+  employeeName: string;
+  employeeCode?: string;
+  ctdApprovedAt: string | null;
+}
+
+export interface ConfirmEnrollmentResponse {
+  status: string;
+  tpConfirmationDate: string | null;
 }
 
 // ─── Provider Service ────────────────────────────────────────────────────────
@@ -156,6 +172,37 @@ export const providerService = {
   getDashboardData: async (): Promise<ProviderDashboardResponse> => {
     const response = await api.get<{ data: ProviderDashboardResponse }>(
       '/training-provider/dashboard'
+    );
+    return response.data.data;
+  },
+
+  getPendingTpConfirmations: async (): Promise<PendingTpConfirmation[]> => {
+    const response = await api.get<{ data: PendingTpConfirmation[] }>(
+      API.TRAININGPROVIDER.PENDING_CONFIRMATIONS
+    );
+    return response.data.data;
+  },
+
+  confirmEnrollment: async (
+    programId: string,
+    enrollmentId: string,
+    notes?: string
+  ): Promise<ConfirmEnrollmentResponse> => {
+    const response = await api.patch<{ data: ConfirmEnrollmentResponse }>(
+      API.TRAININGPROVIDER.CONFIRM_ENROLLMENT(programId, enrollmentId),
+      { notes }
+    );
+    return response.data.data;
+  },
+
+  declineEnrollment: async (
+    programId: string,
+    enrollmentId: string,
+    notes?: string
+  ): Promise<{ status: string }> => {
+    const response = await api.patch<{ data: { status: string } }>(
+      API.TRAININGPROVIDER.DECLINE_ENROLLMENT(programId, enrollmentId),
+      { notes }
     );
     return response.data.data;
   },
