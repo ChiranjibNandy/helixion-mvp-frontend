@@ -54,7 +54,7 @@ export default function UsersPage() {
   );
 
   const {
-    sendResetLink,
+    sendBulkResetLink,
     loading: loadingAction,
     error: resetLinkError,
   } = useForgotPassword();
@@ -156,7 +156,7 @@ export default function UsersPage() {
   // SEND RESET LINKS
   // --------------------------------------------------
 
-  const handleSendResetLink = async () => {
+  const handleSendBulkResetLink = async () => {
     if (selectedUsers.length === 0) return;
 
     const emails = selectedUsers
@@ -165,7 +165,7 @@ export default function UsersPage() {
 
     if (emails.length === 0) return;
 
-    const result = await sendResetLink(emails);
+    const result = await sendBulkResetLink(emails);
 
     if (!result) return;
 
@@ -417,7 +417,7 @@ export default function UsersPage() {
         cancelLabel={t("button.cancel")}
         loading={loadingAction}
         error={resetLinkError}
-        onConfirm={handleSendResetLink}
+        onConfirm={handleSendBulkResetLink}
         onCancel={closeConfirmModal}
       />
 
