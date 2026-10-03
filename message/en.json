@@ -584,6 +584,7 @@
          }
       },
       "pendingConfirmations": {
+         "pageTitle": "Pending Confirmations",
          "title": "Pending Enrollment Confirmations",
          "subtitle": "CTD-approved enrollments waiting on your confirmation before the tour form opens",
          "empty": "No enrollments are waiting on your confirmation right now.",

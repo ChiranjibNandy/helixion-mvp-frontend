@@ -1,4 +1,5 @@
 import { api } from '@/lib/api';
+import { API } from '@/constants/api';
 import type { DraftProgram, DraftProgramsResponse } from '@/types';
 
 // ΓöÇΓöÇΓöÇ Bulk Upload ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
@@ -177,24 +178,22 @@ export const providerService = {
 
   getPendingTpConfirmations: async (): Promise<PendingTpConfirmation[]> => {
     const response = await api.get<{ data: PendingTpConfirmation[] }>(
-      '/training-provider/enrollments/pending-confirmations'
+      API.TRAININGPROVIDER.PENDING_CONFIRMATIONS
     );
     return response.data.data;
   },
 
- 
   confirmEnrollment: async (
     programId: string,
     enrollmentId: string,
     notes?: string
   ): Promise<ConfirmEnrollmentResponse> => {
     const response = await api.patch<{ data: ConfirmEnrollmentResponse }>(
-      `/training-provider/programs/${programId}/enrollments/${enrollmentId}/confirm`,
+      API.TRAININGPROVIDER.CONFIRM_ENROLLMENT(programId, enrollmentId),
       { notes }
     );
     return response.data.data;
   },
-
 
   declineEnrollment: async (
     programId: string,
@@ -202,7 +201,7 @@ export const providerService = {
     notes?: string
   ): Promise<{ status: string }> => {
     const response = await api.patch<{ data: { status: string } }>(
-      `/training-provider/programs/${programId}/enrollments/${enrollmentId}/decline`,
+      API.TRAININGPROVIDER.DECLINE_ENROLLMENT(programId, enrollmentId),
       { notes }
     );
     return response.data.data;

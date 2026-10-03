@@ -61,6 +61,9 @@ export const API = {
       PROGRAM_LIST:      '/training-provider/programs/list',
       UPDATE_PROGRAM:   (id: string) => `/training-provider/program/${id}`,
       ATTENDANCE_NOTES: (id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}/notes`,
+      PENDING_CONFIRMATIONS: '/training-provider/enrollments/pending-confirmations',
+      CONFIRM_ENROLLMENT: (programId: string, enrollmentId: string) => `/training-provider/programs/${programId}/enrollments/${enrollmentId}/confirm`,
+      DECLINE_ENROLLMENT: (programId: string, enrollmentId: string) => `/training-provider/programs/${programId}/enrollments/${enrollmentId}/decline`,
    },
    NOTIFICATION:{
       READ:(id:string) => `/notifications/${id}/read`,
