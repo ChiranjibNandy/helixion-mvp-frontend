@@ -56,6 +56,7 @@ export const ROUTES = {
       LIST: '/dashboard/programs/list'
     },
     ATTENDANCE: '/dashboard/update-attendance',
+    PENDING_CONFIRMATIONS: '/dashboard/pending-confirmations',
   },
 } as const;
 

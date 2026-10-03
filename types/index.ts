@@ -7,7 +7,8 @@ export interface Permissions {
   canApproveTrainingDept: boolean,
   canApproveTourCtd: boolean,
   canReviewOsd: boolean,
-  canApproveOsd: boolean
+  canApproveOsd: boolean,
+  canFeedback:boolean
 }
 // ─── User ────────────────────────────────────────────────────────────────────
 export interface User {

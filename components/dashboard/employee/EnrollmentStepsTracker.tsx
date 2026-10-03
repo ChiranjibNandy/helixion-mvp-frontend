@@ -14,6 +14,7 @@ export enum ENROLLMENT_STAGE {
     MANAGER_REVIEW = "manager_review",
     TRAINING_DEPT_REVIEW = "training_dept_review",
     APPROVED = "approved",
+    TP_PENDING_CONFIRMATION = "tp_pending_confirmation",
     TOUR_PENDING_EMPLOYEE = "tour_pending_employee",
     TOUR_MANAGER_REVIEW = "tour_manager_review",
     TOUR_CTD_REVIEW = "tour_ctd_review",
@@ -31,6 +32,7 @@ export enum ENROLLMENT_STAGE {
 // string (which varies: "approve", "reject", multi-level "recommend").
 const PAST_MANAGER_REVIEW: string[] = [
     ENROLLMENT_STAGE.TRAINING_DEPT_REVIEW, ENROLLMENT_STAGE.APPROVED,
+    ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION,
     ENROLLMENT_STAGE.TOUR_PENDING_EMPLOYEE, ENROLLMENT_STAGE.TOUR_MANAGER_REVIEW, ENROLLMENT_STAGE.TOUR_CTD_REVIEW,
     ENROLLMENT_STAGE.ATTENDED, ENROLLMENT_STAGE.ABSENT,
     ENROLLMENT_STAGE.REIMBURSEMENT_SUBMITTED, ENROLLMENT_STAGE.REIMBURSEMENT_MANAGER_REVIEW, ENROLLMENT_STAGE.REIMBURSEMENT_OSD_REVIEW,
@@ -102,7 +104,19 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
     } else if (stage === ENROLLMENT_STAGE.TRAINING_DEPT_REVIEW) {
         step3Status = "current";
     }
-    const step3Date = getTimelineDate(ENROLLMENT_STAGE.TOUR_PENDING_EMPLOYEE, "approve");
+    const step3Date = getTimelineDate(ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION, "approve") ||
+        getTimelineDate(ENROLLMENT_STAGE.TOUR_PENDING_EMPLOYEE, "approve");
+    const passedTpGate = stage === ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION ||
+        timeline.some((entry: any) => entry.stage === ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION);
+    let stepTpStatus: "completed" | "current" | "upcoming" = "upcoming";
+    if (stage === ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION) {
+        stepTpStatus = "current";
+    } else if (enrollment.tpConfirmation?.confirmedAt) {
+        stepTpStatus = "completed";
+    }
+    const stepTpDate = enrollment.tpConfirmation?.confirmedAt
+        ? formatDateHyphenated(enrollment.tpConfirmation.confirmedAt)
+        : undefined;
 
     // Step 3.5: Tour / CTD final review — only relevant for outstation enrollments
     // that need company-assisted travel; skipped entirely for local training
@@ -139,6 +153,16 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
             icon: ClipboardList,
         },
     ];
+
+    if (passedTpGate) {
+        steps.push({
+            id: "3-tp-confirmation",
+            label: t("approvalProgress.steps.tpConfirmation"),
+            date: stepTpDate,
+            status: stepTpStatus,
+            icon: UserCheck,
+        });
+    }
 
     if (hasCtdTourReview) {
         steps.push({

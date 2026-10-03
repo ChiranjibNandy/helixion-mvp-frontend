@@ -17,6 +17,10 @@ export const NOTIFICATION_TYPE = {
   TRAVEL_APPROVED:          'travel_approved',
   TRAVEL_REJECTED_BY_CTD:   'travel_rejected_by_ctd',
   TRAVEL_TIMED_OUT:         'travel_timed_out',
+  ENROLLMENT_WAITING_TP_CONFIRMATION: 'enrollment_waiting_tp_confirmation',
+  TP_CONFIRMATION_PENDING: 'tp_confirmation_pending',
+  TP_CONFIRMED:            'tp_confirmed',
+  TP_DECLINED:             'tp_declined',
 } as const;
 
 export const NOTIFICATION_DOT_COLORS: Record<string, string> = {
@@ -33,4 +37,8 @@ export const NOTIFICATION_DOT_COLORS: Record<string, string> = {
   [NOTIFICATION_TYPE.TRAVEL_APPROVED]:          'bg-accentGreen',
   [NOTIFICATION_TYPE.TRAVEL_REJECTED_BY_CTD]:   'bg-accentOrange',
   [NOTIFICATION_TYPE.TRAVEL_TIMED_OUT]:         'bg-accentOrange',
+  [NOTIFICATION_TYPE.ENROLLMENT_WAITING_TP_CONFIRMATION]: 'bg-accentOrange',
+  [NOTIFICATION_TYPE.TP_CONFIRMATION_PENDING]:  'bg-accentOrange',
+  [NOTIFICATION_TYPE.TP_CONFIRMED]:             'bg-accentGreen',
+  [NOTIFICATION_TYPE.TP_DECLINED]:              'bg-accentRed',
 };

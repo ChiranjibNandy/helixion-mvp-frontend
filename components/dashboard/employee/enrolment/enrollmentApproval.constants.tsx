@@ -28,6 +28,9 @@ export const getStatusMessage = (enrollment: any, t: (key: string) => string) =>
     if (stage === ENROLLMENT_STAGE.TRAINING_DEPT_REVIEW) {
         return t("approvalProgress.statusMessages.hrReview");
     }
+    if (stage === ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION) {
+        return t("approvalProgress.statusMessages.waitingTpConfirmation");
+    }
     if (stage === ENROLLMENT_STAGE.TOUR_PENDING_EMPLOYEE || stage === ENROLLMENT_STAGE.TOUR_MANAGER_REVIEW || stage === ENROLLMENT_STAGE.TOUR_CTD_REVIEW) {
         return t("approvalProgress.statusMessages.ctdTourReview");
     }
@@ -119,6 +122,13 @@ export const createEnrollmentColumns = (
             header: t("approvalProgress.enrolledPrograms.columns.tourFormRequired"),
             className: "py-4",
             render: (enrollment: any) => {
+                if (enrollment.currentStage === ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION) {
+                    return (
+                        <Badge status="pending" className="px-3 py-1">
+                            {t("approvalProgress.enrolledPrograms.tourFormAfterTpConfirmation")}
+                        </Badge>
+                    );
+                }
                 if (enrollment.currentStage === ENROLLMENT_STAGE.TOUR_PENDING_EMPLOYEE) {
                     return (
                         <Badge status="pending" className="capitalize px-3 py-1">

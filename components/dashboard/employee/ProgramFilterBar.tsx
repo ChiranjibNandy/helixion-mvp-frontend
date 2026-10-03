@@ -5,6 +5,7 @@ import { MapPin } from 'lucide-react';
 import { Spinner } from '@/components/ui/spinner';
 import SearchInput from '@/components/ui/search-input';
 import { DateInput } from '@/components/shared/date-input';
+import { Checkbox } from '@/components/ui/checkbox';
 import type { Filters } from '@/types/employee-programs';
 import { t } from '@/lib/i18n';
 
@@ -19,7 +20,7 @@ interface Props {
 }
 
 export function ProgramFilterBar({ draft, onChange, onApply, onClear, loading }: Props) {
-  function set(key: keyof Filters, value: string) {
+  function set(key: keyof Filters, value: string | boolean) {
     onChange({ ...draft, [key]: value });
   }
 
@@ -67,6 +68,17 @@ export function ProgramFilterBar({ draft, onChange, onApply, onClear, loading }:
               onChange={(v) => set('toDate', v)}
             />
           </div>
+        </div>
+
+        <div className="flex items-center gap-2 flex-shrink-0 pb-2">
+          <Checkbox
+            id="hidePastPrograms"
+            checked={draft.hidePast}
+            onCheckedChange={(checked) => set('hidePast', checked === true)}
+          />
+          <label htmlFor="hidePastPrograms" className="text-[12px] text-white/60 cursor-pointer select-none">
+            {t('programme.list.hidePastPrograms')}
+          </label>
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">

@@ -31,6 +31,7 @@ export function NotificationList({ notifications, lastSeenAt, error }: Notificat
     <div className="max-h-96 overflow-y-auto -mx-1">
       {notifications.map((notification) => (
         <NotificationItem
+          key={notification._id}
           notification={notification}
           read={notification.read}
         />

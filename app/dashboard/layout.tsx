@@ -51,6 +51,9 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
         // pass this check.
         return user.permissions.canReviewTrainingDept || user.permissions.canApproveTrainingDept;
       }
+      if(item.key === 'feedback'){
+        return user.permissions.canFeedback ;
+      }
       return true;
     }),
   }));

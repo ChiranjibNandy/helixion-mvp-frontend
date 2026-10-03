@@ -95,6 +95,7 @@ export function ProgramsListPage() {
         venue:    applied.venue    || undefined,
         fromDate: applied.fromDate || undefined,
         toDate:   applied.toDate   || undefined,
+        hidePast: applied.hidePast || undefined,
       }, controller.signal);
       setPrograms(data.programs);
       setTotal(data.total);
@@ -113,7 +114,8 @@ export function ProgramsListPage() {
   useEffect(() => {
     async function fetchExisting() {
       try {
-        const data = await getEmployeeEnrollments();
+        const res = await getEmployeeEnrollments({ limit: 100 });
+        const data: any[] = Array.isArray(res) ? res : res?.data ?? [];
         const ids = data.map((e: any) => {
           const p = e.programId;
           return typeof p === 'object' && p ? p._id : p;

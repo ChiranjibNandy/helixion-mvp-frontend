@@ -18,14 +18,14 @@ export const getQuickActions = (): QuickAction[] => [
     icon: <BookOpen className="w-5 h-5 text-blue-400" />,
     iconBg: 'bg-blue-500/15',
   },
-  {
-    title: t('employeeDashboard.quickActions.approvals.title'),
-    description: t('employeeDashboard.quickActions.approvals.description'),
-    linkText: t('employeeDashboard.quickActions.approvals.link'),
-    href: ROUTES.EMPLOYEE.ENROLLMENTS,
-    icon: <ClipboardCheck className="w-5 h-5 text-amber-400" />,
-    iconBg: 'bg-amber-500/15',
-  },
+  // {
+  //   title: t('employeeDashboard.quickActions.approvals.title'),
+  //   description: t('employeeDashboard.quickActions.approvals.description'),
+  //   linkText: t('employeeDashboard.quickActions.approvals.link'),
+  //   href: ROUTES.EMPLOYEE.ENROLLMENTS,
+  //   icon: <ClipboardCheck className="w-5 h-5 text-amber-400" />,
+  //   iconBg: 'bg-amber-500/15',
+  // },
   // 'Reports' is commented out (not deleted) — no page exists at
   // ROUTES.EMPLOYEE.REPORTS ('/dashboard/reports'), so this card 404'd.
   // Mirrors the same card already disabled in manager-quick-actions.tsx.

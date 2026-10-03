@@ -35,7 +35,9 @@ export const API = {
       UPDATE_TRAVEL: (id: string) => `/employee/enrollments/${id}/travel`,
       SUBMIT_ENROLLMENT: (id: string) => `/employee/enrollments/${id}/submit`,
       SUBMIT_TOUR: (id: string) => `/employee/enrollments/${id}/tour/submit`,
-      ENROLLMENTPANEL:'/employee/enrollments/panel'
+      ENROLLMENTPANEL:'/employee/enrollments/panel',
+      FEEDBACK_PROGRAMS: '/employee/feedback/programs',
+      FEEDBACK: '/employee/feedback'
    },
    MANAGER: {
       DASHBOARD: '/manager/dashboard',
@@ -62,6 +64,9 @@ export const API = {
       PROGRAM_LIST:      '/training-provider/programs/list',
       UPDATE_PROGRAM:   (id: string) => `/training-provider/program/${id}`,
       ATTENDANCE_NOTES: (id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}/notes`,
+      PENDING_CONFIRMATIONS: '/training-provider/enrollments/pending-confirmations',
+      CONFIRM_ENROLLMENT: (programId: string, enrollmentId: string) => `/training-provider/programs/${programId}/enrollments/${enrollmentId}/confirm`,
+      DECLINE_ENROLLMENT: (programId: string, enrollmentId: string) => `/training-provider/programs/${programId}/enrollments/${enrollmentId}/decline`,
    },
    NOTIFICATION:{
       READ:(id:string) => `/notifications/${id}/read`,

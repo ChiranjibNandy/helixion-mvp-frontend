@@ -8,6 +8,7 @@ export const EMPTY_FILTERS: Filters = {
   venue: '',
   fromDate: '',
   toDate: '',
+  hidePast: false,
 };
 
 export const TRAVEL_TYPES = [
@@ -43,6 +44,8 @@ const SHARED_NAV_ITEMS = (): NavSection['items'] => [
   { label: 'Approvals', key: 'approvals', href: '/dashboard/approvals', icon: 'clipboard-check' },
   { label: 'Tour Approvals', key: 'tourApprovals', href: '/dashboard/tour-approvals', icon: 'plane' },
   { label: 'CTD Approvals', key: 'ctdApprovals', href: '/dashboard/ctd-approvals', icon: 'clipboard-check' },
+  { label: 'Feedback', key: 'feedback', href: '/dashboard/feedback', icon: 'messageSquare' },
+
   // { label: 'Reports', key: 'reports', href: '/dashboard/reports', icon: 'bar-chart-3' },
 ];
 

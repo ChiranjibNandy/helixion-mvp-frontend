@@ -31,6 +31,7 @@ const ICON_MAP: Record<string, any> = {
   'bar-chart-3': BarChart3,
   user: User,
   plane: Plane,
+  'messageSquare': MessageSquare
 };
 
 
