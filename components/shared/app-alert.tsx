@@ -26,16 +26,20 @@ export function AppAlert({
     <Alert
       variant={variant === "destructive" ? "destructive" : "default"}
       className={cn(
+        "flex flex-col",
         variant === "success" &&
-          "border-green-500 text-green-600",
+        "border-green-500 text-green-600",
         className
       )}
     >
-      <Icon className="size-4" />
+      <div className="flex items-center gap-2">
+        <Icon className="size-4" />
 
-      {title && <AlertTitle>{title}</AlertTitle>}
+        {title && <AlertTitle>{title}</AlertTitle>}
+      </div>
 
       <AlertDescription>{description}</AlertDescription>
     </Alert>
+
   );
 }

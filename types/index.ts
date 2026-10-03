@@ -185,3 +185,11 @@ export interface TravelDetailsFormProps {
   onBack: () => void;
   onSubmit: () => void;
 }
+
+export interface ResetLinkResult {
+  successful: string[];
+  failed: {
+    email: string;
+    reason: string;
+  }[];
+}

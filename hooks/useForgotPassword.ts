@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { forgotPasswordAPI } from "@/services/authService";
+import { bulkForgotPasswordAPI, forgotPasswordAPI } from "@/services/authService";
+import { ResetLinkResult } from "@/types";
 
 export function useForgotPassword() {
    const [loading, setLoading] = useState(false);
@@ -23,8 +24,33 @@ export function useForgotPassword() {
       }
    };
 
+   const sendBulkResetLink = async (email: string[]): Promise<ResetLinkResult | null> => {
+      try {
+         setLoading(true);
+         setError(null);
+
+         const emailList = Array.isArray(email)
+            ? email
+            : [email];
+
+         const response = await bulkForgotPasswordAPI({
+            email: emailList,
+         });
+
+         return response.data.data;
+      } catch (err: any) {
+         setError(
+            err?.response?.data?.message || "Something went wrong. Please try again."
+         );
+         return null;
+      } finally {
+         setLoading(false);
+      }
+   };
+
    return {
       sendResetLink,
+      sendBulkResetLink,
       loading,
       error,
    };

@@ -1,7 +1,7 @@
 import { API } from "@/constants/api";
 import { api } from "@/lib/api";
 import { RegisterCredentials } from "@/types/auth";
-import { forgotPasswordSchema, resetPasswordSchema, signinSchema, signupSchema } from "@/validations/auth";
+import { bulkForgotPasswordSchema, forgotPasswordSchema, resetPasswordSchema, signinSchema, signupSchema } from "@/validations/auth";
 
 
 export const logoutAPI = async () => {
@@ -60,6 +60,20 @@ export const forgotPasswordAPI = async (data: { email: string }) => {
     throw fieldErrors;
   }
   return await api.post(API.AUTH.SEND_PASSWORD_RESET_LINK, data);
+};
+
+export const bulkForgotPasswordAPI = async (data: { email: string[] }) => {
+  const parsed = bulkForgotPasswordSchema.safeParse(data);
+
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string> = {};
+    parsed.error.errors.forEach((err) => {
+      const field = err.path[0] as string;
+      fieldErrors[field] = err.message;
+    });
+    throw fieldErrors;
+  }
+  return await api.post(API.AUTH.SEND_BULK_PASSWORD_RESET_LINK, data);
 };
 
 
