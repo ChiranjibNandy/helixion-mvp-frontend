@@ -11,6 +11,7 @@ export interface Filters {
   venue: string;
   fromDate: string;
   toDate: string;
+  hidePast: boolean;
 }
 
 export interface DetailPanelProps {

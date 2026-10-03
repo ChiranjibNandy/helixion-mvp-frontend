@@ -95,6 +95,7 @@ export function ProgramsListPage() {
         venue:    applied.venue    || undefined,
         fromDate: applied.fromDate || undefined,
         toDate:   applied.toDate   || undefined,
+        hidePast: applied.hidePast || undefined,
       }, controller.signal);
       setPrograms(data.programs);
       setTotal(data.total);
