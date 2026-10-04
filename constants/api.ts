@@ -4,6 +4,7 @@ export const API = {
       LOGOUT: '/auth/logout',
       REGISTER: '/auth/register',
       SEND_PASSWORD_RESET_LINK: '/auth/send-reset-link',
+      SEND_BULK_PASSWORD_RESET_LINK: 'auth/admin/send-reset-link',
       RESET_PASSWORD: '/auth/reset-password'
    },
    ADMIN: {

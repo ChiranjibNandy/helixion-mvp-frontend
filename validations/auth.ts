@@ -59,6 +59,12 @@ export const forgotPasswordSchema = z.object({
     .email({ message: "Invalid email format" }),
 });
 
+export const bulkForgotPasswordSchema = z.object({
+  email: z
+    .array(z.string().trim().email({ message: "Invalid email format" }))
+    .min(1, { message: "At least one email is required" }),
+});
+
 //validate UserId password
 export const resetPasswordSchema = z.object({
   userId: z.string(),
