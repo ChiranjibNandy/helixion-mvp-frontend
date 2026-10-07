@@ -10,20 +10,51 @@ import { AppAlert } from '@/components/shared/app-alert';
 import { StayTypeSelector } from './StayTypeSelector';
 import { BrochureDownloadLink } from './BrochureDownloadLink';
 import { getStayOptionPrice } from '@/utils/formatters';
+import AppModal from '@/components/ui/app-modal';
+import { useRouter } from 'next/navigation';
 
 function buildStayOptions(program: AvailableProgram): StayOption[] {
   return ([
-    { key: 'single_occupancy' as StayTypeKey, label: t('programme.list.stayTypeSingle'),         fee: getStayOptionPrice(program.stayOptions, 'single_occupancy') },
-    { key: 'twin_sharing'     as StayTypeKey, label: t('programme.list.stayTypeTwin'),            fee: getStayOptionPrice(program.stayOptions, 'twin_sharing') },
-    { key: 'non_residential'  as StayTypeKey, label: t('programme.list.stayTypeNonResidential'), fee: getStayOptionPrice(program.stayOptions, 'non_residential') },
+    { key: 'single_occupancy' as StayTypeKey, label: t('programme.list.stayTypeSingle'), fee: getStayOptionPrice(program.stayOptions, 'single_occupancy') },
+    { key: 'twin_sharing' as StayTypeKey, label: t('programme.list.stayTypeTwin'), fee: getStayOptionPrice(program.stayOptions, 'twin_sharing') },
+    { key: 'non_residential' as StayTypeKey, label: t('programme.list.stayTypeNonResidential'), fee: getStayOptionPrice(program.stayOptions, 'non_residential') },
   ] as { key: StayTypeKey; label: string; fee: number | undefined }[])
     .filter((o): o is StayOption => o.fee !== undefined && o.fee !== null);
 }
 
 export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, error }: DetailPanelProps) {
+  const router = useRouter();
   const stayOptions = buildStayOptions(program);
-  const defaultKey  = stayOptions.find((o) => o.key === 'twin_sharing')?.key ?? stayOptions[0]?.key ?? 'twin_sharing';
+  const defaultKey = stayOptions.find((o) => o.key === 'twin_sharing')?.key ?? stayOptions[0]?.key ?? 'twin_sharing';
   const [selectedStay, setSelectedStay] = useState<StayTypeKey>(defaultKey as StayTypeKey);
+
+  // Enrollment modal states
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
+
+  // Open confirmation modal
+  const handleEnrollClick = () => {
+    setConfirmOpen(true);
+  };
+
+  // User confirms enrollment
+  const handleConfirmEnroll = async () => {
+    setConfirmOpen(false);
+
+    const success = await onEnrol(selectedStay);
+
+    if (success) {
+      setSuccessOpen(true);
+    }
+  };
+
+  const handleCancelEnroll = () => {
+    setConfirmOpen(false);
+  };
+
+  const handleSuccessClose = () => {
+    setSuccessOpen(false);
+  };
 
   return (
     <div className="bg-[#0d1527] px-6 py-5">
@@ -58,7 +89,7 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
             </span>
           ) : (
             <Button
-              onClick={() => onEnrol(selectedStay)}
+              onClick={handleEnrollClick}
               disabled={enrolling}
               className="bg-blue-600 hover:bg-blue-700 text-white text-[13px] px-5 h-9 font-medium disabled:opacity-70"
             >
@@ -75,8 +106,40 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
             />
           )}
         </div>
-
       </div>
+
+      {/* ENROLLMENT CONFIRMATION MODAL */}
+      <AppModal
+        isOpen={confirmOpen}
+        type="confirm"
+        title={t('programme.list.enrollConfirmationTitle')}
+        description={`${t('programme.list.enrollConfirmationDescription')} ${program.venueName}?`}
+        confirmLabel={t('programme.list.enrollButton')}
+        cancelLabel={t('button.cancel')}
+        loading={enrolling}
+        onConfirm={handleConfirmEnroll}
+        onCancel={handleCancelEnroll}
+      />
+
+      <AppModal
+        isOpen={successOpen}
+        type="success"
+        title="Enrollment Successful"
+        description={`You have successfully enrolled in "${program.title}".`}
+        doneLabel={t('button.done')}
+        confirmLabel={t('button.done')}
+        onDone={() => {
+          setSuccessOpen(false);
+          router.push('/dashboard/enrollments');
+        }}
+        onConfirm={() => {
+          setSuccessOpen(false);
+          router.push('/dashboard/enrollments');
+        }}
+        onCancel={() => {
+          setSuccessOpen(false);
+        }}
+      />
     </div>
   );
 }

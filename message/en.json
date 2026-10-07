@@ -57,6 +57,8 @@
          "enrollButton": "Enrol in Program",
          "enrollingButton": "Enrolling...",
          "enrollError": "Enrollment failed. Please try again.",
+         "enrollConfirmationTitle": "Confirm Enrollment",
+         "enrollConfirmationDescription": "Are you sure you want to enroll in",
          "confirmedLabel": "Confirmed",
          "duplicateButton": "Duplicate"
       },
