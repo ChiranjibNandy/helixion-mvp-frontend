@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Search, Plus, Pencil } from "lucide-react";
+import { useState } from "react";
+import { Search, Plus, Pencil, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePrograms } from "@/hooks/UseProgramReturn";
@@ -11,9 +12,11 @@ import { Program } from "@/types/program";
 import { ROUTES } from "@/constants/navigation";
 import { t } from "@/lib/i18n";
 import ProgramActions from "@/components/dashboard/provider/ProgramActions";
+import ProgramInvoiceModal from "@/components/dashboard/provider/ProgramInvoiceModal";
 
 export default function ProgramsPage() {
    const router = useRouter();
+   const [invoiceProgram, setInvoiceProgram] = useState<Program | null>(null);
 
    const {
       programs,
@@ -115,6 +118,18 @@ export default function ProgramsPage() {
          header: "",
          render: (program: Program) => (
             <div className="flex items-center justify-end gap-1">
+               {program.endDate && new Date(program.endDate) < new Date() && (
+                  <Button
+                     variant="ghost"
+                     size="sm"
+                     onClick={() => setInvoiceProgram(program)}
+                     className="h-8 gap-1.5 text-textSidebarMuted hover:bg-bgButton hover:text-white"
+                  >
+                     <Receipt size={14} />
+                     {t("providerDashboard.invoices.action")}
+                  </Button>
+               )}
+
                <ProgramActions
                   onDuplicate={() =>
                      router.push(
@@ -224,6 +239,11 @@ export default function ProgramsPage() {
                onPageChange={setPage}
             />
          )}
+
+         <ProgramInvoiceModal
+            program={invoiceProgram}
+            onClose={() => setInvoiceProgram(null)}
+         />
 
       </div>
    );

@@ -206,4 +206,68 @@ export const providerService = {
     );
     return response.data.data;
   },
+
+  listProgramInvoices: async (programId: string): Promise<ProgramInvoice[]> => {
+    const response = await api.get<{ data: ProgramInvoice[] }>(
+      API.TRAININGPROVIDER.PROGRAM_INVOICES(programId)
+    );
+    return response.data.data;
+  },
+
+  getInvoiceCompanies: async (programId: string): Promise<InvoiceCompany[]> => {
+    const response = await api.get<{ data: InvoiceCompany[] }>(
+      API.TRAININGPROVIDER.INVOICE_COMPANIES(programId)
+    );
+    return response.data.data;
+  },
+
+  generateProgramInvoice: async (
+    programId: string,
+    body: GenerateInvoiceBody
+  ): Promise<ProgramInvoice> => {
+    const response = await api.post<{ data: ProgramInvoice }>(
+      API.TRAININGPROVIDER.PROGRAM_INVOICES(programId),
+      body
+    );
+    return response.data.data;
+  },
+
+  downloadInvoicePdf: async (invoiceId: string): Promise<Blob> => {
+    const response = await api.get<Blob>(API.TRAININGPROVIDER.INVOICE_PDF(invoiceId), {
+      responseType: 'blob',
+    });
+    return response.data;
+  },
 };
+
+export interface InvoiceCompany {
+  companyOrgId: string;
+  companyName: string;
+  billableCount: number;
+}
+
+export interface InvoiceCompanyInput {
+  companyOrgId: string;
+  gstin: string;
+  stateCode: string;
+  stateName: string;
+  discountPercent: number;
+}
+
+export interface GenerateInvoiceBody {
+  companies: InvoiceCompanyInput[];
+}
+
+export interface ProgramInvoice {
+  _id: string;
+  invoiceNumber: string;
+  invoiceDate: string;
+  companies: { companyName: string }[];
+  subtotalPaise: number;
+  discountPaise: number;
+  taxablePaise: number;
+  cgstPaise: number;
+  sgstPaise: number;
+  igstPaise: number;
+  totalPaise: number;
+}
