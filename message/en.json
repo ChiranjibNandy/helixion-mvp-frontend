@@ -47,6 +47,7 @@
          "columnProvider": "Training Provider",
          "detailVenueLabel": "Venue",
          "detailStayTypeLabel": "Stay Type",
+         "detailStayPriceLabel": "Stay Price",
          "stayTypeSingle": "Single Occupancy",
          "dayScholar": "Day Scholar",
          "stayTypeTwin": "Twin Sharing",

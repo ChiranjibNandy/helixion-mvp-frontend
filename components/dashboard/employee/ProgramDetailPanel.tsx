@@ -58,34 +58,40 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
 
   return (
     <div className="bg-[#0d1527] px-6 py-5">
-      <div className="flex justify-between gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(160px,1fr)_minmax(320px,420px)_minmax(180px,1fr)] items-start gap-8 lg:gap-10">
 
-        <div className="flex-1 space-y-4">
-          <div>
-            <p className="text-[10px] font-semibold tracking-widest uppercase text-white/30 mb-1">
-              {t('programme.list.detailVenueLabel')}
-            </p>
-            <p className="text-[13px] text-white">{program.venueName}</p>
-          </div>
+        {/* VENUE */}
+        <div className="min-w-0">
+          <p className="text-[10px] font-semibold tracking-widest uppercase text-white/30 mb-2">
+            {t('programme.list.detailVenueLabel')}
+          </p>
 
-          {stayOptions.length > 0 && (
-            <StayTypeSelector
-              options={stayOptions}
-              value={selectedStay}
-              disabled={enrolled}
-              onChange={setSelectedStay}
-            />
-          )}
+          <p className="text-[13px] font-medium text-white">
+            {program.venueName}
+          </p>
         </div>
 
-        <div className="flex flex-col items-end justify-start gap-3 flex-shrink-0">
-          {program.brochureUrl && (
+        {/* STAY DETAILS */}
+        {stayOptions.length > 0 && (
+          <StayTypeSelector
+            options={stayOptions}
+            value={selectedStay}
+            disabled={enrolled}
+            onChange={setSelectedStay}
+          />
+        )}
+
+        {/* ACTIONS */}
+        <div className="flex flex-col items-start lg:items-end gap-3 lg:pr-2">
+          <div className='flex flex-col items-center gap-2'>
+            {program.brochureUrl && (
             <BrochureDownloadLink url={program.brochureUrl} />
           )}
 
           {enrolled ? (
             <span className="flex items-center gap-1.5 text-[13px] text-green-400 font-medium">
-              <CheckCircle2 className="w-4 h-4" /> {t('programme.list.enrolledLabel')}
+              <CheckCircle2 className="w-4 h-4" />
+              {t('programme.list.enrolledLabel')}
             </span>
           ) : (
             <Button
@@ -93,8 +99,13 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
               disabled={enrolling}
               className="bg-blue-600 hover:bg-blue-700 text-white text-[13px] px-5 h-9 font-medium disabled:opacity-70"
             >
-              {enrolling ? t('programme.list.enrollingButton') : t('programme.list.enrollButton')}
-              {!enrolling && <ChevronRight className="w-4 h-4 ml-1" />}
+              {enrolling
+                ? t('programme.list.enrollingButton')
+                : t('programme.list.enrollButton')}
+
+              {!enrolling && (
+                <ChevronRight className="w-4 h-4 ml-1" />
+              )}
             </Button>
           )}
 
@@ -105,6 +116,7 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
               className="max-w-[220px] text-[11px]"
             />
           )}
+          </div>
         </div>
       </div>
 
