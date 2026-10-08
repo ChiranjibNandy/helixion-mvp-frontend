@@ -584,6 +584,25 @@
             "link": "Export →"
          }
       },
+      "invoices": {
+         "action": "Invoice",
+         "modalTitle": "Program Invoices",
+         "modalDescription": "One invoice covers every company in this program. Enter GSTIN and state for each company, then generate. Each participant is billed once.",
+         "noBillable": "Every attended participant in this program is already invoiced.",
+         "billableCount": "{count} billable participants",
+         "buyerGstin": "Company GSTIN",
+         "buyerStateCode": "State code",
+         "buyerStateName": "State name",
+         "discountPercent": "Discount (%)",
+         "generateCta": "Generate Invoice",
+         "generatedToast": "Invoice {number} generated.",
+         "generateErrorToast": "Could not generate the invoice. Check the details and try again.",
+         "downloadErrorToast": "Could not download the invoice PDF.",
+         "listTitle": "Previous invoices",
+         "listEmpty": "No invoices generated for this program yet.",
+         "download": "Download PDF",
+         "notEndedHint": "Invoices can be generated after the program has ended."
+      },
       "pendingConfirmations": {
          "pageTitle": "Pending Confirmations",
          "title": "Pending Enrollment Confirmations",

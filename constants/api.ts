@@ -67,6 +67,9 @@ export const API = {
       PENDING_CONFIRMATIONS: '/training-provider/enrollments/pending-confirmations',
       CONFIRM_ENROLLMENT: (programId: string, enrollmentId: string) => `/training-provider/programs/${programId}/enrollments/${enrollmentId}/confirm`,
       DECLINE_ENROLLMENT: (programId: string, enrollmentId: string) => `/training-provider/programs/${programId}/enrollments/${enrollmentId}/decline`,
+      PROGRAM_INVOICES: (id: string) => `/training-provider/programs/${id}/invoices`,
+      INVOICE_COMPANIES: (id: string) => `/training-provider/programs/${id}/invoice-companies`,
+      INVOICE_PDF: (invoiceId: string) => `/training-provider/invoices/${invoiceId}/pdf`,
    },
    NOTIFICATION:{
       READ:(id:string) => `/notifications/${id}/read`,

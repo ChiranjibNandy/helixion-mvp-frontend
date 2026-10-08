@@ -4,6 +4,7 @@ export interface Program {
   _id:string,
   title: string;
   startDate: string;
+  endDate?: string;
   enrolledCount: number;
   maxParticipants: number;
   fillRate: number;
