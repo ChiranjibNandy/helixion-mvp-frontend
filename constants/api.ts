@@ -71,5 +71,8 @@ export const API = {
    NOTIFICATION:{
       READ:(id:string) => `/notifications/${id}/read`,
             LIST: '/notifications',
+   },
+   SETTINGS:{
+      PROFILE:'/settings/profile'
    }
 }

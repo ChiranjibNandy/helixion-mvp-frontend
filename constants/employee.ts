@@ -1,5 +1,7 @@
 import { NavSection } from "../types/employee";
 import type { Filters } from '../types/employee-programs';
+import { NAV_LABELS } from "./content";
+import { ROUTES } from "./navigation";
 
 export const PAGE_SIZE = 10;
 
@@ -17,13 +19,13 @@ export const TRAVEL_TYPES = [
 ];
 
 export const EMPTY_BOOKING_ROW = {
-    id: "",
-    from: "",
-    to: "",
-    refNo: "",
-    departureTime: "",
-    travelDate: "",
-    travelClass: "Economy",
+  id: "",
+  from: "",
+  to: "",
+  refNo: "",
+  departureTime: "",
+  travelDate: "",
+  travelClass: "Economy",
 };
 
 export const ROLE_LABEL: Record<string, string> = {
@@ -45,6 +47,8 @@ const SHARED_NAV_ITEMS = (): NavSection['items'] => [
   { label: 'Tour Approvals', key: 'tourApprovals', href: '/dashboard/tour-approvals', icon: 'plane' },
   { label: 'CTD Approvals', key: 'ctdApprovals', href: '/dashboard/ctd-approvals', icon: 'clipboard-check' },
   { label: 'Feedback', key: 'feedback', href: '/dashboard/feedback', icon: 'messageSquare' },
+  { label: NAV_LABELS.SETTINGS, key: 'setting', href: ROUTES.EMPLOYEE.SETTINGS, icon: "settings" }
+
 
   // { label: 'Reports', key: 'reports', href: '/dashboard/reports', icon: 'bar-chart-3' },
 ];
