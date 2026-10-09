@@ -1,5 +1,6 @@
 import { NavSection } from "@/types/employee";
 import { ROUTES } from "./navigation";
+import { NAV_LABELS, NAV_SECTIONS } from "./content";
 
 // 'Profile', 'Download Enrolment Data', and 'View Reports' are commented out
 // (not deleted) — none of those pages exist (/dashboard/profile,
@@ -83,6 +84,29 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
       //   key: 'reports',
       //   href: '/dashboard/operations/reports',
       //   icon: 'bar-chart',
+      // },
+    ],
+  },
+  {
+    category: NAV_SECTIONS.GENERAL_TOOLS,
+    items: [
+      {
+        icon: "settings",
+        key: 'setting',
+        label: NAV_LABELS.SETTINGS,
+        href: ROUTES.PROVIDER.SETTINGS,
+      },
+      // {
+      //   icon: "bell",
+      //   key: 'integrations',
+      //   label: NAV_LABELS.INTEGRATIONS,
+      //   href: ROUTES.ADMIN.INTEGRATIONS,
+      // },
+      // {
+      //   icon: "bell",
+      //   key: 'notifications',
+      //   label: NAV_LABELS.NOTIFICATIONS,
+      //   href: ROUTES.ADMIN.NOTIFICATIONS,
       // },
     ],
   },

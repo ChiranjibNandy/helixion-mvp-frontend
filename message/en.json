@@ -885,5 +885,43 @@
          "fetchFailed": "Failed to load completed programs.",
          "submitFailed": "Failed to submit feedback. Please try again."
       }
+   },
+   "settings": {
+      "corporateAdmin": {
+         "title": "Corporate Admin Settings",
+         "description": "Manage your organization's tax registration details.",
+         "gstNumber": "GST Number",
+         "gstPlaceholder": "Enter your GST number",
+         "panNumber": "PAN Number",
+         "panPlaceholder": "Enter your PAN number",
+         "saveChanges": "Save Changes",
+         "saving": "Saving changes...",
+         "loading": "Loading settings...",
+         "loadErrorTitle": "Unable to Load Settings",
+         "loadError": "We couldn't load your settings. Please try again.",
+         "updateErrorTitle": "Update Failed",
+         "updateError": "We couldn't update your settings. Please check your details and try again.",
+         "successTitle": "Changes Saved",
+         "successMessage": "Corporate Admin settings updated successfully.",
+         "permissionTitle": "View Only Mode",
+         "permissionMessage": "You do not have permission to modify corporate settings. Please contact your administrator for assistance."
+      },
+      "trainingProvider": {
+         "title": "Training Provider Settings",
+         "description": "Manage your training provider's GST and PAN details.",
+         "loadErrorTitle": "Failed to Load",
+         "loadError": "Failed to load settings. Please try again.",
+         "updateErrorTitle": "Update Failed",
+         "updateError": "Failed to update settings. Please check your details.",
+         "successTitle": "Success",
+         "successMessage": "Training provider settings updated successfully.",
+         "loading": "Loading settings...",
+         "gstNumber": "GST Number",
+         "gstPlaceholder": "Enter GST number",
+         "panNumber": "PAN Number",
+         "panPlaceholder": "Enter PAN number",
+         "saving": "Saving...",
+         "saveChanges": "Save Changes"
+      }
    }
 }
