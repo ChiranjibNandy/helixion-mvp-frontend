@@ -52,24 +52,19 @@ export default function BaseProgramForm({
 }: BaseProgramFormProps) {
    const isEditMode = mode === 'edit';
 
-   const [dateRange, setDateRange] = React.useState<DateRange | undefined>(() => ({
-      from: formState.startDate
-         ? new Date(`${formState.startDate}T00:00:00`)
-         : undefined,
-      to: formState.endDate
-         ? new Date(`${formState.endDate}T00:00:00`)
-         : undefined,
-   }));
-
-   React.useEffect(() => {
-      if (!formState.startDate && !formState.endDate) {
-         setDateRange(undefined);
-      }
-   }, [formState.startDate, formState.endDate]);
+   const dateRange: DateRange | undefined =
+      formState.startDate || formState.endDate
+         ? {
+            from: formState.startDate
+               ? new Date(`${formState.startDate.slice(0, 10)}T00:00:00`)
+               : undefined,
+            to: formState.endDate
+               ? new Date(`${formState.endDate.slice(0, 10)}T00:00:00`)
+               : undefined,
+         }
+         : undefined;
 
    const handleDateRangeChange = (range: DateRange | undefined) => {
-      setDateRange(range);
-
       onFieldChange(
          "startDate",
          range?.from ? format(range.from, "yyyy-MM-dd") : ""
@@ -146,7 +141,7 @@ export default function BaseProgramForm({
                                  )
                               ) : (
                                  <span className="text-muted-foreground">
-                                    Select program dates
+                                    {t('programme.fields.programDates')}
                                  </span>
                               )}
                            </span>

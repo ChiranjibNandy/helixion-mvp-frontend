@@ -20,7 +20,9 @@ export function StayTypeSelector({
   return (
     <div className="w-full max-w-[380px]">
       {/* HEADERS */}
-      <div className="grid grid-cols-[minmax(160px,1fr)_110px] items-center mb-2">
+      <div className="grid grid-cols-[20px_minmax(140px,1fr)_110px] items-center mb-2">
+        <span aria-hidden="true" />
+
         <p className="text-[10px] font-semibold tracking-widest uppercase text-white/30">
           {t('programme.list.detailStayTypeLabel')}
         </p>
@@ -34,7 +36,7 @@ export function StayTypeSelector({
       <div
         role="radiogroup"
         aria-label={t('programme.list.detailStayTypeLabel')}
-        className="flex flex-col gap-1.5 ml-[-20px]"
+        className="flex flex-col gap-1.5"
       >
         {options.map((opt) => {
           const active = value === opt.key;

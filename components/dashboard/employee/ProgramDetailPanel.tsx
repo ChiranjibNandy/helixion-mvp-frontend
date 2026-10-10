@@ -52,10 +52,6 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
     setConfirmOpen(false);
   };
 
-  const handleSuccessClose = () => {
-    setSuccessOpen(false);
-  };
-
   return (
     <div className="bg-[#0d1527] px-6 py-5">
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(160px,1fr)_minmax(320px,420px)_minmax(180px,1fr)] items-start gap-8 lg:gap-10">
@@ -125,9 +121,9 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
         isOpen={confirmOpen}
         type="confirm"
         title={t('programme.list.enrollConfirmationTitle')}
-        description={`${t('programme.list.enrollConfirmationDescription')} ${program.venueName}?`}
+        description={t('programme.list.enrollConfirmationDescription', {title: program.title})}
         confirmLabel={t('programme.list.enrollButton')}
-        cancelLabel={t('button.cancel')}
+        cancelLabel={t('common.cancel')}
         loading={enrolling}
         onConfirm={handleConfirmEnroll}
         onCancel={handleCancelEnroll}
@@ -136,20 +132,12 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
       <AppModal
         isOpen={successOpen}
         type="success"
-        title="Enrollment Successful"
-        description={`You have successfully enrolled in "${program.title}".`}
+        title={t('programme.list.enrollSuccessTitle')}
+        description={t('programme.list.enrollSuccessDescription', {title: program.title})}
         doneLabel={t('button.done')}
-        confirmLabel={t('button.done')}
         onDone={() => {
           setSuccessOpen(false);
           router.push('/dashboard/enrollments');
-        }}
-        onConfirm={() => {
-          setSuccessOpen(false);
-          router.push('/dashboard/enrollments');
-        }}
-        onCancel={() => {
-          setSuccessOpen(false);
         }}
       />
     </div>

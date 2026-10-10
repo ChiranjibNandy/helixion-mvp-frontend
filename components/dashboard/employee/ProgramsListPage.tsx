@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import { getAvailablePrograms, enrollInProgram, submitEnrollment, getEmployeeEnrollments } from '@/services/employeeService';
 import SearchInput from '@/components/ui/search-input';
 import type { AvailableProgram, StayTypeKey } from '@/types';
