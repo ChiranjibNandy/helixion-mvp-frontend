@@ -4,12 +4,16 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { Upload, ArrowLeft, Save, Send } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { DateRange } from "react-day-picker";
+import { Upload, ArrowLeft, Save, Send, CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import InputField, { Label } from "@/components/ui/input";
 import { t } from "@/lib/i18n";
 import PageHeader from "@/components/ui/pageHeader";
-import StayOptionRow from "./Stay-option-row"; 
+import StayOptionRow from "./Stay-option-row";
 
 interface BaseProgramFormProps {
    mode: 'create' | 'edit' | 'draft';
@@ -48,6 +52,30 @@ export default function BaseProgramForm({
 }: BaseProgramFormProps) {
    const isEditMode = mode === 'edit';
 
+   const dateRange: DateRange | undefined =
+      formState.startDate || formState.endDate
+         ? {
+            from: formState.startDate
+               ? new Date(`${formState.startDate.slice(0, 10)}T00:00:00`)
+               : undefined,
+            to: formState.endDate
+               ? new Date(`${formState.endDate.slice(0, 10)}T00:00:00`)
+               : undefined,
+         }
+         : undefined;
+
+   const handleDateRangeChange = (range: DateRange | undefined) => {
+      onFieldChange(
+         "startDate",
+         range?.from ? format(range.from, "yyyy-MM-dd") : ""
+      );
+
+      onFieldChange(
+         "endDate",
+         range?.to ? format(range.to, "yyyy-MM-dd") : ""
+      );
+   };
+
    return (
       <div className="min-h-screen px-6 py-8 text-white font-sans">
          {onBack && (
@@ -82,23 +110,60 @@ export default function BaseProgramForm({
 
                {/* Program Dates (Frozen in edit mode) */}
                <div className="grid grid-cols-[160px_1fr] gap-4 items-start">
-                  <Label className="pt-2 text-sm text-textMuted">{t('programme.fields.programDates')}*</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                     <InputField
-                        type="date"
-                        value={formState.startDate}
-                        disabled={isEditMode}
-                        onChange={(e) => onFieldChange("startDate", e.target.value)}
-                        className={cn("bg-inputBg border-borderDark text-textSecondary h-9 text-sm", isEditMode && "opacity-60 cursor-not-allowed")}
-                     />
-                     <InputField
-                        type="date"
-                        value={formState.endDate}
-                        disabled={isEditMode}
-                        onChange={(e) => onFieldChange("endDate", e.target.value)}
-                        className={cn("bg-inputBg border-borderDark text-textSecondary h-9 text-sm", isEditMode && "opacity-60 cursor-not-allowed")}
-                     />
-                  </div>
+                  <Label className="pt-2 text-sm text-textMuted">
+                     {t('programme.fields.programDates')}*
+                  </Label>
+
+                  <Popover>
+                     <PopoverTrigger asChild>
+                        <button
+                           type="button"
+                           disabled={isEditMode}
+                           className={cn(
+                              "flex h-9 w-full items-center justify-between rounded-lg border",
+                              "border-borderDark bg-inputBg px-3 text-sm",
+                              "text-textSecondary transition-colors",
+                              "hover:bg-bgButtonHover",
+                              "focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+                              isEditMode && "cursor-not-allowed opacity-60"
+                           )}
+                        >
+                           <span>
+                              {dateRange?.from ? (
+                                 dateRange.to ? (
+                                    <>
+                                       {format(dateRange.from, "dd MMM yyyy")}
+                                       <span className="mx-2 text-textMuted">→</span>
+                                       {format(dateRange.to, "dd MMM yyyy")}
+                                    </>
+                                 ) : (
+                                    format(dateRange.from, "dd MMM yyyy")
+                                 )
+                              ) : (
+                                 <span className="text-muted-foreground">
+                                    {t('programme.fields.programDates')}
+                                 </span>
+                              )}
+                           </span>
+
+                           {/* Explicitly visible calendar icon */}
+                           <CalendarIcon
+                              className="h-4 w-4 shrink-0 text-textSecondary"
+                              strokeWidth={2}
+                           />
+                        </button>
+                     </PopoverTrigger>
+
+                     <PopoverContent align="start" className="w-auto border-borderDark bg-bgCard p-0">
+                        <Calendar
+                           mode="range"
+                           selected={dateRange}
+                           onSelect={handleDateRangeChange}
+                           disabled={isEditMode}
+                           className="p-3"
+                        />
+                     </PopoverContent>
+                  </Popover>
                </div>
 
                {/* Venue (Frozen in edit mode) */}
@@ -172,8 +237,8 @@ export default function BaseProgramForm({
                         htmlFor="brochure-upload"
                         className={cn(
                            "inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-borderDark text-sm transition-colors",
-                           isEditMode 
-                              ? "opacity-50 cursor-not-allowed bg-bgButton/50 text-textSidebarMuted" 
+                           isEditMode
+                              ? "opacity-50 cursor-not-allowed bg-bgButton/50 text-textSidebarMuted"
                               : "bg-bgButton hover:bg-bgButtonHover text-textSecondary cursor-pointer"
                         )}
                      >
