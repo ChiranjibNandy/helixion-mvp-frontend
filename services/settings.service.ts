@@ -3,7 +3,7 @@ import { api } from "@/lib/api";
 
 export enum ProfileTypes {
    CORPORATE_ADMIN = "admin",
-   TRADING_PARTNER = "training_provider"
+   TRAINING_PROVIDER = "training_provider"
 }
 
 export interface SettingsProfile {

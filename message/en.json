@@ -922,6 +922,12 @@
          "panPlaceholder": "Enter PAN number",
          "saving": "Saving...",
          "saveChanges": "Save Changes"
+      },
+      "validation": {
+        "atLeastOneField": "Please provide at least one settings field.",
+        "invalidGstNumber": "Please enter a valid GST number.",
+        "invalidPanNumber": "Please enter a valid PAN number.",
+        "validationTitle": "Validation Error"
       }
    }
 }
