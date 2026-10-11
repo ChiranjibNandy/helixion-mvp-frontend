@@ -11,6 +11,7 @@ import { AppAlert } from "@/components/shared/app-alert";
 import { Button } from "@/components/ui/button";
 import InputField from "@/components/ui/input";
 import { t } from "@/lib/i18n";
+import { validateSettings } from "@/validations/settings";
 
 export default function TrainingProviderSettings() {
   const [gstNumber, setGstNumber] = useState("");
@@ -19,6 +20,7 @@ export default function TrainingProviderSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<"load" | "update" | "">("");
+  const [validationError, setValidationError] = useState("");
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
@@ -49,10 +51,19 @@ export default function TrainingProviderSettings() {
     event.preventDefault();
     if (saving) return;
 
+    setError("");
+    setValidationError("");
+    setSuccess(false);
+
+    // Validate before making the API request.
+    const message = validateSettings(gstNumber, panNumber);
+
+    if (message) {
+      setValidationError(message);
+      return;
+    }
     try {
       setSaving(true);
-      setError("");
-      setSuccess(false);
 
       const payload: UpdateSettingsProfilePayload = {
         gstNumber: gstNumber.trim().toUpperCase(),
@@ -99,6 +110,16 @@ export default function TrainingProviderSettings() {
             <AppAlert
               title={t("settings.trainingProvider.updateErrorTitle")}
               description={t("settings.trainingProvider.updateError")}
+              variant="destructive"
+            />
+          )}
+
+          {validationError && (
+            <AppAlert
+              title={t(
+                "settings.validation.validationTitle"
+              )}
+              description={validationError}
               variant="destructive"
             />
           )}
