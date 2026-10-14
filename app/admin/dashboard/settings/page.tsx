@@ -2,10 +2,11 @@
 "use client";
 
 import CorporateAdminSettings from "@/components/admin/CorporateAdminSettings";
-import { ROLES } from "@/constants/role";
+import { USER_ROLES } from "@/constants/navigation";
+
 
 export default function AdminSettings() {
    return (
-      <CorporateAdminSettings role={ROLES[0]} />
+      <CorporateAdminSettings role={USER_ROLES.ADMIN} />
    );
 }

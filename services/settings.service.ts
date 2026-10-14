@@ -12,6 +12,10 @@ export interface SettingsProfile {
    profileType: ProfileTypes;
    gstNumber?: string;
    panNumber?: string;
+   orgName?:string;
+   orgType?:string;
+   email?:string;
+   slug?:string;
    createdAt?: string;
    updatedAt?: string;
 }
@@ -44,7 +48,7 @@ export const getSettingsProfileApi = async (): Promise<SettingsProfile> => {
 export const updateSettingsProfileApi = async (
    payload: UpdateSettingsProfilePayload
 ): Promise<SettingsProfile> => {
-   const response = await api.put<ApiResponse<SettingsProfile>>(
+   const response = await api.patch<ApiResponse<SettingsProfile>>(
       API.SETTINGS.PROFILE,
       payload
    );
