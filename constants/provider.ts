@@ -90,13 +90,15 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
 
 /** Expected CSV column headers for bulk program upload — mirrors the backend Zod schema (bulkProgramRowSchema) */
 export const PROGRAM_CSV_COLUMNS = [
-  'title', 'startDate', 'endDate', 'venue', 'city', 'state', 'isResidential', 'stayType',
+  'title', 'startDate', 'endDate', 'venue', 'city', 'state', 'stayType',
   'singleOccupancyFee', 'twinSharingFee', 'nonResidentialFee',
   'brochureUrl', 'minParticipants', 'maxParticipants', 'status',
 ];
 
 /** Columns that are optional even though listed above — excluded from the "required" checks in BulkProgramUpload.tsx */
-export const OPTIONAL_CSV_COLUMNS = ['brochureUrl', 'state'] as const;
+export const OPTIONAL_CSV_COLUMNS = ['brochureUrl', 'state', 'stayType',
+  'singleOccupancyFee', 'twinSharingFee', 'nonResidentialFee',
+  'brochureUrl', 'minParticipants', 'maxParticipants'] as const;
 
 // Fixed as a proper 2D array matching the headers length
 export const SAMPLE_PROGRAM_ROWS = [
