@@ -171,7 +171,7 @@ export default function BaseProgramForm({
                      <label
                         htmlFor="brochure-upload"
                         className={cn(
-                           "inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-borderDark text-sm transition-colors",
+                           "w-40 h-11 text-center inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-borderDark text-sm transition-colors",
                            isEditMode 
                               ? "opacity-50 cursor-not-allowed bg-bgButton/50 text-textSidebarMuted" 
                               : "bg-bgButton hover:bg-bgButtonHover text-textSecondary cursor-pointer"
