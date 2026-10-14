@@ -221,13 +221,17 @@ export const providerService = {
     return response.data.data;
   },
 
-  generateProgramInvoice: async (
-    programId: string,
-    body: GenerateInvoiceBody
-  ): Promise<ProgramInvoice> => {
+  getInvoicePreviewData: async (programId: string): Promise<InvoicePreview[]> => {
+    const response = await api.get<{ data: InvoicePreview[] }>(
+      API.TRAININGPROVIDER.INVOICE_PREVIEW_DATA(programId)
+    );
+    return response.data.data;
+  },
+
+  generateProgramInvoice: async (programId: string, companyOrgId: string): Promise<ProgramInvoice> => {
     const response = await api.post<{ data: ProgramInvoice }>(
       API.TRAININGPROVIDER.PROGRAM_INVOICES(programId),
-      body
+      { companyOrgId }
     );
     return response.data.data;
   },
@@ -244,25 +248,29 @@ export interface InvoiceCompany {
   companyOrgId: string;
   companyName: string;
   billableCount: number;
+  hasBillingDetails: boolean;
 }
 
-export interface InvoiceCompanyInput {
+export interface InvoiceLine {
+  enrollmentId: string;
+  participantName: string;
+  employeeCode?: string;
+  designation?: string;
+  stayType: string;
+  feePaise: number;
+  daysPresent: number;
+  totalDays: number;
+  attendance: { day: string; status: string }[];
+}
+
+export interface InvoiceCompanyDetail {
   companyOrgId: string;
+  companyName: string;
   gstin: string;
   stateCode: string;
   stateName: string;
   discountPercent: number;
-}
-
-export interface GenerateInvoiceBody {
-  companies: InvoiceCompanyInput[];
-}
-
-export interface ProgramInvoice {
-  _id: string;
-  invoiceNumber: string;
-  invoiceDate: string;
-  companies: { companyName: string }[];
+  lines: InvoiceLine[];
   subtotalPaise: number;
   discountPaise: number;
   taxablePaise: number;
@@ -271,3 +279,21 @@ export interface ProgramInvoice {
   igstPaise: number;
   totalPaise: number;
 }
+
+export interface ProgramInvoice {
+  _id: string;
+  invoiceNumber: string;
+  invoiceDate: string;
+  program: { title: string; venue?: string; city?: string; startDate?: string; endDate?: string };
+  provider: { name: string; gstin: string; pan: string; stateCode: string; stateName: string };
+  companies: InvoiceCompanyDetail[];
+  subtotalPaise: number;
+  discountPaise: number;
+  taxablePaise: number;
+  cgstPaise: number;
+  sgstPaise: number;
+  igstPaise: number;
+  totalPaise: number;
+}
+
+export type InvoicePreview = Omit<ProgramInvoice, '_id'>;
