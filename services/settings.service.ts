@@ -6,16 +6,25 @@ export enum ProfileTypes {
    TRAINING_PROVIDER = "training_provider"
 }
 
+export interface Address {
+   addressLine1: string;
+   addressLine2?: string;
+   city: string;
+   state: string;
+   postalCode: string;
+}
+
 export interface SettingsProfile {
    _id?: string;
    ownerId?: string;
    profileType: ProfileTypes;
    gstNumber?: string;
    panNumber?: string;
-   orgName?:string;
-   orgType?:string;
-   email?:string;
-   slug?:string;
+   location?: Address;
+   orgName?: string;
+   orgType?: string;
+   email?: string;
+   slug?: string;
    createdAt?: string;
    updatedAt?: string;
 }
@@ -23,6 +32,7 @@ export interface SettingsProfile {
 export interface UpdateSettingsProfilePayload {
    gstNumber?: string;
    panNumber?: string;
+   location?: Address;
 }
 
 interface ApiResponse<T> {

@@ -1,12 +1,13 @@
 "use client";
 
+import { t } from "@/lib/i18n";
 import SettingsProfileView from "../shared/settings-profile-view";
 
 export default function TrainingProviderSettings() {
   return (
     <SettingsProfileView
-      title="Training Provider Settings"
-      description="Manage your account credentials and tax identifiers."
+      title={t("settings.trainingProvider.title")}
+      description={t("settings.trainingProvider.description")}
       showOrgDetails={false}
       isEditable={true}
     />
