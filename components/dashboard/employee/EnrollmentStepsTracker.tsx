@@ -96,7 +96,7 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
     // actorType "training_dept" as the main review, so they're explicitly
     // excluded here — otherwise a tour approval alone would be mistaken for
     // evidence the main review ran, permanently stuck step 3 on "upcoming".
-    
+
     // Step 3: CTD / Training Dept Review
     let step3Status: "completed" | "current" | "upcoming" = "upcoming";
     if (PAST_TRAINING_DEPT_REVIEW.includes(stage)) {
@@ -106,8 +106,6 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
     }
     const step3Date = getTimelineDate(ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION, "approve") ||
         getTimelineDate(ENROLLMENT_STAGE.TOUR_PENDING_EMPLOYEE, "approve");
-    const passedTpGate = stage === ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION ||
-        timeline.some((entry: any) => entry.stage === ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION);
     let stepTpStatus: "completed" | "current" | "upcoming" = "upcoming";
     if (stage === ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION) {
         stepTpStatus = "current";
@@ -152,17 +150,15 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
             status: step3Status,
             icon: ClipboardList,
         },
-    ];
-
-    if (passedTpGate) {
-        steps.push({
+        {
             id: "3-tp-confirmation",
             label: t("approvalProgress.steps.tpConfirmation"),
             date: stepTpDate,
             status: stepTpStatus,
             icon: UserCheck,
-        });
-    }
+        }
+    ];
+
 
     if (hasCtdTourReview) {
         steps.push({
