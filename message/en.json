@@ -885,5 +885,119 @@
          "fetchFailed": "Failed to load completed programs.",
          "submitFailed": "Failed to submit feedback. Please try again."
       }
+   },
+   "settings": {
+      "badges": {
+         "readOnly": "Read-only",
+         "editable": "Editable",
+         "readOnlyAccess": "Read-only access",
+         "onFile": "On file",
+         "notAdded": "Not added"
+      },
+      "companyProfile": {
+         "title": "Company Profile",
+         "description": "Shown on enrollment letters and travel communications."
+      },
+      "accountInfo": {
+         "title": "Account Information",
+         "description": "Your registered contact email."
+      },
+      "fields": {
+         "legalName": "Legal Name",
+         "orgType": "Org Type",
+         "contactEmail": "Contact Email",
+         "slug": "Slug"
+      },
+      "tax": {
+         "title": "Tax Identifiers",
+         "description": "PAN and GST are sensitive. They stay masked until you reveal or edit them.",
+         "panLabel": "PAN",
+         "gstLabel": "GSTIN",
+         "panPlaceholder": "e.g. ABCDE1234F",
+         "gstPlaceholder": "e.g. 27ABCDE1234F1Z5",
+         "panFormat": "Format: 5 letters, 4 digits, 1 letter",
+         "gstFormat": "15 characters standard GSTIN format",
+         "noPan": "No PAN on file",
+         "noGst": "No GSTIN on file",
+         "auditNotice": "Changes to tax identifiers are logged for security auditing",
+         "securityActive": "Security status: Active"
+      },
+      "location": {
+         "title": "Business Location / Address",
+         "description": "Used for billing and correspondence documentation.",
+         "registeredAddress": "Registered Address",
+         "addressLine1Label": "Address Line 1",
+         "addressLine1Placeholder": "Street address, P.O. box, company name",
+         "addressLine2Label": "Address Line 2 (Optional)",
+         "addressLine2Placeholder": "Apartment, suite, unit, building, floor",
+         "cityLabel": "City",
+         "cityPlaceholder": "City",
+         "stateLabel": "State",
+         "statePlaceholder": "State / Province",
+         "postalCodeLabel": "Postal Code",
+         "postalCodePlaceholder": "Postal Code / PIN",
+         "noAddress": "No address on file",
+         "validationError": "Please fill out all required address fields."
+      },
+      "actions": {
+         "cancel": "Cancel",
+         "save": "Save",
+         "saveAddress": "Save Address",
+         "hide": "Hide",
+         "reveal": "Reveal",
+         "edit": "Edit",
+         "addPan": "+ Add PAN",
+         "addGst": "+ Add GSTIN",
+         "addAddress": "+ Add Address"
+      },
+      "modal": {
+         "saveAddressTitle": "Save Address?",
+         "saveAddressDesc": "This updates the business address identifier used on future documents.",
+         "saveTaxTitle": "Save {key}?",
+         "saveTaxDesc": "This updates the {key} identifier used on all future tax documents. The change will be recorded in the security audit logs.",
+         "confirmSave": "Confirm & Save"
+      },
+      "corporateAdmin": {
+         "title": "Corporate Admin Settings",
+         "description": "Manage your organization's tax registration details.",
+         "gstNumber": "GST Number",
+         "gstPlaceholder": "Enter your GST number",
+         "panNumber": "PAN Number",
+         "panPlaceholder": "Enter your PAN number",
+         "saveChanges": "Save Changes",
+         "saving": "Saving changes...",
+         "loading": "Loading settings...",
+         "loadErrorTitle": "Unable to Load Settings",
+         "loadError": "We couldn't load your settings. Please try again.",
+         "updateErrorTitle": "Update Failed",
+         "updateError": "We couldn't update your settings. Please check your details and try again.",
+         "successTitle": "Changes Saved",
+         "successMessage": "Corporate Admin settings updated successfully.",
+         "permissionTitle": "View Only Mode",
+         "permissionMessage": "You do not have permission to modify corporate settings. Please contact your administrator for assistance."
+      },
+      "trainingProvider": {
+         "title": "Training Provider Settings",
+         "description": "Manage your training provider's GST and PAN details.",
+         "loadErrorTitle": "Failed to Load",
+         "loadError": "Failed to load settings. Please try again.",
+         "updateErrorTitle": "Update Failed",
+         "updateError": "Failed to update settings. Please check your details.",
+         "successTitle": "Success",
+         "successMessage": "Training provider settings updated successfully.",
+         "loading": "Loading settings...",
+         "gstNumber": "GST Number",
+         "gstPlaceholder": "Enter GST number",
+         "panNumber": "PAN Number",
+         "panPlaceholder": "Enter PAN number",
+         "saving": "Saving...",
+         "saveChanges": "Save Changes"
+      },
+      "validation": {
+         "atLeastOneField": "Please provide at least one settings field.",
+         "invalidGstNumber": "Please enter a valid GST number.",
+         "invalidPanNumber": "Please enter a valid PAN number.",
+         "validationTitle": "Validation Error"
+      }
    }
 }

@@ -25,7 +25,7 @@ export const ROUTES = {
     PROGRAMS: '/programs',
     ORGANIZATIONS: '/admin/dashboard/organizations',
     AUDIT: '/audit',
-    SUPPORT: '/support',
+    SETTING: '/admin/dashboard/settings',
     INTEGRATIONS: '/integrations',
     NOTIFICATIONS: '/notifications',
     DEACTIVATE_USER: '/admin/dashboard/deactivate',
@@ -33,15 +33,17 @@ export const ROUTES = {
 
   // Employee section routes
   EMPLOYEE: {
-    DASHBOARD:   '/dashboard',
-    PROFILE:     '/dashboard/profile',
-    PROGRAM:     '/employee/programs',
-    PROGRAMS:    '/dashboard/programs',
+    DASHBOARD: '/dashboard',
+    PROFILE: '/dashboard/profile',
+    PROGRAM: '/employee/programs',
+    PROGRAMS: '/dashboard/programs',
     ENROLLMENTS: '/dashboard/enrollments',
-    APPROVALS:   '/dashboard/approvals',
-    EXPENSES:    '/dashboard/expenses',
-    REPORTS:     '/dashboard/reports',
+    APPROVALS: '/dashboard/approvals',
+    EXPENSES: '/dashboard/expenses',
+    REPORTS: '/dashboard/reports',
+    SETTINGS: '/dashboard/settings'
   },
+
 
   // Training Provider section routes
   PROVIDER: {
@@ -57,6 +59,7 @@ export const ROUTES = {
     },
     ATTENDANCE: '/dashboard/update-attendance',
     PENDING_CONFIRMATIONS: '/dashboard/pending-confirmations',
+    SETTINGS: '/dashboard/settings'
   },
 } as const;
 

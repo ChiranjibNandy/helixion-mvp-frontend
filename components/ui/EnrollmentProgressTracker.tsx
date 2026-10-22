@@ -3,7 +3,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 import { t } from "@/lib/i18n";
 
 interface Step {
@@ -20,80 +19,73 @@ interface EnrollmentProgressTrackerProps {
 }
 
 export default function EnrollmentProgressTracker({ steps, className }: EnrollmentProgressTrackerProps) {
-    // Find the furthest index that is completed or current
-    const activeIndex = steps.reduce((acc, step, idx) => {
-        return step.status === "completed" || step.status === "current" ? idx : acc;
-    }, 0);
-
-    const progressPercent = steps.length > 1
-        ? Math.max(0, (activeIndex / (steps.length - 1)) * 100)
-        : 0;
-
     return (
         <div className={cn("w-full py-6", className)}>
-            <div className="relative flex items-center justify-between">
-                {/* Progress Line Wrapper spanning center-to-center of outer circles */}
-                <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 z-0">
-                    <Progress value={progressPercent} className="h-0.5 bg-borderCard" />
-                </div>
-
-                {/* steps */}
+            <div className="flex items-center justify-between w-full">
                 {steps.map((step, index) => {
                     const Icon = step.icon;
                     const isCompleted = step.status === "completed";
                     const isCurrent = step.status === "current";
+                    const isLast = index === steps.length - 1;
+                    const isLineFilled = isCompleted;
 
                     return (
-                        <div key={step.id} className="relative z-10 flex flex-col items-center p-2">
-                            {/* Circle Icon */}
-                            <div
-                                className={cn(
-                                    "flex h-12 w-12 items-center justify-center rounded-full border-2 transition-all duration-300",
-                                    isCompleted
-                                        ? "bg-accentGreen/10 border-accentGreen text-accentGreen"
-                                        : isCurrent
-                                            ? "bg-primary/10 border-primary text-primary ring-4 ring-primary/20"
-                                            : "bg-bgMain border-borderCard text-textSidebarMuted"
-                                )}
-                            >
-                                {isCompleted ? <Check className="size-6" /> : <Icon className="size-6" />}
-                            </div>
-
-                            {/* Label, Status Pill & Date */}
-                            <div className="absolute top-14 flex flex-col items-center text-center min-w-[140px]">
-                                <span
+                        <React.Fragment key={step.id}>
+                            <div className="relative flex flex-col items-center">
+                                <div
                                     className={cn(
-                                        "text-xs font-semibold leading-tight mb-1.5",
-                                        isCompleted ? "text-accentGreen" : isCurrent ? "text-white" : "text-textSidebarMuted"
-                                    )}
-                                >
-                                    {step.label}
-                                </span>
-
-                                {/* Status Button / Pill */}
-                                <button
-                                    type="button"
-                                    className={cn(
-                                        "px-2.5 py-0.5 rounded-full text-[10px] font-medium transition-colors cursor-default border",
+                                        "flex h-12 w-12 items-center justify-center rounded-full border-2 transition-all duration-300 z-10 bg-bgMain",
                                         isCompleted
-                                            ? "bg-accentGreen/15 text-accentGreen border-accentGreen/30"
+                                            ? "bg-accentGreen/10 border-accentGreen text-accentGreen"
                                             : isCurrent
-                                                ? "bg-primary/15 text-primary border-primary/30"
-                                                : "bg-bgMain text-textSidebarMuted border-borderCard"
+                                                ? "bg-primary/10 border-primary text-primary ring-4 ring-primary/20"
+                                                : "bg-bgMain border-borderCard text-textSidebarMuted"
                                     )}
                                 >
-                                    {isCompleted ? t("enrollment.status.completed") : isCurrent ? t("enrollment.status.active") : t("enrollment.status.pend")}
-                                </button>
+                                    {isCompleted ? <Check className="size-6" /> : <Icon className="size-6" />}
+                                </div>
+                                <div className="absolute top-14 flex flex-col items-center text-center min-w-[140px]">
+                                    <span
+                                        className={cn(
+                                            "text-xs font-semibold leading-tight mb-1.5",
+                                            isCompleted ? "text-accentGreen" : isCurrent ? "text-white" : "text-textSidebarMuted"
+                                        )}
+                                    >
+                                        {step.label}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className={cn(
+                                            "px-2.5 py-0.5 rounded-full text-[10px] font-medium transition-colors cursor-default border",
+                                            isCompleted
+                                                ? "bg-accentGreen/15 text-accentGreen border-accentGreen/30"
+                                                : isCurrent
+                                                    ? "bg-primary/15 text-primary border-primary/30"
+                                                    : "bg-bgMain text-textSidebarMuted border-borderCard"
+                                        )}
+                                    >
+                                        {isCompleted ? t("enrollment.status.completed") : isCurrent ? t("enrollment.status.active") : t("enrollment.status.pend")}
+                                    </button>
 
-                                {step.date && (
-                                    <span className="text-[10px] text-textSidebarMuted mt-1">{step.date}</span>
-                                )}
+                                    {step.date && (
+                                        <span className="text-[10px] text-textSidebarMuted mt-1">{step.date}</span>
+                                    )}
+                                </div>
                             </div>
-                        </div>
+                            {!isLast && (
+                                <div className="flex-1 h-0.5 mx-2 bg-borderCard relative overflow-hidden">
+                                    <div
+                                        className={cn(
+                                            "absolute inset-0 transition-all duration-500",
+                                            isLineFilled ? "bg-accentGreen w-full" : "w-0"
+                                        )}
+                                    />
+                                </div>
+                            )}
+                        </React.Fragment>
                     );
                 })}
             </div>
-            {/* Spacer for the absolute labels */}
             <div className="h-20" />
         </div>
     );
