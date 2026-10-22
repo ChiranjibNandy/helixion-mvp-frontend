@@ -240,6 +240,13 @@ export default function SettingsProfileView({
 
    const isLocationModal = pendingSave?.key === "location";
    const taxKeyLabel = pendingSave?.key ? pendingSave.key.toUpperCase() : "";
+   const getModalDescription = () => {
+      if (!pendingSave) return "";
+      if (pendingSave.key === "location") {
+         return `New address: ${ formatAddressString(pendingSave.value as Address) }`;
+      }
+      return `This updates the ${ taxKeyLabel } identifier to "${ pendingSave.value }" used on all future tax documents. The change will be recorded in the security audit logs.`;
+   };
 
    return (
       <div className="mx-auto max-w-5xl space-y-6 p-4 sm:p-6 text-slate-100">
@@ -475,8 +482,8 @@ export default function SettingsProfileView({
                         />
                         {locationState.error && <p className="text-xs text-red-400">{locationState.error}</p>}
                         <div className="flex justify-end gap-2 pt-2">
-                           <Button type="button" variant="ghost" className="h-7 px-2.5 text-xs text-slate-400 hover:text-white" onClick={() => setLocationState({ mode: "view", draft: INITIAL_ADDRESS, error: "" })}>{t("settings.actions.cancel")}</Button>
-                           <Button type="button" className="h-7 bg-primary px-3 text-xs text-white hover:bg-blue-600" onClick={handleTrySaveLocation}>{t("settings.actions.saveAddress")}</Button>
+                           <Button type="button" variant="ghost" className="h-8 px-2.5 text-xs text-slate-400 hover:text-white" onClick={() => setLocationState({ mode: "view", draft: INITIAL_ADDRESS, error: "" })}>{t("settings.actions.cancel")}</Button>
+                           <Button type="button" className="h-8 bg-primary px-3 text-xs text-white hover:bg-blue-600" onClick={handleTrySaveLocation}>{t("settings.actions.saveAddress")}</Button>
                         </div>
                      </div>
                   ) : (
@@ -507,8 +514,8 @@ export default function SettingsProfileView({
          <AppModal
             isOpen={Boolean(pendingSave)}
             type="confirm"
-            title={isLocationModal ? t("settings.modal.saveAddressTitle") : `Save ${taxKeyLabel}?`}
-            description={isLocationModal ? t("settings.modal.saveAddressDesc") : `This updates the ${taxKeyLabel} identifier used on all future tax documents. The change will be recorded in the security audit logs.`}
+            title={isLocationModal ? t("settings.modal.saveAddressTitle") : `Save ${ taxKeyLabel }?`}
+            description={getModalDescription()}
             loading={saving}
             confirmLabel={t("settings.modal.confirmSave")}
             onConfirm={handleConfirmSave}
