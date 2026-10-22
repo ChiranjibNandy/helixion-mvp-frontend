@@ -96,7 +96,7 @@ export const PROGRAM_CSV_COLUMNS = [
 ];
 
 /** Columns that are optional even though listed above — excluded from the "required" checks in BulkProgramUpload.tsx */
-export const OPTIONAL_CSV_COLUMNS = ['brochureUrl', 'state', 'stayType',
+export const OPTIONAL_CSV_COLUMNS = ['state', 'stayType',
   'singleOccupancyFee', 'twinSharingFee', 'nonResidentialFee',
   'brochureUrl', 'minParticipants', 'maxParticipants'] as const;
 
@@ -109,7 +109,6 @@ export const SAMPLE_PROGRAM_ROWS = [
     'Taj Lands End',
     'Mumbai',
     'Maharashtra',
-    true,
     'single_occupancy',
     15000,
     12000,
