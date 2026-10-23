@@ -159,29 +159,29 @@ export const ADMIN_NAV_SECTION: NavSection[] = [
       // },
     ],
   },
-  // {
-  //   category: NAV_SECTIONS.GENERAL_TOOLS,
-  //   items: [
-  //     {
-  //       icon: "settings",
-  //       key: 'support',
-  //       label: NAV_LABELS.SUPPORT,
-  //       href: ROUTES.ADMIN.SUPPORT,
-  //     },
-  //     {
-  //       icon: "bell",
-  //       key: 'integrations',
-  //       label: NAV_LABELS.INTEGRATIONS,
-  //       href: ROUTES.ADMIN.INTEGRATIONS,
-  //     },
-  //     {
-  //       icon: "bell",
-  //       key: 'notifications',
-  //       label: NAV_LABELS.NOTIFICATIONS,
-  //       href: ROUTES.ADMIN.NOTIFICATIONS,
-  //     },
-  //   ],
-  // },
+  {
+    category: NAV_SECTIONS.GENERAL_TOOLS,
+    items: [
+      {
+        icon: "settings",
+        key: 'setting',
+        label: NAV_LABELS.SETTINGS,
+        href: ROUTES.ADMIN.SETTING,
+      },
+      // {
+      //   icon: "bell",
+      //   key: 'integrations',
+      //   label: NAV_LABELS.INTEGRATIONS,
+      //   href: ROUTES.ADMIN.INTEGRATIONS,
+      // },
+      // {
+      //   icon: "bell",
+      //   key: 'notifications',
+      //   label: NAV_LABELS.NOTIFICATIONS,
+      //   href: ROUTES.ADMIN.NOTIFICATIONS,
+      // },
+    ],
+  },
 ];
 
 
