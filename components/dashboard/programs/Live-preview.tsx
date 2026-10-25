@@ -35,7 +35,7 @@ export default function LivePreview({ data }: LivePreviewProps) {
       <div className="flex-1 space-y-4">
         <div>
           <h3 className="text-lg font-semibold text-foreground leading-tight">
-            {data.programTitle || t('programme.defaultTitle')}
+            {data.title || t('programme.defaultTitle')}
           </h3>
           <p className="text-sm text-textSidebarMuted mt-0.5">
             {data.venue ? `Venue — ${ data.venue }` : t('programme.defaultVenue')}

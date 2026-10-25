@@ -1,8 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Search, Plus, Pencil } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Search, Plus, Pencil, Receipt, MoreVertical, Copy, ClipboardCheck } from "lucide-react";
+import {
+   DropdownMenu,
+   DropdownMenuContent,
+   DropdownMenuItem,
+   DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { usePrograms } from "@/hooks/UseProgramReturn";
 import DataTable from "@/components/shared/data-table";
@@ -10,7 +17,6 @@ import PaginationController from "@/components/ui/pagination";
 import { Program } from "@/types/program";
 import { ROUTES } from "@/constants/navigation";
 import { t } from "@/lib/i18n";
-import ProgramActions from "@/components/dashboard/provider/ProgramActions";
 
 export default function ProgramsPage() {
    const router = useRouter();
@@ -113,38 +119,64 @@ export default function ProgramsPage() {
       {
          key: "actions",
          header: "",
-         render: (program: Program) => (
-            <div className="flex items-center justify-end gap-1">
-               <ProgramActions
-                  onDuplicate={() =>
-                     router.push(
-                        `${ ROUTES.PROVIDER.PROGRAMS.CREATE }?duplicateFrom=${ program._id }`
-                     )
-                  }
-               />
-
-               <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() =>
-                     router.push(
-                        `/dashboard/programs/edit-published/${ program._id }`
-                     )
-                  }
-                  className="
-                  h-8 w-8
-                  rounded-md
-                  text-textSidebarMuted
-                  transition-colors
-                  hover:bg-bgButton
-                  hover:text-white
-               "
-                  title="Edit Program"
-               >
-                  <Pencil size={15} />
-               </Button>
-            </div>
-         ),
+         render: (program: Program) => {
+            const hasEnded = !!program.endDate && new Date(program.endDate) < new Date();
+            return (
+               <div className="flex items-center justify-end gap-1">
+                  <DropdownMenu>
+                     <DropdownMenuTrigger
+                        className={cn(
+                           buttonVariants({ variant: "ghost", size: "icon" }),
+                           "h-8 w-8 rounded-md text-textSidebarMuted hover:bg-bgButton hover:text-white"
+                        )}
+                        title="More actions"
+                     >
+                        <MoreVertical size={15} />
+                     </DropdownMenuTrigger>
+                     <DropdownMenuContent align="end" className="min-w-40 bg-[#1a1b25] border border-white/10 text-white">
+                        <DropdownMenuItem
+                           onClick={() => router.push(`/dashboard/update-attendance/${program._id}`)}
+                           className="text-white whitespace-nowrap focus:bg-bgButton focus:text-white"
+                        >
+                           <ClipboardCheck size={14} className="mr-2" />
+                           Attendance
+                        </DropdownMenuItem>
+                        {hasEnded && (
+                           <DropdownMenuItem
+                              onClick={() => window.open(`/dashboard/programs/invoices/${program._id}`, "_blank")}
+                              className="text-white whitespace-nowrap focus:bg-bgButton focus:text-white"
+                           >
+                              <Receipt size={14} className="mr-2" />
+                              {t("providerDashboard.invoices.action")}
+                           </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem
+                           onClick={() =>
+                              router.push(
+                                 `${ ROUTES.PROVIDER.PROGRAMS.CREATE }?duplicateFrom=${ program._id }`
+                              )
+                           }
+                           className="text-white whitespace-nowrap focus:bg-bgButton focus:text-white"
+                        >
+                           <Copy size={14} className="mr-2" />
+                           {t('programme.list.duplicateButton')}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                           onClick={() =>
+                              router.push(
+                                 `/dashboard/programs/edit-published/${ program._id }`
+                              )
+                           }
+                           className="text-white whitespace-nowrap focus:bg-bgButton focus:text-white"
+                        >
+                           <Pencil size={14} className="mr-2" />
+                           Edit Program
+                        </DropdownMenuItem>
+                     </DropdownMenuContent>
+                  </DropdownMenu>
+               </div>
+            );
+         },
       },
    ];
    return (
