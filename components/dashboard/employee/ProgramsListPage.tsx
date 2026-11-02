@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import { getAvailablePrograms, enrollInProgram, submitEnrollment, getEmployeeEnrollments } from '@/services/employeeService';
 import SearchInput from '@/components/ui/search-input';
 import type { AvailableProgram, StayTypeKey } from '@/types';
@@ -65,17 +64,16 @@ const COLUMNS = [
 
 
 export function ProgramsListPage() {
-  const router = useRouter();
-  const [programs,     setPrograms]     = useState<AvailableProgram[]>([]);
-  const [loading,      setLoading]      = useState(true);
-  const [fetchError,   setFetchError]   = useState<string | null>(null);
-  const [selectedId,   setSelectedId]   = useState<string | null>(null);
-  const [total,        setTotal]        = useState(0);
-  const [page,         setPage]         = useState(1);
-  const [draft,        setDraft]        = useState<Filters>(EMPTY_FILTERS);
-  const [applied,      setApplied]      = useState<Filters>(EMPTY_FILTERS);
-  const [enrollingId,  setEnrollingId]  = useState<string | null>(null);
-  const [enrolledIds,  setEnrolledIds]  = useState<Set<string>>(new Set());
+  const [programs, setPrograms] = useState<AvailableProgram[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [draft, setDraft] = useState<Filters>(EMPTY_FILTERS);
+  const [applied, setApplied] = useState<Filters>(EMPTY_FILTERS);
+  const [enrollingId, setEnrollingId] = useState<string | null>(null);
+  const [enrolledIds, setEnrolledIds] = useState<Set<string>>(new Set());
   const [enrollErrors, setEnrollErrors] = useState<Record<string, string>>({});
 
   const abortRef = useRef<AbortController | null>(null);
@@ -90,11 +88,11 @@ export function ProgramsListPage() {
     try {
       const data = await getAvailablePrograms({
         page,
-        limit:    PAGE_SIZE,
-        search:   applied.title    || undefined,
-        venue:    applied.venue    || undefined,
+        limit: PAGE_SIZE,
+        search: applied.title || undefined,
+        venue: applied.venue || undefined,
         fromDate: applied.fromDate || undefined,
-        toDate:   applied.toDate   || undefined,
+        toDate: applied.toDate || undefined,
         hidePast: applied.hidePast || undefined,
       }, controller.signal);
       setPrograms(data.programs);
@@ -144,7 +142,7 @@ export function ProgramsListPage() {
     setPage(1);
   }
 
-  async function handleEnrol(programId: string, stayType: StayTypeKey) {
+  async function handleEnrol(programId: string, stayType: StayTypeKey): Promise<boolean> {
     setEnrollingId(programId);
     setEnrollErrors((prev) => {
       const next = { ...prev };
@@ -154,12 +152,18 @@ export function ProgramsListPage() {
     try {
       const { enrollmentId } = await enrollInProgram(programId, stayType);
       await submitEnrollment(enrollmentId);
-      router.push('/dashboard/enrollments');
+      setEnrolledIds((prev) => {
+        const next = new Set(prev);
+        next.add(programId);
+        return next;
+      });
+      return true;
     } catch (err: any) {
       setEnrollErrors((prev) => ({
         ...prev,
         [programId]: err?.response?.data?.message || err?.message || t('programme.list.fetchError'),
       }));
+      return false;
     } finally {
       setEnrollingId(null);
     }
@@ -204,10 +208,9 @@ export function ProgramsListPage() {
         rowKey={(prog) => prog._id}
         onRowClick={(prog) => setSelectedId((prev) => (prev === prog._id ? null : prog._id))}
         rowClassName={(prog) =>
-          `border-[#1e2d40] cursor-pointer transition-colors ${
-            selectedId === prog._id
-              ? 'bg-[#0d1e33] border-l-2 border-l-blue-500'
-              : 'hover:bg-[#111827]'
+          `border-[#1e2d40] cursor-pointer transition-colors ${selectedId === prog._id
+            ? 'bg-[#0d1e33] border-l-2 border-l-blue-500'
+            : 'hover:bg-[#111827]'
           }`
         }
         isRowExpanded={(prog) => selectedId === prog._id}

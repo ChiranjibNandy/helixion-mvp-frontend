@@ -16,7 +16,7 @@ export interface Filters {
 
 export interface DetailPanelProps {
   program: AvailableProgram;
-  onEnrol: (stayType: StayTypeKey) => void;
+  onEnrol: (stayType: StayTypeKey) => Promise<boolean>;
   enrolling: boolean;
   enrolled: boolean;
   error: string | null;
