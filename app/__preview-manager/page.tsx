@@ -20,6 +20,7 @@ export default function PreviewManagerDashboardPage() {
       canApproveTourCtd: false,
       canReviewOsd: false,
       canApproveOsd: false,
+      canFeedback: true,
     },
   };
 
