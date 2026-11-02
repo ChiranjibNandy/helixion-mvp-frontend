@@ -415,7 +415,7 @@
       "sampleXls": "Try sample XLS",
       "sampleXlsx": "Try sample XLSX",
       "dropLabel": "Drop your CSV, XLS, or XLSX file here, or click to browse",
-      "expectedColumns": "Expected columns: title, startDate, endDate, venue, city, state (optional), isResidential, stayType (single_occupancy/twin_sharing), singleOccupancyFee, twinSharingFee, nonResidentialFee, brochureUrl (optional), minParticipants, maxParticipants, status",
+      "expectedColumns": "Expected columns: title, startDate, endDate, venue, city, state (optional), stayType (single_occupancy/twin_sharing), singleOccupancyFee, twinSharingFee, nonResidentialFee, brochureUrl (optional), minParticipants, maxParticipants, status",
       "footerHint": "Supported formats: CSV, XLS, XLSX. Maximum file size: 5MB.",
       "preview": "Preview: {fileName} (Showing top 5 rows)",
       "publishButton": "Save to drafts",
