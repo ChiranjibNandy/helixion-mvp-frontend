@@ -164,7 +164,7 @@ export default function CreateTrainingProgram() {
       maxParticipants: form.maxParticipants ? Number(form.maxParticipants) : undefined,
       status: actionType,
     };
-    console.log(payload)
+
 
     const success = await createProgram(payload);
 

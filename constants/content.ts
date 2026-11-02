@@ -153,7 +153,7 @@ export const NAV_LABELS = {
   PROGRAMS: 'Programs',
   ORGANIZATIONS: 'Organizations',
   AUDIT_LOG: 'Audit log',
-  SUPPORT: 'Support',
+  SETTINGS: 'Settings',
   INTEGRATIONS: 'Integrations',
   NOTIFICATIONS: 'Notifications',
 } as const;
