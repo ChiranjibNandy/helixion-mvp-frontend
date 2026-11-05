@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { Info, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApprovalStatusCard } from "../employee/ApprovalStatusCard";
 import { DashboardStats } from "@/components/shared/dashboard-stats";
@@ -20,6 +20,7 @@ import { fetchTrainingDeptDashboardData } from "@/services/trainingDeptService";
 import { t } from "@/lib/i18n";
 import { useSortedPagination } from "@/hooks/useSortedPagination";
 import { withSortableDateColumns } from "@/components/shared/SortableDateColumns";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 const PAGE_SIZE = 10;
 
@@ -103,9 +104,32 @@ export default function CtdDashboardView({ name }: { name: string }) {
             subtitle={t('trainingDeptDashboard.pendingApprovalsSubtitle')}
             count={data.pendingReviews.length}
             action={
-              <Button asChild variant="ghost" size="sm">
-                <Link href="/dashboard/ctd-approvals">{t('trainingDeptDashboard.viewAll')}</Link>
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button asChild variant="ghost" size="sm">
+                  <Link
+                    href="/dashboard/ctd-approvals"
+                    className="underline underline-offset-4 hover:text-primary"
+                  >
+                    {t('trainingDeptDashboard.viewAll')}
+                  </Link>
+                </Button>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      className="z-50 max-w-xs rounded-md bg-[#111827] px-3 py-2 text-sm text-white shadow-lg"
+                    >
+                      <p>
+                        To approve pending requests, click View All or visit the CTD Approvals page.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             }
           >
             <DataTable<PendingReviewRow>
