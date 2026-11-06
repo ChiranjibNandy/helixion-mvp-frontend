@@ -121,7 +121,7 @@ export default function ConfirmApprovalModal({
           onClick={onCancel}
           disabled={loading}
         >
-          No, Go Back
+          Go Back
         </button>
       </div>
     </div>
