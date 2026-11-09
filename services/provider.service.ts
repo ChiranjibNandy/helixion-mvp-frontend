@@ -84,6 +84,27 @@ export interface ConfirmEnrollmentResponse {
   tpConfirmationDate: string | null;
 }
 
+export interface ManagedEnrollment {
+  _id: string;
+  employeeId: { _id: string; name: string; email: string; employeeCode?: string };
+  orgId: { _id: string; name: string } | null;
+  currentStage: string;
+  createdAt: string;
+}
+
+export type ProgramCancellationReason =
+  | 'insufficient_enrolments'
+  | 'excess_enrolments'
+  | 'operational_constraints'
+  | 'trainer_unavailable'
+  | 'venue_unavailable'
+  | 'other';
+
+export interface CancelProgramResponse {
+  status: string;
+  cancelledEnrollmentCount: number;
+}
+
 // ─── Provider Service ────────────────────────────────────────────────────────
 
 export const providerService = {
@@ -241,6 +262,37 @@ export const providerService = {
       responseType: 'blob',
     });
     return response.data;
+  },
+
+  getProgramEnrollments: async (programId: string): Promise<ManagedEnrollment[]> => {
+    const response = await api.get<{ data: ManagedEnrollment[] }>(
+      API.TRAININGPROVIDER.PROGRAM_ENROLLMENTS(programId)
+    );
+    return response.data.data;
+  },
+
+  cancelEnrollment: async (
+    programId: string,
+    enrollmentId: string,
+    notes?: string
+  ): Promise<{ status: string }> => {
+    const response = await api.patch<{ data: { status: string } }>(
+      API.TRAININGPROVIDER.CANCEL_ENROLLMENT(programId, enrollmentId),
+      { notes }
+    );
+    return response.data.data;
+  },
+
+  cancelProgram: async (
+    programId: string,
+    reason: ProgramCancellationReason,
+    note?: string
+  ): Promise<CancelProgramResponse> => {
+    const response = await api.patch<{ data: CancelProgramResponse }>(
+      API.TRAININGPROVIDER.CANCEL_PROGRAM(programId),
+      { reason, note }
+    );
+    return response.data.data;
   },
 };
 
