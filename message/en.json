@@ -93,6 +93,42 @@
       "publishProgram": "Publish program",
       "duplicateLoadError": "Failed to load the program to duplicate. Please fill in the details manually or try again."
    },
+   "upcomingPrograms": {
+      "title": "Top Upcoming Training Programs",
+      "subtitle": "Closest to today · Based on program start date",
+      "viewAll": "View All Programs →",
+      "empty": "No upcoming training programs found.",
+      "columns": {
+         "date": "Date",
+         "daysToGo": "Days To Go",
+         "program": "Program",
+         "enrollments": "Enrolments",
+         "capacity": "Capacity (Min – Max)",
+         "status": "Status"
+      },
+      "status": {
+         "belowMinimum": {
+            "label": "Below Minimum",
+            "subtitle": "May need cancellation"
+         },
+         "onTrack": {
+            "label": "On Track",
+            "subtitle": "Enrolments in range"
+         },
+         "overEnrolled": {
+            "label": "Over Enrolled",
+            "subtitle": "Excess may be cancelled"
+         }
+      },
+      "days": {
+         "day": "day",
+         "days": "days"
+      },
+      "capacity": {
+         "min": "Min",
+         "max": "Max"
+      }
+   },
    "enrollment": {
       "title": "My Enrollments",
       "empty": "No enrollments yet.",
@@ -668,7 +704,7 @@
       "pendingApprovalsSubtitle": "Awaiting your review",
       "pendingTourApprovalsTitle": "Pending Tour Approvals",
       "pendingTourApprovalsSubtitle": "Awaiting your review",
-      "viewAll": "View all",
+      "viewAll": "View all →",
       "noPendingApprovals": "No pending approvals",
       "noPendingTourApprovals": "No pending tour approvals",
       "stats": {

@@ -1,6 +1,7 @@
 import { api } from '@/lib/api';
 import { API } from '@/constants/api';
 import type { DraftProgram, DraftProgramsResponse } from '@/types';
+import { PROGRAM_ENROLLMENT_STATUS } from '@/constants/program';
 
 // ΓöÇΓöÇΓöÇ Bulk Upload ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
@@ -57,6 +58,19 @@ export interface DashboardTopProgram {
   fillRate: number;
 }
 
+export interface DashboardUpcomingProgram {
+  _id: string;
+  title: string;
+  startDate: string;
+  endDate?: string;
+  enrolledCount: number;
+  minParticipants?: number;
+  maxParticipants?: number;
+  fillRate: number;
+  daysToGo: number;
+  programStatus: PROGRAM_ENROLLMENT_STATUS;
+}
+
 export interface DashboardActivity {
   type: 'published' | 'draft' | 'bulk_upload' | 'enrollment' | 'attendance' | string;
   message: string;
@@ -66,6 +80,7 @@ export interface DashboardActivity {
 export interface ProviderDashboardResponse {
   overview: DashboardOverview;
   topPrograms: DashboardTopProgram[];
+  upcomingPrograms: DashboardUpcomingProgram[]
   recentActivities: DashboardActivity[];
 }
 

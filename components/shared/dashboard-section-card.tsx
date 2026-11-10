@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 interface DashboardSectionCardProps {
-   title: string;
+   title: ReactNode;
    subtitle?: string;
    count?: number;
    action?: ReactNode;
