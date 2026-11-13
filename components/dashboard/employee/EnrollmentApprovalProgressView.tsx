@@ -14,6 +14,7 @@ import {
     getProgramDetails,
 } from "./enrolment/enrollmentApproval.constants";
 import { TourSubmissionModal } from "./TourSubmissionModal";
+import { BrochureDownloadLink } from "./BrochureDownloadLink";
 import { getEnrollmentPanelByIdAPI } from "@/services/enrollmentApprovalService";
 import SearchInput from "@/components/ui/search-input";
 import PaginationController from "@/components/ui/pagination";
@@ -182,14 +183,11 @@ export default function EnrollmentApprovalProgressView() {
                                 {t("programme.fields.brochure")}
                             </span>
                             {details?.downloadBrochureUrl ? (
-                                <a
-                                    href={details.downloadBrochureUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center text-primary hover:underline text-xs font-semibold gap-1"
-                                >
-                                    {t("programme.list.downloadBrochure")}
-                                </a>
+                                <BrochureDownloadLink
+                                    url={details.downloadBrochureUrl}
+                                    fileName={getProgramDetails(enrollment)?.title}
+                                    className="text-primary hover:text-primary hover:underline text-xs font-semibold"
+                                />
                             ) : (
                                 <p className="text-textSidebarMuted">{t("common.notAvailable")}</p>
                             )}

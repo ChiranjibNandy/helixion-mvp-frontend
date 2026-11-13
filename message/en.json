@@ -54,6 +54,8 @@
          "stayTypeNonResidential": "Non-Residential",
          "fetchError": "Failed to load programs. Please try again.",
          "downloadBrochure": "Download Brochure",
+         "downloadingBrochure": "Downloading...",
+         "brochureUnavailable": "The brochure is currently unavailable. Please contact the Training Provider.",
          "enrolledLabel": "Enrolled",
          "enrollButton": "Enrol in Program",
          "enrollingButton": "Enrolling...",
@@ -100,7 +102,8 @@
          "pending": "Not started",
          "active": "In progress",
          "completed": "Completed",
-         "pend": "Pending"
+         "pend": "Pending",
+         "rejected": "Rejected"
       }
    },
    "dashboard": {
@@ -842,8 +845,14 @@
       "steps": {
          "submitted": "Application Submitted",
          "manager": "Approved by Reporting Manager",
+         "managerUpcoming": "Reporting Manager Review",
+         "managerInReview": "Being Reviewed by Reporting Manager",
+         "managerRejected": "Rejected by Reporting Manager",
          "hrReview": "CTD Review",
+         "hrReviewRejected": "Rejected by CTD",
+         "rejectedQuotaFull": "Rejected - Program Full",
          "tpConfirmation": "Training Provider Confirmation",
+         "tpDeclined": "Declined by Training Provider",
          "ctdTourReview": "Final Travel Approval",
          "reimbursementSubmitted": "Reimbursement Form Submitted",
          "credited": "Reimbursement Credited to Bank Account"

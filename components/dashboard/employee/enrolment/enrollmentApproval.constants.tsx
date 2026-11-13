@@ -154,8 +154,7 @@ export const createEnrollmentColumns = (
                 const isRejected = enrollment.currentStage === ENROLLMENT_STAGE.REJECTED;
                 return (
                     <Badge
-                        variant={isRejected ? "destructive" : "default"}
-                        status={isRejected ? undefined : (getBadgeStatus(enrollment.currentStage) as any)}
+                        status={isRejected ? "rejected" : (getBadgeStatus(enrollment.currentStage) as any)}
                         className="capitalize px-3 py-1"
                     >
                         {getBadgeLabel(enrollment.currentStage, enrollment.rejectionReason, t)}
