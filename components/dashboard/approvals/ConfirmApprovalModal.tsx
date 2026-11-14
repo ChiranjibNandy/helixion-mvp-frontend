@@ -5,6 +5,7 @@ import { AlertTriangle, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AppAlert } from '@/components/shared/app-alert';
 import { EnrollmentApproval } from '@/types/enrollment';
+import { t } from '@/lib/i18n';
 
 interface Props {
   isOpen: boolean;
@@ -121,7 +122,7 @@ export default function ConfirmApprovalModal({
           onClick={onCancel}
           disabled={loading}
         >
-          No, Go Back
+          {t('button.goBack')}
         </button>
       </div>
     </div>
