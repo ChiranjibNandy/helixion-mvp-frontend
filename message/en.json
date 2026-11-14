@@ -185,7 +185,8 @@
       "submitted": "Submitted",
       "saveChanges": "Save Changes",
       "viewPrograms": "View Programs",
-      "backToPrograms": "Back to Programs"
+      "backToPrograms": "Back to Programs",
+      "goBack": "Go Back"
    },
    "password": {
       "description": "Choose a strong password you haven’t used before.",
