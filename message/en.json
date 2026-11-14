@@ -94,10 +94,13 @@
       "duplicateLoadError": "Failed to load the program to duplicate. Please fill in the details manually or try again."
    },
    "upcomingPrograms": {
+      "upcomingtrainingprograms":"Upcoming Training Programs",
+      "allupcomingprograms":"All upcoming programs, sorted by start date",
       "title": "Top Upcoming Training Programs",
       "subtitle": "Closest to today · Based on program start date",
       "viewAll": "View All Programs →",
       "empty": "No upcoming training programs found.",
+      "loading":" Loading upcoming programs...",
       "columns": {
          "date": "Date",
          "daysToGo": "Days To Go",
@@ -171,7 +174,8 @@
       "cancel": "Cancel",
       "save": "Save",
       "edit": "Edit",
-      "actions": "Actions"
+      "actions": "Actions",
+      "retry":"Retry"
    },
    "notifications": {
       "title": "Notifications",

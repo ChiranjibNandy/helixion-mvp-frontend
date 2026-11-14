@@ -2,6 +2,7 @@ import { api } from '@/lib/api';
 import { API } from '@/constants/api';
 import type { DraftProgram, DraftProgramsResponse } from '@/types';
 import { PROGRAM_ENROLLMENT_STATUS } from '@/constants/program';
+import { Pagination } from '@/types/pagination';
 
 // ΓöÇΓöÇΓöÇ Bulk Upload ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
@@ -34,8 +35,8 @@ export interface UpdateDraftPayload {
   twinSharingFee?: number;
   nonResidentialFee?: number;
   brochureUrl?: string;
-  minParticipants?:number,
-  maxParticipants?:number
+  minParticipants?: number,
+  maxParticipants?: number
 }
 
 // ─── Dashboard Types ─────────────────────────────────────────────────────────
@@ -58,6 +59,8 @@ export interface DashboardTopProgram {
   fillRate: number;
 }
 
+
+
 export interface DashboardUpcomingProgram {
   _id: string;
   title: string;
@@ -71,6 +74,11 @@ export interface DashboardUpcomingProgram {
   programStatus: PROGRAM_ENROLLMENT_STATUS;
 }
 
+export interface DashboardUpcomingProgramsResponse {
+  programs: DashboardUpcomingProgram[];
+  pagination: Pagination;
+}
+
 export interface DashboardActivity {
   type: 'published' | 'draft' | 'bulk_upload' | 'enrollment' | 'attendance' | string;
   message: string;
@@ -80,7 +88,7 @@ export interface DashboardActivity {
 export interface ProviderDashboardResponse {
   overview: DashboardOverview;
   topPrograms: DashboardTopProgram[];
-  upcomingPrograms: DashboardUpcomingProgram[]
+  upcomingPrograms: DashboardUpcomingProgramsResponse
   recentActivities: DashboardActivity[];
 }
 
@@ -135,7 +143,7 @@ export const providerService = {
    */
   getDraftById: async (id: string): Promise<DraftProgram> => {
     const response = await api.get<{ data: DraftProgram }>(
-      `/training-provider/programs/${id}`
+      `/training-provider/programs/${ id }`
     );
     return response.data.data;
   },
@@ -161,7 +169,7 @@ export const providerService = {
     }
 
     const response = await api.put<{ data: DraftProgram }>(
-      `/training-provider/programs/${id}`,
+      `/training-provider/programs/${ id }`,
       formData
     );
     return response.data.data;
@@ -171,22 +179,28 @@ export const providerService = {
    * Publish a draft program (change status from draft → published).
    */
   publishDraft: async (id: string): Promise<void> => {
-    await api.patch(`/training-provider/programs/${id}/publish`);
+    await api.patch(`/training-provider/programs/${ id }/publish`);
   },
 
   /**
    * Delete a draft program permanently.
    */
   deleteDraft: async (id: string): Promise<void> => {
-    await api.delete(`/training-provider/programs/${id}`);
+    await api.delete(`/training-provider/programs/${ id }`);
   },
 
   /**
    * Fetch real training provider dashboard data from backend.
    */
-  getDashboardData: async (): Promise<ProviderDashboardResponse> => {
+  getDashboardData: async (
+    page: number = 1,
+    limit: number = 5
+  ): Promise<ProviderDashboardResponse> => {
     const response = await api.get<{ data: ProviderDashboardResponse }>(
-      '/training-provider/dashboard'
+      '/training-provider/dashboard',
+      {
+        params: { page, limit },
+      }
     );
     return response.data.data;
   },

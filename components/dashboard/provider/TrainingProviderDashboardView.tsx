@@ -102,7 +102,7 @@ export default function TrainingProviderDashboardView({ name }: { name: string }
       <PendingConfirmations />
 
       <UpcomingTrainingPrograms
-        programs={data.upcomingPrograms}
+        programs={data.upcomingPrograms.programs}
       />
 
       {/* Main Content: Table and Recent Activity */}

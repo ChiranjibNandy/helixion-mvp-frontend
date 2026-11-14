@@ -1,23 +1,31 @@
-import { ENROLMENT_DONUT_CONFIG } from "@/constants/program";
+
+import { ENROLMENT_DONUT_CONFIG, PROGRAM_ENROLLMENT_STATUS } from "@/constants/program";
 
 interface EnrolmentDonutProps {
   enrolledCount: number;
   maxParticipants?: number;
   fillRate: number;
+  status: PROGRAM_ENROLLMENT_STATUS;
 }
+
+const DONUT_STATUS_COLORS = {
+  [PROGRAM_ENROLLMENT_STATUS.BELOW_MINIMUM]: "#f59e0b",
+  [PROGRAM_ENROLLMENT_STATUS.CRITICAL]: "#ef4444",
+  [PROGRAM_ENROLLMENT_STATUS.ON_TRACK]: "#16a34a",
+  [PROGRAM_ENROLLMENT_STATUS.OVER_ENROLLED]: "#2563eb",
+};
 
 export function EnrolmentDonut({
   enrolledCount,
   maxParticipants,
   fillRate,
+  status,
 }: EnrolmentDonutProps) {
   const {
     RADIUS,
     SIZE,
     CENTER,
     STROKE_WIDTH,
-    THRESHOLDS,
-    COLORS,
   } = ENROLMENT_DONUT_CONFIG;
 
   const circumference = 2 * Math.PI * RADIUS;
@@ -28,14 +36,8 @@ export function EnrolmentDonut({
   const strokeDashoffset =
     circumference - (progress / 100) * circumference;
 
-  const color =
-    fillRate > ENROLMENT_DONUT_CONFIG.THRESHOLDS.FULL
-      ? COLORS.OVER_ENROLLED
-      : fillRate >= THRESHOLDS.HIGH
-        ? COLORS.HIGH
-        : fillRate >= THRESHOLDS.MEDIUM
-          ? COLORS.MEDIUM
-          : COLORS.LOW;
+  // Use backend program status to determine donut color
+  const color = DONUT_STATUS_COLORS[status];
 
   return (
     <div className="relative flex items-center justify-center w-[68px] h-[68px]">

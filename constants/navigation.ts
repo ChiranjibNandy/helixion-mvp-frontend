@@ -55,7 +55,9 @@ export const ROUTES = {
       ACTIVE: '/dashboard/programs/active',
       CREATE: '/dashboard/programs/create',
       EXPORT: '/dashboard/programs/export',
-      LIST: '/dashboard/programs/list'
+      LIST: '/dashboard/programs/list',
+      UPCOMING: '/dashboard/programs/upcoming',
+      VIEW: (id: string) => `/dashboard/programs/view-detail/${ id }`
     },
     ATTENDANCE: '/dashboard/update-attendance',
     PENDING_CONFIRMATIONS: '/dashboard/pending-confirmations',

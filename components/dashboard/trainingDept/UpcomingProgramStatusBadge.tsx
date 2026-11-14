@@ -1,11 +1,11 @@
-
-import { PROGRAM_ENROLLMENT_STATUS } from "@/constants/program";
 import {
   AlertTriangle,
   CheckCircle2,
   Info,
+  Users,
 } from "lucide-react";
-import { t } from "@/lib/i18n";
+
+import { PROGRAM_ENROLLMENT_STATUS } from "@/constants/program";
 
 interface UpcomingProgramStatusBadgeProps {
   status: PROGRAM_ENROLLMENT_STATUS;
@@ -13,45 +13,57 @@ interface UpcomingProgramStatusBadgeProps {
 
 const statusConfig = {
   [PROGRAM_ENROLLMENT_STATUS.BELOW_MINIMUM]: {
-    label: "belowMinimum",
+    label: "Below Minimum",
+    subtitle: "More enrollments required",
+    icon: Info,
+    className: "bg-amber-500/10 text-amber-400",
+  },
+
+  [PROGRAM_ENROLLMENT_STATUS.CRITICAL]: {
+    label: "Critical",
+    subtitle: "Program may need cancellation",
     icon: AlertTriangle,
-    className: "bg-red-500/10 text-red-500",
+    className: "bg-red-500/10 text-red-400",
   },
 
   [PROGRAM_ENROLLMENT_STATUS.ON_TRACK]: {
-    label: "onTrack",
+    label: "On Track",
+    subtitle: "Minimum enrollment achieved",
     icon: CheckCircle2,
-    className: "bg-emerald-500/10 text-emerald-500",
+    className: "bg-emerald-500/10 text-emerald-400",
   },
 
   [PROGRAM_ENROLLMENT_STATUS.OVER_ENROLLED]: {
-    label: "overEnrolled",
-    icon: Info,
-    className: "bg-blue-500/10 text-blue-500",
+    label: "Over Enrolled",
+    subtitle: "Excess enrollment requires attention",
+    icon: Users,
+    className: "bg-blue-500/10 text-blue-400",
   },
-} as const;
+};
 
 export function UpcomingProgramStatusBadge({
   status,
 }: UpcomingProgramStatusBadgeProps) {
   const config = statusConfig[status];
 
+  if (!config) return null;
+
   const Icon = config.icon;
 
   return (
     <div
-      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 min-w-[190px] ${ config.className }`}
+      className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 ${ config.className }`}
     >
-      <Icon className="size-6 shrink-0" />
+      <Icon size={16} />
 
-      <div className="flex flex-col">
-        <span className="text-sm font-semibold whitespace-nowrap">
-          {t(`upcomingPrograms.status.${ config.label }.label`)}
-        </span>
+      <div>
+        <p className="text-xs font-semibold">
+          {config.label}
+        </p>
 
-        <span className="text-xs opacity-80 whitespace-nowrap">
-          {t(`upcomingPrograms.status.${ config.label }.subtitle`)}
-        </span>
+        <p className="text-[10px] opacity-80">
+          {config.subtitle}
+        </p>
       </div>
     </div>
   );
