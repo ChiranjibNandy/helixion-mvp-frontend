@@ -26,6 +26,10 @@
             "maxParticipantsError": "Maximum participants must be greater than or equal to minimum participants."
          }
       },
+      "view": {
+         "title": "Programme Details",
+         "description": "View complete information, schedule, and settings for this programme."
+      },
       "list": {
          "title": "Listed Training Programs",
          "description": "Select a program to view details and enroll",
@@ -93,6 +97,45 @@
       "publishProgram": "Publish program",
       "duplicateLoadError": "Failed to load the program to duplicate. Please fill in the details manually or try again."
    },
+   "upcomingPrograms": {
+      "upcomingtrainingprograms": "Upcoming Training Programs",
+      "allupcomingprograms": "All upcoming programs, sorted by start date",
+      "title": "Top Upcoming Training Programs",
+      "subtitle": "Closest to today · Based on program start date",
+      "viewAll": "View All Programs →",
+      "empty": "No upcoming training programs found.",
+      "loading": " Loading upcoming programs...",
+      "columns": {
+         "date": "Date",
+         "daysToGo": "Days To Go",
+         "program": "Program",
+         "enrollments": "Enrolments",
+         "capacity": "Capacity (Min – Max)",
+         "status": "Status"
+      },
+      "status": {
+         "belowMinimum": {
+            "label": "Below Minimum",
+            "subtitle": "May need cancellation"
+         },
+         "onTrack": {
+            "label": "On Track",
+            "subtitle": "Enrolments in range"
+         },
+         "overEnrolled": {
+            "label": "Over Enrolled",
+            "subtitle": "Excess may be cancelled"
+         }
+      },
+      "days": {
+         "day": "day",
+         "days": "days"
+      },
+      "capacity": {
+         "min": "Min",
+         "max": "Max"
+      }
+   },
    "enrollment": {
       "title": "My Enrollments",
       "empty": "No enrollments yet.",
@@ -135,7 +178,8 @@
       "cancel": "Cancel",
       "save": "Save",
       "edit": "Edit",
-      "actions": "Actions"
+      "actions": "Actions",
+      "retry": "Retry"
    },
    "notifications": {
       "title": "Notifications",
@@ -668,7 +712,7 @@
       "pendingApprovalsSubtitle": "Awaiting your review",
       "pendingTourApprovalsTitle": "Pending Tour Approvals",
       "pendingTourApprovalsSubtitle": "Awaiting your review",
-      "viewAll": "View all",
+      "viewAll": "View all →",
       "noPendingApprovals": "No pending approvals",
       "noPendingTourApprovals": "No pending tour approvals",
       "stats": {
