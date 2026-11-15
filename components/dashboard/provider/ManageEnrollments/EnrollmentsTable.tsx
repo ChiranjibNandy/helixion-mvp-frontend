@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import PaginationController from '@/components/ui/pagination';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { ManagedEnrollment } from '@/services/provider.service';
 import { displayStatus, statusBadgeClass, formatDate } from './utils';
 
@@ -40,33 +41,33 @@ export default function EnrollmentsTable({ enrollments, isCancelled, onConfirm, 
 
   return (
     <>
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-left text-xs uppercase tracking-widest text-gray-400 border-b border-gray-200">
-            <th className="pb-2 pr-2">#</th>
-            <th className="pb-2 pr-2">Employee Name</th>
-            <th className="pb-2 pr-2">Company Name</th>
-            <th className="pb-2 pr-2">Nomination Date</th>
-            <th className="pb-2 pr-2">Status</th>
-            <th className="pb-2 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table className="text-sm">
+        <TableHeader>
+          <TableRow className="text-left text-xs uppercase tracking-widest text-gray-400 border-b border-gray-200 hover:bg-transparent">
+            <TableHead className="h-auto pb-2 pr-2 pl-0 text-gray-400">#</TableHead>
+            <TableHead className="h-auto pb-2 pr-2 text-gray-400">Employee Name</TableHead>
+            <TableHead className="h-auto pb-2 pr-2 text-gray-400">Company Name</TableHead>
+            <TableHead className="h-auto pb-2 pr-2 text-gray-400">Nomination Date</TableHead>
+            <TableHead className="h-auto pb-2 pr-2 text-gray-400">Status</TableHead>
+            <TableHead className="h-auto pb-2 pr-0 text-right text-gray-400">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {pagedEnrollments.map((enrollment, index) => {
             const status = displayStatus(enrollment.currentStage);
             const isBusy = busyId === enrollment._id;
             return (
-              <tr key={enrollment._id} className="border-b border-gray-100">
-                <td className="py-2.5 pr-2 text-gray-400">{(page - 1) * PAGE_SIZE + index + 1}</td>
-                <td className="py-2.5 pr-2 text-gray-900 font-medium">{enrollment.employeeId?.name ?? '-'}</td>
-                <td className="py-2.5 pr-2 text-gray-500">{enrollment.orgId?.name ?? '-'}</td>
-                <td className="py-2.5 pr-2 text-gray-500">{formatDate(enrollment.createdAt)}</td>
-                <td className="py-2.5 pr-2">
+              <TableRow key={enrollment._id} className="border-b border-gray-100 hover:bg-transparent">
+                <TableCell className="py-2.5 pr-2 pl-0 text-gray-400">{(page - 1) * PAGE_SIZE + index + 1}</TableCell>
+                <TableCell className="py-2.5 pr-2 text-gray-900 font-medium">{enrollment.employeeId?.name ?? '-'}</TableCell>
+                <TableCell className="py-2.5 pr-2 text-gray-500">{enrollment.orgId?.name ?? '-'}</TableCell>
+                <TableCell className="py-2.5 pr-2 text-gray-500">{formatDate(enrollment.createdAt)}</TableCell>
+                <TableCell className="py-2.5 pr-2">
                   <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${statusBadgeClass(status)}`}>
                     {status}
                   </span>
-                </td>
-                <td className="py-2.5 text-right">
+                </TableCell>
+                <TableCell className="py-2.5 pr-0 text-right">
                   {status === 'Pending' && !isCancelled ? (
                     <div className="flex items-center justify-end gap-2">
                       <button
@@ -87,17 +88,17 @@ export default function EnrollmentsTable({ enrollments, isCancelled, onConfirm, 
                   ) : (
                     <span className="text-gray-400">-</span>
                   )}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             );
           })}
           {enrollments.length === 0 && (
-            <tr>
-              <td colSpan={6} className="py-6 text-center text-gray-400">No enrolments yet for this program.</td>
-            </tr>
+            <TableRow className="hover:bg-transparent">
+              <TableCell colSpan={6} className="py-6 text-center text-gray-400">No enrolments yet for this program.</TableCell>
+            </TableRow>
           )}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
 
       {enrollments.length > 0 && (
         <div className="flex items-center justify-between text-xs text-gray-500">

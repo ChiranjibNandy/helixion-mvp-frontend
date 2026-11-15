@@ -1,5 +1,6 @@
 import { Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 export type TabKey = 'enrolments' | 'details' | 'documents';
 
@@ -39,19 +40,22 @@ export default function TabBar({
         ))}
       </div>
       <div className="flex items-center gap-2 pb-2">
-        <button
+        <Button
+          variant="outline"
+          size="sm"
           onClick={onExport}
-          className="inline-flex items-center h-8 px-3 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          className="bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
         >
           <Download size={13} className="mr-1.5" /> Export
-        </button>
+        </Button>
         {showCancelProgram && (
-          <button
+          <Button
+            size="sm"
             onClick={onCancelProgram}
-            className="inline-flex items-center h-8 px-3 text-xs font-medium text-white bg-red-600 rounded-lg hover:bg-red-500"
+            className="bg-red-600 text-white hover:bg-red-500"
           >
             Cancel Program
-          </button>
+          </Button>
         )}
       </div>
     </div>
