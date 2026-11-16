@@ -71,6 +71,9 @@ export const API = {
       INVOICE_COMPANIES: (id: string) => `/training-provider/programs/${id}/invoice-companies`,
       INVOICE_PREVIEW_DATA: (id: string) => `/training-provider/programs/${id}/invoice-preview-data`,
       INVOICE_PDF: (invoiceId: string) => `/training-provider/invoices/${invoiceId}/pdf`,
+      PROGRAM_ENROLLMENTS: (id: string) => `/training-provider/programs/${id}/enrollments`,
+      CANCEL_ENROLLMENT: (programId: string, enrollmentId: string) => `/training-provider/programs/${programId}/enrollments/${enrollmentId}/cancel`,
+      CANCEL_PROGRAM: (id: string) => `/training-provider/programs/${id}/cancel`,
    },
    NOTIFICATION:{
       READ:(id:string) => `/notifications/${id}/read`,

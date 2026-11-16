@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Search, Plus, Pencil, Receipt, MoreVertical, Copy, ClipboardCheck } from "lucide-react";
+import { Search, Plus, Pencil, Receipt, MoreVertical, Copy, ClipboardCheck, Users } from "lucide-react";
 import {
    DropdownMenu,
    DropdownMenuContent,
@@ -140,6 +140,13 @@ export default function ProgramsPage() {
                         >
                            <ClipboardCheck size={14} className="mr-2" />
                            Attendance
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                           onClick={() => router.push(`/dashboard/manage-enrollments/${program._id}`)}
+                           className="text-white whitespace-nowrap focus:bg-bgButton focus:text-white"
+                        >
+                           <Users size={14} className="mr-2" />
+                           Manage Enrolments
                         </DropdownMenuItem>
                         {hasEnded && (
                            <DropdownMenuItem
