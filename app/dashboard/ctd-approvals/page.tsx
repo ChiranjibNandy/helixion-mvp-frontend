@@ -14,6 +14,7 @@ import {
   takeCtdJuniorActionAPI,
   takeCtdSeniorActionAPI,
 } from '@/services/enrollmentApprovalService';
+import { BrochureDownloadLink } from '@/components/dashboard/employee/BrochureDownloadLink';
 
 // Reads the client-readable access token cookie directly — this page has no
 // other way to know the current user's permissions (DashboardShell doesn't
@@ -160,36 +161,121 @@ export default function CtdApprovalsPage() {
           setExpanded(expanded === row._id ? null : row._id)
         }
         isRowExpanded={(row: EnrollmentApproval) => expanded === row._id}
+
         renderExpandedRow={(row: EnrollmentApproval) => (
-          <div className="p-6 bg-white/5 border-b border-borderCard">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-white/70 mb-4">
-              <div>
-                <span className="block text-white/50 text-xs uppercase tracking-wider mb-1">
-                  Employee Email
-                </span>
-                {row.employeeId?.email || '-'}
-              </div>
-              <div>
-                <span className="block text-white/50 text-xs uppercase tracking-wider mb-1">
-                  Department
-                </span>
-                {row.employeeId?.department || '-'}
-              </div>
-              <div>
-                <span className="block text-white/50 text-xs uppercase tracking-wider mb-1">
-                  Manager Approval
-                </span>
-                {row.managerApproval?.action || '-'}
-              </div>
-              <div>
-                <span className="block text-white/50 text-xs uppercase tracking-wider mb-1">
-                  Notes
-                </span>
-                {row.notes || '-'}
+          <div className="p-6 bg-white/5 border-b border-borderCard space-y-6">
+
+            {/* EMPLOYEE DETAILS */}
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-white/50 mb-3">
+                Employee Details
+              </h3>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-white/70">
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">Name</span>
+                  {row.employeeId?.name || '-'}
+                </div>
+
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">Email</span>
+                  {row.employeeId?.email || '-'}
+                </div>
+
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">Department</span>
+                  {row.employeeId?.department || '-'}
+                </div>
+
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">Designation</span>
+                  {row.employeeId?.designation || '-'}
+                </div>
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-borderCard">
+            {/* PROGRAM DETAILS */}
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-white/50 mb-3">
+                Program Details
+              </h3>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-white/70">
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">Program</span>
+                  {row.programId?.title || '-'}
+                </div>
+
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">Training Institute</span>
+                  {row.programId?.trainingInstitute || '-'}
+                </div>
+
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">Venue</span>
+                  {row.programId?.venueName || '-'}
+                </div>
+
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">City</span>
+                  {row.programId?.city || '-'}
+                </div>
+
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">From Date</span>
+                  {formatDate(row.programId?.startDate)}
+                </div>
+
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">To Date</span>
+                  {formatDate(row.programId?.endDate)}
+                </div>
+              </div>
+            </div>
+
+            {/* ENROLLMENT DETAILS */}
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-white/50 mb-3">
+                Approval Details
+              </h3>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-white/70">
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">
+                    Manager Approval
+                  </span>
+                  {row.managerApproval?.action || '-'}
+                </div>
+
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">
+                    Manager Note
+                  </span>
+                  {row.managerApproval?.note || '-'}
+                </div>
+
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">
+                    Enrollment Status
+                  </span>
+                  {row.statusSummary?.enrollmentStatus || '-'}
+                </div>
+
+                <div>
+                  <span className="block text-white/50 text-xs mb-1">
+                    Employee Notes
+                  </span>
+                  {row.notes || '-'}
+                </div>
+              </div>
+            </div>
+
+            {/* ACTIONS */}
+            <div className="flex justify-end items-center gap-8 pt-4 border-t border-borderCard">
+              {row.programId?.brochureUrl && (
+                <BrochureDownloadLink url={row.programId.brochureUrl} />
+              )}
+
               <button
                 className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-medium"
                 onClick={(e) => {
@@ -202,6 +288,7 @@ export default function CtdApprovalsPage() {
             </div>
           </div>
         )}
+
       />
 
       <ConfirmApprovalModal

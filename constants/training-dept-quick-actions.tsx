@@ -29,20 +29,4 @@ export const getTrainingDeptQuickActions = (): QuickAction[] => [
     icon: <Plane className="w-5 h-5 text-violet-400" />,
     iconBg: 'bg-violet-500/15',
   },
-  {
-    title: t('trainingDeptDashboard.quickActions.reports.title'),
-    description: t('trainingDeptDashboard.quickActions.reports.description'),
-    linkText: t('trainingDeptDashboard.quickActions.reports.link'),
-    href: '/dashboard/reports',
-    icon: <BarChart2 className="w-5 h-5 text-purple-400" />,
-    iconBg: 'bg-purple-500/15',
-  },
-  {
-    title: t('trainingDeptDashboard.quickActions.profile.title'),
-    description: t('trainingDeptDashboard.quickActions.profile.description'),
-    linkText: t('trainingDeptDashboard.quickActions.profile.link'),
-    href: '/dashboard/profile',
-    icon: <User className="w-5 h-5 text-slate-400" />,
-    iconBg: 'bg-slate-500/15',
-  },
 ];
