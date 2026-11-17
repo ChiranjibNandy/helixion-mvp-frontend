@@ -28,7 +28,8 @@
       },
       "view": {
          "title": "Programme Details",
-         "description": "View complete information, schedule, and settings for this programme."
+         "description": "View complete information, schedule, and settings for this programme.",
+         "fetchError": "Failed to fetch program details"
       },
       "list": {
          "title": "Listed Training Programs",
@@ -98,6 +99,8 @@
       "duplicateLoadError": "Failed to load the program to duplicate. Please fill in the details manually or try again."
    },
    "upcomingPrograms": {
+      "fetchError": "Failed to fetch upcoming programs",
+      "loadError": "Unable to load upcoming programs. Please try again.",
       "upcomingtrainingprograms": "Upcoming Training Programs",
       "allupcomingprograms": "All upcoming programs, sorted by start date",
       "title": "Top Upcoming Training Programs",

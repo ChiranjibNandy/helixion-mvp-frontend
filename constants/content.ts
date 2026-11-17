@@ -178,3 +178,5 @@ export const STAY_TYPES: StayType[] = [
     options: [{ id: "non-res-default", label: "Day Scholar", price: "" }],
   },
 ];
+
+export const PAGE_LIMIT = 10;

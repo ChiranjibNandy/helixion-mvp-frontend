@@ -10,10 +10,8 @@ import { UpcomingProgramsTable } from "@/components/dashboard/trainingDept/Upcom
 import PaginationController from "@/components/ui/pagination";
 import { t } from "@/lib/i18n";
 import { Spinner } from "@/components/ui/spinner";
+import { PAGE_LIMIT } from "@/constants/content";
 
-
-
-const PAGE_LIMIT = 10;
 
 const initialPagination: Pagination = {
   page: 1,
@@ -44,8 +42,8 @@ export default function UpcomingProgramsList() {
       setPrograms(response.upcomingPrograms.programs);
       setPagination(response.upcomingPrograms.pagination);
     } catch (err) {
-      console.error("Failed to fetch upcoming programs:", err);
-      setError("Unable to load upcoming programs. Please try again.");
+      console.error(t("upcomingPrograms.fetchError"), err);
+      setError(t("upcomingPrograms.loadError"));
     } finally {
       setLoading(false);
     }
