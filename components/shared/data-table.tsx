@@ -90,6 +90,8 @@ export function DataTable<T>({
                     aria-expanded={clickable ? expanded : undefined}
                     className={cn(
                       "border-borderCard hover:bg-bgStatCard/60 transition-colors",
+                      clickable && "cursor-pointer hover:bg-bgStatCard/60",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                       rowClassName ? rowClassName(row) : undefined
                     )}
                     onClick={clickable ? () => onRowClick(row) : undefined}
