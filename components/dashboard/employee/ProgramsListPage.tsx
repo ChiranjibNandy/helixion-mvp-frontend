@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { getAvailablePrograms, enrollInProgram, submitEnrollment, getEmployeeEnrollments } from '@/services/employeeService';
 import SearchInput from '@/components/ui/search-input';
 import type { AvailableProgram, StayTypeKey } from '@/types';
@@ -171,6 +171,11 @@ export function ProgramsListPage() {
 
   const totalPages = Math.ceil(total / PAGE_SIZE) || 1;
 
+  const visiblePrograms = useMemo(
+    () => programs.filter((p) => !enrolledIds.has(p._id)),
+    [programs, enrolledIds]
+  );
+
   return (
     <div className="flex flex-col h-full space-y-4">
 
@@ -201,7 +206,7 @@ export function ProgramsListPage() {
       )}
 
       <DataTable
-        data={programs}
+        data={visiblePrograms}
         columns={COLUMNS}
         loading={loading}
         className="border-[#1e2d40]"
