@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { providerService, EnrollmentCancellationReason } from '@/services/provider.service';
+import { ROUTES } from '@/constants/navigation';
 import CancelProgramModal from '@/components/dashboard/provider/CancelProgramModal';
 import ProgramSummaryHeader from '@/components/dashboard/provider/ManageEnrollments/ProgramSummaryHeader';
 import StatusBanner from '@/components/dashboard/provider/ManageEnrollments/StatusBanner';
@@ -91,7 +92,7 @@ export default function ManageEnrollmentsPage() {
       <nav className="flex items-center gap-1.5 text-sm text-blue-300">
         <Link href="/dashboard/programs/list" className="hover:underline">Programs</Link>
         <ChevronRight size={14} className="text-gray-500" />
-        <Link href={`/dashboard/programs/${programId}`} className="hover:underline">{program.title}</Link>
+        <Link href={ROUTES.PROVIDER.PROGRAMS.VIEW(programId)} className="hover:underline">{program.title}</Link>
         <ChevronRight size={14} className="text-gray-500" />
         <span className="text-gray-400">Enrolment Management</span>
       </nav>
