@@ -4,10 +4,12 @@ export default function ModalShell({
   isOpen,
   onOverlayClose,
   children,
+  maxWidthClassName = 'max-w-md',
 }: {
   isOpen: boolean;
   onOverlayClose: () => void;
   children: React.ReactNode;
+  maxWidthClassName?: string;
 }) {
   const overlayRef = useRef<HTMLDivElement>(null);
 
@@ -18,7 +20,7 @@ export default function ModalShell({
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -32,7 +34,7 @@ export default function ModalShell({
       <div
         role="dialog"
         aria-modal="true"
-        className="w-full max-w-md max-h-[94vh] overflow-y-auto rounded-2xl bg-white shadow-2xl p-6 animate-in fade-in zoom-in-95"
+        className={`w-full ${maxWidthClassName} max-h-[94vh] overflow-y-auto rounded-2xl bg-white shadow-2xl p-6 animate-in fade-in zoom-in-95`}
       >
         {children}
       </div>

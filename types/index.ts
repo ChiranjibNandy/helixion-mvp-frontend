@@ -85,6 +85,8 @@ export interface DraftProgram {
     cancelledBy: string;
     cancelledAt: string;
   };
+  enrolmentsFrozen?: boolean;
+  enrolmentsFrozenAt?: string;
   createdBy: string;
   batchId?: string;
   createdAt: string;

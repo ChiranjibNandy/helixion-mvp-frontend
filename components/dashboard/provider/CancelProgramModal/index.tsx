@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { providerService, ProgramCancellationReason } from '@/services/provider.service';
-import ModalShell from './ModalShell';
+import ModalShell from '../shared/ModalShell';
 import ReasonStep from './ReasonStep';
 import ConfirmStep from './ConfirmStep';
 import SuccessStep from './SuccessStep';

@@ -9,8 +9,6 @@ interface TabBarProps {
   activeTab: TabKey;
   onTabChange: (tab: TabKey) => void;
   onExport: () => void;
-  onCancelProgram: () => void;
-  showCancelProgram: boolean;
 }
 
 export default function TabBar({
@@ -18,8 +16,6 @@ export default function TabBar({
   activeTab,
   onTabChange,
   onExport,
-  onCancelProgram,
-  showCancelProgram,
 }: TabBarProps) {
   return (
     <div className="flex items-center justify-between border-b border-gray-200">
@@ -48,15 +44,6 @@ export default function TabBar({
         >
           <Download size={13} className="mr-1.5" /> Export
         </Button>
-        {showCancelProgram && (
-          <Button
-            size="sm"
-            onClick={onCancelProgram}
-            className="bg-red-600 text-white hover:bg-red-500"
-          >
-            Cancel Program
-          </Button>
-        )}
       </div>
     </div>
   );

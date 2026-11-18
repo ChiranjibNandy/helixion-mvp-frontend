@@ -33,3 +33,19 @@ export function formatDate(iso?: string): string {
 export function countActiveEnrollments(enrollments: { currentStage: string }[]): number {
   return enrollments.filter((e) => displayStatus(e.currentStage) !== 'Cancelled').length;
 }
+
+export function countByDisplayStatus(enrollments: { currentStage: string }[]) {
+  return {
+    pending: enrollments.filter((e) => displayStatus(e.currentStage) === 'Pending').length,
+    confirmed: enrollments.filter((e) => displayStatus(e.currentStage) === 'Confirmed').length,
+    cancelled: enrollments.filter((e) => displayStatus(e.currentStage) === 'Cancelled').length,
+  };
+}
+
+export function isConfirmable(stage: string): boolean {
+  return stage === 'tp_pending_confirmation';
+}
+
+export function isCancellable(stage: string): boolean {
+  return displayStatus(stage) !== 'Cancelled';
+}

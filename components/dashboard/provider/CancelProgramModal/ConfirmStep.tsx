@@ -1,5 +1,5 @@
 import { HelpCircle, AlertTriangle } from 'lucide-react';
-import { CloseButton, IconBadge, InfoBox, ModalError } from './ModalPrimitives';
+import { CloseButton, IconBadge, InfoBox, ModalError } from '../shared/ModalPrimitives';
 
 interface ConfirmStepProps {
   belowMinimum: boolean;

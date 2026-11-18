@@ -74,6 +74,9 @@ export const API = {
       PROGRAM_ENROLLMENTS: (id: string) => `/training-provider/programs/${id}/enrollments`,
       CANCEL_ENROLLMENT: (programId: string, enrollmentId: string) => `/training-provider/programs/${programId}/enrollments/${enrollmentId}/cancel`,
       CANCEL_PROGRAM: (id: string) => `/training-provider/programs/${id}/cancel`,
+      CONFIRM_ENROLLMENTS_BULK: (id: string) => `/training-provider/programs/${id}/enrollments/confirm-bulk`,
+      CANCEL_ENROLLMENTS_BULK: (id: string) => `/training-provider/programs/${id}/enrollments/cancel-bulk`,
+      FREEZE_PROGRAM_ENROLLMENTS: (id: string) => `/training-provider/programs/${id}/freeze-enrollments`,
    },
    NOTIFICATION:{
       READ:(id:string) => `/notifications/${id}/read`,
