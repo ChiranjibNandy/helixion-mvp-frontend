@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Download, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 import { isSafeUrl } from '@/utils/validators';
 import { cn } from '@/lib/utils';
 import { t } from '@/lib/i18n';
@@ -14,14 +15,27 @@ interface BrochureDownloadLinkProps {
   className?: string;
 }
 
+const ZIP_SIGNATURE = [0x50, 0x4b, 0x03, 0x04]; // "PK\x03\x04"
+
 // Magic-byte signatures for the brochure formats providers upload.
 const SIGNATURES: { ext: string; bytes: number[] }[] = [
   { ext: 'pdf', bytes: [0x25, 0x50, 0x44, 0x46] }, // %PDF
   { ext: 'png', bytes: [0x89, 0x50, 0x4e, 0x47] },
   { ext: 'jpg', bytes: [0xff, 0xd8, 0xff] },
-  { ext: 'docx', bytes: [0x50, 0x4b, 0x03, 0x04] }, // zip container (docx/pptx)
-  { ext: 'doc', bytes: [0xd0, 0xcf, 0x11, 0xe0] },
+  { ext: 'doc', bytes: [0xd0, 0xcf, 0x11, 0xe0] }, // legacy OLE2 Office
 ];
+
+// docx/pptx/xlsx are all zip containers sharing ZIP_SIGNATURE; they're told
+// apart by their top-level folder, whose name appears uncompressed in the
+// zip's local file headers near the start of the file.
+const OFFICE_ZIP_FOLDERS: { ext: string; folder: string }[] = [
+  { ext: 'docx', folder: 'word/' },
+  { ext: 'pptx', folder: 'ppt/' },
+  { ext: 'xlsx', folder: 'xl/' },
+];
+const ZIP_SCAN_BYTES = 64 * 1024;
+
+const startsWith = (head: Uint8Array, bytes: number[]) => bytes.every((b, i) => head[i] === b);
 
 const extensionFromUrl = (url: string) => {
   const last = new URL(url).pathname.split('/').pop() || '';
@@ -31,7 +45,13 @@ const extensionFromUrl = (url: string) => {
 
 const sniffExtension = async (blob: Blob) => {
   const head = new Uint8Array(await blob.slice(0, 8).arrayBuffer());
-  return SIGNATURES.find(({ bytes }) => bytes.every((b, i) => head[i] === b))?.ext ?? null;
+
+  if (startsWith(head, ZIP_SIGNATURE)) {
+    const scanned = new TextDecoder('latin1').decode(await blob.slice(0, ZIP_SCAN_BYTES).arrayBuffer());
+    return OFFICE_ZIP_FOLDERS.find(({ folder }) => scanned.includes(folder))?.ext ?? 'zip';
+  }
+
+  return SIGNATURES.find(({ bytes }) => startsWith(head, bytes))?.ext ?? null;
 };
 
 const sanitizeFileName = (name: string) =>
@@ -80,17 +100,18 @@ export function BrochureDownloadLink({ url, fileName, className }: BrochureDownl
   };
 
   return (
-    <button
+    <Button
       type="button"
+      variant="link"
       onClick={handleDownload}
       disabled={downloading}
       className={cn(
-        'flex items-center gap-1.5 text-[13px] text-white/55 hover:text-white/80 transition-colors disabled:opacity-60 disabled:cursor-wait',
+        'h-auto p-0 gap-1.5 text-[13px] font-normal text-white/55 hover:text-white/80 hover:no-underline disabled:opacity-60',
         className
       )}
     >
-      {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+      {downloading ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
       {downloading ? t('programme.list.downloadingBrochure') : t('programme.list.downloadBrochure')}
-    </button>
+    </Button>
   );
 }
