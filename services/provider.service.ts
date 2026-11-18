@@ -109,7 +109,7 @@ export interface ConfirmEnrollmentResponse {
 
 export interface ManagedEnrollment {
   _id: string;
-  employeeId: { _id: string; name: string; email: string; employeeCode?: string };
+  employeeId: { _id: string; name: string; email: string; employeeCode?: string; designation?: string };
   orgId: { _id: string; name: string } | null;
   currentStage: string;
   createdAt: string;
@@ -123,9 +123,31 @@ export type ProgramCancellationReason =
   | 'venue_unavailable'
   | 'other';
 
+export type EnrollmentCancellationReason =
+  | 'employee_unavailable'
+  | 'duplicate_nomination'
+  | 'budget_constraints'
+  | 'role_change'
+  | 'other';
+
 export interface CancelProgramResponse {
   status: string;
   cancelledEnrollmentCount: number;
+}
+
+export interface BulkConfirmResponse {
+  confirmedCount: number;
+  requestedCount: number;
+}
+
+export interface BulkCancelResponse {
+  cancelledCount: number;
+  requestedCount: number;
+}
+
+export interface FreezeEnrollmentsResponse {
+  enrolmentsFrozen: boolean;
+  enrolmentsFrozenAt: string | null;
 }
 
 // ─── Provider Service ────────────────────────────────────────────────────────
@@ -303,11 +325,12 @@ export const providerService = {
   cancelEnrollment: async (
     programId: string,
     enrollmentId: string,
+    reason: EnrollmentCancellationReason,
     notes?: string
   ): Promise<{ status: string }> => {
     const response = await api.patch<{ data: { status: string } }>(
       API.TRAININGPROVIDER.CANCEL_ENROLLMENT(programId, enrollmentId),
-      { notes }
+      { reason, notes }
     );
     return response.data.data;
   },
@@ -320,6 +343,37 @@ export const providerService = {
     const response = await api.patch<{ data: CancelProgramResponse }>(
       API.TRAININGPROVIDER.CANCEL_PROGRAM(programId),
       { reason, note }
+    );
+    return response.data.data;
+  },
+
+  confirmEnrollmentsBulk: async (
+    programId: string,
+    enrollmentIds: string[]
+  ): Promise<BulkConfirmResponse> => {
+    const response = await api.patch<{ data: BulkConfirmResponse }>(
+      API.TRAININGPROVIDER.CONFIRM_ENROLLMENTS_BULK(programId),
+      { enrollmentIds }
+    );
+    return response.data.data;
+  },
+
+  cancelEnrollmentsBulk: async (
+    programId: string,
+    enrollmentIds: string[],
+    reason: EnrollmentCancellationReason,
+    notes?: string
+  ): Promise<BulkCancelResponse> => {
+    const response = await api.patch<{ data: BulkCancelResponse }>(
+      API.TRAININGPROVIDER.CANCEL_ENROLLMENTS_BULK(programId),
+      { enrollmentIds, reason, notes }
+    );
+    return response.data.data;
+  },
+
+  freezeProgramEnrollments: async (programId: string): Promise<FreezeEnrollmentsResponse> => {
+    const response = await api.patch<{ data: FreezeEnrollmentsResponse }>(
+      API.TRAININGPROVIDER.FREEZE_PROGRAM_ENROLLMENTS(programId)
     );
     return response.data.data;
   },

@@ -1,6 +1,6 @@
 import { Trash2 } from 'lucide-react';
 import { ProgramCancellationReason } from '@/services/provider.service';
-import { CloseButton, IconBadge, InfoBox, ModalError } from './ModalPrimitives';
+import { CloseButton, IconBadge, InfoBox, ModalError } from '../shared/ModalPrimitives';
 import { ReasonOption } from './reasons';
 
 interface ReasonStepProps {
@@ -65,7 +65,7 @@ export default function ReasonStep({
             className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
             {reasonOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
+              <option key={opt.value} value={opt.value} className="text-gray-900">{opt.label}</option>
             ))}
           </select>
         </div>
