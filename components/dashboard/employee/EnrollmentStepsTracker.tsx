@@ -53,6 +53,49 @@ const PAST_TOUR: string[] = [
     ENROLLMENT_STAGE.REIMBURSEMENT_SUBMITTED, ENROLLMENT_STAGE.REIMBURSEMENT_MANAGER_REVIEW, ENROLLMENT_STAGE.REIMBURSEMENT_OSD_REVIEW,
     ENROLLMENT_STAGE.COMPLETED,
 ];
+// Mirrors backend ACTOR_TYPE / MANAGER_ACTION / TRAINING_DEPT_SENIOR_ACTION /
+// ENROLLMENT_REJECTION_REASON (helixion-mvp-backend/src/constants/enum.ts) —
+// same manual-sync caveat as ENROLLMENT_STAGE above.
+const ACTOR = { MANAGER: "manager", TRAINING_DEPT: "training_dept", PROVIDER: "provider", SYSTEM: "system" } as const;
+const DECISION = { APPROVE: "approve", REJECT: "reject" } as const;
+const REJECTION_REASONS = ["manager", "training_dept", "training_provider", "quota_full"] as const;
+type RejectionReason = (typeof REJECTION_REASONS)[number];
+
+// Who/what moved an enrollment into REJECTED. currentStage alone can't tell —
+// the manager, the CTD senior officer, the Training Provider, the quota
+// auto-reject and the reimbursement reviewers all land on the same stage.
+// "other" covers post-approval rejections (reimbursement manager/OSD).
+type RejectedBy = RejectionReason | "other" | null;
+
+const findLast = (timeline: any[], predicate: (entry: any) => boolean) => {
+    for (let i = timeline.length - 1; i >= 0; i--) {
+        if (predicate(timeline[i])) return timeline[i];
+    }
+    return undefined;
+};
+
+const getRejectedBy = (enrollment: any, rejectionEntry: any): RejectedBy => {
+    if (enrollment.currentStage !== ENROLLMENT_STAGE.REJECTED) return null;
+
+    // Backend sets rejectionReason for every pre-approval rejection path.
+    if (REJECTION_REASONS.includes(enrollment.rejectionReason)) return enrollment.rejectionReason;
+
+    // Older records without rejectionReason — infer from the timeline entry.
+    if (rejectionEntry) {
+        if (rejectionEntry.action === DECISION.REJECT && rejectionEntry.actorType === ACTOR.MANAGER) return "manager";
+        if (rejectionEntry.action === DECISION.REJECT && rejectionEntry.actorType === ACTOR.TRAINING_DEPT) return "training_dept";
+        if (rejectionEntry.actorType === ACTOR.PROVIDER) return "training_provider";
+        if (rejectionEntry.actorType === ACTOR.SYSTEM && String(rejectionEntry.action).includes("quota")) return "quota_full";
+        return "other";
+    }
+    // No timeline entry either — fall back to the decision fields.
+    if (enrollment.managerApproval?.action === DECISION.REJECT) return "manager";
+    if (enrollment.trainingDeptReview?.seniorAction === DECISION.REJECT) return "training_dept";
+    return "other";
+};
+
+type StepStatus = "completed" | "current" | "upcoming" | "rejected";
+
 interface EnrollmentStepsTrackerProps {
     enrollment: any;
 }
@@ -78,49 +121,118 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
     const step1Status: "completed" | "current" | "upcoming" = stage === ENROLLMENT_STAGE.SUBMITTED ? "current" : "completed";
     const step1Date = getTimelineDate(ENROLLMENT_STAGE.SUBMITTED) || formatDateHyphenated(enrollment.createdAt);
 
-    // Step 2: Approved by Reporting Manager
-    let step2Status: "completed" | "current" | "upcoming" = "upcoming";
-    if (PAST_MANAGER_REVIEW.includes(stage) || stage === ENROLLMENT_STAGE.REJECTED) {
+    const rejectionEntry = findLast(timeline, (e) => e.stage === ENROLLMENT_STAGE.REJECTED);
+    const rejectedBy = getRejectedBy(enrollment, rejectionEntry);
+    const rejectionDate = rejectionEntry ? formatDateHyphenated(rejectionEntry.at) : undefined;
+
+    // Manager's final enrollment decision (approve | reject). "recommend"
+    // entries are intermediate multi-level hops, not the final decision;
+    // tour/reimbursement manager actions use distinct "tour_*" /
+    // "reimbursement_*" action strings, so they never match here.
+    const managerDecision = findLast(
+        timeline,
+        (e) => e.actorType === ACTOR.MANAGER && (e.action === DECISION.APPROVE || e.action === DECISION.REJECT)
+    );
+    const managerApproved = managerDecision?.action === DECISION.APPROVE;
+    // CTD senior officer's decision. Junior officers log "reviewed", and the
+    // tour leg logs "tour_ctd_*", so neither is mistaken for this.
+    const ctdDecision = findLast(
+        timeline,
+        (e) => e.actorType === ACTOR.TRAINING_DEPT && (e.action === DECISION.APPROVE || e.action === DECISION.REJECT)
+    );
+
+    // Quota auto-reject only hits enrollments still in manager_review or
+    // training_dept_review — mark whichever of those was in progress.
+    const quotaRejectedAtManager = rejectedBy === "quota_full" && !managerApproved;
+    const quotaRejectedAtCtd = rejectedBy === "quota_full" && managerApproved;
+
+    // Step 2: Reporting Manager review
+    let step2Status: StepStatus = "upcoming";
+    if (rejectedBy === "manager" || quotaRejectedAtManager) {
+        step2Status = "rejected";
+    } else if (PAST_MANAGER_REVIEW.includes(stage)) {
         step2Status = "completed";
     } else if (stage === ENROLLMENT_STAGE.MANAGER_REVIEW) {
         step2Status = "current";
+    } else if (
+        rejectedBy === "training_dept" || rejectedBy === "training_provider" || quotaRejectedAtCtd ||
+        (rejectedBy === "other" && managerApproved)
+    ) {
+        // Rejected later in the flow — the manager must have approved for
+        // the enrollment to get there.
+        step2Status = "completed";
     }
-    const step2Date = getTimelineDate(ENROLLMENT_STAGE.TRAINING_DEPT_REVIEW, "approve") ||
-        (enrollment.managerApproval?.actedAt ? formatDateHyphenated(enrollment.managerApproval.actedAt) : undefined);
+    const managerDate = managerDecision
+        ? formatDateHyphenated(managerDecision.at)
+        : enrollment.managerApproval?.actedAt
+            ? formatDateHyphenated(enrollment.managerApproval.actedAt)
+            : undefined;
+    const step2Date = step2Status === "rejected"
+        ? (quotaRejectedAtManager ? rejectionDate : managerDate ?? rejectionDate)
+        : step2Status === "completed" ? managerDate : undefined;
+    const step2LabelKey: Record<StepStatus, string> = {
+        upcoming: "approvalProgress.steps.managerUpcoming",
+        current: "approvalProgress.steps.managerInReview",
+        completed: "approvalProgress.steps.manager",
+        rejected: quotaRejectedAtManager ? "approvalProgress.steps.rejectedQuotaFull" : "approvalProgress.steps.managerRejected",
+    };
 
     // Training Dept review is skippable per org policy (see backend
-    // takeManagerActionService) — an enrollment that reaches a
-    // post-manager-review stage without ever having a training_dept_review
-    // timeline entry had it skipped, not pending. Tour-leg CTD actions
+    // takeManagerActionService) — an enrollment can move past the manager
+    // without ever getting a CTD senior decision. Tour-leg CTD actions
     // (tour_ctd_approve/tour_ctd_reject) push entries with the same
-    // actorType "training_dept" as the main review, so they're explicitly
-    // excluded here — otherwise a tour approval alone would be mistaken for
-    // evidence the main review ran, permanently stuck step 3 on "upcoming".
+    // actorType "training_dept" as the main review, so ctdDecision only
+    // matches the bare approve/reject actions.
 
     // Step 3: CTD / Training Dept Review
-    let step3Status: "completed" | "current" | "upcoming" = "upcoming";
-    if (PAST_TRAINING_DEPT_REVIEW.includes(stage)) {
+    let step3Status: StepStatus = "upcoming";
+    if (rejectedBy === "training_dept" || quotaRejectedAtCtd) {
+        step3Status = "rejected";
+    } else if (PAST_TRAINING_DEPT_REVIEW.includes(stage)) {
         step3Status = "completed";
     } else if (stage === ENROLLMENT_STAGE.TRAINING_DEPT_REVIEW) {
         step3Status = "current";
+    } else if (
+        rejectedBy === "training_provider" ||
+        (rejectedBy === "other" &&
+            (ctdDecision?.action === DECISION.APPROVE ||
+                (managerApproved && enrollment.policySnapshot?.trainingDeptApproval?.enabled === false)))
+    ) {
+        // Rejected after CTD (TP decline / reimbursement) — CTD either
+        // approved or was skipped by org policy.
+        step3Status = "completed";
     }
-    const step3Date = getTimelineDate(ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION, "approve") ||
-        getTimelineDate(ENROLLMENT_STAGE.TOUR_PENDING_EMPLOYEE, "approve");
-    let stepTpStatus: "completed" | "current" | "upcoming" = "upcoming";
-    if (stage === ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION) {
+    const ctdDate = ctdDecision ? formatDateHyphenated(ctdDecision.at) : undefined;
+    const step3Date = step3Status === "rejected"
+        ? (quotaRejectedAtCtd ? rejectionDate : ctdDate ?? rejectionDate)
+        : step3Status === "completed" ? ctdDate : undefined;
+    const step3Label = step3Status !== "rejected"
+        ? "approvalProgress.steps.hrReview"
+        : quotaRejectedAtCtd ? "approvalProgress.steps.rejectedQuotaFull" : "approvalProgress.steps.hrReviewRejected";
+
+    // Step: Training Provider confirmation
+    let stepTpStatus: StepStatus = "upcoming";
+    if (rejectedBy === "training_provider") {
+        stepTpStatus = "rejected";
+    } else if (stage === ENROLLMENT_STAGE.TP_PENDING_CONFIRMATION) {
         stepTpStatus = "current";
     } else if (enrollment.tpConfirmation?.confirmedAt) {
         stepTpStatus = "completed";
     }
-    const stepTpDate = enrollment.tpConfirmation?.confirmedAt
-        ? formatDateHyphenated(enrollment.tpConfirmation.confirmedAt)
-        : undefined;
+    const stepTpDate = stepTpStatus === "rejected"
+        ? rejectionDate
+        : enrollment.tpConfirmation?.confirmedAt
+            ? formatDateHyphenated(enrollment.tpConfirmation.confirmedAt)
+            : undefined;
+    const stepTpLabel = stepTpStatus === "rejected"
+        ? "approvalProgress.steps.tpDeclined"
+        : "approvalProgress.steps.tpConfirmation";
 
     // Step 3.5: Tour / CTD final review — only relevant for outstation enrollments
     // that need company-assisted travel; skipped entirely for local training
     // or Self Travel (tour.status stays NOT_REQUIRED for both).
     const hasCtdTourReview = enrollment.tour?.status !== "not_required" && (TOUR_STAGES.includes(stage) || PAST_TOUR.includes(stage));
-    let stepCtdTourStatus: "completed" | "current" | "upcoming" = "upcoming";
+    let stepCtdTourStatus: StepStatus = "upcoming";
     if (PAST_TOUR.includes(stage)) {
         stepCtdTourStatus = "completed";
     } else if (TOUR_STAGES.includes(stage)) {
@@ -138,21 +250,21 @@ export function EnrollmentStepsTracker({ enrollment }: EnrollmentStepsTrackerPro
         },
         {
             id: "2",
-            label: t("approvalProgress.steps.manager"),
+            label: t(step2LabelKey[step2Status]),
             date: step2Date,
             status: step2Status,
             icon: UserCheck,
         },
         {
             id: "3",
-            label: t("approvalProgress.steps.hrReview"),
+            label: t(step3Label),
             date: step3Date,
             status: step3Status,
             icon: ClipboardList,
         },
         {
             id: "3-tp-confirmation",
-            label: t("approvalProgress.steps.tpConfirmation"),
+            label: t(stepTpLabel),
             date: stepTpDate,
             status: stepTpStatus,
             icon: UserCheck,

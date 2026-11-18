@@ -81,7 +81,7 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
         <div className="flex flex-col items-start lg:items-end gap-3 lg:pr-2">
           <div className='flex flex-col items-center gap-2'>
             {program.brochureUrl && (
-            <BrochureDownloadLink url={program.brochureUrl} />
+            <BrochureDownloadLink url={program.brochureUrl} fileName={program.title} />
           )}
 
           {enrolled ? (

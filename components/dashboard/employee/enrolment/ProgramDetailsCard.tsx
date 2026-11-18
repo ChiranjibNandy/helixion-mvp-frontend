@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import { formatDateHyphenated } from "@/utils/formatters";
+import { BrochureDownloadLink } from "../BrochureDownloadLink";
 
 interface ProgramDetailsCardProps {
     program: any;
@@ -30,16 +31,19 @@ export function ProgramDetailsCard({ program, showEnrolledBadge = false }: Progr
     return (
         <Card className="bg-bgStatCard border-borderCard">
             <CardContent className="p-6 space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-3">
                     <h2 className="text-lg font-bold text-white">
                         {t("trainingEnrolment.programDetails.title")}
                     </h2>
-                    {showEnrolledBadge && (
-                        <span className="flex items-center gap-1.5 text-sm font-medium text-accentGreen">
-                            <CheckCircle2 className="size-4" />
-                            {t("trainingEnrolment.enrolledLabel")}
-                        </span>
-                    )}
+                    <div className="flex items-center gap-5">
+                        {program.brochureUrl && <BrochureDownloadLink url={program.brochureUrl} fileName={program.title} />}
+                        {showEnrolledBadge && (
+                            <span className="flex items-center gap-1.5 text-sm font-medium text-accentGreen">
+                                <CheckCircle2 className="size-4" />
+                                {t("trainingEnrolment.enrolledLabel")}
+                            </span>
+                        )}
+                    </div>
                 </div>
 
                 <div className="rounded-xl border border-borderCard p-5">
