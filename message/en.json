@@ -32,6 +32,15 @@
          "description": "View complete information, schedule, and settings for this programme.",
          "fetchError": "Failed to fetch program details"
       },
+      "finalFreezeConfirmation": {
+         "title": "Final Confirmation",
+         "description": "You are about to close and freeze enrolments for",
+         "warning": "After closing, no further enrolments will be allowed and existing enrolments cannot be changed.",
+         "proceedQuestion": "Do you want to proceed?",
+         "goBack": "No, Go Back",
+         "confirm": "Yes, Close & Freeze",
+         "processing": "Processing..."
+      },
       "list": {
          "title": "Listed Training Programs",
          "description": "Select a program to view details and enroll",
@@ -102,7 +111,8 @@
             "noFurtherEnrollments": "No further enrolments will be allowed.",
             "existingEnrollments": "Existing enrolments (confirmed, pending or cancelled) cannot be changed.",
             "cannotBeUndone": "This action cannot be undone."
-         }
+         },
+         "closeSuccess":"Enrolments closed and frozen successfully."
       },
       "createpageTitle": "Create new training program",
       "createpageDescription": "Publish a single program to the Helixon marketplace.",

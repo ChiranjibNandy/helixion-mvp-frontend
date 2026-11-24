@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { ChevronLeft, Info, LockKeyhole, X } from 'lucide-react';
-import { ManagedEnrollment, providerService } from '@/services/provider.service';
+import { ChevronLeft } from 'lucide-react';
+import { providerService } from '@/services/provider.service';
 import CancelProgramModal from '@/components/dashboard/provider/CancelProgramModal';
 import ProgramSummaryHeader from '@/components/dashboard/provider/ManageEnrollments/ProgramSummaryHeader';
 import StatusBanner from '@/components/dashboard/provider/ManageEnrollments/StatusBanner';
@@ -14,9 +14,11 @@ import ProgramDetailsPanel from '@/components/dashboard/provider/ManageEnrollmen
 import DocumentsPanel from '@/components/dashboard/provider/ManageEnrollments/DocumentsPanel';
 import { exportEnrollmentsToCsv } from '@/components/dashboard/provider/ManageEnrollments/exportCsv';
 import { useManagedEnrollments } from '@/components/dashboard/provider/ManageEnrollments/useManagedEnrollments';
-import { countActiveEnrollments, displayStatus } from '@/components/dashboard/provider/ManageEnrollments/utils';
+import { countActiveEnrollments } from '@/components/dashboard/provider/ManageEnrollments/utils';
 import { updateProgramFreezeStatusApi } from '@/services/programService';
 import FreezeEnrollmentsModal from '@/components/dashboard/provider/ManageEnrollments/FreezeEnrollmentsModal';
+import FinalFreezeConfirmationModal from '@/components/dashboard/provider/ManageEnrollments/FinalFreezeConfirmationModal';
+import { t } from '@/lib/i18n';
 
 export default function ManageEnrollmentsPage() {
   const params = useParams();
@@ -30,6 +32,7 @@ export default function ManageEnrollmentsPage() {
   const [freezeModalOpen, setFreezeModalOpen] = useState(false);
   const [freezing, setFreezing] = useState(false);
   const [freezeError, setFreezeError] = useState<string | null>(null);
+  const [finalConfirmationOpen, setFinalConfirmationOpen] = useState(false);
 
   const activeCount = countActiveEnrollments(enrollments);
   const belowMinimum = program?.minParticipants != null && activeCount < program.minParticipants;
@@ -60,6 +63,12 @@ export default function ManageEnrollmentsPage() {
 
   //freeze program 
 
+  const handleOpenFinalConfirmation = () => {
+    setFreezeModalOpen(false);
+    setFreezeError(null);
+    setFinalConfirmationOpen(true);
+  };
+
   const handleFreezeEnrollments = async () => {
     try {
       setFreezing(true);
@@ -67,9 +76,10 @@ export default function ManageEnrollmentsPage() {
 
       await updateProgramFreezeStatusApi(programId, true);
 
-      toast.success('Enrolments closed and frozen successfully.');
+      toast.success(t("programme.enrollments.closeSuccess"));
 
       setFreezeModalOpen(false);
+      setFinalConfirmationOpen(false);
 
       await reload();
     } catch (err: any) {
@@ -152,6 +162,19 @@ export default function ManageEnrollmentsPage() {
             if (!freezing) {
               setFreezeModalOpen(false);
               setFreezeError(null);
+            }
+          }}
+          onConfirm={handleOpenFinalConfirmation}
+        />
+
+        <FinalFreezeConfirmationModal
+          isOpen={finalConfirmationOpen}
+          programTitle={program.title}
+          loading={freezing}
+          onGoBack={() => {
+            if (!freezing) {
+              setFinalConfirmationOpen(false);
+              setFreezeModalOpen(true);
             }
           }}
           onConfirm={handleFreezeEnrollments}
