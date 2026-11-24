@@ -21,7 +21,7 @@ const ThemeSwitch = () => {
 
     return (
         <div className="mb-2 flex items-center justify-between px-2">
-            <span className="text-[11px] text-white/50">{isDark ? '' : 'Light'}</span>
+            <span className="text-[11px] text-muted-foreground">{isDark ? 'Dark' : 'Light'}</span>
             <div className="inline-flex items-center gap-2">
                 <SunIcon
                     className={`size-4 ${!isDark ? 'text-primary' : 'text-muted-foreground'
@@ -39,7 +39,6 @@ const ThemeSwitch = () => {
                         }`}
                 />
             </div>
-            <span className="text-[11px] text-white/50">{isDark ? 'Dark' : ''}</span>
         </div>
     )
 }
