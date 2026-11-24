@@ -56,13 +56,8 @@ export default function TabBar({
         {showCancelProgram && (
           <Button
             size="sm"
-            disabled={isFrozen}
             onClick={onCancelProgram}
-            className={cn("text-white",
-              isFrozen
-                ? "bg-red-600 cursor-not-allowed opacity-20"
-                : "bg-red-600 hover:bg-red-500"
-            )}
+            className="bg-red-600 text-white hover:bg-red-500"
           >
             {t("programme.cancelProgram")}
           </Button>
@@ -74,7 +69,7 @@ export default function TabBar({
           className={cn(
             "text-white",
             isFrozen
-              ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-70"
+              ? "bg-gray-300 text-gray-700 cursor-not-allowed opacity-70"
               : "bg-blue-600 hover:bg-blue-700"
           )}
         >

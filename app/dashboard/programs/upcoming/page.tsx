@@ -11,6 +11,8 @@ import PaginationController from "@/components/ui/pagination";
 import { t } from "@/lib/i18n";
 import { Spinner } from "@/components/ui/spinner";
 import { PAGE_LIMIT } from "@/constants/content";
+import { Link } from "lucide-react";
+import { PageBreadcrumb } from "@/components/shared/PageBreadcrumb";
 
 
 const initialPagination: Pagination = {
@@ -60,52 +62,59 @@ export default function UpcomingProgramsList() {
   };
 
   return (
-    <DashboardSectionCard
-      title={
-        <div>
-          <h2 className="text-white text-lg font-semibold">
-            {t("upcomingPrograms.upcomingtrainingprograms")}
-          </h2>
+    <div className="flex flex-col gap-4">
+      <PageBreadcrumb
+        label="Back to Programs"
+        href="/dashboard/programs/list"
+      />
+      <DashboardSectionCard
+        title={
+          <div>
+            <h2 className="text-white text-lg font-semibold">
+              {t("upcomingPrograms.upcomingtrainingprograms")}
+            </h2>
 
-          <p className="text-textSidebarMuted text-xs mt-1">
-            {t("upcomingPrograms.allupcomingprograms")}
-          </p>
-        </div>
-      }
-    >
-      {loading ? (
-        <div className="flex items-center justify-center py-10">
-          <Spinner size="lg" />
-        </div>
-      ) : error ? (
-        <div className="py-10 text-center text-red-500">
-          {error}
-          <button
-            onClick={() => fetchPrograms(page)}
-            className="ml-2 underline"
-          >
-            {t("common.retry")}
-          </button>
-        </div>
-      ) : (
-        <>
-          <UpcomingProgramsTable programs={programs} />
+            <p className="text-textSidebarMuted text-xs mt-1">
+              {t("upcomingPrograms.allupcomingprograms")}
+            </p>
+          </div>
+        }
+      >
+        {loading ? (
+          <div className="flex items-center justify-center py-10">
+            <Spinner size="lg" />
+          </div>
+        ) : error ? (
+          <div className="py-10 text-center text-red-500">
+            {error}
+            <button
+              onClick={() => fetchPrograms(page)}
+              className="ml-2 underline"
+            >
+              {t("common.retry")}
+            </button>
+          </div>
+        ) : (
+          <>
+            <UpcomingProgramsTable programs={programs} />
 
-          {pagination.totalPages > 1 && (
-            <div className="mt-5">
-              <p className="mb-3 text-sm text-textSidebarMuted text-center">
-                Showing {programs.length} of {pagination.total} programs
-              </p>
+            {pagination.totalPages > 1 && (
+              <div className="mt-5">
+                <p className="mb-3 text-sm text-textSidebarMuted text-center">
+                  Showing {programs.length} of {pagination.total} programs
+                </p>
 
-              <PaginationController
-                page={page}
-                totalPages={pagination.totalPages}
-                onPageChange={handlePageChange}
-              />
-            </div>
-          )}
-        </>
-      )}
-    </DashboardSectionCard>
+                <PaginationController
+                  page={page}
+                  totalPages={pagination.totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            )}
+          </>
+        )}
+      </DashboardSectionCard>
+
+    </div>
   );
 }
