@@ -4,8 +4,9 @@ import React from 'react';
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from '@/components/ui/theme-provider';
 
-const geist = Inter({subsets:['latin'],variable:'--font-sans'});
+const geist = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: 'Helixon — Enterprise Multi-Role Platform',
@@ -24,8 +25,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="m-0 p-0 bg-bgMain font-sans">
-        {children}
-        <Toaster richColors position="top-right" />
+        <ThemeProvider>
+          {children}
+          <Toaster richColors position="top-right" />
+        </ThemeProvider>
       </body>
     </html>
   );

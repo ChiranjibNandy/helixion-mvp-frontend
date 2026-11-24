@@ -5,6 +5,7 @@ import { Award, BarChart3, Bell, BookOpen, ClipboardCheck, Download, FileText, L
 import { NavItem } from '@/types';
 import { AppAvatar } from './avatar';
 import CountBadge from './count-badge';
+import ThemeSwitch from './theme-switcher';
 
 
 //  ICON MAP (IMPORTANT)
@@ -147,7 +148,7 @@ function SidebarNavItem({ item, isActive, onClick }: any) {
 // ─── Component ────────────────────────────────────────────────────────────────
 function SidebarMenu({ sections, activeKey, onNavChange }: SidebarMenuProps) {
   return (
-    <nav className="flex-1 px-2.5 py-3 overflow-y-auto">
+    <nav className="flex-1 min-h-0 px-2.5 py-3 overflow-y-auto">
       {sections.map((section, idx) => (
         <div key={section.category} className={idx > 0 ? 'mt-3' : ''}>
           <p className="text-[9px] font-semibold tracking-widest uppercase text-white/25 px-1 mb-1.5">
@@ -167,7 +168,13 @@ function SidebarMenu({ sections, activeKey, onNavChange }: SidebarMenuProps) {
   );
 }
 
-
+function SidebarTheme() {
+  return (
+    <div className="px-3.5">
+        <ThemeSwitch />
+    </div>
+  );
+}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 function SidebarFooter({ onSignOut }: SidebarFooterProps) {
@@ -195,6 +202,7 @@ export function Sidebar({ user, navSections, activeKey, onNavChange, onSignOut }
         activeKey={activeKey}
         onNavChange={onNavChange}
       />
+      <SidebarTheme />
       <SidebarFooter onSignOut={onSignOut} />
     </aside>
   );
