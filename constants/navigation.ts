@@ -57,7 +57,11 @@ export const ROUTES = {
       EXPORT: '/dashboard/programs/export',
       LIST: '/dashboard/programs/list',
       UPCOMING: '/dashboard/programs/upcoming',
-      VIEW: (id: string) => `/dashboard/programs/view-detail/${ id }`
+      VIEW: (id: string) => `/dashboard/programs/view-detail/${ id }`,
+      EDIT: (id: string) => `/dashboard/programs/edit-published/${ id }`,
+      ATTENDANCE: (id: string) => `/dashboard/update-attendance/${ id }`,
+      MANAGE_ENROLLMENTS: (id: string) => `/dashboard/manage-enrollments/${ id }`,
+      INVOICES: (id: string) => `/dashboard/programs/invoices/${ id }`,
     },
     ATTENDANCE: '/dashboard/update-attendance',
     PENDING_CONFIRMATIONS: '/dashboard/pending-confirmations',

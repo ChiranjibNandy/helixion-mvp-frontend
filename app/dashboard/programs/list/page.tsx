@@ -135,22 +135,28 @@ export default function ProgramsPage() {
                      </DropdownMenuTrigger>
                      <DropdownMenuContent align="end" className="min-w-40 bg-[#1a1b25] border border-white/10 text-white">
                         <DropdownMenuItem
-                           onClick={() => router.push(`/dashboard/update-attendance/${program._id}`)}
+                           onClick={() => router.push(
+                              ROUTES.PROVIDER.PROGRAMS.ATTENDANCE(program._id)
+                           )}
                            className="text-white whitespace-nowrap focus:bg-bgButton focus:text-white"
                         >
                            <ClipboardCheck size={14} className="mr-2" />
-                           Attendance
+                           {t("programme.enrollments.attendance")}
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                           onClick={() => router.push(`/dashboard/manage-enrollments/${program._id}`)}
+                           onClick={() => router.push(
+                              ROUTES.PROVIDER.PROGRAMS.MANAGE_ENROLLMENTS(program._id)
+                           )}
                            className="text-white whitespace-nowrap focus:bg-bgButton focus:text-white"
                         >
                            <Users size={14} className="mr-2" />
-                           Manage Enrolments
+                           {t("programme.enrollments.manage")}
                         </DropdownMenuItem>
                         {hasEnded && (
                            <DropdownMenuItem
-                              onClick={() => window.open(`/dashboard/programs/invoices/${program._id}`, "_blank")}
+                              onClick={() => window.open(
+                                 ROUTES.PROVIDER.PROGRAMS.INVOICES(program._id), "_blank"
+                              )}
                               className="text-white whitespace-nowrap focus:bg-bgButton focus:text-white"
                            >
                               <Receipt size={14} className="mr-2" />
@@ -171,7 +177,7 @@ export default function ProgramsPage() {
                         <DropdownMenuItem
                            onClick={() =>
                               router.push(
-                                 `/dashboard/programs/edit-published/${ program._id }`
+                                 ROUTES.PROVIDER.PROGRAMS.EDIT(program._id)
                               )
                            }
                            className="text-white whitespace-nowrap focus:bg-bgButton focus:text-white"

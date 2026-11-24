@@ -91,6 +91,10 @@
          "notes": "Notes",
          "noNotesAvailable": "No notes available"
       },
+      "enrollments": {
+         "manage": "Manage Enrolments",
+         "attendance":"Attendance"
+      },
       "createpageTitle": "Create new training program",
       "createpageDescription": "Publish a single program to the Helixon marketplace.",
       "createdetailsTitle": "Program details",
