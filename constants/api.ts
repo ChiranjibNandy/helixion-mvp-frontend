@@ -74,6 +74,7 @@ export const API = {
       PROGRAM_ENROLLMENTS: (id: string) => `/training-provider/programs/${id}/enrollments`,
       CANCEL_ENROLLMENT: (programId: string, enrollmentId: string) => `/training-provider/programs/${programId}/enrollments/${enrollmentId}/cancel`,
       CANCEL_PROGRAM: (id: string) => `/training-provider/programs/${id}/cancel`,
+      UPDATE_PROGRAM_FREEZE: (id: string) => `/training-provider/programs/${id}/freeze`,
    },
    NOTIFICATION:{
       READ:(id:string) => `/notifications/${id}/read`,
