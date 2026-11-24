@@ -36,7 +36,7 @@ export function UpcomingProgramsTable({
   const router = useRouter();
 
   const handleRowClick = (program: DashboardUpcomingProgram) => {
-    router.push(ROUTES.PROVIDER.PROGRAMS.VIEW(program._id));
+    router.push(ROUTES.PROVIDER.PROGRAMS.MANAGE_ENROLLMENTS(program._id));
   };
 
 
