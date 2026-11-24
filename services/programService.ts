@@ -124,13 +124,13 @@ export const updatePublishedProgramAPI = async ({
 
 
 export const updateProgramFreezeStatusApi = async (
-   programId: string,
-   isFreeze: boolean
+  programId: string,
+  isFreeze: boolean
 ) => {
-   const response = await api.patch(
-      API.TRAININGPROVIDER.UPDATE_PROGRAM_FREEZE(programId),
-      isFreeze
-   );
+  const response = await api.patch(
+    API.TRAININGPROVIDER.UPDATE_PROGRAM_FREEZE(programId),
+    { isFreeze }
+  );
 
-   return response.data;
+  return response.data;
 };

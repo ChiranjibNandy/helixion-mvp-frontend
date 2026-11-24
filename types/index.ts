@@ -86,6 +86,7 @@ export interface DraftProgram {
     cancelledAt: string;
   };
   createdBy: string;
+  isFreeze:boolean;
   batchId?: string;
   createdAt: string;
   updatedAt: string;

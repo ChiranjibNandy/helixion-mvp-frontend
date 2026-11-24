@@ -13,6 +13,7 @@ interface TabBarProps {
   onCancelProgram: () => void;
   onCloseFreezeEnrollments: () => void;
   showCancelProgram: boolean;
+  isFrozen: boolean;
 }
 
 export default function TabBar({
@@ -23,6 +24,7 @@ export default function TabBar({
   onCancelProgram,
   onCloseFreezeEnrollments,
   showCancelProgram,
+  isFrozen,
 }: TabBarProps) {
   return (
     <div className="flex items-center justify-between border-b border-gray-200">
@@ -54,21 +56,34 @@ export default function TabBar({
         {showCancelProgram && (
           <Button
             size="sm"
+            disabled={isFrozen}
             onClick={onCancelProgram}
-            className="bg-red-600 text-white hover:bg-red-500"
+            className={cn("text-white",
+              isFrozen
+                ? "bg-red-600 cursor-not-allowed opacity-20"
+                : "bg-red-600 hover:bg-red-500"
+            )}
           >
             {t("programme.cancelProgram")}
           </Button>
         )}
         <Button
           size="sm"
+          disabled={isFrozen}
           onClick={onCloseFreezeEnrollments}
-          className="bg-blue-600 text-white hover:bg-blue-700"
+          className={cn(
+            "text-white",
+            isFrozen
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed opacity-70"
+              : "bg-blue-600 hover:bg-blue-700"
+          )}
         >
           <LockKeyhole size={14} className="mr-1.5" />
-          {t("programme.enrollments.closeFreezeEnrollment")}
+          {isFrozen
+            ? "Enrolments Frozen"
+            : t("programme.enrollments.closeFreezeEnrollment")}
         </Button>
       </div>
-    </div>
+    </div >
   );
 }
