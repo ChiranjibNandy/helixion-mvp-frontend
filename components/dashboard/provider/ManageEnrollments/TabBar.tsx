@@ -1,6 +1,7 @@
-import { Download } from 'lucide-react';
+import { Download, LockKeyhole } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { t } from '@/lib/i18n';
 
 export type TabKey = 'enrolments' | 'details' | 'documents';
 
@@ -10,6 +11,7 @@ interface TabBarProps {
   onTabChange: (tab: TabKey) => void;
   onExport: () => void;
   onCancelProgram: () => void;
+  onCloseFreezeEnrollments: () => void;
   showCancelProgram: boolean;
 }
 
@@ -19,6 +21,7 @@ export default function TabBar({
   onTabChange,
   onExport,
   onCancelProgram,
+  onCloseFreezeEnrollments,
   showCancelProgram,
 }: TabBarProps) {
   return (
@@ -46,7 +49,7 @@ export default function TabBar({
           onClick={onExport}
           className="bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
         >
-          <Download size={13} className="mr-1.5" /> Export
+          <Download size={13} className="mr-1.5" /> {t("providerDashboard.quickActions.exportEnrolment.link")}
         </Button>
         {showCancelProgram && (
           <Button
@@ -54,9 +57,17 @@ export default function TabBar({
             onClick={onCancelProgram}
             className="bg-red-600 text-white hover:bg-red-500"
           >
-            Cancel Program
+            {t("programme.cancelProgram")}
           </Button>
         )}
+        <Button
+          size="sm"
+          onClick={onCloseFreezeEnrollments}
+          className="bg-blue-600 text-white hover:bg-blue-700"
+        >
+          <LockKeyhole size={14} className="mr-1.5" />
+          {t("programme.enrollments.closeFreezeEnrollment")}
+        </Button>
       </div>
     </div>
   );

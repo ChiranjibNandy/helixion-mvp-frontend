@@ -13,6 +13,7 @@
       "defaultVenue": "Venue — not set",
       "noprogramsfoundsearch": "No programs found for your search",
       "noprogramsAvailable": "No programs available",
+      "cancelProgram":"Cancel Program",
       "edit": {
          "title": "Edit Program Details",
          "description": "Update core details and participant limits for your published program.",
@@ -93,7 +94,8 @@
       },
       "enrollments": {
          "manage": "Manage Enrolments",
-         "attendance":"Attendance"
+         "attendance":"Attendance",
+         "closeFreezeEnrollment":"Close & Freeze Enrollments"
       },
       "createpageTitle": "Create new training program",
       "createpageDescription": "Publish a single program to the Helixon marketplace.",
