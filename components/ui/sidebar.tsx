@@ -41,8 +41,8 @@ const ICON_MAP: Record<string, any> = {
 // ─── Logo seen in above of sidebar component ────────────────────────────────────────────────────────────────
 function SidebarLogo() {
   return (
-    <div className="flex items-center gap-2 px-3.5 py-3.5 border-b border-foreground/[0.06]">
-      <div className="w-6.5 h-6.5 w-7 h-7 bg-blue-700 rounded-lg flex items-center justify-center text-[10px] font-semibold text-foreground flex-shrink-0">
+    <div className="flex items-center gap-2 px-3.5 py-3.5 border-b border-borderCard">
+      <div className="w-6.5 h-6.5 w-7 h-7 bg-primary rounded-lg flex items-center justify-center text-[10px] font-semibold text-primary-foreground flex-shrink-0">
         Hx
       </div>
       <span className="text-[13px] font-semibold text-foreground tracking-tight">
@@ -59,7 +59,7 @@ function SidebarLogo() {
 // ─── Profile of use with name location and role ────────────────────────────────────────────────────────────────
 function SidebarProfile({ user }: SidebarProfileProps) {
   return (
-    <div className="px-3.5 py-3 border-b border-foreground/[0.06]">
+    <div className="px-3.5 py-3 border-b border-borderCard">
       <AppAvatar
         initials={user.name.slice(0, 1)}
         size="md"
@@ -68,7 +68,7 @@ function SidebarProfile({ user }: SidebarProfileProps) {
       <p className="text-[12px] font-semibold text-foreground leading-tight">
         {user.name}
       </p>
-      <p className="text-[10px] text-foreground/30 mt-0.5">
+      <p className="text-[10px] text-textSidebar mt-0.5">
         {user.location}
       </p>
       <p className="text-[9px] text-muted-foreground mt-0.5">
@@ -85,8 +85,8 @@ function SidebarNavItem({ item, isActive, onClick }: any) {
     flex items-center gap-2 px-2 py-1.5 rounded-md text-[11px]
     cursor-pointer transition-colors duration-150 mb-0.5 select-none
     ${isActive
-      ? "bg-primary/30 text-primary"
-      : "text-foreground/90 hover:text-primary hover:bg-primary/30"
+      ? "bg-primary/10 text-primary"
+      : "text-textSidebar hover:text-primary hover:bg-primary/10"
     }
   `;
 
@@ -116,7 +116,7 @@ function SidebarNavItem({ item, isActive, onClick }: any) {
   if (item.disabled) {
     return (
       <div
-        className={`${baseClass} !cursor-not-allowed !text-foreground/15 hover:!bg-transparent hover:!text-foreground/15`}
+        className={`${baseClass} !cursor-not-allowed !text-textSidebarMuted hover:!bg-transparent`}
         title={item.disabledReason}
       >
         {inner}
@@ -151,7 +151,7 @@ function SidebarMenu({ sections, activeKey, onNavChange }: SidebarMenuProps) {
     <nav className="flex-1 min-h-0 px-2.5 py-3 overflow-y-auto">
       {sections.map((section, idx) => (
         <div key={section.category} className={idx > 0 ? 'mt-3' : ''}>
-          <p className="text-[9px] font-semibold tracking-widest uppercase text-foreground/25 px-1 mb-1.5">
+          <p className="text-[9px] font-semibold tracking-widest uppercase text-textSidebarMuted px-1 mb-1.5">
             {section.category}
           </p>
           {section.items.map((item: NavItem) => (
@@ -179,10 +179,10 @@ function SidebarTheme() {
 // ─── Component ────────────────────────────────────────────────────────────────
 function SidebarFooter({ onSignOut }: SidebarFooterProps) {
   return (
-    <div className="px-3.5 py-2.5 border-t border-foreground/[0.06]">
+    <div className="px-3.5 py-2.5 border-t border-borderCard">
       <button
         onClick={onSignOut}
-        className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[12px] text-red-500/80 cursor-pointer transition-colors duration-150 hover:bg-red-500/10 hover:text-red-400"
+        className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[12px] text-accentRed cursor-pointer transition-colors duration-150 hover:bg-accentRed/10"
       >
         <LogOut className="w-3.5 h-3.5 flex-shrink-0" />
         <span>Sign out</span>
@@ -194,7 +194,7 @@ function SidebarFooter({ onSignOut }: SidebarFooterProps) {
 // ─── Component ────────────────────────────────────────────────────────────────
 export function Sidebar({ user, navSections, activeKey, onNavChange, onSignOut }: SidebarProps) {
   return (
-    <aside className="flex flex-col h-full min-h-0 overflow-hidden bg-background border-r border-foreground/[0.06]">
+    <aside className="flex flex-col h-full min-h-0 overflow-hidden bg-background border-r border-borderCard">
       <SidebarLogo />
       <SidebarProfile user={user} />
       <SidebarMenu

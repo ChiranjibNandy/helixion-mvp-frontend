@@ -70,7 +70,7 @@ export default function FileDropzone({
         transition-all duration-300 group
         ${isDragging
           ? 'border-primary bg-primary/5'
-          : 'border-white/10 hover:border-primary/40 hover:bg-white/[0.01]'
+          : 'border-borderCard hover:border-primary/40 hover:bg-muted/50'
         }
         ${isProcessing ? 'pointer-events-none opacity-60' : ''}
       `}
@@ -87,22 +87,22 @@ export default function FileDropzone({
       <div className="flex flex-col items-center gap-3">
         <div className={`
           w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300
-          ${isDragging ? 'bg-primary/20' : 'bg-white/5 group-hover:bg-primary/10'}
+          ${isDragging ? 'bg-primary/20' : 'bg-muted/50 group-hover:bg-primary/10'}
         `}>
           {isProcessing ? (
             <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           ) : (
             <Upload
-              className={`transition-colors ${isDragging ? 'text-primary' : 'text-white/30 group-hover:text-primary/60'}`}
+              className={`transition-colors ${isDragging ? 'text-primary' : 'text-textSidebarMuted group-hover:text-primary/60'}`}
               size={20}
             />
           )}
         </div>
 
         <div>
-          <p className="text-sm text-white/50">{label}</p>
+          <p className="text-sm text-textSidebar">{label}</p>
           {hint && (
-            <p className="text-xs text-white/25 mt-1">{hint}</p>
+            <p className="text-xs text-textSidebarMuted mt-1">{hint}</p>
           )}
         </div>
       </div>

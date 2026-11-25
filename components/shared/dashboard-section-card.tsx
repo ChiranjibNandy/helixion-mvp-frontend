@@ -20,7 +20,7 @@ export function DashboardSectionCard({
          <div className="flex items-center justify-between p-4">
             <div>
                <div className="flex items-center gap-2">
-                  <h2 className="text-white text-lg font-semibold">
+                  <h2 className="text-foreground text-lg font-semibold">
                      {title}
                   </h2>
                   {count !== undefined && (

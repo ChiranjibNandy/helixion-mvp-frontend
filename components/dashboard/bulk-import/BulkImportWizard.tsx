@@ -353,7 +353,7 @@ export default function BulkImportWizard() {
         <p className="text-xs text-textSidebarMuted mb-3">{t('bulkImport.template.stepLabel')}</p>
         <div className="flex items-center justify-between p-4 rounded-xl bg-bgStatCard border border-borderCard">
           <div>
-            <p className="text-sm font-medium text-white">{t('bulkImport.template.fileName')}</p>
+            <p className="text-sm font-medium text-foreground">{t('bulkImport.template.fileName')}</p>
             <p className="text-xs text-textSidebarMuted mt-1">
               Columns: Employee Roll No., Name, Email, Mobile, Place of Posting, Designation, Department,
               Training Dept / OSD officer flags, Reporting Manager Email, Skip Level 1/2 Manager Email.
@@ -365,8 +365,8 @@ export default function BulkImportWizard() {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsDownloadDropdownOpen((prev) => !prev)}
-              className="px-5 py-2 text-sm font-medium text-white bg-white/5 border border-white/10
-                         rounded-lg hover:bg-white/10 transition-all duration-200 flex items-center gap-2"
+              className="px-5 py-2 text-sm font-medium text-foreground bg-muted/50 border border-borderCard
+                         rounded-lg hover:bg-muted transition-all duration-200 flex items-center gap-2"
               id="download-template-btn"
             >
               <Download size={15} />
@@ -381,7 +381,7 @@ export default function BulkImportWizard() {
                     downloadSampleTemplate('csv', BULK_EMPLOYEE_TEMPLATE_HEADERS, BULK_EMPLOYEE_SAMPLE_ROWS, 'employee_bulk_upload_template');
                     setIsDownloadDropdownOpen(false);
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10 flex items-center justify-between"
+                  className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted flex items-center justify-between"
                 >
                   <span>CSV File</span>
                   <span className="text-xs text-textSidebarMuted font-mono">.csv</span>
@@ -391,7 +391,7 @@ export default function BulkImportWizard() {
                     downloadSampleTemplate('xlsx', BULK_EMPLOYEE_TEMPLATE_HEADERS, BULK_EMPLOYEE_SAMPLE_ROWS, 'employee_bulk_upload_template');
                     setIsDownloadDropdownOpen(false);
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10 flex items-center justify-between"
+                  className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted flex items-center justify-between"
                 >
                   <span>Excel Workbook</span>
                   <span className="text-xs text-textSidebarMuted font-mono">.xlsx</span>
@@ -401,7 +401,7 @@ export default function BulkImportWizard() {
                     downloadSampleTemplate('xls', BULK_EMPLOYEE_TEMPLATE_HEADERS, BULK_EMPLOYEE_SAMPLE_ROWS, 'employee_bulk_upload_template');
                     setIsDownloadDropdownOpen(false);
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/10 flex items-center justify-between"
+                  className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted flex items-center justify-between"
                 >
                   <span>Legacy Excel</span>
                   <span className="text-xs text-textSidebarMuted font-mono">.xls</span>
@@ -439,7 +439,7 @@ export default function BulkImportWizard() {
                   <FileText className="w-5 h-5 text-primary" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-white truncate">{file.name}</p>
+                  <p className="text-sm font-medium text-foreground truncate">{file.name}</p>
                   <p className="text-xs text-textSidebarMuted">
                     {formatFileSize(file.size)}
                     {isParsing && ' · Parsing…'}
@@ -449,7 +449,7 @@ export default function BulkImportWizard() {
               <div className="flex items-center gap-2 flex-shrink-0">
                 <button
                   onClick={handleRemoveFile}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-textSidebarMuted hover:text-foreground hover:bg-muted/50"
                   aria-label="Remove file"
                 >
                   <X className="w-4 h-4" />
@@ -501,7 +501,7 @@ export default function BulkImportWizard() {
         const { title, description, isGood, severity: iconColor } = getOutcomeMessage(commitResult);
 
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 backdrop-blur-sm">
             <div className="w-full max-w-md bg-bgStatCard border border-borderCard rounded-2xl p-8 shadow-2xl">
               <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center mb-5 ${ iconColor === 'green' ? 'bg-accentGreen/10 border-accentGreen/30'
                 : iconColor === 'orange' ? 'bg-accentOrange/10 border-accentOrange/30'
@@ -509,18 +509,18 @@ export default function BulkImportWizard() {
                 }`}>
                 {isGood ? (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="10" stroke="#16a34a" strokeWidth="2" />
-                    <path d="M8 12.5L11 15.5L16 9.5" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle cx="12" cy="12" r="10" stroke="var(--accent-green)" strokeWidth="2" />
+                    <path d="M8 12.5L11 15.5L16 9.5" stroke="var(--accent-green)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 ) : (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="10" stroke={iconColor === 'orange' ? '#f59e0b' : '#dc2626'} strokeWidth="2" />
-                    <path d="M15 9L9 15M9 9L15 15" stroke={iconColor === 'orange' ? '#f59e0b' : '#dc2626'} strokeWidth="2" strokeLinecap="round" />
+                    <circle cx="12" cy="12" r="10" stroke={iconColor === 'orange' ? 'var(--accent-orange)' : 'var(--accent-red)'} strokeWidth="2" />
+                    <path d="M15 9L9 15M9 9L15 15" stroke={iconColor === 'orange' ? 'var(--accent-orange)' : 'var(--accent-red)'} strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 )}
               </div>
 
-              <h3 className={`text-lg font-semibold mb-3 ${ isGood ? 'text-white' : iconColor === 'orange' ? 'text-accentOrange' : 'text-accentRed' }`}>
+              <h3 className={`text-lg font-semibold mb-3 ${ isGood ? 'text-foreground' : iconColor === 'orange' ? 'text-accentOrange' : 'text-accentRed' }`}>
                 {title}
               </h3>
 
@@ -571,14 +571,14 @@ export default function BulkImportWizard() {
                   <>
                     <button
                       onClick={handleDone}
-                      className="px-5 py-2.5 text-sm text-white/60 bg-white/5 border border-white/10
-                                 rounded-lg hover:bg-white/10 transition-all duration-200"
+                      className="px-5 py-2.5 text-sm text-textSecondary bg-muted/50 border border-borderCard
+                                 rounded-lg hover:bg-muted transition-all duration-200"
                     >
                       Discard & start over
                     </button>
                     <button
                       onClick={handleFixSkippedRows}
-                      className="px-6 py-2.5 text-sm font-medium text-white bg-primary
+                      className="px-6 py-2.5 text-sm font-medium text-primary-foreground bg-primary
                                  rounded-lg hover:bg-primaryDark transition-all duration-200"
                       id="fix-skipped-rows-btn"
                     >
@@ -588,7 +588,7 @@ export default function BulkImportWizard() {
                 ) : (
                   <button
                     onClick={handleDone}
-                    className="px-6 py-2.5 text-sm font-medium text-white bg-primary
+                    className="px-6 py-2.5 text-sm font-medium text-primary-foreground bg-primary
                                rounded-lg hover:bg-primaryDark transition-all duration-200"
                     id="success-done-btn"
                   >
