@@ -1,6 +1,8 @@
 import { api } from '@/lib/api';
 import { API } from '@/constants/api';
 import type { DraftProgram, DraftProgramsResponse } from '@/types';
+import { PROGRAM_ENROLLMENT_STATUS } from '@/constants/program';
+import { Pagination } from '@/types/pagination';
 
 // ΓöÇΓöÇΓöÇ Bulk Upload ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
@@ -33,8 +35,8 @@ export interface UpdateDraftPayload {
   twinSharingFee?: number;
   nonResidentialFee?: number;
   brochureUrl?: string;
-  minParticipants?:number,
-  maxParticipants?:number
+  minParticipants?: number,
+  maxParticipants?: number
 }
 
 // ─── Dashboard Types ─────────────────────────────────────────────────────────
@@ -57,6 +59,26 @@ export interface DashboardTopProgram {
   fillRate: number;
 }
 
+
+
+export interface DashboardUpcomingProgram {
+  _id: string;
+  title: string;
+  startDate: string;
+  endDate?: string;
+  enrolledCount: number;
+  minParticipants?: number;
+  maxParticipants?: number;
+  fillRate: number;
+  daysToGo: number;
+  programStatus: PROGRAM_ENROLLMENT_STATUS;
+}
+
+export interface DashboardUpcomingProgramsResponse {
+  programs: DashboardUpcomingProgram[];
+  pagination: Pagination;
+}
+
 export interface DashboardActivity {
   type: 'published' | 'draft' | 'bulk_upload' | 'enrollment' | 'attendance' | string;
   message: string;
@@ -66,6 +88,7 @@ export interface DashboardActivity {
 export interface ProviderDashboardResponse {
   overview: DashboardOverview;
   topPrograms: DashboardTopProgram[];
+  upcomingPrograms: DashboardUpcomingProgramsResponse
   recentActivities: DashboardActivity[];
 }
 
@@ -82,6 +105,27 @@ export interface PendingTpConfirmation {
 export interface ConfirmEnrollmentResponse {
   status: string;
   tpConfirmationDate: string | null;
+}
+
+export interface ManagedEnrollment {
+  _id: string;
+  employeeId: { _id: string; name: string; email: string; employeeCode?: string };
+  orgId: { _id: string; name: string } | null;
+  currentStage: string;
+  createdAt: string;
+}
+
+export type ProgramCancellationReason =
+  | 'insufficient_enrolments'
+  | 'excess_enrolments'
+  | 'operational_constraints'
+  | 'trainer_unavailable'
+  | 'venue_unavailable'
+  | 'other';
+
+export interface CancelProgramResponse {
+  status: string;
+  cancelledEnrollmentCount: number;
 }
 
 // ─── Provider Service ────────────────────────────────────────────────────────
@@ -120,7 +164,7 @@ export const providerService = {
    */
   getDraftById: async (id: string): Promise<DraftProgram> => {
     const response = await api.get<{ data: DraftProgram }>(
-      `/training-provider/programs/${id}`
+      `/training-provider/programs/${ id }`
     );
     return response.data.data;
   },
@@ -146,7 +190,7 @@ export const providerService = {
     }
 
     const response = await api.put<{ data: DraftProgram }>(
-      `/training-provider/programs/${id}`,
+      `/training-provider/programs/${ id }`,
       formData
     );
     return response.data.data;
@@ -156,22 +200,28 @@ export const providerService = {
    * Publish a draft program (change status from draft → published).
    */
   publishDraft: async (id: string): Promise<void> => {
-    await api.patch(`/training-provider/programs/${id}/publish`);
+    await api.patch(`/training-provider/programs/${ id }/publish`);
   },
 
   /**
    * Delete a draft program permanently.
    */
   deleteDraft: async (id: string): Promise<void> => {
-    await api.delete(`/training-provider/programs/${id}`);
+    await api.delete(`/training-provider/programs/${ id }`);
   },
 
   /**
    * Fetch real training provider dashboard data from backend.
    */
-  getDashboardData: async (): Promise<ProviderDashboardResponse> => {
+  getDashboardData: async (
+    page: number = 1,
+    limit: number = 5
+  ): Promise<ProviderDashboardResponse> => {
     const response = await api.get<{ data: ProviderDashboardResponse }>(
-      '/training-provider/dashboard'
+      '/training-provider/dashboard',
+      {
+        params: { page, limit },
+      }
     );
     return response.data.data;
   },
@@ -241,6 +291,37 @@ export const providerService = {
       responseType: 'blob',
     });
     return response.data;
+  },
+
+  getProgramEnrollments: async (programId: string): Promise<ManagedEnrollment[]> => {
+    const response = await api.get<{ data: ManagedEnrollment[] }>(
+      API.TRAININGPROVIDER.PROGRAM_ENROLLMENTS(programId)
+    );
+    return response.data.data;
+  },
+
+  cancelEnrollment: async (
+    programId: string,
+    enrollmentId: string,
+    notes?: string
+  ): Promise<{ status: string }> => {
+    const response = await api.patch<{ data: { status: string } }>(
+      API.TRAININGPROVIDER.CANCEL_ENROLLMENT(programId, enrollmentId),
+      { notes }
+    );
+    return response.data.data;
+  },
+
+  cancelProgram: async (
+    programId: string,
+    reason: ProgramCancellationReason,
+    note?: string
+  ): Promise<CancelProgramResponse> => {
+    const response = await api.patch<{ data: CancelProgramResponse }>(
+      API.TRAININGPROVIDER.CANCEL_PROGRAM(programId),
+      { reason, note }
+    );
+    return response.data.data;
   },
 };
 

@@ -16,7 +16,7 @@ import PageHeader from "@/components/ui/pageHeader";
 import StayOptionRow from "./Stay-option-row";
 
 interface BaseProgramFormProps {
-   mode: 'create' | 'edit' | 'draft';
+   mode: 'create' | 'edit' | 'draft' | 'view';
    title: string;
    description: string;
    formState: any;
@@ -51,15 +51,17 @@ export default function BaseProgramForm({
    rightPanel,
 }: BaseProgramFormProps) {
    const isEditMode = mode === 'edit';
+   const isViewMode = mode === 'view';
+   const isReadOnly = isEditMode || isViewMode;
 
    const dateRange: DateRange | undefined =
       formState.startDate || formState.endDate
          ? {
             from: formState.startDate
-               ? new Date(`${formState.startDate.slice(0, 10)}T00:00:00`)
+               ? new Date(`${ formState.startDate.slice(0, 10) }T00:00:00`)
                : undefined,
             to: formState.endDate
-               ? new Date(`${formState.endDate.slice(0, 10)}T00:00:00`)
+               ? new Date(`${ formState.endDate.slice(0, 10) }T00:00:00`)
                : undefined,
          }
          : undefined;
@@ -103,6 +105,7 @@ export default function BaseProgramForm({
                   <InputField
                      value={formState.title || ''}
                      onChange={(e) => onFieldChange("title", e.target.value)}
+                     disabled={isViewMode}
                      placeholder={t('programme.fields.programTitlePlaceholder')}
                      className="bg-inputBg border-borderDark text-textSecondary h-9 text-sm"
                   />
@@ -118,14 +121,14 @@ export default function BaseProgramForm({
                      <PopoverTrigger asChild>
                         <button
                            type="button"
-                           disabled={isEditMode}
+                           disabled={isReadOnly}
                            className={cn(
                               "flex h-9 w-full items-center justify-between rounded-lg border",
                               "border-borderDark bg-inputBg px-3 text-sm",
                               "text-textSecondary transition-colors",
                               "hover:bg-bgButtonHover",
                               "focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
-                              isEditMode && "cursor-not-allowed opacity-60"
+                              isReadOnly && "cursor-not-allowed opacity-60"
                            )}
                         >
                            <span>
@@ -159,7 +162,7 @@ export default function BaseProgramForm({
                            mode="range"
                            selected={dateRange}
                            onSelect={handleDateRangeChange}
-                           disabled={isEditMode}
+                           disabled={isReadOnly}
                            className="p-3"
                         />
                      </PopoverContent>
@@ -171,10 +174,10 @@ export default function BaseProgramForm({
                   <Label className="pt-2 text-sm text-textMuted">{t('programme.fields.venue')}*</Label>
                   <InputField
                      value={formState.venue}
-                     disabled={isEditMode}
+                     disabled={isReadOnly}
                      onChange={(e) => onFieldChange("venue", e.target.value)}
                      placeholder={t('programme.fields.venuePlaceholder')}
-                     className={cn("bg-inputBg border-borderDark text-textSecondary h-9 text-sm", isEditMode && "opacity-60 cursor-not-allowed")}
+                     className={cn("bg-inputBg border-borderDark text-textSecondary h-9 text-sm", isReadOnly && "opacity-60 cursor-not-allowed")}
                   />
                </div>
 
@@ -183,10 +186,10 @@ export default function BaseProgramForm({
                   <Label className="pt-2 text-sm text-textMuted">{t('programme.fields.city')}</Label>
                   <InputField
                      value={formState.city}
-                     disabled={isEditMode}
+                     disabled={isReadOnly}
                      onChange={(e) => onFieldChange("city", e.target.value)}
                      placeholder={t('programme.fields.cityPlaceholder')}
-                     className={cn("bg-inputBg border-borderDark text-textSecondary h-9 text-sm", isEditMode && "opacity-60 cursor-not-allowed")}
+                     className={cn("bg-inputBg border-borderDark text-textSecondary h-9 text-sm", isReadOnly && "opacity-60 cursor-not-allowed")}
                   />
                </div>
 
@@ -196,14 +199,14 @@ export default function BaseProgramForm({
                      <Label className="text-sm text-textMuted">{t('programme.fields.stayType')}</Label>
                      <p className="text-xs text-textSidebarMuted mt-0.5">{t('programme.fields.programFee')}</p>
                   </div>
-                  <div className={cn("space-y-3", isEditMode && "opacity-60 pointer-events-none")}>
+                  <div className={cn("space-y-3", isReadOnly && "opacity-60 pointer-events-none")}>
                      {formState.stayTypes?.map((stay: any) => (
                         <div key={stay.id} className="space-y-2">
                            <div className="flex items-center gap-2">
                               <Checkbox
                                  id={stay.id}
                                  checked={stay.enabled}
-                                 disabled={isEditMode}
+                                 disabled={isReadOnly}
                                  onCheckedChange={() => onToggleStayType(stay.id)}
                                  className="border-borderDark data-[state=checked]:bg-primary data-[state=checked]:border-primary w-3.5 h-3.5"
                               />
@@ -237,8 +240,8 @@ export default function BaseProgramForm({
                         htmlFor="brochure-upload"
                         className={cn(
                            "w-40 h-9 py-5 inline-flex items-center gap-2 px-3 rounded-md border border-borderDark text-sm transition-colors",
-                           isEditMode 
-                              ? "opacity-50 cursor-not-allowed bg-bgButton/50 text-textSidebarMuted" 
+                           isReadOnly
+                              ? "opacity-50 cursor-not-allowed bg-bgButton/50 text-textSidebarMuted"
                               : "bg-bgButton hover:bg-bgButtonHover text-textSecondary cursor-pointer"
                         )}
                      >
@@ -248,7 +251,7 @@ export default function BaseProgramForm({
                      <input
                         id="brochure-upload"
                         type="file"
-                        disabled={isEditMode}
+                        disabled={isReadOnly}
                         accept=".pdf,.doc,.docx"
                         onChange={onFileChange}
                         className="hidden"
@@ -268,6 +271,7 @@ export default function BaseProgramForm({
                      type="number"
                      value={formState.minParticipants}
                      onChange={(e) => onFieldChange("minParticipants", e.target.value)}
+                     disabled={isViewMode}
                      className="bg-inputBg border-borderDark text-textSecondary h-9 text-sm w-40"
                   />
                </div>
@@ -281,6 +285,7 @@ export default function BaseProgramForm({
                      type="number"
                      value={formState.maxParticipants}
                      onChange={(e) => onFieldChange("maxParticipants", e.target.value)}
+                     disabled={isViewMode}
                      className="bg-inputBg border-borderDark text-textSecondary h-9 text-sm w-40"
                   />
                </div>
@@ -288,22 +293,24 @@ export default function BaseProgramForm({
                <Separator className="bg-borderDark" />
 
                {/* Action Buttons based on mode */}
-               <div className="flex items-center justify-end gap-3 pt-1">
-                  {mode === 'create' || mode === 'draft' ? (
-                     <>
-                        <Button variant="outline" onClick={onSubmitDraft} disabled={loading} className="h-9 px-4 text-sm border-borderDark text-textSecondary hover:bg-bgButton">
-                           <Save size={14} className="mr-1.5" /> {t("button.saveDraft")}
+               {!isViewMode &&
+                  <div className="flex items-center justify-end gap-3 pt-1">
+                     {mode === 'create' || mode === 'draft' ? (
+                        <>
+                           <Button variant="outline" onClick={onSubmitDraft} disabled={loading} className="h-9 px-4 text-sm border-borderDark text-textSecondary hover:bg-bgButton">
+                              <Save size={14} className="mr-1.5" /> {t("button.saveDraft")}
+                           </Button>
+                           <Button onClick={onSubmitPublish} disabled={loading} className="bg-primary hover:bg-primaryDark text-white h-9 px-4 text-sm">
+                              <Send size={14} className="mr-1.5" /> {t("programme.publishProgram")}
+                           </Button>
+                        </>
+                     ) : (
+                        <Button onClick={onSubmitEdit} disabled={loading} className="bg-primary hover:bg-primaryDark text-white h-9 px-4 text-sm">
+                           <Save size={14} className="mr-1.5" /> Save Changes
                         </Button>
-                        <Button onClick={onSubmitPublish} disabled={loading} className="bg-primary hover:bg-primaryDark text-white h-9 px-4 text-sm">
-                           <Send size={14} className="mr-1.5" /> {t("programme.publishProgram")}
-                        </Button>
-                     </>
-                  ) : (
-                     <Button onClick={onSubmitEdit} disabled={loading} className="bg-primary hover:bg-primaryDark text-white h-9 px-4 text-sm">
-                        <Save size={14} className="mr-1.5" /> Save Changes
-                     </Button>
-                  )}
-               </div>
+                     )}
+                  </div>
+               }
             </div>
 
             {/* Right: Panel / Live Preview */}

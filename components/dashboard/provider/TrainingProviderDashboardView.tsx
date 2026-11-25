@@ -16,6 +16,7 @@ import { Plus } from "lucide-react";
 import { ROUTES } from "@/constants/navigation";
 import Link from "next/link";
 import { PendingConfirmations } from "./PendingConfirmations";
+import { UpcomingTrainingPrograms } from "@/components/training-provider/UpcomingTrainingPrograms";
 
 export default function TrainingProviderDashboardView({ name }: { name: string }) {
   const [data, setData] = useState<ProviderDashboardResponse | null>(null);
@@ -99,6 +100,10 @@ export default function TrainingProviderDashboardView({ name }: { name: string }
       <DashboardStats stats={stats} />
 
       <PendingConfirmations />
+
+      <UpcomingTrainingPrograms
+        programs={data.upcomingPrograms.programs}
+      />
 
       {/* Main Content: Table and Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

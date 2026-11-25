@@ -78,7 +78,13 @@ export interface DraftProgram {
   brochurePublicId?: string;
   minParticipants?: number;
   maxParticipants?: number;
-  status: 'draft' | 'published';
+  status: 'draft' | 'published' | 'cancelled';
+  cancellation?: {
+    reason: string;
+    note?: string;
+    cancelledBy: string;
+    cancelledAt: string;
+  };
   createdBy: string;
   batchId?: string;
   createdAt: string;
