@@ -201,7 +201,7 @@ export default function UsersPage() {
             border-borderCard
             bg-transparent
             transition-colors
-            hover:border-emerald-400
+            hover:border-accentGreen
           "
           aria-label={
             allCurrentPageSelected
@@ -210,9 +210,9 @@ export default function UsersPage() {
           }
         >
           {allCurrentPageSelected ? (
-            <Check className="size-3.5 text-emerald-400" />
+            <Check className="size-3.5 text-accentGreen" />
           ) : someCurrentPageSelected ? (
-            <Minus className="size-3.5 text-emerald-400" />
+            <Minus className="size-3.5 text-accentGreen" />
           ) : null}
         </button>
       ),
@@ -236,8 +236,8 @@ export default function UsersPage() {
               border
               transition-all
               ${selected
-                ? "border-emerald-400 bg-emerald-400"
-                : "border-borderCard bg-transparent hover:border-emerald-400"
+                ? "border-accentGreen bg-accentGreen"
+                : "border-borderCard bg-transparent hover:border-accentGreen"
               }
             `}
             aria-label={
@@ -247,7 +247,7 @@ export default function UsersPage() {
             }
           >
             {selected && (
-              <Check className="size-3.5 text-black" />
+              <Check className="size-3.5 text-background" />
             )}
           </button>
         );
@@ -285,7 +285,7 @@ export default function UsersPage() {
             transition-all
             duration-200
             ${selected
-                  ? "text-emerald-400"
+                  ? "text-accentGreen"
                   : "text-textSidebarMuted/40"
                 }
           `}
@@ -337,10 +337,10 @@ export default function UsersPage() {
                 items-center
                 justify-center
                 rounded-full
-                bg-emerald-400/10
+                bg-accentGreen/10
                 text-sm
                 font-semibold
-                text-emerald-400
+                text-accentGreen
               "
             >
               {selectedUsers.length}
@@ -385,8 +385,8 @@ export default function UsersPage() {
           rowClassName={(row: any) => {
             if (isSelected(row)) {
               return `
-                bg-emerald-400/10
-                hover:bg-emerald-400/15
+                bg-accentGreen/10
+                hover:bg-accentGreen/15
                 cursor-pointer
               `;
             }

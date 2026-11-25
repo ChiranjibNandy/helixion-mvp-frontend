@@ -92,7 +92,7 @@ export default function AddEmployeePage() {
         <div className="rounded-xl bg-bgStatCard border border-borderCard p-6 space-y-4">
           <div className="flex items-center gap-2 mb-2">
             <UserPlus size={16} className="text-primary" />
-            <h3 className="text-sm font-semibold text-white">{t('admin.addEmployee.basicDetails')}</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t('admin.addEmployee.basicDetails')}</h3>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -113,7 +113,7 @@ export default function AddEmployeePage() {
         </div>
 
         <div className="rounded-xl bg-bgStatCard border border-borderCard p-6 space-y-3">
-          <h3 className="text-sm font-semibold text-white mb-1">{t('admin.addEmployee.reportingManager')}</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-1">{t('admin.addEmployee.reportingManager')}</h3>
           <p className="text-xs text-textSidebarMuted mb-3">
             {t('admin.addEmployee.reportingManagerHint')}
           </p>
@@ -126,7 +126,7 @@ export default function AddEmployeePage() {
         </div>
 
         <div className="rounded-xl bg-bgStatCard border border-borderCard p-6 space-y-3">
-          <h3 className="text-sm font-semibold text-white mb-1">{t('admin.addEmployee.officeRoles')}</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-1">{t('admin.addEmployee.officeRoles')}</h3>
           <div className="grid grid-cols-3 gap-3">
             <Checkbox label={t('admin.addEmployee.managerLabel')} checked={form.isManager} onChange={(v) => setField('isManager', v)} />
             <Checkbox label={t('admin.addEmployee.ctdLabel')} checked={form.trainingDeptSeniorOfficer} onChange={(v) => setField('trainingDeptSeniorOfficer', v)} />
@@ -152,14 +152,14 @@ export default function AddEmployeePage() {
           <button
             type="button"
             onClick={() => router.push(ROUTES.DASHBOARD.ADMIN)}
-            className="px-5 py-2.5 text-sm text-white/70 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-200"
+            className="px-5 py-2.5 text-sm text-foreground bg-muted/50 border border-borderCard rounded-lg hover:bg-muted transition-all duration-200"
           >
             {t('admin.addEmployee.backToDashboard')}
           </button>
           <button
             type="submit"
             disabled={!canSubmit}
-            className="px-6 py-2.5 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primaryDark
+            className="px-6 py-2.5 text-sm font-medium text-primary-foreground bg-primary rounded-lg hover:bg-primaryDark
                        transition-all duration-200 shadow-glow disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? t('admin.addEmployee.creatingButton') : t('admin.addEmployee.createButton')}
