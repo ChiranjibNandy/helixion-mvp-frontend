@@ -55,31 +55,31 @@ export default function ConfirmApprovalModal({
       onClick={handleOverlayClick}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
     >
-      <div className="w-full max-w-md rounded-2xl bg-[#1a1b25] border border-white/10 shadow-2xl p-7 animate-in fade-in zoom-in-95 text-center">
+      <div className="w-full max-w-md rounded-2xl bg-card border border-border shadow-2xl p-7 animate-in fade-in zoom-in-95 text-center">
 
         <div className="w-12 h-12 rounded-full flex items-center justify-center mb-5 mx-auto border bg-amber-500/10 text-amber-400 border-amber-500/20">
           <AlertTriangle size={22} />
         </div>
 
-        <h2 className="text-lg font-semibold text-white mb-2">
+        <h2 className="text-lg font-semibold text-card-foreground mb-2">
           Confirm Approval
         </h2>
 
-        <p className="text-sm text-white/50 leading-relaxed mb-4">
+        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
           Are you sure you want to take action on the Training Enrolment for{' '}
-          <span className="text-white/80">{employeeName}</span> for{' '}
-          <span className="text-white/80">{programTitle}</span>? This action
+          <span className="text-foreground">{employeeName}</span> for{' '}
+          <span className="text-foreground">{programTitle}</span>? This action
           cannot be undone.
         </p>
 
-        <div className="rounded-xl bg-black/20 border border-white/10 p-4 mb-6 text-left text-sm space-y-2">
+        <div className="rounded-xl bg-muted border border-border p-4 mb-6 text-left text-sm space-y-2">
           <div className="flex justify-between gap-4">
-            <span className="text-white/50">Employee:</span>
-            <span className="text-white font-medium text-right">{employeeName}</span>
+            <span className="text-muted-foreground">Employee:</span>
+            <span className="text-foreground font-medium text-right">{employeeName}</span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-white/50">Program:</span>
-            <span className="text-white font-medium text-right">
+            <span className="text-muted-foreground">Program:</span>
+            <span className="text-foreground font-medium text-right">
               {programTitle}{venue ? ` / ${venue}` : ''}
             </span>
           </div>
@@ -108,7 +108,7 @@ export default function ConfirmApprovalModal({
             disabled={loading}
           >
             {loading ? (
-              <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span className="w-3.5 h-3.5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
             ) : (
               <Check size={16} />
             )}
@@ -118,7 +118,7 @@ export default function ConfirmApprovalModal({
 
         <button
           type="button"
-          className="mt-4 text-sm text-white/40 hover:text-white/70 transition-colors"
+          className="mt-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
           onClick={onCancel}
           disabled={loading}
         >

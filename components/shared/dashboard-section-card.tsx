@@ -16,22 +16,22 @@ export function DashboardSectionCard({
    children,
 }: DashboardSectionCardProps) {
    return (
-      <div className="bg-bgCard border border-borderCard rounded-lg overflow-hidden flex flex-col h-full">
+      <div className="bg-card border border-border rounded-lg overflow-hidden flex flex-col h-full">
          <div className="flex items-center justify-between p-4">
             <div>
                <div className="flex items-center gap-2">
-                  <h2 className="text-foreground text-lg font-semibold">
+                  <h2 className="text-card-foreground text-lg font-semibold">
                      {title}
                   </h2>
                   {count !== undefined && (
-                     <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-bgStatCard text-textSidebarMuted text-xs font-semibold">
+                     <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-muted text-muted-foreground text-xs font-semibold">
                         {count}
                      </span>
                   )}
                </div>
 
                {subtitle && (
-                  <p className="text-textSidebarMuted text-xs mt-1">
+                  <p className="text-muted-foreground text-xs mt-1">
                      {subtitle}
                   </p>
                )}

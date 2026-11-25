@@ -158,19 +158,19 @@ export default function TrainingEnrolmentView() {
     if (!programId) {
         return (
             <div className="flex flex-col gap-6 pb-10 w-full animate-in fade-in-50 duration-300">
-                <div className="flex flex-col gap-1 border-b border-borderCard pb-5">
-                    <h1 className="text-white text-3xl font-bold font-sans">
+                <div className="flex flex-col gap-1 border-b border-border pb-5">
+                    <h1 className="text-foreground text-3xl font-bold font-sans">
                         {t("trainingEnrolment.title")}
                     </h1>
                 </div>
 
-                <Card className="bg-bgStatCard border-borderCard p-8 text-center text-white max-w-xl mx-auto space-y-5 rounded-2xl shadow-xl mt-10">
-                    <p className="text-textSidebarMuted text-sm">
+                <Card className="bg-muted border-border p-8 text-center text-foreground max-w-xl mx-auto space-y-5 rounded-2xl shadow-xl mt-10">
+                    <p className="text-muted-foreground text-sm">
                         {t("approvalProgress.enrolledPrograms.selectAnUpComingProgram")}
                     </p>
                     <Button 
                         onClick={() => router.push("/dashboard/programs")}
-                        className="px-5 py-2.5 bg-primary text-white font-medium text-sm rounded-xl hover:bg-primary/90 transition-all duration-200"
+                        className="px-5 py-2.5 bg-primary text-primary-foreground font-medium text-sm rounded-xl hover:bg-primary/90 transition-all duration-200"
                     >
                        {t("approvalProgress.enrolledPrograms.browseprogramtoenroll")}
                     </Button>
@@ -181,7 +181,7 @@ export default function TrainingEnrolmentView() {
 
     if (!program) {
         return (
-            <div className="text-center text-white py-10">
+            <div className="text-center text-foreground py-10">
                 <p>{t("programme.list.fetchError")}</p>
             </div>
         );
@@ -192,7 +192,7 @@ export default function TrainingEnrolmentView() {
         <div className="flex flex-col gap-6 pb-10 w-full">
             {/* Page header + stepper */}
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                <h1 className="text-white text-3xl font-bold leading-tight">
+                <h1 className="text-foreground text-3xl font-bold leading-tight">
                     {t("trainingEnrolment.title")}
                 </h1>
                 <StepperHeader activeStep={activeStep} steps={STEPPER_STEPS} />
@@ -207,7 +207,7 @@ export default function TrainingEnrolmentView() {
 
                     {/* Stay Type selection */}
                     <div className="space-y-4">
-                        <h3 className="text-base font-bold text-white">
+                        <h3 className="text-base font-bold text-foreground">
                             {t("trainingEnrolment.programDetails.stayType")}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -221,7 +221,7 @@ export default function TrainingEnrolmentView() {
                                 />
                             ))}
                         </div>
-                        <p className="text-sm text-textSidebarMuted">
+                        <p className="text-sm text-muted-foreground">
                             {t("trainingEnrolment.accommodationInstruction")}
                         </p>
                     </div>
@@ -238,7 +238,7 @@ export default function TrainingEnrolmentView() {
                         {!submitting && <ArrowRight className="size-5" />}
                     </Button>
 
-                    <p className="text-sm text-textSidebarMuted text-center">
+                    <p className="text-sm text-muted-foreground text-center">
                         {t("trainingEnrolment.enrollInstruction")}
                     </p>
                 </div>
