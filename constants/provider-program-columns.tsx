@@ -7,7 +7,7 @@ export const PROVIDER_PROGRAM_COLUMNS = [
     key: 'program',
     header: 'Program',
     render: (row: DashboardTopProgram) => (
-      <span className="text-textSecondary text-sm font-normal pl-6">
+      <span className="text-muted-foreground text-sm font-normal pl-6">
         {row.title}
       </span>
     ),
@@ -16,7 +16,7 @@ export const PROVIDER_PROGRAM_COLUMNS = [
     key: 'date',
     header: 'Date',
     render: (row: DashboardTopProgram) => (
-      <span className="text-textSidebarMuted text-xs">
+      <span className="text-muted-foreground text-xs">
         {formatShortDate(row.startDate)}
       </span>
     ),
@@ -25,7 +25,7 @@ export const PROVIDER_PROGRAM_COLUMNS = [
     key: 'enrolled',
     header: 'Enrolled',
     render: (row: DashboardTopProgram) => (
-      <span className="text-textSecondary text-sm text-center">
+      <span className="text-muted-foreground text-sm text-center">
         {row.enrolledCount} / {row.maxParticipants}
       </span>
     ),
@@ -37,7 +37,7 @@ export const PROVIDER_PROGRAM_COLUMNS = [
       <div className="flex justify-end">
         <Progress
           value={row.fillRate}
-          className="h-1.5 w-16 bg-[#1e293b]"
+          className="h-1.5 w-16 bg-muted"
         />
       </div>
     ),

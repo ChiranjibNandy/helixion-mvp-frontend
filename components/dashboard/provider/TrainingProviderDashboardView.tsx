@@ -69,7 +69,7 @@ export default function TrainingProviderDashboardView({ name }: { name: string }
       {/* Welcome and Header Actions */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-white text-2xl font-bold">
+          <h1 className="text-foreground text-2xl font-bold">
             {t("providerDashboard.welcome", { name })}
           </h1>
         </div>
@@ -77,7 +77,7 @@ export default function TrainingProviderDashboardView({ name }: { name: string }
           <Button
             asChild
             variant="outline"
-            className="bg-bgButton border-borderCard text-textSecondary text-xs"
+            className="bg-secondary border-border text-secondary-foreground text-xs"
           >
             <Link href={ROUTES.PROVIDER.PROGRAMS.BULK}>
               {t("providerDashboard.quickActions.bulkUpload")}
@@ -86,7 +86,7 @@ export default function TrainingProviderDashboardView({ name }: { name: string }
 
           <Button
             asChild
-            className="bg-primary hover:bg-primaryDark text-white text-xs gap-1"
+            className="bg-primary hover:bg-primaryDark text-primary-foreground text-xs gap-1"
           >
             <Link href={ROUTES.PROVIDER.PROGRAMS.CREATE}>
               <Plus className="size-4" />

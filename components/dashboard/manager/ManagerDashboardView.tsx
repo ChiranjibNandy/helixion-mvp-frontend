@@ -84,7 +84,7 @@ export default function ManagerDashboardView({ name }: { name: string }) {
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-white text-2xl font-bold">
+          <h1 className="text-foreground text-2xl font-bold">
             Welcome back, {name}
           </h1>
         </div>

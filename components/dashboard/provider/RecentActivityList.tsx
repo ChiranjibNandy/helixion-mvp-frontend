@@ -22,12 +22,12 @@ export function RecentActivityList({ activities }: RecentActivityListProps) {
         DOT_COLORS[type] ?? 'bg-textSecondary';
 
     return (
-        <div className="bg-bgCard border border-borderCard rounded-lg p-6 flex flex-col h-full min-h-[400px]">
+        <div className="bg-card border border-border rounded-lg p-6 flex flex-col h-full min-h-[400px]">
             <div className="mb-6">
-                <h2 className="text-white text-lg font-semibold">
+                <h2 className="text-card-foreground text-lg font-semibold">
                     {t('providerDashboard.recentActivity.title')}
                 </h2>
-                <p className="text-textSidebarMuted text-xs mt-1">
+                <p className="text-muted-foreground text-xs mt-1">
                     {t('providerDashboard.recentActivity.subtitle')}
                 </p>
             </div>
@@ -35,7 +35,7 @@ export function RecentActivityList({ activities }: RecentActivityListProps) {
             <div className="flex flex-col flex-1">
                 {!hasActivities ? (
                     <div className="flex-1 flex flex-col items-center justify-center text-center opacity-40">
-                        <p className="text-textSidebarMuted text-sm">
+                        <p className="text-muted-foreground text-sm">
                             {t('common.noData')}
                         </p>
                     </div>

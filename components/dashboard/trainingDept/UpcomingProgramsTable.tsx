@@ -50,12 +50,12 @@ export function UpcomingProgramsTable({
         const date = formatProgramDate(program.startDate);
 
         return (
-          <div className="flex flex-col items-center justify-center rounded-lg bg-bgStatCard px-3 py-2 w-[70px]">
-            <span className="text-xl font-bold text-white">
+          <div className="flex flex-col items-center justify-center rounded-lg bg-muted px-3 py-2 w-[70px]">
+            <span className="text-xl font-bold text-foreground">
               {date.day}
             </span>
 
-            <span className="text-xs uppercase text-textSidebarMuted">
+            <span className="text-xs uppercase text-muted-foreground">
               {date.month}
             </span>
           </div>
@@ -78,7 +78,7 @@ export function UpcomingProgramsTable({
       header: t("upcomingPrograms.columns.program"),
       className: "min-w-[220px]",
       render: (program: DashboardUpcomingProgram) => (
-        <span className="font-semibold text-white text-sm">
+        <span className="font-semibold text-foreground text-sm">
           {program.title}
         </span>
       ),
@@ -101,13 +101,13 @@ export function UpcomingProgramsTable({
       header: t("upcomingPrograms.columns.capacity"),
       className: "min-w-[180px]",
       render: (program: DashboardUpcomingProgram) => (
-        <div className="flex items-center gap-4 text-sm text-textSidebarMuted whitespace-nowrap">
+        <div className="flex items-center gap-4 text-sm text-muted-foreground whitespace-nowrap">
           <span>
             {t("upcomingPrograms.capacity.min")}{" "}
             {program.minParticipants ?? "-"}
           </span>
 
-          <span className="h-6 w-px bg-borderCard" />
+          <span className="h-6 w-px bg-border" />
 
           <span>
             {t("upcomingPrograms.capacity.max")}{" "}

@@ -29,13 +29,13 @@ export function ApprovalStatusCard({
   );
 
   return (
-    <div className="bg-bgCard border border-borderCard rounded-lg p-4 flex flex-col h-full">
+    <div className="bg-card border border-border rounded-lg p-4 flex flex-col h-full">
       <div className="mb-4">
-        <h2 className="text-white text-lg font-semibold">
+        <h2 className="text-card-foreground text-lg font-semibold">
           {t('approvalStatus.title')}
         </h2>
 
-        <p className="text-textSidebarMuted text-xs mt-1">
+        <p className="text-muted-foreground text-xs mt-1">
           {t('approvalStatus.subtitle')}
         </p>
       </div>
@@ -49,11 +49,11 @@ export function ApprovalStatusCard({
           />
 
           <div className="absolute flex flex-col items-center">
-            <span className="text-white text-xl font-bold">
+            <span className="text-card-foreground text-xl font-bold">
               {total}
             </span>
 
-            <span className="text-textSidebarMuted text-[10px]">
+            <span className="text-muted-foreground text-[10px]">
               {t('approvalStatus.total')}
             </span>
           </div>
@@ -69,7 +69,7 @@ export function ApprovalStatusCard({
                 <span
                   className={`w-2.5 h-2.5 rounded-full ${item.color}`}
                 />
-                <span className="text-textSecondary text-sm">
+                <span className="text-foreground text-sm">
                   {item.label}
                 </span>
               </div>

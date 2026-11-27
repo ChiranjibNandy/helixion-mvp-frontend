@@ -106,23 +106,23 @@ export function PendingConfirmations({ hideWhenEmpty = true }: PendingConfirmati
         count={rows.length}
       >
         {rows.length === 0 ? (
-          <p className="text-sm text-textSidebarMuted text-center py-8">
+          <p className="text-sm text-muted-foreground text-center py-8">
             {t('providerDashboard.pendingConfirmations.empty')}
           </p>
         ) : (
-        <div className="divide-y divide-borderCard">
+        <div className="divide-y divide-border">
           {groups.map((group) => (
             <div key={group.programId} className="px-4 py-3">
-              <p className="text-sm font-medium text-white mb-2">{group.programTitle}</p>
+              <p className="text-sm font-medium text-card-foreground mb-2">{group.programTitle}</p>
               <div className="flex flex-col gap-2">
                 {group.rows.map((row) => (
                   <div
                     key={row._id}
-                    className="flex items-center justify-between pl-4 border-l-2 border-borderCard"
+                    className="flex items-center justify-between pl-4 border-l-2 border-border"
                   >
                     <div>
-                      <p className="text-sm text-textSecondary">{row.employeeName}</p>
-                      <p className="text-xs text-textSidebarMuted">
+                      <p className="text-sm text-muted-foreground">{row.employeeName}</p>
+                      <p className="text-xs text-muted-foreground">
                         {t('providerDashboard.pendingConfirmations.ctdApprovedOn', {
                           date: formatDateHyphenated(row.ctdApprovedAt || undefined),
                         })}
