@@ -1,6 +1,7 @@
 import CapacityRing from '../CapacityRing';
 import { DraftProgram } from '@/types';
 import { formatDate } from './utils';
+import { LockKeyhole } from 'lucide-react';
 
 interface ProgramSummaryHeaderProps {
   program: DraftProgram;
@@ -12,7 +13,17 @@ export default function ProgramSummaryHeader({ program, activeCount, ringStatus 
   return (
     <div className="flex items-start justify-between gap-4">
       <div>
-        <h1 className="text-lg font-semibold text-gray-900">{program.title}</h1>
+        <div className="flex items-center gap-5 flex-wrap">
+          <h1 className="text-lg font-semibold text-gray-900">
+            {program.title}
+          </h1>
+
+          {program.isFreeze && (
+            <span className="inline-flex items-center rounded-md bg-red-100 px-2 py-1 font-semibold text-red-600 whitespace-nowrap">
+              Enrolments Closed (Frozen)
+            </span>
+          )}
+        </div>
         <p className="text-xs text-gray-500 mt-1">
           {formatDate(program.startDate)} – {formatDate(program.endDate)} · {[program.venueName, program.city].filter(Boolean).join(', ')}
         </p>
