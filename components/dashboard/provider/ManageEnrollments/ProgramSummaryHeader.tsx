@@ -1,7 +1,6 @@
 import CapacityRing from '../CapacityRing';
 import { DraftProgram } from '@/types';
 import { formatDate } from './utils';
-import { LockKeyhole } from 'lucide-react';
 
 interface ProgramSummaryHeaderProps {
   program: DraftProgram;

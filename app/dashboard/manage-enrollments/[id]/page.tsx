@@ -19,6 +19,7 @@ import { updateProgramFreezeStatusApi } from '@/services/programService';
 import FreezeEnrollmentsModal from '@/components/dashboard/provider/ManageEnrollments/FreezeEnrollmentsModal';
 import FinalFreezeConfirmationModal from '@/components/dashboard/provider/ManageEnrollments/FinalFreezeConfirmationModal';
 import { t } from '@/lib/i18n';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function ManageEnrollmentsPage() {
   const params = useParams();
@@ -85,7 +86,7 @@ export default function ManageEnrollmentsPage() {
     } catch (err: any) {
       const message =
         err?.response?.data?.message ??
-        'Could not freeze program enrollments.';
+        t('trainingEnrolment.freeze_enrollments_error');
 
       setFreezeError(
         Array.isArray(message) ? message.join(', ') : message
@@ -100,16 +101,20 @@ export default function ManageEnrollmentsPage() {
   };
 
   if (loading) {
-    return <div className="p-6 text-sm text-textSidebarMuted">Loading…</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Spinner size="lg" className="border-primary/30 border-t-primary" />
+      </div>
+    );
   }
 
   if (!program) {
     return (
       <div className="flex flex-col gap-4 p-6">
         <button onClick={() => router.back()} className="inline-flex items-center gap-1 text-sm text-primary hover:underline w-fit">
-          <ChevronLeft size={14} /> Back to programs
+          <ChevronLeft size={14} /> {t('button.backToPrograms')}
         </button>
-        <p className="text-sm text-textSidebarMuted">Program not found.</p>
+        <p className="text-sm text-textSidebarMuted">{t('programme.empty')}</p>
       </div>
     );
   }
@@ -124,7 +129,7 @@ export default function ManageEnrollmentsPage() {
     <div className="flex flex-col gap-5 p-6">
       <div>
         <button onClick={() => router.push('/dashboard/programs/list')} className="inline-flex items-center gap-1 text-sm text-blue-300 hover:underline w-fit">
-          <ChevronLeft size={14} /> Back to Programs
+          <ChevronLeft size={14} /> {t('button.backToPrograms')}
         </button>
       </div>
 
