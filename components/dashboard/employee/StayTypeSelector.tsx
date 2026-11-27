@@ -23,11 +23,11 @@ export function StayTypeSelector({
       <div className="grid grid-cols-[20px_minmax(140px,1fr)_110px] items-center mb-2">
         <span aria-hidden="true" />
 
-        <p className="text-[10px] font-semibold tracking-widest uppercase text-white/30">
+        <p className="text-[10px] font-semibold tracking-widest uppercase text-muted-foreground">
           {t('programme.list.detailStayTypeLabel')}
         </p>
 
-        <p className="text-[10px] font-semibold tracking-widest uppercase text-white/30 text-right">
+        <p className="text-[10px] font-semibold tracking-widest uppercase text-muted-foreground text-right">
           {t('programme.list.detailStayPriceLabel')}
         </p>
       </div>
@@ -63,14 +63,14 @@ export function StayTypeSelector({
               <div className="flex items-center min-w-0">
                 <span className="w-5 flex-shrink-0 flex items-center">
                   {active && (
-                    <span className="w-2 h-2 rounded-full bg-blue-500" />
+                    <span className="w-2 h-2 rounded-full bg-primary" />
                   )}
                 </span>
 
                 <span
                   className={`text-[13px] ${active
-                    ? 'font-semibold text-white'
-                    : 'font-normal text-white/55'
+                    ? 'font-semibold text-foreground'
+                    : 'font-normal text-muted-foreground'
                     }`}
                 >
                   {opt.label}
@@ -80,8 +80,8 @@ export function StayTypeSelector({
               {/* PRICE */}
               <span
                 className={`text-[13px] text-right ${active
-                  ? 'font-medium text-white/80'
-                  : 'text-white/50'
+                  ? 'font-medium text-foreground/80'
+                  : 'text-muted-foreground'
                   }`}
               >
                 ₹{opt.fee.toLocaleString('en-IN')}/-

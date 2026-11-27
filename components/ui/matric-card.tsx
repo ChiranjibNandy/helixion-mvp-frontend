@@ -26,7 +26,7 @@ export function MetricCard({
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
             <p className="text-textSidebar text-xs">{title}</p>
-            <h3 className="text-white text-2xl font-semibold mt-1.5">
+            <h3 className="text-foreground text-2xl font-semibold mt-1.5">
               {value}
             </h3>
 
@@ -37,7 +37,7 @@ export function MetricCard({
             )}
 
             {badge && (
-              <span className="inline-block mt-1.5 px-2 py-0.5 text-xs font-medium rounded bg-amber-500/20 text-amber-400 ring-1 ring-amber-500/30">
+              <span className="inline-block mt-1.5 px-2 py-0.5 text-xs font-medium rounded bg-accentYellow/15 text-accentYellow ring-1 ring-accentYellow/30">
                 {badge}
               </span>
             )}

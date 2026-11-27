@@ -78,10 +78,10 @@ export default function EmployeeDashboardView({ name }: { name: string }) {
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-textSidebarMuted text-xs mb-0.5">
+          <p className="text-muted-foreground text-xs mb-0.5">
             {t('dashboard.employeeBreadcrump')}
           </p>
-          <h1 className="text-white text-2xl font-bold">{t('dashboard.welcome', { name })}</h1>
+          <h1 className="text-foreground text-2xl font-bold">{t('dashboard.welcome', { name })}</h1>
         </div>
         <div className="flex items-center gap-3">
           <Button asChild size="lg">

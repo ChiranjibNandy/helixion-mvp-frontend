@@ -23,7 +23,7 @@ export function getEmployeeDashboardStats(summary?: {
           count: Math.min(s.programsEnrolled ?? 0, 2),
         }
       ),
-      subtitleColor: 'text-textSidebarMuted',
+      subtitleColor: 'text-muted-foreground',
       icon: <BookOpen className="w-5 h-5 text-blue-400" />,
       iconBg: 'bg-blue-500/15',
     },
@@ -31,7 +31,7 @@ export function getEmployeeDashboardStats(summary?: {
       title: t('employeeDashboard.stats.pendingApprovals'),
       value: s.pendingApprovals ?? 0,
       subtitle: t('employeeDashboard.stats.pendingSubtitle'),
-      subtitleColor: 'text-textSidebarMuted',
+      subtitleColor: 'text-muted-foreground',
       icon: <Clock className="w-5 h-5 text-amber-400" />,
       iconBg: 'bg-amber-500/15',
     },

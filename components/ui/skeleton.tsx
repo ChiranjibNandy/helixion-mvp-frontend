@@ -2,7 +2,7 @@ import { TableRow, TableCell } from '@/components/ui/table';
 
 /** Base pulsing block — the primitive every skeleton layout below is built from. */
 export function SkeletonBlock({ className = '' }: { className?: string }) {
-  return <div className={`animate-pulse rounded-md bg-white/[0.06] ${className}`} />;
+  return <div className={`animate-pulse rounded-md bg-muted/50 ${className}`} />;
 }
 
 /**
@@ -16,7 +16,7 @@ export function TableRowsSkeleton({ rows = 5, columns }: { rows?: number; column
   return (
     <>
       {Array.from({ length: rows }).map((_, r) => (
-        <TableRow key={r} className="border-white/5 hover:bg-transparent">
+        <TableRow key={r} className="border-borderCard/50 hover:bg-transparent">
           {Array.from({ length: columns }).map((_, c) => (
             <TableCell key={c} className="py-3.5">
               <SkeletonBlock className={`h-4 ${c === 0 ? 'w-24' : 'w-20'}`} />
@@ -53,13 +53,13 @@ export function TableSkeleton({ rows = 6, columns = 6 }: { rows?: number; column
       <SkeletonBlock className="h-4 w-32 mb-4" />
 
       <div className="bg-bgStatCard border border-borderCard rounded-xl overflow-hidden">
-        <div className="flex border-b border-white/5 px-6 py-3 gap-6">
+        <div className="flex border-b border-borderCard/50 px-6 py-3 gap-6">
           {Array.from({ length: columns }).map((_, i) => (
             <SkeletonBlock key={i} className="h-3 w-16" />
           ))}
         </div>
         {Array.from({ length: rows }).map((_, r) => (
-          <div key={r} className="flex items-center border-b border-white/[0.03] px-6 py-3.5 gap-6">
+          <div key={r} className="flex items-center border-b border-borderCard/50 px-6 py-3.5 gap-6">
             {Array.from({ length: columns }).map((_, c) => (
               <SkeletonBlock key={c} className={`h-4 ${c === 0 ? 'w-20' : 'w-24'}`} />
             ))}

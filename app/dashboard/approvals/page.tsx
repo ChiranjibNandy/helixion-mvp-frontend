@@ -142,7 +142,7 @@ export default function Page() {
           {t("managerApprovals.title")}
         </h1>
 
-        <p className="text-gray-400 text-sm">
+        <p className="text-muted-foreground text-sm">
           {t("managerApprovals.subtitle")}
         </p>
       </div>

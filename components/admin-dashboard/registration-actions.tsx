@@ -64,7 +64,7 @@ export function RegistrationActions({
         >
           <CheckCircle2
             size={18}
-            className="text-green-400"
+            className="text-accentGreen"
           />
         </button>
 
@@ -76,7 +76,7 @@ export function RegistrationActions({
         >
           <XCircle
             size={18}
-            className="text-red-400"
+            className="text-accentRed"
           />
         </button>
       </div>

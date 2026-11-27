@@ -181,11 +181,11 @@ export default function OrgPolicySetupPage() {
   if (!statusChecked || (isEditing && orgLoading && !organization)) {
     return (
       <div className="space-y-5">
-        <div className="text-xs text-white/35">
+        <div className="text-xs text-textSidebarMuted">
           Workspace <span className="mx-1">›</span> Org Policy Setup
         </div>
-        <div className="rounded-2xl border border-white/10 bg-[#0d0f1a] p-6">
-          <div className="py-10 text-center text-sm text-white/40">Loading organization…</div>
+        <div className="rounded-2xl border border-borderCard bg-bgCard p-6">
+          <div className="py-10 text-center text-sm text-textSidebarMuted">Loading organization…</div>
         </div>
       </div>
     );
@@ -194,10 +194,10 @@ export default function OrgPolicySetupPage() {
   if (statusError || (isEditing && orgError)) {
     return (
       <div className="space-y-5">
-        <div className="text-xs text-white/35">
+        <div className="text-xs text-textSidebarMuted">
           Workspace <span className="mx-1">›</span> Org Policy Setup
         </div>
-        <div className="rounded-2xl border border-white/10 bg-[#0d0f1a] p-6">
+        <div className="rounded-2xl border border-borderCard bg-bgCard p-6">
           <p className="text-sm text-accentRed">{statusError || orgError}</p>
         </div>
       </div>
@@ -207,28 +207,28 @@ export default function OrgPolicySetupPage() {
   return (
     <div className="space-y-5">
       {/* Breadcrumb */}
-      <div className="text-xs text-white/35">
+      <div className="text-xs text-textSidebarMuted">
         Workspace <span className="mx-1">›</span> Org Policy Setup
       </div>
 
       {/* Header + mode toggle */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="text-2xl font-bold text-foreground">
             {isEditing ? 'Edit Organization' : 'Org Policy Setup'}
           </h1>
-          <p className="text-sm text-white/50 mt-1 max-w-2xl">
+          <p className="text-sm text-textSidebar mt-1 max-w-2xl">
             {isEditing
               ? 'Update your organization\'s details and approval policy schedule.'
               : 'Create or upload an organization and its approval policy schedule. Org-dependent screens like Bulk Import stay disabled until this is done.'}
           </p>
         </div>
 
-        <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/30 p-1 flex-shrink-0">
+        <div className="flex items-center gap-1 rounded-full border border-borderCard bg-surface-muted p-1 flex-shrink-0">
           <button
             onClick={() => setMode('form')}
             className={`px-4 py-1.5 text-sm rounded-full transition-colors ${
-              mode === 'form' ? 'bg-primary text-white' : 'text-white/50 hover:text-white/80'
+              mode === 'form' ? 'bg-primary text-primary-foreground' : 'text-textSidebar hover:text-foreground'
             }`}
           >
             Fill Form
@@ -236,7 +236,7 @@ export default function OrgPolicySetupPage() {
           <button
             onClick={() => setMode('json')}
             className={`px-4 py-1.5 text-sm rounded-full transition-colors ${
-              mode === 'json' ? 'bg-primary text-white' : 'text-white/50 hover:text-white/80'
+              mode === 'json' ? 'bg-primary text-primary-foreground' : 'text-textSidebar hover:text-foreground'
             }`}
           >
             Upload JSON
@@ -245,11 +245,11 @@ export default function OrgPolicySetupPage() {
       </div>
 
       {/* Main card */}
-      <div className="rounded-2xl border border-white/10 bg-[#0d0f1a] p-6 space-y-6">
+      <div className="rounded-2xl border border-borderCard bg-bgCard p-6 space-y-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-base font-semibold text-white">Organization Policy Matrix</h2>
-            <p className="text-xs text-white/40 mt-0.5">
+            <h2 className="text-base font-semibold text-foreground">Organization Policy Matrix</h2>
+            <p className="text-xs text-textSidebarMuted mt-0.5">
               Set the minimum approver level and assignment mode for each stage in the workflow.
             </p>
           </div>
@@ -263,7 +263,7 @@ export default function OrgPolicySetupPage() {
               a.click();
               URL.revokeObjectURL(url);
             }}
-            className="px-4 py-2 text-sm text-white bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 flex-shrink-0"
+            className="px-4 py-2 text-sm text-foreground bg-muted/50 border border-borderCard rounded-lg hover:bg-muted flex-shrink-0"
           >
             Download Template
           </button>
@@ -283,12 +283,12 @@ export default function OrgPolicySetupPage() {
             onPolicyBlockChange={updateBlock}
           />
         ) : (
-          <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5 space-y-4">
+          <div className="rounded-xl border border-borderCard bg-muted/50 p-5 space-y-4">
             <div className="flex items-center gap-2">
               <FileJson className="w-4 h-4 text-primary" />
-              <h3 className="text-sm font-semibold text-white">Raw JSON Upload</h3>
+              <h3 className="text-sm font-semibold text-foreground">Raw JSON Upload</h3>
             </div>
-            <p className="text-xs text-white/40 -mt-2">
+            <p className="text-xs text-textSidebarMuted -mt-2">
               Use JSON when you already have the policy structure exported from another system.
             </p>
 
@@ -309,7 +309,7 @@ export default function OrgPolicySetupPage() {
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-1">
-          <p className="text-xs text-white/35">
+          <p className="text-xs text-textSidebarMuted">
             {isEditing ? 'Changes apply immediately once saved.' : 'Bulk Import stays disabled until the org policy is saved.'}
           </p>
           <Button

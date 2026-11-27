@@ -102,26 +102,23 @@ export function DashboardShell({
 
   if (errorStatus === 401) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md transition-all duration-300">
-        <div className="relative overflow-hidden bg-[#0d1527]/80 border border-white/[0.08] backdrop-blur-xl rounded-2xl p-8 max-w-md w-full shadow-[0_0_50px_0_rgba(0,0,0,0.5)] flex flex-col items-center text-center animate-in fade-in zoom-in duration-300">
-          <div className="absolute -top-12 -left-12 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl" />
-          <div className="absolute -bottom-12 -right-12 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl" />
-          
-          <div className="relative mb-6 flex items-center justify-center w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 shadow-[0_0_20px_0_rgba(245,158,11,0.15)] animate-pulse">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 backdrop-blur-md transition-all duration-300">
+        <div className="relative overflow-hidden bg-surface border border-borderCard rounded-2xl p-8 max-w-md w-full shadow-2xl flex flex-col items-center text-center animate-in fade-in zoom-in duration-300">
+          <div className="relative mb-6 flex items-center justify-center w-16 h-16 rounded-full bg-accentYellow/10 border border-accentYellow/20 text-accentYellow animate-pulse">
             <KeyRound className="size-6" />
           </div>
           
-          <h2 className="text-xl font-bold text-slate-100 tracking-tight mb-2 font-sans">
+          <h2 className="text-xl font-bold text-foreground tracking-tight mb-2 font-sans">
             {t('dashboardShell.sessionExpired.title')}
           </h2>
-          <p className="text-xs text-slate-400 leading-relaxed mb-8 max-w-[280px]">
+          <p className="text-xs text-muted-foreground leading-relaxed mb-8 max-w-[280px]">
             {t('dashboardShell.sessionExpired.description')}
           </p>
 
           <Button
             onClick={handleSignOut}
             size="lg"
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-[0_4px_20px_0_rgba(37,99,235,0.25)] border border-blue-500/20 flex items-center justify-center gap-2 py-4"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium flex items-center justify-center gap-2 py-4"
           >
             <LogOut className="size-4" />
             {t('dashboardShell.sessionExpired.action')}
@@ -132,7 +129,7 @@ export function DashboardShell({
   }
 
   return (
-    <div className="fixed inset-0 grid grid-cols-[180px_1fr] overflow-hidden bg-[#0b1120] font-sans">
+    <div className="fixed inset-0 grid grid-cols-[180px_1fr] overflow-hidden bg-bgMain font-sans">
       <Sidebar
         user={user}
         navSections={navSections}
@@ -147,18 +144,15 @@ export function DashboardShell({
         <main className="flex-1 min-h-0 overflow-y-auto px-5 py-4">
           {errorStatus === 403 ? (
             <div className="flex flex-col items-center justify-center min-h-[70vh] text-center">
-              <div className="relative overflow-hidden bg-[#0d1527]/40 border border-white/[0.06] backdrop-blur-lg rounded-2xl p-8 max-w-lg w-full shadow-lg flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-300">
-                <div className="absolute -top-10 -right-10 w-24 h-24 bg-red-500/5 rounded-full blur-2xl" />
-                <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-red-600/5 rounded-full blur-2xl" />
-                
-                <div className="relative mb-6 flex items-center justify-center w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 shadow-[0_0_20px_0_rgba(239,68,68,0.15)]">
+              <div className="relative overflow-hidden bg-surface border border-borderCard rounded-2xl p-8 max-w-lg w-full shadow-lg flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-300">
+                <div className="relative mb-6 flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10 border border-destructive/20 text-destructive">
                   <ShieldAlert className="size-6" />
                 </div>
                 
-                <h2 className="text-xl font-bold text-slate-100 tracking-tight mb-2 font-sans">
+                <h2 className="text-xl font-bold text-foreground tracking-tight mb-2 font-sans">
                   {t('dashboardShell.accessDenied.title')}
                 </h2>
-                <p className="text-xs text-slate-400 leading-relaxed max-w-sm mb-8">
+                <p className="text-xs text-muted-foreground leading-relaxed max-w-sm mb-8">
                   {t('dashboardShell.accessDenied.description')}
                 </p>
 
@@ -166,7 +160,7 @@ export function DashboardShell({
                   <Button
                     variant="outline"
                     onClick={handleGoBack}
-                    className="flex items-center justify-center gap-1.5 border-white/10 hover:bg-white/5 text-slate-300 font-medium"
+                    className="flex items-center justify-center gap-1.5 border-border hover:bg-muted text-foreground font-medium"
                   >
                     <ArrowLeft className="size-3.5" />
                     {t('dashboardShell.accessDenied.goBack')}
@@ -174,7 +168,7 @@ export function DashboardShell({
 
                   <Button
                     onClick={handleGoToDashboard}
-                    className="flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white font-medium border border-blue-500/20 shadow-[0_4px_15px_0_rgba(37,99,235,0.15)]"
+                    className="flex items-center justify-center gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
                   >
                     <Home className="size-3.5" />
                     {t('dashboardShell.accessDenied.dashboardHome')}

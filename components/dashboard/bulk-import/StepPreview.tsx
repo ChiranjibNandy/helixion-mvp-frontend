@@ -51,25 +51,25 @@ export default function StepPreview({ users, fileName, onNext, onBack }: StepPre
   return (
     <div className="flex flex-col">
       {/* Header */}
-      <div className="p-6 border-b border-white/5">
+      <div className="p-6 border-b border-borderCard/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <FileSpreadsheet className="text-primary" size={18} />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white">Preview Parsed Data</h2>
+              <h2 className="text-base font-semibold text-foreground">Preview Parsed Data</h2>
               <p className="text-xs text-textSidebarMuted mt-0.5">
-                File: <span className="text-white/50 font-mono">{fileName}</span>
+                File: <span className="text-textSidebar font-mono">{fileName}</span>
               </p>
             </div>
           </div>
 
           {/* Stats badges */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">
-              <span className="text-xs text-white/50">Total:</span>
-              <span className="text-sm font-semibold text-white">{users.length}</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/50 border border-borderCard/50">
+              <span className="text-xs text-textSidebar">Total:</span>
+              <span className="text-sm font-semibold text-foreground">{users.length}</span>
             </div>
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accentGreen/10 border border-accentGreen/20">
               <CheckCircle2 size={12} className="text-accentGreen" />
@@ -89,13 +89,13 @@ export default function StepPreview({ users, fileName, onNext, onBack }: StepPre
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/5">
-              <th className="text-left px-6 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">#</th>
-              <th className="text-left px-6 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">Username</th>
-              <th className="text-left px-6 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">Email</th>
-              <th className="text-left px-6 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">Password</th>
-              <th className="text-left px-6 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">Role</th>
-              <th className="text-left px-6 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">Status</th>
+            <tr className="border-b border-borderCard/50">
+              <th className="text-left px-6 py-3 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">#</th>
+              <th className="text-left px-6 py-3 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">Username</th>
+              <th className="text-left px-6 py-3 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">Email</th>
+              <th className="text-left px-6 py-3 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">Password</th>
+              <th className="text-left px-6 py-3 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">Role</th>
+              <th className="text-left px-6 py-3 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -106,25 +106,25 @@ export default function StepPreview({ users, fileName, onNext, onBack }: StepPre
               return (
                 <tr
                   key={user._rowId}
-                  className={`border-b border-white/[0.03] transition-colors hover:bg-white/[0.02] ${
+                  className={`border-b border-borderCard/50 transition-colors hover:bg-muted/50 ${
                     hasErrors ? 'bg-accentRed/[0.03]' : ''
                   }`}
                 >
                   <td className="px-6 py-3">
-                    <span className="text-xs text-white/20 font-mono">{idx + 1}</span>
+                    <span className="text-xs text-textSidebarMuted font-mono">{idx + 1}</span>
                   </td>
                   <td className="px-6 py-3">
-                    <span className={`text-xs ${user.errors?.username ? 'text-accentRed' : 'text-white/80'}`}>
-                      {user.username || <span className="text-white/20 italic">empty</span>}
+                    <span className={`text-xs ${user.errors?.username ? 'text-accentRed' : 'text-foreground'}`}>
+                      {user.username || <span className="text-textSidebarMuted italic">empty</span>}
                     </span>
                   </td>
                   <td className="px-6 py-3">
-                    <span className={`text-xs font-mono ${user.errors?.email ? 'text-accentRed' : 'text-white/60'}`}>
-                      {user.email || <span className="text-white/20 italic">empty</span>}
+                    <span className={`text-xs font-mono ${user.errors?.email ? 'text-accentRed' : 'text-textSecondary'}`}>
+                      {user.email || <span className="text-textSidebarMuted italic">empty</span>}
                     </span>
                   </td>
                   <td className="px-6 py-3">
-                    <span className={`text-xs font-mono ${user.errors?.password ? 'text-accentRed' : 'text-white/40'}`}>
+                    <span className={`text-xs font-mono ${user.errors?.password ? 'text-accentRed' : 'text-textSidebarMuted'}`}>
                       {maskPassword(user.password)}
                     </span>
                   </td>
@@ -148,7 +148,7 @@ export default function StepPreview({ users, fileName, onNext, onBack }: StepPre
                         </span>
                         {/* Tooltip */}
                         <div className="absolute right-0 top-full mt-1 z-10 hidden group-hover:block w-56">
-                          <div className="bg-bgSidebar border border-white/10 rounded-lg p-3 shadow-xl">
+                          <div className="bg-bgSidebar border border-borderCard rounded-lg p-3 shadow-xl">
                             {errorMessages.map((msg, i) => (
                               <p key={i} className="text-[10px] text-accentRed/80 leading-relaxed">• {msg}</p>
                             ))}
@@ -185,11 +185,11 @@ export default function StepPreview({ users, fileName, onNext, onBack }: StepPre
       )}
 
       {/* Footer Navigation */}
-      <div className="flex items-center justify-between p-6 border-t border-white/5 mt-4">
+      <div className="flex items-center justify-between p-6 border-t border-borderCard/50 mt-4">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/50 bg-white/5
-                     rounded-lg hover:bg-white/10 transition-all duration-200"
+          className="flex items-center gap-2 px-4 py-2.5 text-sm text-textSidebar bg-muted/50
+                     rounded-lg hover:bg-muted transition-all duration-200"
           id="preview-back-btn"
         >
           <ArrowLeft size={14} />
@@ -198,7 +198,7 @@ export default function StepPreview({ users, fileName, onNext, onBack }: StepPre
         <button
           onClick={onNext}
           disabled={validCount === 0}
-          className="flex items-center gap-2 px-6 py-2.5 text-sm font-medium text-white
+          className="flex items-center gap-2 px-6 py-2.5 text-sm font-medium text-primary-foreground
                      bg-primary rounded-lg hover:bg-primaryDark transition-all duration-200
                      shadow-glow disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
           id="preview-next-btn"

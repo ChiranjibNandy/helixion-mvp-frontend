@@ -84,14 +84,14 @@ export default function ApprovalExpandedRow({
                         rel="noopener noreferrer"
                         aria-label="Download brochure"
                     >
-                        <Download size={14} className="text-gray-400 hover:text-white" />
+                        <Download size={14} className="text-muted-foreground hover:text-foreground" />
                     </a>
                 ),
         },
     ];
 
     return (
-        <div className="bg-[#151b23] p-6 space-y-6">
+        <div className="bg-muted p-6 space-y-6">
 
             <div className="grid grid-cols-2 gap-10 text-sm">
 
@@ -102,17 +102,17 @@ export default function ApprovalExpandedRow({
 
                     <div className="space-y-2">
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.employee")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.employee")}:</span>{" "}
                             {row.employeeId?.name}
                         </p>
 
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.designation")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.designation")}:</span>{" "}
                             {row.employeeId?.designation || "—"}
                         </p>
 
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.department")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.department")}:</span>{" "}
                             {row.employeeId?.department || "—"}
                         </p>
                     </div>
@@ -125,27 +125,27 @@ export default function ApprovalExpandedRow({
 
                     <div className="space-y-2">
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.programTitle")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.programTitle")}:</span>{" "}
                             {row.programId?.title}
                         </p>
 
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.startDate")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.startDate")}:</span>{" "}
                             {formatDashDate(row.programId?.startDate)}
                         </p>
 
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.endDate")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.endDate")}:</span>{" "}
                             {formatDashDate(row.programId?.endDate)}
                         </p>
 
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.venue")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.venue")}:</span>{" "}
                             {venue}
                         </p>
 
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.stayType")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.stayType")}:</span>{" "}
                             {travelAndStay?.stayType || "—"}
                         </p>
 
@@ -172,7 +172,7 @@ export default function ApprovalExpandedRow({
                     <h4 className="font-semibold mb-2 text-sm">
                         {t("managerApprovals.detail.employeeRecommendation")}
                     </h4>
-                    <p className="text-sm text-gray-300 leading-relaxed">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                         {row.notes}
                     </p>
                 </div>
@@ -200,27 +200,27 @@ export default function ApprovalExpandedRow({
 
                     <div className="grid grid-cols-2 gap-x-10 gap-y-2 text-sm">
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.placeOfTour")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.placeOfTour")}:</span>{" "}
                             {travelAndStay.placeOfTour || "—"}
                         </p>
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.frequentFlyerNo")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.frequentFlyerNo")}:</span>{" "}
                             {travelAndStay.frequentFlyerNo || "—"}
                         </p>
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.modeOfTravel")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.modeOfTravel")}:</span>{" "}
                             {travelAndStay.modeOfTravel || "—"}
                         </p>
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.purpose")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.purpose")}:</span>{" "}
                             {travelAndStay.purpose || "—"}
                         </p>
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.advancePaymentRequired")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.advancePaymentRequired")}:</span>{" "}
                             {travelAndStay.advancePaymentRequired ?? 0}
                         </p>
                         <p>
-                            <span className="text-gray-400">{t("managerApprovals.detail.status")}:</span>{" "}
+                            <span className="text-muted-foreground">{t("managerApprovals.detail.status")}:</span>{" "}
                             {travelAndStay.status || "—"}
                         </p>
                     </div>

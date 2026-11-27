@@ -14,8 +14,8 @@ interface ProgramDetailsCardProps {
 function DetailField({ label, value }: { label: string; value: string }) {
     return (
         <div className="space-y-1">
-            <p className="text-xs text-textSidebarMuted">{label}</p>
-            <p className="text-sm font-semibold text-white">{value}</p>
+            <p className="text-xs text-muted-foreground">{label}</p>
+            <p className="text-sm font-semibold text-foreground">{value}</p>
         </div>
     );
 }
@@ -28,10 +28,10 @@ export function ProgramDetailsCard({ program, showEnrolledBadge = false }: Progr
             : t("trainingEnrolment.programDetails.trainingProvider"));
 
     return (
-        <Card className="bg-bgStatCard border-borderCard">
+        <Card className="bg-muted border-border">
             <CardContent className="p-6 space-y-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-bold text-white">
+                    <h2 className="text-lg font-bold text-foreground">
                         {t("trainingEnrolment.programDetails.title")}
                     </h2>
                     {showEnrolledBadge && (
@@ -42,7 +42,7 @@ export function ProgramDetailsCard({ program, showEnrolledBadge = false }: Progr
                     )}
                 </div>
 
-                <div className="rounded-xl border border-borderCard p-5">
+                <div className="rounded-xl border border-border p-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-y-5 gap-x-16">
                         <DetailField
                              label={t("trainingEnrolment.programDetails.programTitle")}

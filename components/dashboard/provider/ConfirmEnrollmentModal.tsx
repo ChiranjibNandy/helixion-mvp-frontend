@@ -37,14 +37,14 @@ export default function ConfirmEnrollmentModal({
     <AppModal isOpen={!!entry} title={t('providerDashboard.pendingConfirmations.modalTitle')} onClose={handleClose}>
       {entry && (
         <>
-          <p className="text-sm text-white/60 mb-4">
+          <p className="text-sm text-foreground/60 mb-4">
             {t('providerDashboard.pendingConfirmations.modalDescription', {
               name: entry.employeeName,
               program: entry.programTitle,
             })}
           </p>
 
-          <label className="block text-xs font-semibold tracking-widest uppercase text-textMuted mb-1.5">
+          <label className="block text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-1.5">
             {t('providerDashboard.pendingConfirmations.notesLabel')}
           </label>
           <textarea
@@ -66,7 +66,7 @@ export default function ConfirmEnrollmentModal({
             </Button>
             <Button onClick={() => onConfirm(notes)} disabled={loading} className="flex items-center gap-2">
               {loading && (
-                <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span className="w-3.5 h-3.5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
               )}
               {t('providerDashboard.pendingConfirmations.confirmCta')}
             </Button>

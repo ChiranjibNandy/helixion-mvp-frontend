@@ -14,7 +14,7 @@ export function BrochureDownloadLink({ url }: BrochureDownloadLinkProps) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-1.5 text-[13px] text-white/55 hover:text-white/80 transition-colors"
+      className="flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-foreground transition-colors"
     >
       <Download className="w-4 h-4" />
       {t('programme.list.downloadBrochure')}

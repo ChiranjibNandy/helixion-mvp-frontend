@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import type { Filters } from '@/types/employee-programs';
 import { t } from '@/lib/i18n';
 
-const HEADER_CLASS = 'text-[10px] font-semibold tracking-widest uppercase text-white/30';
+const HEADER_CLASS = 'text-[10px] font-semibold tracking-widest uppercase text-muted-foreground';
 
 interface Props {
   draft: Filters;
@@ -29,7 +29,7 @@ export function ProgramFilterBar({ draft, onChange, onApply, onClear, loading }:
   }
 
   return (
-    <div className="rounded-lg border border-[#1e2d40] bg-[#0d1526] px-5 py-4">
+    <div className="rounded-lg border border-border bg-card px-5 py-4">
       <div className="flex items-end gap-4 flex-wrap">
 
         <div className="flex-1 min-w-[160px]">
@@ -61,7 +61,7 @@ export function ProgramFilterBar({ draft, onChange, onApply, onClear, loading }:
               placeholder={t('programme.list.filterDateFrom')}
               onChange={(v) => set('fromDate', v)}
             />
-            <span className="text-white/25 text-[12px] flex-shrink-0">—</span>
+            <span className="text-muted-foreground/25 text-[12px] flex-shrink-0">—</span>
             <DateInput
               value={draft.toDate}
               placeholder={t('programme.list.filterDateTo')}
@@ -76,7 +76,7 @@ export function ProgramFilterBar({ draft, onChange, onApply, onClear, loading }:
             checked={draft.hidePast}
             onCheckedChange={(checked) => set('hidePast', checked === true)}
           />
-          <label htmlFor="hidePastPrograms" className="text-[12px] text-white/60 cursor-pointer select-none">
+          <label htmlFor="hidePastPrograms" className="text-[12px] text-muted-foreground cursor-pointer select-none">
             {t('programme.list.hidePastPrograms')}
           </label>
         </div>
@@ -86,14 +86,14 @@ export function ProgramFilterBar({ draft, onChange, onApply, onClear, loading }:
             variant="outline"
             onClick={onClear}
             disabled={loading}
-            className="border-[#1e2d40] text-white/50 hover:text-white bg-transparent text-[12px] h-9 px-4"
+            className="border-border text-muted-foreground hover:text-foreground bg-transparent text-[12px] h-9 px-4"
           >
             {t('programme.list.clearFilters')}
           </Button>
           <Button
             onClick={onApply}
             disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 text-white text-[12px] h-9 px-5 font-medium disabled:opacity-70 min-w-[72px] flex items-center justify-center gap-1.5"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground text-[12px] h-9 px-5 font-medium disabled:opacity-70 min-w-[72px] flex items-center justify-center gap-1.5"
           >
             {loading ? <Spinner size="sm" /> : t('programme.list.applyFilters')}
           </Button>

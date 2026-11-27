@@ -53,16 +53,16 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
   };
 
   return (
-    <div className="bg-[#0d1527] px-6 py-5">
+    <div className="border-l-2 border-l-primary bg-muted px-6 py-5">
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(160px,1fr)_minmax(320px,420px)_minmax(180px,1fr)] items-start gap-8 lg:gap-10">
 
         {/* VENUE */}
         <div className="min-w-0">
-          <p className="text-[10px] font-semibold tracking-widest uppercase text-white/30 mb-2">
+          <p className="text-[10px] font-semibold tracking-widest uppercase text-muted-foreground mb-2">
             {t('programme.list.detailVenueLabel')}
           </p>
 
-          <p className="text-[13px] font-medium text-white">
+          <p className="text-[13px] font-medium text-foreground">
             {program.venueName}
           </p>
         </div>
@@ -93,7 +93,7 @@ export function ProgramDetailPanel({ program, onEnrol, enrolling, enrolled, erro
             <Button
               onClick={handleEnrollClick}
               disabled={enrolling}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-[13px] px-5 h-9 font-medium disabled:opacity-70"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground text-[13px] px-5 h-9 font-medium disabled:opacity-70"
             >
               {enrolling
                 ? t('programme.list.enrollingButton')

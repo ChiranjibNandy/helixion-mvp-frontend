@@ -85,9 +85,9 @@ export function TourSubmissionModal({ enrollmentId, isOpen, onClose, onSuccess }
             className="w-[90vw] max-w-6xl"
         >
             <div className="space-y-4">
-                <div className="flex gap-4 p-3 border border-borderCard rounded-xl bg-bgMain">
+                <div className="flex gap-4 p-3 border border-border rounded-xl bg-background">
                     {TRAVEL_TYPES.map((type) => (
-                        <label key={type.value} className="flex items-center gap-2 text-white text-sm cursor-pointer">
+                        <label key={type.value} className="flex items-center gap-2 text-foreground text-sm cursor-pointer">
                             <input
                                 type="radio"
                                 name="travelType"
@@ -112,7 +112,7 @@ export function TourSubmissionModal({ enrollmentId, isOpen, onClose, onSuccess }
                         onSubmit={handleSubmit}
                     />
                 ) : (
-                    <div className="flex justify-end gap-4 border-t border-borderCard pt-4 mt-4">
+                    <div className="flex justify-end gap-4 border-t border-border pt-4 mt-4">
                         <Button variant="outline" onClick={onClose} disabled={submitting}>Cancel</Button>
                         <Button onClick={handleSubmit} disabled={submitting}>Submit as Self Travel</Button>
                     </div>

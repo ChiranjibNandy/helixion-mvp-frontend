@@ -27,11 +27,11 @@ export function UpcomingTrainingPrograms({
           </div>
 
           <div>
-            <h2 className="text-white text-lg font-semibold">
+            <h2 className="text-card-foreground text-lg font-semibold">
               {t("upcomingPrograms.title")}
             </h2>
 
-            <p className="text-textSidebarMuted text-xs mt-1">
+            <p className="text-muted-foreground text-xs mt-1">
               {t("upcomingPrograms.subtitle")}
             </p>
           </div>

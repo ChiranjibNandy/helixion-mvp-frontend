@@ -54,7 +54,7 @@ export function EnrolmentDonut({
           fill="none"
           stroke="currentColor"
           strokeWidth={STROKE_WIDTH}
-          className="text-borderCard"
+          className="text-border"
         />
 
         <circle
@@ -72,11 +72,11 @@ export function EnrolmentDonut({
       </svg>
 
       <div className="absolute flex flex-col items-center justify-center">
-        <span className="text-sm font-bold text-white">
+        <span className="text-sm font-bold text-foreground">
           {enrolledCount}
         </span>
 
-        <span className="text-[10px] text-textSidebarMuted">
+        <span className="text-[10px] text-muted-foreground">
           / {maxParticipants ?? "-"}
         </span>
       </div>

@@ -58,7 +58,7 @@ function RoleTogglePill({
       className={`text-[10px] font-medium px-2 py-0.5 rounded whitespace-nowrap border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
         active
           ? 'text-primary bg-primary/10 border-primary/30'
-          : 'text-white/30 bg-transparent border-white/10 hover:border-white/25 hover:text-white/50'
+          : 'text-textSidebarMuted bg-transparent border-borderCard hover:border-border hover:text-textSidebar'
       }`}
     >
       {label}
@@ -94,7 +94,7 @@ function RowEditPanel({
   disabled?: boolean;
 }) {
   return (
-    <div className="p-5 bg-black/20 border-t border-white/5 space-y-4">
+    <div className="p-5 bg-surface-muted border-t border-borderCard/50 space-y-4">
       {row.issues.length > 0 && (
         <div className={`flex items-start gap-3 p-3 rounded-lg border ${row.severity === 'error' ? 'bg-accentRed/10 border-accentRed/20' : 'bg-accentOrange/10 border-accentOrange/20'}`}>
           {row.severity === 'error' ? (
@@ -114,7 +114,7 @@ function RowEditPanel({
 
       <div className="grid grid-cols-2 gap-x-8 gap-y-4">
         <div>
-          <h4 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-3">Basic details</h4>
+          <h4 className="text-[11px] font-semibold text-textSidebarMuted uppercase tracking-wider mb-3">Basic details</h4>
           <div className="grid grid-cols-2 gap-3">
             <TextField label="Employee Roll No." required value={row.employeeCode} onChange={(v) => onRowEdit('employeeCode', v)} placeholder="e.g. E1001" disabled={disabled} />
             <TextField label="Name" required value={row.name} onChange={(v) => onRowEdit('name', v)} placeholder="Jane Doe" disabled={disabled} />
@@ -130,7 +130,7 @@ function RowEditPanel({
 
         <div className="space-y-4">
           <div>
-            <h4 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-3">Reporting chain</h4>
+            <h4 className="text-[11px] font-semibold text-textSidebarMuted uppercase tracking-wider mb-3">Reporting chain</h4>
             <div className="space-y-3">
               <TextField label="Reporting Manager Email" required value={row.reportingManagerEmail} onChange={(v) => onRowEdit('reportingManagerEmail', v)} placeholder="manager@corp.in" disabled={disabled} />
               <TextField label="Skip Level 1 Manager Email" value={row.skipLevel1ManagerEmail} onChange={(v) => onRowEdit('skipLevel1ManagerEmail', v)} disabled={disabled} />
@@ -139,7 +139,7 @@ function RowEditPanel({
           </div>
 
           <div>
-            <h4 className="text-[11px] font-semibold text-white/40 uppercase tracking-wider mb-3">Office roles</h4>
+            <h4 className="text-[11px] font-semibold text-textSidebarMuted uppercase tracking-wider mb-3">Office roles</h4>
             <div className="grid grid-cols-3 gap-2">
               <Checkbox label={t('bulkImport.rolePanel.managerLabel')} checked={row.isManager} onChange={() => onToggleOfficeRole('isManager')} disabled={disabled} />
               <Checkbox label="CTD (Training Dept Officer)" checked={row.trainingDeptSenior} onChange={() => onToggleOfficeRole('trainingDeptSenior')} disabled={disabled} />
@@ -173,24 +173,24 @@ function BulkUploadPreview({ rows, fileName, isUploading, onConfirm, onBack, onR
   return (
     <div className="flex flex-col">
       {/* Header */}
-      <div className="p-6 border-b border-white/5">
+      <div className="p-6 border-b border-borderCard/50">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <FileSpreadsheet className="text-primary" size={18} />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-white">Preview Before Upload</h2>
+              <h2 className="text-base font-semibold text-foreground">Preview Before Upload</h2>
               <p className="text-xs text-textSidebarMuted mt-0.5">
-                File: <span className="text-white/50 font-mono">{fileName}</span> · Click a row to view &amp; edit every field
+                File: <span className="text-textSidebar font-mono">{fileName}</span> · Click a row to view &amp; edit every field
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">
-              <span className="text-xs text-white/50">Total:</span>
-              <span className="text-sm font-semibold text-white">{rows.length}</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/50 border border-borderCard/50">
+              <span className="text-xs text-textSidebar">Total:</span>
+              <span className="text-sm font-semibold text-foreground">{rows.length}</span>
             </div>
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accentGreen/10 border border-accentGreen/20">
               <CheckCircle2 size={12} className="text-accentGreen" />
@@ -219,15 +219,15 @@ function BulkUploadPreview({ rows, fileName, isUploading, onConfirm, onBack, onR
       <div>
         <table className="w-full text-sm">
           <thead className="sticky top-0 bg-bgSidebar z-10">
-            <tr className="border-b border-white/5">
+            <tr className="border-b border-borderCard/50">
               <th className="w-8 px-4 py-3"></th>
-              <th className="text-left px-2 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">#</th>
-              <th className="text-left px-4 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">Roll No.</th>
-              <th className="text-left px-4 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">Name</th>
-              <th className="text-left px-4 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">Email</th>
-              <th className="text-left px-4 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">Manager Email</th>
-              <th className="text-left px-4 py-3 text-[10px] font-semibold text-white/30 uppercase tracking-wider">Office Role</th>
-              <th className="text-left px-4 py-3 pr-6 text-[10px] font-semibold text-white/30 uppercase tracking-wider">Status</th>
+              <th className="text-left px-2 py-3 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">#</th>
+              <th className="text-left px-4 py-3 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">Roll No.</th>
+              <th className="text-left px-4 py-3 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">Name</th>
+              <th className="text-left px-4 py-3 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">Email</th>
+              <th className="text-left px-4 py-3 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">Manager Email</th>
+              <th className="text-left px-4 py-3 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">Office Role</th>
+              <th className="text-left px-4 py-3 pr-6 text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -238,29 +238,29 @@ function BulkUploadPreview({ rows, fileName, isUploading, onConfirm, onBack, onR
                 <Fragment key={row._rowId}>
                   <tr
                     onClick={() => !isUploading && setExpandedRowId(isExpanded ? null : row._rowId)}
-                    className={`border-b border-white/[0.03] transition-colors ${isUploading ? 'cursor-not-allowed' : 'cursor-pointer hover:bg-white/[0.03]'} ${
-                      isExpanded ? 'bg-white/[0.03]' : row.severity === 'error' ? 'bg-accentRed/[0.03]' : row.severity === 'warning' ? 'bg-accentOrange/[0.03]' : ''
+                    className={`border-b border-borderCard/50 transition-colors ${isUploading ? 'cursor-not-allowed' : 'cursor-pointer hover:bg-muted/50'} ${
+                      isExpanded ? 'bg-muted/50' : row.severity === 'error' ? 'bg-accentRed/[0.03]' : row.severity === 'warning' ? 'bg-accentOrange/[0.03]' : ''
                     }`}
                   >
-                    <td className="px-4 py-3.5 text-white/30">
+                    <td className="px-4 py-3.5 text-textSidebarMuted">
                       {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                     </td>
-                    <td className="px-2 py-3.5"><span className="text-xs text-white/20 font-mono">{idx + 1}</span></td>
+                    <td className="px-2 py-3.5"><span className="text-xs text-textSidebarMuted font-mono">{idx + 1}</span></td>
                     <td className="px-4 py-3.5">
-                      <span className={`text-sm font-mono ${!row.employeeCode ? 'text-accentRed' : 'text-white/80'}`}>
+                      <span className={`text-sm font-mono ${!row.employeeCode ? 'text-accentRed' : 'text-foreground'}`}>
                         {row.employeeCode || <span className="italic text-accentRed/70">missing</span>}
                       </span>
                     </td>
                     <td className="px-4 py-3.5">
-                      <span className="text-sm text-white/80">{row.name || <span className="italic text-white/25">missing</span>}</span>
+                      <span className="text-sm text-foreground">{row.name || <span className="italic text-textSidebarMuted">missing</span>}</span>
                     </td>
                     <td className="px-4 py-3.5">
-                      <span className={`text-sm font-mono ${!row.email ? 'text-accentRed' : 'text-white/70'}`}>
+                      <span className={`text-sm font-mono ${!row.email ? 'text-accentRed' : 'text-textSecondary'}`}>
                         {row.email || <span className="italic text-accentRed/70">missing</span>}
                       </span>
                     </td>
                     <td className="px-4 py-3.5">
-                      <span className={`text-sm font-mono ${!row.reportingManagerEmail ? 'text-accentRed' : 'text-white/60'}`}>
+                      <span className={`text-sm font-mono ${!row.reportingManagerEmail ? 'text-accentRed' : 'text-textSecondary'}`}>
                         {row.reportingManagerEmail || <span className="italic text-accentRed/70">missing</span>}
                       </span>
                     </td>
@@ -271,7 +271,7 @@ function BulkUploadPreview({ rows, fileName, isUploading, onConfirm, onBack, onR
                           // flip, this is just the baseline state when none of
                           // the role flags below is set. Shown so it's
                           // visually confirmed, not just implied by absence.
-                          <span className="text-[10px] font-medium px-2 py-0.5 rounded whitespace-nowrap bg-white/5 text-white/40 border border-white/10">
+                          <span className="text-[10px] font-medium px-2 py-0.5 rounded whitespace-nowrap bg-muted/50 text-textSidebarMuted border border-borderCard">
                             Employee
                           </span>
                         )}
@@ -303,7 +303,7 @@ function BulkUploadPreview({ rows, fileName, isUploading, onConfirm, onBack, onR
 
       {totalPages > 1 && (
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-6 pt-4">
-          <span className="text-xs text-white/30">
+          <span className="text-xs text-textSidebarMuted">
             Showing {(currentPage - 1) * PREVIEW_PAGE_SIZE + 1}–{Math.min(currentPage * PREVIEW_PAGE_SIZE, rows.length)} of {rows.length} rows
           </span>
           <PaginationController page={currentPage} totalPages={totalPages} onPageChange={setPage} />
@@ -330,12 +330,12 @@ function BulkUploadPreview({ rows, fileName, isUploading, onConfirm, onBack, onR
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between p-6 border-t border-white/5 mt-4">
+      <div className="flex items-center justify-between p-6 border-t border-borderCard/50 mt-4">
         <button
           onClick={onBack}
           disabled={isUploading}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/50 bg-white/5
-                     rounded-lg hover:bg-white/10 transition-all duration-200 disabled:opacity-40"
+          className="flex items-center gap-2 px-4 py-2.5 text-sm text-textSidebar bg-muted/50
+                     rounded-lg hover:bg-muted transition-all duration-200 disabled:opacity-40"
           id="preview-back-btn"
         >
           <ArrowLeft size={14} />
@@ -344,7 +344,7 @@ function BulkUploadPreview({ rows, fileName, isUploading, onConfirm, onBack, onR
         <button
           onClick={onConfirm}
           disabled={isUploading}
-          className="flex items-center gap-2 px-6 py-2.5 text-sm font-medium text-white
+          className="flex items-center gap-2 px-6 py-2.5 text-sm font-medium text-primary-foreground
                      bg-primary rounded-lg hover:bg-primaryDark transition-all duration-200
                      shadow-glow disabled:opacity-50"
           id="preview-confirm-upload-btn"

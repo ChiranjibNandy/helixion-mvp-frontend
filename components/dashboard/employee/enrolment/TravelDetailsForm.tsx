@@ -44,43 +44,43 @@ export function TravelDetailsForm({
         }));
     };
     return (
-        <Card className="bg-bgStatCard border-borderCard">
+        <Card className="bg-muted border-border">
             <CardContent className="p-5 space-y-4">
-                <h2 className="text-lg font-bold text-white">
+                <h2 className="text-lg font-bold text-foreground">
                     {t("trainingEnrolment.tourApproval.title")}
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-1.5">
-                        <Label className="text-xs text-textSidebarMuted">
+                        <Label className="text-xs text-muted-foreground">
                             {t("trainingEnrolment.tourApproval.placeOfTour")}
                         </Label>
                         <Input
                             value={placeOfTour}
                             onChange={(e) => setPlaceOfTour(e.target.value)}
-                            className="bg-bgMain border-borderCard text-white"
+                            className="bg-background border-border text-foreground"
                         />
                     </div>
                     <div className="space-y-1.5">
-                        <Label className="text-xs text-textSidebarMuted">
+                        <Label className="text-xs text-muted-foreground">
                             {t("trainingEnrolment.tourApproval.frequentFlyerNo")}
                         </Label>
                         <Input
                             value={frequentFlyerNo}
                             onChange={(e) => setFrequentFlyerNo(e.target.value)}
                             placeholder="e.g. 89542566"
-                            className="bg-bgMain border-borderCard text-white"
+                            className="bg-background border-border text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
                     <div className="space-y-1.5">
-                        <Label className="text-xs text-textSidebarMuted">
+                        <Label className="text-xs text-muted-foreground">
                             {t("trainingEnrolment.tourApproval.modeOfTravel")}
                         </Label>
                         <Select value={modeOfTravel} onValueChange={setModeOfTravel}>
-                            <SelectTrigger className="bg-bgMain border-borderCard text-white w-full">
+                            <SelectTrigger className="bg-background border-border text-foreground w-full">
                                 <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="bg-bgStatCard border-borderCard text-white">
+                            <SelectContent className="bg-card border-border text-foreground">
                                 <SelectItem value="flight">Flight</SelectItem>
                                 <SelectItem value="train">Train</SelectItem>
                                 <SelectItem value="bus">Bus</SelectItem>
@@ -91,17 +91,17 @@ export function TravelDetailsForm({
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-1.5">
-                        <Label className="text-xs text-textSidebarMuted">
+                        <Label className="text-xs text-muted-foreground">
                             {t("trainingEnrolment.tourApproval.tourPurpose")}
                         </Label>
                         <Input
                             value={purpose}
                             onChange={(e) => setPurpose(e.target.value)}
-                            className="bg-bgMain border-borderCard text-white"
+                            className="bg-background border-border text-foreground"
                         />
                     </div>
                     <div className="space-y-1.5">
-                        <Label className="text-xs text-textSidebarMuted">
+                        <Label className="text-xs text-muted-foreground">
                             {t("trainingEnrolment.advancePayment", { amount: "" })}
                         </Label>
                         <Input
@@ -111,7 +111,7 @@ export function TravelDetailsForm({
                                 setAdvancePaymentRequired(Number(e.target.value))
                             }
                             placeholder="e.g. 20000"
-                            className="bg-bgMain border-borderCard text-white"
+                            className="bg-background border-border text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
                 </div>
@@ -131,7 +131,7 @@ export function TravelDetailsForm({
                 )}
 
                 {/* Action buttons */}
-                <div className="flex items-center justify-between pt-3 border-t border-borderCard">
+                <div className="flex items-center justify-between pt-3 border-t border-border">
                     <Button
                         variant="outline"
                         onClick={onBack}

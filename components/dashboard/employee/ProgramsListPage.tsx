@@ -14,7 +14,7 @@ import { AppAlert } from '@/components/shared/app-alert';
 import { ProgramFilterBar } from './ProgramFilterBar';
 import { ProgramDetailPanel } from './ProgramDetailPanel';
 
-const HEADER_CLASS = 'text-[10px] font-semibold tracking-widest uppercase text-white/30';
+const HEADER_CLASS = 'text-[10px] font-semibold tracking-widest uppercase text-muted-foreground';
 
 function getProviderName(program: AvailableProgram): string {
   if (program.providerName) return program.providerName;
@@ -29,35 +29,35 @@ const COLUMNS = [
     key: 'title',
     header: t('programme.list.columnTitle'),
     headerClassName: HEADER_CLASS,
-    className: 'font-semibold text-white text-[13px] max-w-[220px]',
+    className: 'font-semibold text-foreground text-[13px] max-w-[220px]',
     render: (prog: AvailableProgram) => prog.title,
   },
   {
     key: 'fromDate',
     header: t('programme.list.columnFromDate'),
     headerClassName: HEADER_CLASS,
-    className: 'text-white/60 text-[13px]',
+    className: 'text-muted-foreground text-[13px]',
     render: (prog: AvailableProgram) => formatShortDate(prog.startDate),
   },
   {
     key: 'toDate',
     header: t('programme.list.columnToDate'),
     headerClassName: HEADER_CLASS,
-    className: 'text-white/60 text-[13px]',
+    className: 'text-muted-foreground text-[13px]',
     render: (prog: AvailableProgram) => formatShortDate(prog.endDate),
   },
   {
     key: 'venue',
     header: t('programme.list.columnVenue'),
     headerClassName: HEADER_CLASS,
-    className: 'text-white/60 text-[13px]',
+    className: 'text-muted-foreground text-[13px]',
     render: (prog: AvailableProgram) => prog.venueName,
   },
   {
     key: 'provider',
     header: t('programme.list.columnProvider'),
     headerClassName: HEADER_CLASS,
-    className: 'text-white/60 text-[13px] max-w-[180px]',
+    className: 'text-muted-foreground text-[13px] max-w-[180px]',
     render: (prog: AvailableProgram) => getProviderName(prog),
   },
 ];
@@ -181,8 +181,8 @@ export function ProgramsListPage() {
 
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[20px] font-bold text-white">{t('programme.list.title')}</h1>
-          <p className="text-[12px] text-white/40 mt-0.5">{t('programme.list.description')}</p>
+          <h1 className="text-[20px] font-bold text-foreground">{t('programme.list.title')}</h1>
+          <p className="text-[12px] text-muted-foreground mt-0.5">{t('programme.list.description')}</p>
         </div>
         <SearchInput
           value={draft.title}
@@ -209,13 +209,13 @@ export function ProgramsListPage() {
         data={visiblePrograms}
         columns={COLUMNS}
         loading={loading}
-        className="border-[#1e2d40]"
+        className="border-border"
         rowKey={(prog) => prog._id}
         onRowClick={(prog) => setSelectedId((prev) => (prev === prog._id ? null : prog._id))}
         rowClassName={(prog) =>
-          `border-[#1e2d40] cursor-pointer transition-colors ${selectedId === prog._id
-            ? 'bg-[#0d1e33] border-l-2 border-l-blue-500'
-            : 'hover:bg-[#111827]'
+          `border-border cursor-pointer transition-colors ${selectedId === prog._id
+            ? 'bg-muted border-l-2 border-l-primary'
+            : 'hover:bg-muted/50'
           }`
         }
         isRowExpanded={(prog) => selectedId === prog._id}

@@ -7,14 +7,14 @@ export const MANAGER_PENDING_ENROLLMENTS_COLUMNS = [
     key: 'no',
     header: 'No.',
     render: (_row: TeamEnrollmentRow, index?: number) => (
-      <span className="text-textSidebarMuted">{(index ?? 0) + 1}.</span>
+      <span className="text-muted-foreground">{(index ?? 0) + 1}.</span>
     ),
   },
   {
     key: 'programTitle',
     header: 'Program Title',
     render: (row: TeamEnrollmentRow) => (
-      <span className="font-semibold text-white">{row.programTitle}</span>
+      <span className="font-semibold text-foreground">{row.programTitle}</span>
     ),
   },
   {

@@ -14,16 +14,16 @@ interface ReviewEnrolmentCardProps {
 
 export function ReviewEnrolmentCard({ submitting, onBack, onSubmit }: ReviewEnrolmentCardProps) {
     return (
-        <Card className="bg-bgStatCard border-borderCard">
+        <Card className="bg-muted border-border">
             <CardContent className="p-6 space-y-6">
-                <h2 className="text-lg font-bold text-white">
+                <h2 className="text-lg font-bold text-foreground">
                     {t("trainingEnrolment.reviewEnrolmentTitle")}
                 </h2>
-                <p className="text-textSidebarMuted text-sm">
+                <p className="text-muted-foreground text-sm">
                     {t("trainingEnrolment.reviewEnrolmentDescription")}
                 </p>
                 
-                <div className="flex items-center justify-between pt-4 border-t border-borderCard">
+                <div className="flex items-center justify-between pt-4 border-t border-border">
                     <Button
                         variant="outline"
                         onClick={onBack}

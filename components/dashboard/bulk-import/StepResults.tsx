@@ -47,16 +47,16 @@ export default function StepResults({ results, onReset }: StepResultsProps) {
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white/[0.03] rounded-xl border border-white/5 p-4">
-            <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1">Submitted</p>
-            <p className="text-2xl font-bold text-white">{results.totalSubmitted}</p>
+          <div className="bg-muted/50 rounded-xl border border-borderCard/50 p-4">
+            <p className="text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider mb-1">Submitted</p>
+            <p className="text-2xl font-bold text-foreground">{results.totalSubmitted}</p>
           </div>
           <div className={`rounded-xl border p-4 ${
             isSuccess
               ? 'bg-accentGreen/5 border-accentGreen/20'
               : 'bg-accentRed/5 border-accentRed/20'
           }`}>
-            <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1">
+            <p className="text-[10px] font-semibold text-textSidebarMuted uppercase tracking-wider mb-1">
               {isSuccess ? 'Created' : 'Failed'}
             </p>
             <p className={`text-2xl font-bold ${isSuccess ? 'text-accentGreen' : 'text-accentRed'}`}>
@@ -77,8 +77,8 @@ export default function StepResults({ results, onReset }: StepResultsProps) {
         <div className="flex items-center justify-center gap-3 pt-4">
           <button
             onClick={onReset}
-            className="flex items-center gap-2 px-5 py-2.5 text-sm text-white/50 bg-white/5
-                       rounded-lg hover:bg-white/10 transition-all duration-200 border border-white/10"
+            className="flex items-center gap-2 px-5 py-2.5 text-sm text-textSidebar bg-muted/50
+                       rounded-lg hover:bg-muted transition-all duration-200 border border-borderCard"
             id="results-import-again-btn"
           >
             <RotateCcw size={14} />
@@ -87,7 +87,7 @@ export default function StepResults({ results, onReset }: StepResultsProps) {
 
           <Link
             href="/admin/dashboard"
-            className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white
+            className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-primary-foreground
                        bg-primary rounded-lg hover:bg-primaryDark transition-all duration-200
                        shadow-glow"
             id="results-dashboard-btn"

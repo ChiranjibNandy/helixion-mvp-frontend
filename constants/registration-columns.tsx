@@ -10,12 +10,12 @@ export const getRegistrationColumns = (
     header: 'User',
     render: (row: Registration) => (
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-md bg-slate-700 flex items-center justify-center text-xs font-bold">
+        <div className="w-9 h-9 rounded-md bg-avatarBlue text-avatarForeground flex items-center justify-center text-xs font-bold">
           {getInitials(row.name)}
         </div>
 
         <div>
-          <p className="text-white text-sm">{row.name}</p>
+          <p className="text-foreground text-sm">{row.name}</p>
           <p className="text-textSidebarMuted text-xs">
             {row.email}
           </p>

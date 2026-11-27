@@ -12,9 +12,9 @@ function FieldBox({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border border-white/10 bg-black/30 px-3.5 py-2.5">
+    <div className="rounded-lg border border-borderCard bg-surface-muted px-3.5 py-2.5">
       {label && (
-        <div className="text-[10px] font-semibold tracking-widest uppercase text-white/35 mb-1.5">
+        <div className="text-[10px] font-semibold tracking-widest uppercase text-textSidebarMuted mb-1.5">
           {label}
         </div>
       )}
@@ -24,7 +24,7 @@ function FieldBox({
 }
 
 const fieldInputClass =
-  'w-full bg-transparent text-sm text-white placeholder:text-white/25 outline-none';
+  'w-full bg-transparent text-sm text-foreground placeholder:text-textSidebarMuted outline-none';
 
 interface OrganizationPolicyFieldsProps {
   name: string;
@@ -78,7 +78,7 @@ export default function OrganizationPolicyFields({
           <select
             value={orgType}
             onChange={(e) => onOrgTypeChange(e.target.value as typeof orgType)}
-            className={`${fieldInputClass} cursor-pointer [&>option]:bg-[#0d0f1a]`}
+            className={`${fieldInputClass} cursor-pointer [&>option]:bg-bgCard`}
           >
             <option value="corporate">Corporate</option>
             <option value="training_provider">Training Provider</option>
@@ -89,7 +89,7 @@ export default function OrganizationPolicyFields({
           <select
             value={status}
             onChange={(e) => onStatusChange(e.target.value as typeof status)}
-            className={`${fieldInputClass} cursor-pointer [&>option]:bg-[#0d0f1a]`}
+            className={`${fieldInputClass} cursor-pointer [&>option]:bg-bgCard`}
           >
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
@@ -98,14 +98,14 @@ export default function OrganizationPolicyFields({
       </div>
 
       {/* Policy matrix */}
-      <div className="rounded-xl border border-white/10 overflow-hidden">
-        <div className="grid grid-cols-[1fr_120px_140px] gap-3 px-4 py-2.5 bg-white/[0.03] text-[10px] font-semibold tracking-widest uppercase text-white/35">
+      <div className="rounded-xl border border-borderCard overflow-hidden">
+        <div className="grid grid-cols-[1fr_120px_140px] gap-3 px-4 py-2.5 bg-muted/50 text-[10px] font-semibold tracking-widest uppercase text-textSidebarMuted">
           <div>Approval Stage</div>
           <div>Min Level</div>
           <div>Assignment Mode</div>
         </div>
 
-        <div className="divide-y divide-white/5">
+        <div className="divide-y divide-borderCard/50">
           {POLICY_BLOCKS.map((block) => {
             const state = policy[block.key];
             return (
@@ -120,7 +120,7 @@ export default function OrganizationPolicyFields({
                     className={`mt-0.5 w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 transition-colors ${
                       state.enabled
                         ? 'border-primary bg-primary/20 text-primary'
-                        : 'border-white/20 text-transparent'
+                        : 'border-border text-transparent'
                     }`}
                   >
                     <svg width="9" height="9" viewBox="0 0 24 24" fill="none">
@@ -128,8 +128,8 @@ export default function OrganizationPolicyFields({
                     </svg>
                   </button>
                   <div>
-                    <div className="text-sm font-medium text-white">{block.label}</div>
-                    <div className="text-xs text-white/40">{block.description}</div>
+                    <div className="text-sm font-medium text-foreground">{block.label}</div>
+                    <div className="text-xs text-textSidebarMuted">{block.description}</div>
                   </div>
                 </div>
 
@@ -147,7 +147,7 @@ export default function OrganizationPolicyFields({
                   <select
                     value={state.assignmentMode}
                     onChange={(e) => onPolicyBlockChange(block.key, 'assignmentMode', e.target.value as 'assigned' | 'pool')}
-                    className={`${fieldInputClass} cursor-pointer [&>option]:bg-[#0d0f1a]`}
+                    className={`${fieldInputClass} cursor-pointer [&>option]:bg-bgCard`}
                   >
                     <option value="assigned">Assigned</option>
                     <option value="pool">Pool</option>

@@ -29,7 +29,7 @@ export function getProviderDashboardStats(
           count: overview.livePrograms,
         }
       ),
-      subtitleColor: 'text-textSidebarMuted',
+      subtitleColor: 'text-muted-foreground',
       icon: <Users className="w-5 h-5 text-emerald-400" />,
       iconBg: 'bg-emerald-500/15',
     },
