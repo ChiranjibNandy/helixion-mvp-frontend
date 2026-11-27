@@ -87,31 +87,31 @@ export const createEnrollmentColumns = (
         {
             key: "no",
             header: t("approvalProgress.enrolledPrograms.columns.no"),
-            className: "text-sm text-textSidebarMuted py-4 w-16",
+            className: "text-sm text-muted-foreground py-4 w-16",
             render: (_: any, index?: number) => `${ (index ?? 0) + 1 }.`,
         },
         {
             key: "title",
             header: t("approvalProgress.enrolledPrograms.columns.title"),
-            className: "text-sm text-white font-medium py-4 max-w-xs",
+            className: "text-sm text-foreground font-medium py-4 max-w-xs",
             render: (enrollment: any) => getProgramDetails(enrollment)?.title || "Unknown",
         },
         {
             key: "fromDate",
             header: t("approvalProgress.enrolledPrograms.columns.fromDate"),
-            className: "text-sm text-textSidebarMuted py-4",
+            className: "text-sm text-muted-foreground py-4",
             render: (enrollment: any) => formatDateHyphenated(getProgramDetails(enrollment)?.startDate),
         },
         {
             key: "toDate",
             header: t("approvalProgress.enrolledPrograms.columns.toDate"),
-            className: "text-sm text-textSidebarMuted py-4",
+            className: "text-sm text-muted-foreground py-4",
             render: (enrollment: any) => formatDateHyphenated(getProgramDetails(enrollment)?.endDate),
         },
         {
             key: "venueCity",
             header: t("approvalProgress.enrolledPrograms.columns.venueCity"),
-            className: "text-sm text-textSidebarMuted py-4",
+            className: "text-sm text-muted-foreground py-4",
             render: (enrollment: any) => {
                 const program = getProgramDetails(enrollment);
                 return program?.city || program?.venueName || "N/A";
@@ -143,7 +143,7 @@ export const createEnrollmentColumns = (
                         </Badge>
                     );
                 }
-                return <span className="text-sm text-textSidebarMuted">{t("common.notRequired")}</span>;
+                return <span className="text-sm text-muted-foreground">{t("common.notRequired")}</span>;
             },
         },
         {
@@ -172,7 +172,7 @@ export const createEnrollmentColumns = (
                 return isExpanded ? (
                     <ChevronUp className="size-4 text-primary" />
                 ) : (
-                    <ChevronDown className="size-4 text-textSidebarMuted hover:text-white" />
+                    <ChevronDown className="size-4 text-muted-foreground hover:text-foreground" />
                 );
             },
         }

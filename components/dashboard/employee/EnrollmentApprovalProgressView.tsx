@@ -126,9 +126,9 @@ export default function EnrollmentApprovalProgressView() {
 
     const getRowClassName = (enrollment: any) => {
         return cn(
-            "border-borderCard hover:bg-white/5 cursor-pointer transition-all",
+            "border-border hover:bg-muted/50 cursor-pointer transition-all",
             selectedEnrollmentId === enrollment._id
-                ? "bg-white/5 border-l-2 border-l-primary"
+                ? "bg-muted/50 border-l-2 border-l-primary"
                 : ""
         );
     };
@@ -143,42 +143,42 @@ export default function EnrollmentApprovalProgressView() {
         const details = panelDataMap[id];
 
         return (
-            <div className="p-5 bg-bgMain/60 border-t border-borderCard space-y-4">
+            <div className="p-5 bg-background/60 border-t border-border space-y-4">
                 {isLoading ? (
-                    <div className="flex items-center justify-center py-6 gap-2 text-textSidebarMuted text-sm">
+                    <div className="flex items-center justify-center py-6 gap-2 text-muted-foreground text-sm">
                         <Spinner size="sm" />
                         <span>{t("common.loading")}</span>
                     </div>
                 ) : details ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                         {/* Stage */}
-                        <div className="p-3 bg-bgStatCard rounded-lg border border-borderCard">
-                            <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
+                        <div className="p-3 bg-muted rounded-lg border border-border">
+                            <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">
                                {t("trainingEnrolment.currentStage")}
                             </span>
-                            <p className="text-white font-medium capitalize">
+                            <p className="text-foreground font-medium capitalize">
                                 {details.currentStage || t("common.n/a")}
                             </p>
                         </div>
 
                         {/* Created By */}
-                        <div className="p-3 bg-bgStatCard rounded-lg border border-borderCard">
-                            <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
+                        <div className="p-3 bg-muted rounded-lg border border-border">
+                            <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">
                                 {t("trainingEnrolment.createdBy")}
                             </span>
                             {details.createdBy ? (
                                 <div>
-                                    <p className="text-white font-medium">{details.createdBy.name}</p>
-                                    <p className="text-textSidebarMuted text-xs">{details.createdBy.email}</p>
+                                    <p className="text-foreground font-medium">{details.createdBy.name}</p>
+                                    <p className="text-muted-foreground text-xs">{details.createdBy.email}</p>
                                 </div>
                             ) : (
-                                <p className="text-textSidebarMuted">{t("common.n/a")}</p>
+                                <p className="text-muted-foreground">{t("common.n/a")}</p>
                             )}
                         </div>
 
                         {/* Brochure */}
-                        <div className="p-3 bg-bgStatCard rounded-lg border border-borderCard">
-                            <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
+                        <div className="p-3 bg-muted rounded-lg border border-border">
+                            <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">
                                 {t("programme.fields.brochure")}
                             </span>
                             {details?.downloadBrochureUrl ? (
@@ -191,20 +191,20 @@ export default function EnrollmentApprovalProgressView() {
                                     {t("programme.list.downloadBrochure")}
                                 </a>
                             ) : (
-                                <p className="text-textSidebarMuted">{t("common.notAvailable")}</p>
+                                <p className="text-muted-foreground">{t("common.notAvailable")}</p>
                             )}
                         </div>
 
                         {/* Notes */}
-                        <div className="p-3 bg-bgStatCard rounded-lg border border-borderCard md:col-span-2 lg:col-span-1">
-                            <span className="text-[10px] uppercase font-bold text-textSidebarMuted block mb-1">
+                        <div className="p-3 bg-muted rounded-lg border border-border md:col-span-2 lg:col-span-1">
+                            <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">
                                 {t("programme.fields.notes")}
                             </span>
-                            <p className="text-white text-xs">{details.notes || t("programme.fields.noNotesAvailable")}</p>
+                            <p className="text-foreground text-xs">{details.notes || t("programme.fields.noNotesAvailable")}</p>
                         </div>
                     </div>
                 ) : (
-                    <p className="text-textSidebarMuted text-xs">{t("common.failedToLoad")}</p>
+                    <p className="text-muted-foreground text-xs">{t("common.failedToLoad")}</p>
                 )}
             </div>
         );
@@ -213,36 +213,36 @@ export default function EnrollmentApprovalProgressView() {
     return (
         <div className="flex flex-col gap-8 pb-10 w-full">
             {/* Header Title without breadcrumbs */}
-            <div className="flex flex-col gap-1 border-b border-borderCard pb-5">
-                <h1 className="text-white text-3xl font-bold font-sans">
+            <div className="flex flex-col gap-1 border-b border-border pb-5">
+                <h1 className="text-foreground text-3xl font-bold font-sans">
                     {t("approvalProgress.title")}
                 </h1>
-                <p className="text-textSidebarMuted text-sm">
+                <p className="text-muted-foreground text-sm">
                     {t("approvalProgress.subtitle")}
                 </p>
             </div>
 
             {enrollments.length === 0 ? (
-                <Card className="bg-bgStatCard border-borderCard p-8 text-center text-white space-y-4">
-                    <p className="text-textSidebarMuted">
+                <Card className="bg-muted border-border p-8 text-center text-foreground space-y-4">
+                    <p className="text-muted-foreground">
                         {t("approvalProgress.enrolledPrograms.notEnrollAnyProgram")}
                     </p>
                     <Link
                         href="/dashboard/programs"
-                        className="inline-block px-5 py-2.5 bg-primary text-white font-medium text-sm rounded-lg hover:bg-primary/90 transition-all duration-200"
+                        className="inline-block px-5 py-2.5 bg-primary text-primary-foreground font-medium text-sm rounded-lg hover:bg-primary/90 transition-all duration-200"
                     >
                         {t("approvalProgress.enrolledPrograms.browseprogramtoenroll")}
                     </Link>
                 </Card>
             ) : (
-                <Card className="bg-bgStatCard border-borderCard p-8">
+                <Card className="bg-muted border-border p-8">
                     <div className="space-y-12 p-3">
                         {/* Selected Program Title */}
-                        <div className="border-b border-white/5 pb-4">
-                            <span className="text-[10px] uppercase tracking-wider text-textSidebarMuted font-bold block mb-1">
+                        <div className="border-b border-border/50 pb-4">
+                            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold block mb-1">
                                 {t("programme.currentlyTracking")}
                             </span>
-                            <h2 className="text-xl font-bold text-white">
+                            <h2 className="text-xl font-bold text-foreground">
                                 {getProgramDetails(selectedEnrollment)?.title || t("programme.unknownProgram")}
                             </h2>
                         </div>
@@ -254,16 +254,16 @@ export default function EnrollmentApprovalProgressView() {
 
                         {/* Tour Submission CTA */}
                         {selectedEnrollment?.currentStage === "tour_pending_employee" && (
-                            <div className="flex flex-col items-center justify-center p-6 mt-4 border border-borderCard rounded-xl bg-bgMain text-center space-y-4">
-                                <h3 className="text-lg font-semibold text-white">
+                            <div className="flex flex-col items-center justify-center p-6 mt-4 border border-border rounded-xl bg-background text-center space-y-4">
+                                <h3 className="text-lg font-semibold text-foreground">
                                     {t("approvalProgress.enrolledPrograms.columns.tourFormRequired")}
                                 </h3>
-                                <p className="text-sm text-textSidebarMuted">
+                                <p className="text-sm text-muted-foreground">
                                     {t("approvalProgress.statusMessages.submitTourDetails")}
                                 </p>
                                 <button
                                     onClick={() => setIsTourModalOpen(true)}
-                                    className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-medium"
+                                    className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all font-medium"
                                 >
                                     {t("button.submitTourDetails")}
                                 </button>
@@ -275,10 +275,10 @@ export default function EnrollmentApprovalProgressView() {
 
                             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
-                                <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
                                     {t("approvalProgress.enrolledPrograms.title")}
 
-                                    <span className="bg-white/10 px-2 py-0.5 rounded-md text-xs text-textSidebarMuted font-normal">
+                                    <span className="bg-muted px-2 py-0.5 rounded-md text-xs text-muted-foreground font-normal">
                                         {total}
                                     </span>
                                 </h2>
@@ -292,7 +292,7 @@ export default function EnrollmentApprovalProgressView() {
 
                             </div>
 
-                            <div className="rounded-xl border border-borderCard overflow-hidden">
+                            <div className="rounded-xl border border-border overflow-hidden">
                                 <DataTable
                                     columns={columns}
                                     data={enrollments}

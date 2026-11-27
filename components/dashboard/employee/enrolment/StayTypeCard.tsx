@@ -19,13 +19,13 @@ export function StayTypeCard({ label, fee, selected, onSelect }: StayTypeCardPro
                 "flex items-center gap-3 rounded-xl border p-4 transition-all text-left",
                 selected
                     ? "border-primary bg-primary/10"
-                    : "border-borderCard bg-bgStatCard hover:border-white/20"
+                    : "border-border bg-muted hover:border-primary/40"
             )}
         >
             <div
                 className={cn(
                     "size-5 shrink-0 rounded-full border-2 flex items-center justify-center transition-colors",
-                    selected ? "border-primary" : "border-textSidebarMuted"
+                    selected ? "border-primary" : "border-muted-foreground"
                 )}
             >
                 {selected && <div className="size-2.5 rounded-full bg-primary" />}
@@ -33,7 +33,7 @@ export function StayTypeCard({ label, fee, selected, onSelect }: StayTypeCardPro
             <span
                 className={cn(
                     "text-sm font-medium flex-1",
-                    selected ? "text-white" : "text-textSidebarMuted"
+                    selected ? "text-foreground" : "text-muted-foreground"
                 )}
             >
                 {label}
@@ -41,7 +41,7 @@ export function StayTypeCard({ label, fee, selected, onSelect }: StayTypeCardPro
             <span
                 className={cn(
                     "text-sm font-semibold whitespace-nowrap",
-                    selected ? "text-white" : "text-textSidebarMuted"
+                    selected ? "text-foreground" : "text-muted-foreground"
                 )}
             >
                 {fee != null ? `₹${fee.toLocaleString()}/-` : "N/A"}

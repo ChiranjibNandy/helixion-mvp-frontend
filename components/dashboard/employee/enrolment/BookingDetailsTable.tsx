@@ -35,7 +35,7 @@ export function BookingDetailsTable({
     return (
         <div className="space-y-2 pt-1">
             <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-white">
+                <h3 className="text-base font-bold text-foreground">
                     {t("trainingEnrolment.bookingDetails.title")}
                 </h3>
                 <button
@@ -49,30 +49,30 @@ export function BookingDetailsTable({
                 </button>
             </div>
 
-            <div className="rounded-xl border border-borderCard overflow-x-auto">
+            <div className="rounded-xl border border-border overflow-x-auto">
                 <Table>
-                    <TableHeader className="bg-white/5">
-                        <TableRow className="border-borderCard hover:bg-transparent">
-                            <TableHead className="text-xs text-textSidebarMuted py-3 font-medium">
+                    <TableHeader className="bg-muted">
+                        <TableRow className="border-border hover:bg-transparent">
+                            <TableHead className="text-xs text-muted-foreground py-3 font-medium">
                                 {t("trainingEnrolment.bookingDetails.columns.from")}
                             </TableHead>
-                            <TableHead className="text-xs text-textSidebarMuted py-3 font-medium">
+                            <TableHead className="text-xs text-muted-foreground py-3 font-medium">
                                 {t("trainingEnrolment.bookingDetails.columns.to")}
                             </TableHead>
                             {showFlightSpecificColumns && (
                                 <>
-                                    <TableHead className="text-xs text-textSidebarMuted py-3 font-medium">
+                                    <TableHead className="text-xs text-muted-foreground py-3 font-medium">
                                         {t("trainingEnrolment.bookingDetails.columns.flightNo")}
                                     </TableHead>
-                                    <TableHead className="text-xs text-textSidebarMuted py-3 font-medium">
+                                    <TableHead className="text-xs text-muted-foreground py-3 font-medium">
                                         {t("trainingEnrolment.bookingDetails.columns.departureTime")}
                                     </TableHead>
                                 </>
                             )}
-                            <TableHead className="text-xs text-textSidebarMuted py-3 font-medium">
+                            <TableHead className="text-xs text-muted-foreground py-3 font-medium">
                                 {t("trainingEnrolment.bookingDetails.columns.dateOfTravel")}
                             </TableHead>
-                            <TableHead className="text-xs text-textSidebarMuted py-3 font-medium">
+                            <TableHead className="text-xs text-muted-foreground py-3 font-medium">
                                 {t("trainingEnrolment.bookingDetails.columns.travelClass")}
                             </TableHead>
                             <TableHead className="w-10" />
@@ -80,23 +80,23 @@ export function BookingDetailsTable({
                     </TableHeader>
                     <TableBody>
                         {bookingDetails.length === 0 ? (
-                            <TableRow className="border-borderCard hover:bg-transparent">
+                            <TableRow className="border-border hover:bg-transparent">
                                 <TableCell
                                     colSpan={totalColumns}
-                                    className="text-center text-xs text-textSidebarMuted py-3"
+                                    className="text-center text-xs text-muted-foreground py-3"
                                 >
                                     No travel routes added yet.
                                 </TableCell>
                             </TableRow>
                         ) : (
                             bookingDetails.map((row) => (
-                                <TableRow key={row.id} className="border-borderCard hover:bg-white/5">
+                                <TableRow key={row.id} className="border-border hover:bg-muted/50">
                                     <TableCell className="py-2">
                                         <input
                                             value={row.from}
                                             onChange={(e) => updateBookingField(row.id, "from", e.target.value)}
                                             placeholder="City"
-                                            className="bg-transparent text-sm font-semibold text-white outline-none w-full placeholder:text-textSidebarMuted/50"
+                                            className="bg-transparent text-sm font-semibold text-foreground outline-none w-full placeholder:text-muted-foreground/50"
                                         />
                                     </TableCell>
                                     <TableCell className="py-2">
@@ -104,7 +104,7 @@ export function BookingDetailsTable({
                                             value={row.to}
                                             onChange={(e) => updateBookingField(row.id, "to", e.target.value)}
                                             placeholder="City"
-                                            className="bg-transparent text-sm font-semibold text-white outline-none w-full placeholder:text-textSidebarMuted/50"
+                                            className="bg-transparent text-sm font-semibold text-foreground outline-none w-full placeholder:text-muted-foreground/50"
                                         />
                                     </TableCell>
                                     {showFlightSpecificColumns && (
@@ -114,7 +114,7 @@ export function BookingDetailsTable({
                                                     value={row.refNo}
                                                     onChange={(e) => updateBookingField(row.id, "refNo", e.target.value)}
                                                     placeholder="6E246"
-                                                    className="bg-transparent text-sm font-semibold text-white outline-none w-full placeholder:text-textSidebarMuted/50"
+                                                    className="bg-transparent text-sm font-semibold text-foreground outline-none w-full placeholder:text-muted-foreground/50"
                                                 />
                                             </TableCell>
                                             <TableCell className="py-2">
@@ -124,7 +124,7 @@ export function BookingDetailsTable({
                                                         updateBookingField(row.id, "departureTime", e.target.value)
                                                     }
                                                     placeholder="12:00 PM"
-                                                    className="bg-transparent text-sm font-semibold text-white outline-none w-full placeholder:text-textSidebarMuted/50"
+                                                    className="bg-transparent text-sm font-semibold text-foreground outline-none w-full placeholder:text-muted-foreground/50"
                                                 />
                                             </TableCell>
                                         </>
@@ -134,7 +134,7 @@ export function BookingDetailsTable({
                                             type="date"
                                             value={row.travelDate}
                                             onChange={(e) => updateBookingField(row.id, "travelDate", e.target.value)}
-                                            className="bg-transparent text-sm font-semibold text-white outline-none [color-scheme:dark]"
+                                            className="bg-transparent text-sm font-semibold text-foreground outline-none"
                                         />
                                     </TableCell>
                                     <TableCell className="py-2">
@@ -142,7 +142,7 @@ export function BookingDetailsTable({
                                             value={row.travelClass}
                                             onChange={(e) => updateBookingField(row.id, "travelClass", e.target.value)}
                                             placeholder="Economy"
-                                            className="bg-transparent text-sm font-semibold text-white outline-none w-full placeholder:text-textSidebarMuted/50"
+                                            className="bg-transparent text-sm font-semibold text-foreground outline-none w-full placeholder:text-muted-foreground/50"
                                         />
                                     </TableCell>
                                     <TableCell className="py-2">

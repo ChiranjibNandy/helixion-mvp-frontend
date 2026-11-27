@@ -29,8 +29,8 @@ export function StepperHeader({ activeStep, steps }: StepperHeaderProps) {
                             className={cn(
                                 "size-7 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-colors",
                                 status === "completed" && "bg-accentGreen border-accentGreen text-white",
-                                status === "active" && "bg-primary border-primary text-white",
-                                status === "upcoming" && "border-borderCard text-textSidebarMuted bg-transparent"
+                                status === "active" && "bg-primary border-primary text-primary-foreground",
+                                status === "upcoming" && "border-border text-muted-foreground bg-transparent"
                             )}
                         >
                             {status === "completed" ? (
@@ -42,7 +42,7 @@ export function StepperHeader({ activeStep, steps }: StepperHeaderProps) {
                         <span
                             className={cn(
                                 "text-sm font-medium whitespace-nowrap",
-                                status === "upcoming" ? "text-textSidebarMuted" : "text-white"
+                                status === "upcoming" ? "text-muted-foreground" : "text-foreground"
                             )}
                         >
                             {t(step.labelKey)}
@@ -52,7 +52,7 @@ export function StepperHeader({ activeStep, steps }: StepperHeaderProps) {
                         <div
                             className={cn(
                                 "w-10 h-0.5 transition-colors",
-                                status === "completed" ? "bg-primary" : "bg-borderCard"
+                                status === "completed" ? "bg-primary" : "bg-border"
                             )}
                         />
                     )}
