@@ -13,6 +13,7 @@
       "defaultVenue": "Venue — not set",
       "noprogramsfoundsearch": "No programs found for your search",
       "noprogramsAvailable": "No programs available",
+      "cancelProgram": "Cancel Program",
       "edit": {
          "title": "Edit Program Details",
          "description": "Update core details and participant limits for your published program.",
@@ -30,6 +31,15 @@
          "title": "Programme Details",
          "description": "View complete information, schedule, and settings for this programme.",
          "fetchError": "Failed to fetch program details"
+      },
+      "finalFreezeConfirmation": {
+         "title": "Final Confirmation",
+         "description": "You are about to close and freeze enrolments for",
+         "warning": "After closing, no further enrolments will be allowed and existing enrolments cannot be changed.",
+         "proceedQuestion": "Do you want to proceed?",
+         "goBack": "No, Go Back",
+         "confirm": "Yes, Close & Freeze",
+         "processing": "Processing..."
       },
       "list": {
          "title": "Listed Training Programs",
@@ -91,6 +101,19 @@
          "notes": "Notes",
          "noNotesAvailable": "No notes available"
       },
+      "enrollments": {
+         "manage": "Manage Enrolments",
+         "attendance": "Attendance",
+         "closeFreezeEnrollment": "Close & Freeze Enrollments",
+         "freezeDescription": "Are you sure you want to close and freeze enrolments for this program?",
+         "currentEnrolments": "Current Enrolments",
+         "warnings": {
+            "noFurtherEnrollments": "No further enrolments will be allowed.",
+            "existingEnrollments": "Existing enrolments (confirmed, pending or cancelled) cannot be changed.",
+            "cannotBeUndone": "This action cannot be undone."
+         },
+         "closeSuccess": "Enrolments closed and frozen successfully."
+      },
       "createpageTitle": "Create new training program",
       "createpageDescription": "Publish a single program to the Helixon marketplace.",
       "createdetailsTitle": "Program details",
@@ -146,7 +169,8 @@
          "pending": "Not started",
          "active": "In progress",
          "completed": "Completed",
-         "pend": "Pending"
+         "pend": "Pending",
+         "cancelled": "Cancelled"
       }
    },
    "dashboard": {
@@ -182,7 +206,8 @@
       "save": "Save",
       "edit": "Edit",
       "actions": "Actions",
-      "retry": "Retry"
+      "retry": "Retry",
+      "processing": "Processing..."
    },
    "notifications": {
       "title": "Notifications",
@@ -868,6 +893,7 @@
          "travelStay": "Travel & Stay",
          "reviewSubmit": "Review & Submit"
       },
+      "freeze_enrollments_error": "Could not freeze program enrollments.",
       "accommodationInstruction": "Please select your preferred accommodation type",
       "confirmEnrollButton": "Confirm & Enrol in Program",
       "enrollInstruction": "You will be enrolled in the program. Travel & Stay details can be filled in the next step.",
@@ -997,6 +1023,7 @@
       "location": {
          "title": "Business Location / Address",
          "description": "Used for billing and correspondence documentation.",
+         "value": "Location",
          "registeredAddress": "Registered Address",
          "addressLine1Label": "Address Line 1",
          "addressLine1Placeholder": "Street address, P.O. box, company name",

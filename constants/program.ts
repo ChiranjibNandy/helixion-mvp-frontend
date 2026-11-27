@@ -71,3 +71,9 @@ export const ENROLMENT_DONUT_CONFIG = {
     LOW: "#ef4444",
   },
 } as const;
+
+export const ENROLLMENT_STATUS = {
+  PENDING: "Pending",
+  CONFIRMED: "Confirmed",
+  CANCELLED: "Cancelled"
+}
