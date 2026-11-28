@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Search, ArrowUp, ArrowDown, ChevronsUpDown, CheckCircle2, Ban } from 'lucide-react';
 import PaginationController from '@/components/ui/pagination';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 import { ManagedEnrollment, EnrollmentCancellationReason } from '@/services/provider.service';
-import { displayStatus, statusBadgeClass, formatDate, isConfirmable, isCancellable, DisplayStatus } from './utils';
+import { displayStatus, darkStatusBadgeClass, formatDate, isConfirmable, isCancellable, DisplayStatus } from './utils';
 import ConfirmEnrollmentModal from './ConfirmEnrollmentModal';
 import CancelEnrollmentModal from './CancelEnrollmentModal';
 import { EnrollmentActionEmployee } from './EnrollmentActionEmployee';
@@ -44,9 +45,9 @@ function SortableHeader({
     <button
       type="button"
       onClick={() => onSort(sortKey)}
-      className={`inline-flex items-center gap-1 text-gray-400 hover:text-gray-600 ${className ?? ''}`}
+      className={`inline-flex items-center gap-1 text-textSidebarMuted hover:text-textSecondary ${className ?? ''}`}
     >
-      {label} <Icon size={12} className={isActive ? 'text-gray-600' : 'text-gray-300'} />
+      {label} <Icon size={12} className={isActive ? 'text-textSecondary' : 'text-textSidebarMuted'} />
     </button>
   );
 }
@@ -180,18 +181,18 @@ export default function EnrollmentsTable({
     <>
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative flex-1 min-w-[220px]">
-          <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-textSidebarMuted" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by employee name, company, designation..."
-            className="w-full h-9 pl-8 pr-3 text-sm text-gray-900 placeholder:text-gray-500 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full h-9 pl-8 pr-3 text-sm text-white placeholder:text-textSidebarMuted bg-inputBg border border-borderCard rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as DisplayStatus | 'all')}
-          className="h-9 px-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="h-9 px-2.5 text-sm text-white bg-inputBg border border-borderCard rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
         >
           <option value="all" className="text-gray-900">All Statuses</option>
           {STATUS_FILTERS.map((s) => (
@@ -201,43 +202,42 @@ export default function EnrollmentsTable({
         <select
           value={companyFilter}
           onChange={(e) => setCompanyFilter(e.target.value)}
-          className="h-9 px-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="h-9 px-2.5 text-sm text-white bg-inputBg border border-borderCard rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
         >
           <option value="all" className="text-gray-900">All Companies</option>
           {companies.map((c) => (
             <option key={c} value={c} className="text-gray-900">{c}</option>
           ))}
         </select>
-        <button
-          onClick={handleReset}
-          className="h-9 px-3 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-        >
+        <Button variant="outline" size="default" onClick={handleReset} className="h-9">
           Reset
-        </button>
+        </Button>
       </div>
 
       {selectedIds.size > 0 && (
-        <div className="flex items-center gap-3 rounded-lg bg-blue-50 border border-blue-100 px-3 py-2">
-          <span className="text-sm text-gray-700">{selectedIds.size} employees selected</span>
-          <button
+        <div className="flex items-center gap-3 rounded-lg bg-primary/10 border border-primary/30 px-3 py-2">
+          <span className="text-sm text-textSecondary">{selectedIds.size} employees selected</span>
+          <Button
+            size="sm"
             onClick={() => setBulkModal('confirm')}
-            className="h-8 px-3 text-xs font-medium text-white bg-green-600 rounded-lg hover:bg-green-500"
+            className="bg-emerald-600 hover:bg-emerald-500 text-white"
           >
             Confirm Selected ({selectedIds.size})
-          </button>
-          <button
+          </Button>
+          <Button
+            size="sm"
             onClick={() => setBulkModal('cancel')}
-            className="h-8 px-3 text-xs font-medium text-white bg-red-600 rounded-lg hover:bg-red-500"
+            className="bg-red-600 hover:bg-red-500 text-white"
           >
             Cancel Selected ({selectedIds.size})
-          </button>
+          </Button>
         </div>
       )}
 
       <Table className="text-sm">
         <TableHeader>
-          <TableRow className="text-left text-xs uppercase tracking-widest text-gray-400 border-b border-gray-200 hover:bg-transparent">
-            <TableHead className="h-auto w-8 pb-2 pl-0 pr-2">
+          <TableRow className="text-left text-xs uppercase tracking-widest text-textSidebarMuted border-b border-borderCard hover:bg-transparent">
+            <TableHead className="h-auto w-8 py-2.5 pl-0 pr-2">
               <input
                 type="checkbox"
                 checked={allOnPageSelected}
@@ -246,23 +246,23 @@ export default function EnrollmentsTable({
                 aria-label="Select all on this page"
               />
             </TableHead>
-            <TableHead className="h-auto pb-2 pr-2 text-gray-400">#</TableHead>
-            <TableHead className="h-auto pb-2 pr-2 text-gray-400">
+            <TableHead className="h-auto py-2.5 pr-2 text-textSidebarMuted">#</TableHead>
+            <TableHead className="h-auto py-2.5 pr-2 text-textSidebarMuted">
               <SortableHeader label="Employee Name" sortKey="name" activeKey={sortKey} direction={sortDir} onSort={handleSort} />
             </TableHead>
-            <TableHead className="h-auto pb-2 pr-2 text-gray-400">
+            <TableHead className="h-auto py-2.5 pr-2 text-textSidebarMuted">
               <SortableHeader label="Company Name" sortKey="company" activeKey={sortKey} direction={sortDir} onSort={handleSort} />
             </TableHead>
-            <TableHead className="h-auto pb-2 pr-2 text-gray-400">
+            <TableHead className="h-auto py-2.5 pr-2 text-textSidebarMuted">
               <SortableHeader label="Designation" sortKey="designation" activeKey={sortKey} direction={sortDir} onSort={handleSort} />
             </TableHead>
-            <TableHead className="h-auto pb-2 pr-2 text-gray-400">
+            <TableHead className="h-auto py-2.5 pr-2 text-textSidebarMuted">
               <SortableHeader label="Nomination Date" sortKey="date" activeKey={sortKey} direction={sortDir} onSort={handleSort} />
             </TableHead>
-            <TableHead className="h-auto pb-2 pr-2 text-gray-400">
+            <TableHead className="h-auto py-2.5 pr-2 text-textSidebarMuted">
               <SortableHeader label="Status" sortKey="status" activeKey={sortKey} direction={sortDir} onSort={handleSort} />
             </TableHead>
-            <TableHead className="h-auto pb-2 pr-0 text-right text-gray-400">Actions</TableHead>
+            <TableHead className="h-auto py-2.5 pr-0 text-right text-textSidebarMuted">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -270,7 +270,7 @@ export default function EnrollmentsTable({
             const status = displayStatus(enrollment.currentStage);
             const selectable = !actionsDisabled && isCancellable(enrollment.currentStage);
             return (
-              <TableRow key={enrollment._id} className="border-b border-gray-100 hover:bg-transparent">
+              <TableRow key={enrollment._id} className="border-b border-borderCard hover:bg-transparent">
                 <TableCell className="py-2.5 pl-0 pr-2">
                   <input
                     type="checkbox"
@@ -280,13 +280,13 @@ export default function EnrollmentsTable({
                     aria-label={`Select ${enrollment.employeeId?.name ?? 'row'}`}
                   />
                 </TableCell>
-                <TableCell className="py-2.5 pr-2 text-gray-400">{(page - 1) * pageSize + index + 1}</TableCell>
-                <TableCell className="py-2.5 pr-2 text-gray-900 font-medium">{enrollment.employeeId?.name ?? '-'}</TableCell>
-                <TableCell className="py-2.5 pr-2 text-gray-500">{enrollment.orgId?.name ?? '-'}</TableCell>
-                <TableCell className="py-2.5 pr-2 text-gray-500">{enrollment.employeeId?.designation ?? '-'}</TableCell>
-                <TableCell className="py-2.5 pr-2 text-gray-500">{formatDate(enrollment.createdAt)}</TableCell>
+                <TableCell className="py-2.5 pr-2 text-textSidebarMuted">{(page - 1) * pageSize + index + 1}</TableCell>
+                <TableCell className="py-2.5 pr-2 text-white font-medium">{enrollment.employeeId?.name ?? '-'}</TableCell>
+                <TableCell className="py-2.5 pr-2 text-textSecondary">{enrollment.orgId?.name ?? '-'}</TableCell>
+                <TableCell className="py-2.5 pr-2 text-textSecondary">{enrollment.employeeId?.designation ?? '-'}</TableCell>
+                <TableCell className="py-2.5 pr-2 text-textSecondary">{formatDate(enrollment.createdAt)}</TableCell>
                 <TableCell className="py-2.5 pr-2">
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${statusBadgeClass(status)}`}>
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${darkStatusBadgeClass(status)}`}>
                     {status}
                   </span>
                 </TableCell>
@@ -294,22 +294,24 @@ export default function EnrollmentsTable({
                   {!actionsDisabled && status !== 'Cancelled' ? (
                     <div className="flex items-center justify-end gap-2">
                       {isConfirmable(enrollment.currentStage) && (
-                        <button
+                        <Button
+                          size="xs"
                           onClick={() => setSingleConfirmTarget(enrollment)}
-                          className="inline-flex items-center gap-1 h-7 px-2.5 text-xs font-medium text-green-700 bg-white border border-green-300 rounded-md hover:bg-green-50"
+                          className="text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20"
                         >
                           <CheckCircle2 size={12} /> Confirm
-                        </button>
+                        </Button>
                       )}
-                      <button
+                      <Button
+                        size="xs"
                         onClick={() => setSingleCancelTarget(enrollment)}
-                        className="inline-flex items-center gap-1 h-7 px-2.5 text-xs font-medium text-red-600 bg-white border border-red-300 rounded-md hover:bg-red-50"
+                        className="text-red-400 border border-red-500/30 bg-red-500/10 hover:bg-red-500/20"
                       >
                         <Ban size={12} /> Cancel
-                      </button>
+                      </Button>
                     </div>
                   ) : (
-                    <span className="text-gray-400">-</span>
+                    <span className="text-textSidebarMuted">-</span>
                   )}
                 </TableCell>
               </TableRow>
@@ -317,7 +319,7 @@ export default function EnrollmentsTable({
           })}
           {filteredEnrollments.length === 0 && (
             <TableRow className="hover:bg-transparent">
-              <TableCell colSpan={8} className="py-6 text-center text-gray-400">
+              <TableCell colSpan={8} className="py-6 text-center text-textSidebarMuted">
                 {enrollments.length === 0 ? 'No enrolments yet for this program.' : 'No enrolments match the current filters.'}
               </TableCell>
             </TableRow>
@@ -326,7 +328,7 @@ export default function EnrollmentsTable({
       </Table>
 
       {filteredEnrollments.length > 0 && (
-        <div className="flex items-center justify-between text-xs text-gray-500">
+        <div className="flex items-center justify-between text-xs text-textSidebarMuted">
           <span>
             Showing {(page - 1) * pageSize + 1} – {Math.min(page * pageSize, filteredEnrollments.length)} of {filteredEnrollments.length} enrolments
           </span>
@@ -337,7 +339,7 @@ export default function EnrollmentsTable({
             <select
               value={pageSize}
               onChange={(e) => setPageSize(Number(e.target.value))}
-              className="h-7 px-2 text-xs text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="h-7 px-2 text-xs text-white bg-inputBg border border-borderCard rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
             >
               {PAGE_SIZE_OPTIONS.map((size) => (
                 <option key={size} value={size} className="text-gray-900">{size} / page</option>

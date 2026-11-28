@@ -26,6 +26,15 @@ export function statusBadgeClass(status: DisplayStatus): string {
   }
 }
 
+/** Same statuses, styled for the dark dashboard table rather than the light modals. */
+export function darkStatusBadgeClass(status: DisplayStatus): string {
+  switch (status) {
+    case 'Confirmed': return 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
+    case 'Cancelled': return 'bg-red-500/15 text-red-400 border-red-500/30';
+    default: return 'bg-amber-500/15 text-amber-400 border-amber-500/30';
+  }
+}
+
 export function formatDate(iso?: string): string {
   return iso ? new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
 }

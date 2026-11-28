@@ -5,6 +5,7 @@ import { ReasonOption } from './reasons';
 
 interface ReasonStepProps {
   belowMinimum: boolean;
+  overEnrolled: boolean;
   activeEnrollmentCount: number;
   minParticipants?: number;
   maxParticipants?: number;
@@ -20,6 +21,7 @@ interface ReasonStepProps {
 
 export default function ReasonStep({
   belowMinimum,
+  overEnrolled,
   activeEnrollmentCount,
   minParticipants,
   maxParticipants,
@@ -47,7 +49,9 @@ export default function ReasonStep({
           <p className="text-sm text-gray-700 leading-relaxed">
             {belowMinimum
               ? `This program has only ${activeEnrollmentCount} enrolment${activeEnrollmentCount === 1 ? '' : 's'}, which is below the minimum required (${minParticipants ?? '—'}).`
-              : `This program is currently over enrolled (${activeEnrollmentCount} / ${maxParticipants ?? '—'}).`}
+              : overEnrolled
+              ? `This program is currently over enrolled (${activeEnrollmentCount} / ${maxParticipants ?? '—'}).`
+              : `This program currently has ${activeEnrollmentCount} enrolment${activeEnrollmentCount === 1 ? '' : 's'} (${minParticipants ?? '—'} – ${maxParticipants ?? '—'}).`}
           </p>
           <p className="text-xs text-gray-500 mt-1.5">
             All registered employees will be notified about the cancellation and confirmed enrolments will be cancelled.
