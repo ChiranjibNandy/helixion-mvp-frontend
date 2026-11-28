@@ -1,5 +1,5 @@
 import { CheckCircle2 } from 'lucide-react';
-import { CloseButton, IconBadge } from './ModalPrimitives';
+import { CloseButton, IconBadge } from '../shared/ModalPrimitives';
 
 export default function SuccessStep({
   programTitle,

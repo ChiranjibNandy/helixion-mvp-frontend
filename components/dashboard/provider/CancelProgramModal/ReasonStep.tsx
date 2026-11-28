@@ -1,10 +1,11 @@
 import { Trash2 } from 'lucide-react';
 import { ProgramCancellationReason } from '@/services/provider.service';
-import { CloseButton, IconBadge, InfoBox, ModalError } from './ModalPrimitives';
+import { CloseButton, IconBadge, InfoBox, ModalError } from '../shared/ModalPrimitives';
 import { ReasonOption } from './reasons';
 
 interface ReasonStepProps {
   belowMinimum: boolean;
+  overEnrolled: boolean;
   activeEnrollmentCount: number;
   minParticipants?: number;
   maxParticipants?: number;
@@ -20,6 +21,7 @@ interface ReasonStepProps {
 
 export default function ReasonStep({
   belowMinimum,
+  overEnrolled,
   activeEnrollmentCount,
   minParticipants,
   maxParticipants,
@@ -47,7 +49,9 @@ export default function ReasonStep({
           <p className="text-sm text-gray-700 leading-relaxed">
             {belowMinimum
               ? `This program has only ${activeEnrollmentCount} enrolment${activeEnrollmentCount === 1 ? '' : 's'}, which is below the minimum required (${minParticipants ?? '—'}).`
-              : `This program is currently over enrolled (${activeEnrollmentCount} / ${maxParticipants ?? '—'}).`}
+              : overEnrolled
+              ? `This program is currently over enrolled (${activeEnrollmentCount} / ${maxParticipants ?? '—'}).`
+              : `This program currently has ${activeEnrollmentCount} enrolment${activeEnrollmentCount === 1 ? '' : 's'} (${minParticipants ?? '—'} – ${maxParticipants ?? '—'}).`}
           </p>
           <p className="text-xs text-gray-500 mt-1.5">
             All registered employees will be notified about the cancellation and confirmed enrolments will be cancelled.
@@ -65,7 +69,7 @@ export default function ReasonStep({
             className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
             {reasonOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
+              <option key={opt.value} value={opt.value} className="text-gray-900">{opt.label}</option>
             ))}
           </select>
         </div>

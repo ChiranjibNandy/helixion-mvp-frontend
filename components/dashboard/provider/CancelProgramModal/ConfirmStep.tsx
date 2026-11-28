@@ -1,8 +1,9 @@
-import { HelpCircle, AlertTriangle } from 'lucide-react';
-import { CloseButton, IconBadge, InfoBox, ModalError } from './ModalPrimitives';
+import { HelpCircle, AlertTriangle, Trash2 } from 'lucide-react';
+import { CloseButton, IconBadge, InfoBox, ModalError, WarningBox } from '../shared/ModalPrimitives';
 
 interface ConfirmStepProps {
   belowMinimum: boolean;
+  overEnrolled: boolean;
   activeEnrollmentCount: number;
   minParticipants?: number;
   maxParticipants?: number;
@@ -14,6 +15,7 @@ interface ConfirmStepProps {
 
 export default function ConfirmStep({
   belowMinimum,
+  overEnrolled,
   activeEnrollmentCount,
   minParticipants,
   maxParticipants,
@@ -22,21 +24,24 @@ export default function ConfirmStep({
   onBack,
   onConfirm,
 }: ConfirmStepProps) {
+  const tone = belowMinimum ? 'blue' : 'red';
+  const Icon = belowMinimum ? HelpCircle : overEnrolled ? AlertTriangle : Trash2;
+
   return (
     <>
-      <div className="flex justify-end mb-1">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-2.5">
+          <IconBadge tone={tone}>
+            <Icon size={18} />
+          </IconBadge>
+          <h2 className="text-base font-semibold text-gray-900">
+            {belowMinimum ? 'Cancel this training program?' : 'Are you sure you want to cancel this training program?'}
+          </h2>
+        </div>
         <CloseButton onClick={onBack} />
       </div>
 
-      <div className="space-y-4 -mt-4">
-        <IconBadge tone={belowMinimum ? 'blue' : 'red'}>
-          {belowMinimum ? <HelpCircle size={24} /> : <AlertTriangle size={24} />}
-        </IconBadge>
-
-        <h2 className={`text-lg font-semibold ${belowMinimum ? 'text-gray-900' : 'text-red-600'}`}>
-          {belowMinimum ? 'Cancel this training program?' : 'Are you sure you want to cancel this training program?'}
-        </h2>
-
+      <div className="space-y-4">
         {belowMinimum ? (
           <div className="space-y-2">
             <InfoBox>
@@ -51,15 +56,19 @@ export default function ConfirmStep({
             </InfoBox>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <p className="text-sm text-gray-600 leading-relaxed">
-              This program has {activeEnrollmentCount} enrolments (maximum capacity is {maxParticipants ?? '—'}). Cancellation will affect confirmed and pending enrolments.
+              {overEnrolled
+                ? `This program has ${activeEnrollmentCount} enrolments (maximum capacity is ${maxParticipants ?? '—'}). Cancellation will affect confirmed and pending enrolments.`
+                : `This program has ${activeEnrollmentCount} enrolment${activeEnrollmentCount === 1 ? '' : 's'}. Cancellation will affect confirmed and pending enrolments.`}
             </p>
-            <ul className="space-y-1 text-sm text-gray-700">
-              <li className="flex gap-2"><span className="text-red-500">•</span> All registered employees will be notified about the cancellation.</li>
-              <li className="flex gap-2"><span className="text-red-500">•</span> All confirmed and pending enrolments will be cancelled.</li>
-              <li className="flex gap-2"><span className="text-red-500">•</span> This action cannot be undone.</li>
-            </ul>
+            <WarningBox
+              items={[
+                'All registered employees will be notified about the cancellation.',
+                'All confirmed and pending enrolments will be cancelled.',
+                'This action cannot be undone.',
+              ]}
+            />
           </div>
         )}
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search, Plus, Pencil, Receipt, MoreVertical, Copy, ClipboardCheck, Users } from "lucide-react";
 import {
@@ -17,9 +18,11 @@ import PaginationController from "@/components/ui/pagination";
 import { Program } from "@/types/program";
 import { ROUTES } from "@/constants/navigation";
 import { t } from "@/lib/i18n";
+import ManageEnrollmentsView from "@/components/dashboard/provider/ManageEnrollments/ManageEnrollmentsView";
 
 export default function ProgramsPage() {
    const router = useRouter();
+   const [managingProgramId, setManagingProgramId] = useState<string | null>(null);
 
    const {
       programs,
@@ -122,7 +125,7 @@ export default function ProgramsPage() {
          render: (program: Program) => {
             const hasEnded = !!program.endDate && new Date(program.endDate) < new Date();
             return (
-               <div className="flex items-center justify-end gap-1">
+               <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
                   <DropdownMenu>
                      <DropdownMenuTrigger
                         className={cn(
@@ -142,7 +145,7 @@ export default function ProgramsPage() {
                            Attendance
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                           onClick={() => router.push(`/dashboard/manage-enrollments/${program._id}`)}
+                           onClick={() => setManagingProgramId(program._id)}
                            className="text-white whitespace-nowrap focus:bg-bgButton focus:text-white"
                         >
                            <Users size={14} className="mr-2" />
@@ -186,6 +189,16 @@ export default function ProgramsPage() {
          },
       },
    ];
+
+   if (managingProgramId) {
+      return (
+         <ManageEnrollmentsView
+            programId={managingProgramId}
+            onBack={() => setManagingProgramId(null)}
+         />
+      );
+   }
+
    return (
       <div className="flex flex-col gap-5">
 
@@ -250,6 +263,7 @@ export default function ProgramsPage() {
                      : t("programme.noprogramsAvailable")
                }
                rowKey={(program: Program) => program._id}
+               onRowClick={(program: Program) => setManagingProgramId(program._id)}
                className="rounded-lg"
             />
 

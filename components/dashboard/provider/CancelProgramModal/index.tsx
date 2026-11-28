@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { providerService, ProgramCancellationReason } from '@/services/provider.service';
-import ModalShell from './ModalShell';
+import ModalShell from '../shared/ModalShell';
 import ReasonStep from './ReasonStep';
 import ConfirmStep from './ConfirmStep';
 import SuccessStep from './SuccessStep';
@@ -34,6 +34,7 @@ export default function CancelProgramModal({
   onViewDetails,
 }: CancelProgramModalProps) {
   const belowMinimum = minParticipants != null && activeEnrollmentCount < minParticipants;
+  const overEnrolled = !belowMinimum && maxParticipants != null && activeEnrollmentCount > maxParticipants;
   const reasonOptions = getReasonOptions(belowMinimum);
 
   const [step, setStep] = useState<Step>('reason');
@@ -86,6 +87,7 @@ export default function CancelProgramModal({
       {step === 'reason' && (
         <ReasonStep
           belowMinimum={belowMinimum}
+          overEnrolled={overEnrolled}
           activeEnrollmentCount={activeEnrollmentCount}
           minParticipants={minParticipants}
           maxParticipants={maxParticipants}
@@ -102,6 +104,7 @@ export default function CancelProgramModal({
       {step === 'confirm' && (
         <ConfirmStep
           belowMinimum={belowMinimum}
+          overEnrolled={overEnrolled}
           activeEnrollmentCount={activeEnrollmentCount}
           minParticipants={minParticipants}
           maxParticipants={maxParticipants}

@@ -17,7 +17,7 @@ export default function StatusBanner({
 }: StatusBannerProps) {
   if (isCancelled) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700">
+      <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
         This program has been cancelled.
       </div>
     );
@@ -25,7 +25,7 @@ export default function StatusBanner({
 
   if (belowMinimum) {
     return (
-      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-700">
+      <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2.5 text-sm text-amber-400">
         Below Minimum — only {activeCount} enrolment{activeCount === 1 ? '' : 's'} received. Minimum required is {minParticipants}.
       </div>
     );
@@ -33,7 +33,7 @@ export default function StatusBanner({
 
   if (overEnrolled) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700">
+      <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
         Over Enrolled — {activeCount} enrolments received. Maximum capacity is {maxParticipants}.
       </div>
     );
